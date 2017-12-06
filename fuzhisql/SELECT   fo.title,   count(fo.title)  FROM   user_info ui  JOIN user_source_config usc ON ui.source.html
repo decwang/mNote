@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-22T10:34:22Z"/><meta name="updated" content="2017-06-22T10:39:41Z"/><title>SELECT   fo.title,   count(fo.title)  FROM   user_info ui  JOIN user_source_config usc ON ui.source</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>SELECT</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>fo.title,</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>count(fo.title)</div>
+<div>FROM</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>user_info ui</div>
+<div>JOIN user_source_config usc ON ui.source = usc.id</div>
+<div>JOIN fuma_info fi ON fi.user_id = ui.id</div>
+<div>JOIN fuma_order fo ON fo.id = fi.order_id</div>
+<div>WHERE</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>ui.create_time &gt;= '2017-06-13 00:00:00'</div>
+<div>AND ui.create_time &lt; &nbsp;'2017-06-19 00:00:00'</div>
+<div>GROUP BY</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>fo.title</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>select count(*) from user_info&nbsp;</div>
+<div>where source in (</div>
+<div><br />
+</div>
+<div>SELECT ID FROM user_source_config&nbsp;</div>
+<div>where appId in ('100043689','100043688','100043687')</div>
+<div>)</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>select count(*) from user_info&nbsp;</div>
+<div>where source = '3056'</div>
+<div><br />
+</div></body></html>

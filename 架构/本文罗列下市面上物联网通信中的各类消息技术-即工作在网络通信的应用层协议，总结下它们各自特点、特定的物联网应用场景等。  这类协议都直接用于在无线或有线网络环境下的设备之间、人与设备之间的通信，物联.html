@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-04-14T11:49:19Z"/><meta name="updated" content="2017-04-14T11:49:22Z"/><title>本文罗列下市面上物联网通信中的各类消息技术-即工作在网络通信的应用层协议，总结下它们各自特点、特定的物联网应用场景等。  这类协议都直接用于在无线或有线网络环境下的设备之间、人与设备之间的通信，物联</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">本文罗列下市面上物联网通信中的各类消息技术-即工作在网络通信的应用层协议，总结下它们各自特点、特定的物联网应用场景等。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">这类协议都直接用于在无线或有线网络环境下的设备之间、人与设备之间的通信，物联网开发者都会与这些协议打交道。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><img src="http://img.blog.csdn.net/20170411150820971" alt="图片描述" title="" style="box-sizing:border-box;border:0px;vertical-align:middle;display:table;margin:auto;" /></p>
+<h3 style="box-sizing:border-box;font-family:'microsoft yahei', arial;font-weight:500;line-height:1.1;color:#333333;margin-top:20px;margin-bottom:10px;font-size:24px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">物联网联接的问题空间</h3>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">上图为物联网联接的问题空间，其中物联网的通信环境有Ethernet, Wi-Fi, RFID, NFC（近距离无线通信）, Zigbee, 6LoWPAN(IPV6低速无线版本),Bluetooth, GSM, GPRS, GPS, 3G, 4G等网络，而每一种通信应用协议都有一定适用范围。AMQP、JMS、REST/HTTP都是工作在以太网，COAP协议是专门为资源受限设备开发的协议，而DDS和MQTT的兼容性则强很多。</p>
+<h3 style="box-sizing:border-box;font-family:'microsoft yahei', arial;font-weight:500;line-height:1.1;color:#333333;margin-top:20px;margin-bottom:10px;font-size:24px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">协议的简单介绍</h3>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">MQTT (Message Queuing Telemetry Transport )，消息队列遥测传输，IBM开发的一个即时通讯协议，现在成了OASIS的建议标准；</li>
+<li style="box-sizing:border-box;">DDS（Data Distribution Service for Real-Time Systems），面向实时系统的数据分布服务，这是大名鼎鼎的OMG组织提出的协议，其权威性应该能证明该协议的未来应用前景；</li>
+<li style="box-sizing:border-box;">AMQP(Advanced Message Queuing Protocol)，先进消息队列协议，这是OASIS组织提出的，该组织曾提出OSLC(Open Source Lifecyle)标准，用于业务系统例如PLM，ERP，MES等进行数据交换；</li>
+<li style="box-sizing:border-box;">XMPP(Extensible Messaging and Presence Protocol)可扩展通讯和表示协议，XMPP的前身是Jabber，一个开源形式组织产生的网络即时通信协议。XMPP目前被IETF国际标准组织完成了标准化工作；</li>
+<li style="box-sizing:border-box;">JMS (Java Message Service)，JAVA消息服务，这是JAVA平台中著名的消息队列协议；</li>
+<li style="box-sizing:border-box;">REST (Representational State Transfer)，表征状态转换，是基于HTTP协议开发的一种通信风格，目前还不是标准；</li>
+<li style="box-sizing:border-box;">CoAP (Constrained Application Protocol)，受限应用协议，应用于无线传感网中协议。</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">以上这几种协议都已被广泛应用，并且每种协议都有至少10种以上的代码实现，都宣称支持实时的发布/订阅的物联网协议，但是在具体物联网系统架构设计时，需考虑实际场景的通信需求，选择合适的协议。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">这儿举个智能家居的例子，说明下这些协议侧重应用方向。智能家居中智能灯光控制，可以使用XMPP协议控制灯的开关；智能家居的电力供给，发电厂的发动机组的监控可以使用DDS协议；当电力输送到千家万户时，电力线的巡查和维护，可以使用MQTT协议；家里的所有电器的电量消耗，可以使用AMQP协议，传输到云端或家庭网关中进行分析；最后用户想把自家的能耗查询服务公布到互联网上，那么可以使用REST/HTTP来开放API服务。</p>
+<hr style="box-sizing:content-box;height:0px;margin-top:20px;margin-bottom:20px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-top-style:solid;border-top-color:#eeeeee;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;" />
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">下面我们将一一详细介绍下这些协议：</p>
+<h3 style="box-sizing:border-box;font-family:'microsoft yahei', arial;font-weight:500;line-height:1.1;color:#333333;margin-top:20px;margin-bottom:10px;font-size:24px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">MQTT协议(低带宽)</h3>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">适用范围：</span>在低带宽、不可靠的网络下提供基于云平台的远程设备的数据传输和监控。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">特点：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">使用基于代理的发布/订阅消息模式，提供一对多的消息发布</li>
+<li style="box-sizing:border-box;">使用 TCP/IP 提供网络连接</li>
+<li style="box-sizing:border-box;">小型传输，开销很小（固定长度的头部是 2 字节），协议交换最小化，以降低网络流量</li>
+<li style="box-sizing:border-box;">支持QoS，有三种消息发布服务质量：“至多一次”， “至少一次”， “只有一次”</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">协议主要实现和应用：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">已经有PHP，JAVA，Python，C，C#等多个语言版本的协议框架</li>
+<li style="box-sizing:border-box;">IBM Bluemix 的一个重要部分是其 IoT Foundation 服务，这是一项基于云的 MQTT 实例</li>
+<li style="box-sizing:border-box;">移动应用程序也早就开始使用MQTT，如 Facebook Messenger 和com等</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">点评：</span>&nbsp;<br style="box-sizing:border-box;" />
+MQTT协议一般适用于设备数据采集到端(Device-&gt;Server，Device-&gt;Gateway)，集中星型网络架构(hub-and-spoke)，不适用设备与设备之间通信，设备控制能力弱，另外实时性较差，一般都在秒级。</p>
+<h3 style="box-sizing:border-box;font-family:'microsoft yahei', arial;font-weight:500;line-height:1.1;color:#333333;margin-top:20px;margin-bottom:10px;font-size:24px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">DDS协议(高可靠性、实时)</h3>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">适用范围：</span>分布式高可靠性、实时传输设备数据通信。目前DDS已经广泛应用于国防、民航、工业控制等领域。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">特点：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">以数据为中心</li>
+<li style="box-sizing:border-box;">使用无代理的发布/订阅消息模式，点对点、点对多、多对多</li>
+<li style="box-sizing:border-box;">提供多大21种QoS服务质量策略</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">协议主要实现：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">OpenDDS 是一个开源的 C++ 实现</li>
+<li style="box-sizing:border-box;">OpenSplice DDS</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">点评：</span>&nbsp;<br style="box-sizing:border-box;" />
+DDS很好地支持设备之间的数据分发和设备控制，设备和云端的数据传输，同时DDS的数据分发的实时效率非常高，能做到秒级内同时分发百万条消息到众多设备。DDS在服务质量（QoS）上提供非常多的保障途径，这也是它适用于国防军事、工业控制这些高可靠性、可安全性应用领域的原因。但这些应用都工作在有线网络下，在无线网络，特别是资源受限的情况下，没有见到过实施案例。</p>
+<h3 style="box-sizing:border-box;font-family:'microsoft yahei', arial;font-weight:500;line-height:1.1;color:#333333;margin-top:20px;margin-bottom:10px;font-size:24px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">AMQP协议(互操作性)</h3>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">适用范围：</span>最早应用于金融系统之间的交易消息传递，在物联网应用中，主要适用于移动手持设备与后台数据中心的通信和分析。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">特点：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">Wire级的协议，它描述了在网络上传输的数据的格式，以字节为流</li>
+<li style="box-sizing:border-box;">面向消息、队列、路由（包括点对点和发布/订阅）、可靠性、安全</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">协议实现：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">Erlang中的实现有 RabbitMQ</li>
+<li style="box-sizing:border-box;">AMQP的开源实现，用C语言编写OpenAMQ</li>
+<li style="box-sizing:border-box;">Apache Qpid</li>
+<li style="box-sizing:border-box;">stormMQ</li>
+</ul>
+<h3 style="box-sizing:border-box;font-family:'microsoft yahei', arial;font-weight:500;line-height:1.1;color:#333333;margin-top:20px;margin-bottom:10px;font-size:24px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">XMPP协议(即时通信)</h3>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">适用范围：</span>即时通信的应用程序，还能用在网络管理、内容供稿、协同工具、档案共享、游戏、远端系统监控等。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">特点：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">客户机/服务器通信模式</li>
+<li style="box-sizing:border-box;">分布式网络</li>
+<li style="box-sizing:border-box;">简单的客户端，将大多数工作放在服务器端进行</li>
+<li style="box-sizing:border-box;">标准通用标记语言的子集XML的数据格式</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">点评：</span>&nbsp;<br style="box-sizing:border-box;" />
+XMPP协议基于XML文本来传输的即时通讯指令，它原来的设计目的是互联互通即时通讯服务的，在一些物联网应用中，它被用作发送比较复杂的操作命令到设备端来进行设备控制。</p>
+<h3 style="box-sizing:border-box;font-family:'microsoft yahei', arial;font-weight:500;line-height:1.1;color:#333333;margin-top:20px;margin-bottom:10px;font-size:24px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">REST/HTTP(松耦合服务调用)</h3>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">适用范围：</span>&nbsp;REST/HTTP主要为了简化互联网中的系统架构，快速实现客户端和服务器之间交互的松耦合，降低了客户端和服务器之间的交互延迟。因此适合在物联网的应用层面，通过REST开放物联网中资源，实现服务被其他应用所调用。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">特点：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">REST 指的是一组架构约束条件和原则。满足这些约束条件和原则的应用程序或设计就是RESTful</li>
+<li style="box-sizing:border-box;">客户端和服务器之间的交互在请求之间是无状态的</li>
+<li style="box-sizing:border-box;">在服务器端，应用程序状态和功能可以分为各种资源，它向客户端公开。资源的例子有：应用程序对象、数据库记录、算法等等。每个资源都使用 URI (Universal Resource Identifier) 得到一个惟一的地址。所有资源都共享统一的界面，以便在客户端和服务器之间传输状态</li>
+<li style="box-sizing:border-box;">使用的是标准的 HTTP 方法，比如 GET、PUT、POST 和 DELETE&nbsp;<br style="box-sizing:border-box;" />
+点评： REST/HTTP其实是互联网中服务调用API封装风格，物联网中数据采集到物联网应用系统中，在物联网应用系统中，可以通过开放REST API的方式，把数据服务开放出去，被互联网中其他应用所调用。</li>
+</ul>
+<h3 style="box-sizing:border-box;font-family:'microsoft yahei', arial;font-weight:500;line-height:1.1;color:#333333;margin-top:20px;margin-bottom:10px;font-size:24px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">CoAP协议</h3>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">适用范围：</span>&nbsp;CoAP是简化了HTTP协议的RESTful API，CoAP是6LowPAN协议栈中的应用层协议，它适用于在资源受限的通信的IP网络。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">特点：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">CoAP采用了二进制报头，而不是HTTP协议中的文本报头(text header)</li>
+<li style="box-sizing:border-box;">CoAP降低了头的内容类型选项数量，例如去掉了text/html (UTF-8)、image/jpeg、video/raw等</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">协议主要实现：</span></p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">libcoap（C语言实现）</li>
+<li style="box-sizing:border-box;">Californium（java语言实现）</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><span style="box-sizing:border-box;font-weight:700;">点评：</span>&nbsp;<br style="box-sizing:border-box;" />
+CoAP和6LowPan，这分别是应用层协议和网络适配层协议，其目标是解决设备直接连接到IP网络，也就是IP技术应用到设备之间、互联网与设备之间的通信需求。因为IPV6技术带来巨大寻址空间，不光解决了未来巨量设备和资源的标识问题，互联网上应用可以直接访问支持IPV6的设备，而不需要额外的网关。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">以上几种协议，有两个特征是物联网通信技术选择时需要考虑的：</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">发布/订阅服务更适合物联网环境下通信</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">DDS、MQTT、AMQP和JMS都是基于发布/订阅模式，发布/订阅框架具有服务自发现、动态扩展、事件过滤的特点，它解决了物联网系统在应用层的数据源快速获取、物的加入和退出、兴趣订阅、降低带宽流量等问题，实现物的联接在空间上松耦合(双方无需知道通信地址)、时间上松耦合和同步松耦合。</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:20px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;"><li style="box-sizing:border-box;">服务质量(QoS)是物联网通信中的重要考虑因素</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:0px;color:#333333;font-family:'microsoft yahei', arial;font-size:16px;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;">在服务策略的帮助下，DDS能够有效地控制和管理网络带宽、内存空间等资源的使用，同时也能控制数据的可靠性、实时性和数据的生存时间，通过灵活使用这些服务质量策略，DDS不仅能在窄带的无线环境上，也能在宽带的有线通信环境上开发出满足实时性需求的数据分发系统。&nbsp;</p></body></html>

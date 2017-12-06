@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-12-05T02:36:46Z"/><meta name="updated" content="2016-12-05T02:36:52Z"/><title>关于https证书  https协议需要到ca申请证书，一般免费证书很少，需要交费。  http是超文本传输协议，信息是明文传输，https 则是具有安全性的ssl加密传输协议。  http和htt</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h1 id="关于https证书" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';">关于https证书</h1>
+<ol style="box-sizing:border-box;font-family:'microsoft yahei';"><li style="box-sizing:border-box;">https协议需要到ca申请证书，一般免费证书很少，需要交费。</li>
+<li style="box-sizing:border-box;">http是超文本传输协议，信息是明文传输，https 则是具有安全性的ssl加密传输协议。</li>
+<li style="box-sizing:border-box;">http和https使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443。</li>
+<li style="box-sizing:border-box;">http的连接很简单，是无状态的；HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。</li>
+</ol>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">目前大部分网站都在忘https上转，Chrome也将https作为浏览器的默认连接，如果网站没采用https的话，就会出现！的标识。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">苹果宣布了一个最后期限：到2017年1月1日 App Store中的所有应用都必须启用 App Transport Security安全功能。App Transport Security（ATS）是苹果在iOS 9中引入的一项隐私保护功能，屏蔽明文HTTP资源加载，连接必须经过更安全的HTTPS。苹果目前允许开发者暂时关闭ATS，可以继续使用HTTP连接，但到年底所有官方商店的应用都必须强制性使用ATS。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">所以，推行https是整个互联网行业的趋势。</p>
+<h1 id="证书" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';"><a name="t1" style="color:#ca0000;box-sizing:border-box;"></a>证书</h1>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">目前主流的SSL证书主要分为DV SSL 、 OV SSL 、EV SSL。</p>
+<h2 id="dv-ssl" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';"><a name="t2" style="color:#ca0000;box-sizing:border-box;"></a>DV SSL</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">DV SSL证书是只验证网站域名所有权的简易型（Class 1级）SSL证书，可10分钟快速颁发，能起到加密传输的作用，但无法向用户证明网站的真实身份。&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">目前市面上的免费证书都是这个类型的，只是提供了对数据的加密，但是对提供证书的个人和机构的身份不做验证。</p>
+<h2 id="ov-ssl" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';"><a name="t3" style="color:#ca0000;box-sizing:border-box;"></a>OV SSL</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">OV SSL,提供加密功能,对申请者做严格的身份审核验证,提供可信身份证明。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">和DV SSL的区别在于，OV SSL 提供了对个人或者机构的审核，能确认对方的身份，安全性更高。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">所以这部分的证书申请是收费的~</p>
+<h2 id="ev-ssl" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';"><a name="t4" style="color:#ca0000;box-sizing:border-box;"></a>EV SSL</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">超安=EV=最安全、最严格 超安EV SSL证书遵循全球统一的严格身份验证标准，是目前业界安全级别最高的顶级 (Class 4级)SSL证书。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">金融证券、银行、第三方支付、网上商城等，重点强调网站安全、企业可信形象的网站，涉及交易支付、客户隐私信息和账号密码的传输。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">这部分的验证要求最高，申请费用也是最贵的。</p>
+<h1 id="常见的颁发证书机构" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';"><a name="t5" style="color:#ca0000;box-sizing:border-box;"></a>常见的颁发证书机构</h1>
+<ul style="box-sizing:border-box;font-family:'microsoft yahei';"><li style="box-sizing:border-box;">赛门铁克(Symantec)是 SSL/TLS 证书的领先提供商</li>
+<li style="box-sizing:border-box;">中国金融认证中心(CFCA)全球信任SSL证书</li>
+<li style="box-sizing:border-box;">GeoTrust是全球第二大数字证书颁发机构</li>
+</ul>
+<h1 id="沃通-wosign证书咋了" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';"><a name="t6" style="color:#ca0000;box-sizing:border-box;"></a>沃通 (WoSign)证书咋了</h1>
+<blockquote style="box-sizing:border-box;margin:0px 0px 1.1em;padding:15px 20px;border-left-width:10px;border-left-style:solid;border-left-color:rgba(128, 128, 128, 0.0745098);background-color:rgba(128, 128, 128, 0.0470588);border-top-left-radius:0px;border-top-right-radius:5px;border-bottom-right-radius:5px;border-bottom-left-radius:0px;font-family:'microsoft yahei';"><p style="margin-top:0px;margin-bottom:0px;padding:0px;box-sizing:border-box;line-height:1.25;">Mozilla 公布了对沃通CA不当行为的13页调查报告，正式提议将停止信任 WoSign 和 StartCom 签发的新证书，最短期限为一年，一年之后如果 WoSign 和 StartCom 能满足条件 Mozilla 可以再次接纳它们。&nbsp;<br style="box-sizing:border-box;" />
+调查报告称，沃通 CA 存在的部分问题不严重或不是它的过错，但还有部分问题极其严重，从信任角度看最严重的问题是故意倒填证书日期绕过浏览器对 SHA-1 证书的限制。由于 SHA-1 签名证书不再安全，主要浏览器开发商要求所有 CA 在 2016 年1月1日之后停止签发 SHA-1 证书，然而沃通 CA 在 2016年1月1日之后仍然签发了 SHA-1 证书，通过故意倒填日期，将这些证书伪装成是在 2016 年前签发的。另一个问题是 WoSign 收购 StartCom ，即使有充足的证据证明WoSign CA 已经100%收购 StartCom CA，公司 CEO 王高华仍然拒绝承认，直到最后 WoSign 的母公司奇虎 360 现身才予以承认，但王高华又坚称 StartCom 独立运营，其原始系统没有发生改变，然而有充分的技术证据证明 StartCom 在被收购一个半月后，它就开始使用 WoSign 的基础设施签发证书。StartCom 的网站&nbsp;<a href="http://startssl.com/" style="color:#ca0000;text-decoration:none;box-sizing:border-box;">http://StartSSL.com</a>&nbsp;在 2015年12月18日关闭升级系统，到 12月22日重新开放时它就切换到了 WoSign 的系统。</p>
+</blockquote>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">所以还是暂时不用沃通 (WoSign)了吧。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';">阿里云的云盾证书服务也把WoSign的服务下架了。</p>
+<h1 id="参考资料" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';"><a name="t7" style="color:#ca0000;box-sizing:border-box;"></a>参考资料</h1>
+<ul style="box-sizing:border-box;font-family:'microsoft yahei';"><li style="box-sizing:border-box;"><a href="https://www.oschina.net/news/74351/apple-2016-should-use-https" style="color:#ca0000;text-decoration:none;box-sizing:border-box;">https://www.oschina.net/news/74351/apple-2016-should-use-https</a></li>
+<li style="box-sizing:border-box;"><a href="http://wenku.baidu.com/link?url=D9lmeahxqtsRC2xtGZ5gC-YG7L2AuarNqbBG3lQL0iVvmxZ7b0V1ILJ48pVsoPGar4ox_1jxlnAb0M0rTw8ecnNgWBnZfsmkCQt4JTRzzma" style="color:#ca0000;text-decoration:none;box-sizing:border-box;">http://wenku.baidu.com/link?url=D9lmeahxqtsRC2xtGZ5gC-YG7L2AuarNqbBG3lQL0iVvmxZ7b0V1ILJ48pVsoPGar4ox_1jxlnAb0M0rTw8ecnNgWBnZfsmkCQt4JTRzzma</a></li>
+</ul></body></html>

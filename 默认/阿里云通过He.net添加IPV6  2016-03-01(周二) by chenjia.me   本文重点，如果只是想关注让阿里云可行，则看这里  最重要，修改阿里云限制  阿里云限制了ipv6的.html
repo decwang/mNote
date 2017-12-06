@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-10-11T04:14:50Z"/><meta name="updated" content="2016-10-11T04:14:52Z"/><title>阿里云通过He.net添加IPV6  2016-03-01(周二) by chenjia.me   本文重点，如果只是想关注让阿里云可行，则看这里  最重要，修改阿里云限制  阿里云限制了ipv6的</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="content-title" style="margin-bottom:30px;color:#333333;font-family:'Helvetica Neue', Helvetica, Arial, 微软雅黑, sans-serif;font-size:16px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:18px;widows:1;"><h1 style="margin:0px;text-rendering:optimizelegibility;font-size:30px;line-height:36px;">阿里云通过He.net添加IPV6</h1>
+2016-03-01(周二) by&nbsp;<a class="url fn" href="http://blog.chenjia.me/author/chenjiame.html" style="color:#0088cc;text-decoration:none;">chenjia.me</a></div>
+<div style="color:#333333;font-family:'Helvetica Neue', Helvetica, Arial, 微软雅黑, sans-serif;font-size:16px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:18px;widows:1;"><hr style="margin:18px 0px;border-right-width:0px;border-left-width:0px;border-top-style:solid;border-top-color:#e5e5e5;border-bottom-style:solid;border-bottom-color:#ffffff;" />
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;"><strong>本文重点，如果只是想关注让阿里云可行，则看这里</strong></p>
+<h1 style="margin:0px;text-rendering:optimizelegibility;font-size:30px;line-height:36px;">最重要，修改阿里云限制</h1>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">阿里云限制了ipv6的功能，我们需要修改开启</p>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">编辑<code style="padding:3px 4px;font-family:Menlo, Monaco, 'Courier New', monospace;font-size:12px;color:#dd1144;border-radius:3px;border:1px solid #e1e1e8;background-color:#f7f7f9;">\etc\sysctl.conf</code>翻到最后我们会看到一堆关于ip的配置，我们需要修改关于ipv6的设置</p>
+<div class="highlight"><pre style="padding:8.5px;font-family:Menlo, Monaco, 'Courier New', monospace;font-size:12px;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;margin-top:0px;margin-bottom:9px;line-height:18px;border:1px solid rgba(0, 0, 0, 0.14902);white-space:pre-wrap;word-break:break-all;background-color:#f5f5f5;">net.ipv6.conf.all.disable_ipv6 = 0
+net.ipv6.conf.default.disable_ipv6 = 0
+net.ipv6.conf.lo.disable_ipv6 = 0</pre></div>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">然后保存重启系统使之生效</p>
+<hr style="margin:18px 0px;border-right-width:0px;border-left-width:0px;border-top-style:solid;border-top-color:#e5e5e5;border-bottom-style:solid;border-bottom-color:#ffffff;" />
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;"><strong>正文部分</strong></p>
+<h1 style="margin:0px;text-rendering:optimizelegibility;font-size:30px;line-height:36px;">IPV6的好处</h1>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">ipv6可以绕过校园网限制，可以进pt。</p>
+<h1 style="margin:0px;text-rendering:optimizelegibility;font-size:30px;line-height:36px;">阿里云和ipv6</h1>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">国内阿里云不提供ipv6服务，所以我们通过he.net提供的tunnel可以实现连接ipv6</p>
+<h1 style="margin:0px;text-rendering:optimizelegibility;font-size:30px;line-height:36px;">Ubuntu和he.net</h1>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">参考<a href="https://wiki.ubuntu.com/IPv6#Get_connected_with_Hurricane_Electric" title="官方配置" style="color:#0088cc;text-decoration:none;">https://wiki.ubuntu.com/IPv6#Get_connected_with_Hurricane_Electric</a></p>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">以及<a href="https://tunnelbroker.net/" title="he.net" style="color:#0088cc;text-decoration:none;">https://tunnelbroker.net/</a></p>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">前者是配置，后者是提供tunnel服务</p>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">其实简单来说，就是在he.net注册账号后按照要求填入vps的ipv4的ip，然后生成一个tunnel，然后进去后就有各种系统的配置。</p>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;"><strong>在阿里云上（ubuntu）</strong></p>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">我们需要编辑<code style="padding:3px 4px;font-family:Menlo, Monaco, 'Courier New', monospace;font-size:12px;color:#dd1144;border-radius:3px;border:1px solid #e1e1e8;background-color:#f7f7f9;">\etc\network\interface</code></p>
+<div class="highlight"><pre style="padding:8.5px;font-family:Menlo, Monaco, 'Courier New', monospace;font-size:12px;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;margin-top:0px;margin-bottom:9px;line-height:18px;border:1px solid rgba(0, 0, 0, 0.14902);white-space:pre-wrap;word-break:break-all;background-color:#f5f5f5;">auto he-ipv6
+iface he-ipv6 inet6 v4tunnel
+address 2001:470:xxx:xxx::2
+netmask 64
+remote 216.xxx.xxx.xxx #远程ip地址
+local xxx.xxx.xxx.xxx #阿里云ip地址
+endpoint any
+ttl 255
+gateway 2001:470:xxx:xxx::1
+up ip -6 route add 2000::/3 via ::216.xxx.xxx.xxx dev he-ipv6
+up ip -6 addr add 2001:470:xxx:xxx::1:1/128 dev he-ipv6
+up ip -6 addr add 2001:470:xxx:xxx::2:1/128 dev he-ipv6
+down ip -6 route flush dev he-ipv6</pre></div>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">然后保存就好了。</p>
+<h1 style="margin:0px;text-rendering:optimizelegibility;font-size:30px;line-height:36px;">最重要，修改阿里云限制</h1>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">阿里云限制了ipv6的功能，我们需要修改开启</p>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">编辑<code style="padding:3px 4px;font-family:Menlo, Monaco, 'Courier New', monospace;font-size:12px;color:#dd1144;border-radius:3px;border:1px solid #e1e1e8;background-color:#f7f7f9;">\etc\sysctl.conf</code>翻到最后我们会看到一堆关于ip的配置，我们需要修改关于ipv6的设置</p>
+<div class="highlight"><pre style="padding:8.5px;font-family:Menlo, Monaco, 'Courier New', monospace;font-size:12px;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;margin-top:0px;margin-bottom:9px;line-height:18px;border:1px solid rgba(0, 0, 0, 0.14902);white-space:pre-wrap;word-break:break-all;background-color:#f5f5f5;">net.ipv6.conf.all.disable_ipv6 = 0
+net.ipv6.conf.default.disable_ipv6 = 0
+net.ipv6.conf.lo.disable_ipv6 = 0</pre></div>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">然后保存重启系统使之生效</p>
+<h2 style="margin:0px;text-rendering:optimizelegibility;font-size:24px;line-height:36px;">如果没看到</h2>
+<p style="margin-top:0.8em;margin-bottom:0.8em;line-height:1.6em;">使用<code style="padding:3px 4px;font-family:Menlo, Monaco, 'Courier New', monospace;font-size:12px;color:#dd1144;border-radius:3px;border:1px solid #e1e1e8;background-color:#f7f7f9;">ifconfig</code>没有看到he-ipv6的网卡的话，那么应该执行<code style="padding:3px 4px;font-family:Menlo, Monaco, 'Courier New', monospace;font-size:12px;color:#dd1144;border-radius:3px;border:1px solid #e1e1e8;background-color:#f7f7f9;">ifup he-ipv6</code>即可，运行后如果没有就再重启一遍就好0.0~</p>
+</div></body></html>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-12-14T05:12:24Z"/><meta name="updated" content="2016-12-14T05:12:26Z"/><title>1. UIResonder  对于C#里所有的控件（例如TextBox），都继承于Control类。而Control类的继承关系如 下：  复制代码  代码如下:   System.Object  </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p><strong>1. UIResonder</strong></p>
+<p>对于C#里所有的控件（例如TextBox），都继承于Control类。而Control类的继承关系如<br />
+下：</p>
+<div class="codetitle"><a style="cursor:pointer;" data="68690" class="copybut" id="copybut68690"><u>复制代码</u></a> 代码如下:</div>
+<div class="codebody" id="code68690"><br />
+System.Object<p></p>
+<p>&nbsp; System.MarshalByRefObject</p>
+<p>&nbsp;&nbsp;&nbsp; System.ComponentModel.Component</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Windows.Forms.Control</p>
+</div>
+<br />
+对于iOS里的UI类，也有类似的继承关系。<p></p>
+<p>例如对于UITextField，继承于UIControl；UIControl继承于UIView，UIView继承于UIRe<br />
+sponder，UIResponder继承于NSObject。</p>
+<p>具体架构可以参见：</p>
+<p>http://developer.apple.com/library/ios/#documentation/general/conceptual/Devp<br />
+edia-CocoaApp/Responder.html<br />
+<img alt="" src="http://files.jb51.net/file_images/article/201510/2015101595214541.jpg?201591595235" /></p>
+<div class="imageplus-append" style="margin:0px auto 0px 0px;padding:0px;border:medium none;width:648px;" id="f21ac82b21eeb7322631b6aa94e17f451isfi54" data-rendered="true"><div class="imageplus-append-box" id="w-p8z8ch">
+<div id="w-p8z8ch-widget-isolated-host" style="overflow:visible;box-sizing:content-box;position:static;padding:0px;margin:0px;border:none;"><iframe allowtransparency="true" scrolling="no" vspace="0" hspace="0" style="position:static;display:block;padding:0px;margin:0px;border-style:none;vertical-align:baseline;width:100%;height:74px;" frameborder="0"></iframe></div>
+</div>
+</div>
+<br />
+<br />
+UIResponder是UIKit框架中的类（Mac OS X Cocoa对应的是AppKit框架）。<p></p>
+<p>&nbsp;</p>
+<p><strong>2. 第一响应对象</strong></p>
+<p>在应用的响应对象里，会有一个成为第一响应对象。</p>
+<p>第一响应对象和其他响应对象之间有什么区别？对于普通的触摸事件没什么区别。就算<br />
+我把一个按钮设置成第一响应对象，当我点击其他按钮时，还是会响应其他按钮，而不<br />
+会优先响应第一响应对象。</p>
+<p>第一响应对象的区别在于负责处理那些和屏幕位置无关的事件，例如摇动。</p>
+<p>苹果官方文档的说法是：第一响应对象是窗口中，应用程序认为最适合处理事件的对象<br />
+。</p>
+<p>一个班只能有一个班长，应用的响应对象中，只能有一个响应对象成为第一响应对象。</p>
+<p>&nbsp;</p>
+<p><strong>3. 成为与取消第一响应对象。</strong></p>
+<p>要当第一响应对象，还需要有View来毛遂自荐：</p>
+<div class="codetitle"><a style="cursor:pointer;" data="60404" class="copybut" id="copybut60404"><u>复制代码</u></a> 代码如下:</div>
+<div class="codebody" id="code60404"><br />
+- (BOOL) canBecomeFirstResponder<br />
+{<br />
+&nbsp;&nbsp;&nbsp; returnYES;<br />
+}<br />
+</div>
+<p></p>
+<p>如果缺少了这段，就算用[view becomeFirstResponder]也不能让一个view成为第一响应<br />
+对象。。。强扭的瓜不甜？好吧不是这个原因。大多数视图默认只关心与自己有关联的<br />
+事件，并且（几乎）总是有机会来处理这些事件。以UIButton为例，当用户单击某个UIB<br />
+utton对象时，无论当前的第一响应对象是哪个视图，该对象都会收到指定的动作消息。<br />
+当上第一响应对象吃力不讨好么。。。所以只能由某个UIResponder明确表示自己愿意成<br />
+为第一响应对象才行。（我不知道设计上是基于什么考虑。。。安全？）</p>
+<p>&nbsp;</p>
+<p>在当上第一响应对象时，不同对象可能会有一些特殊的表现。例如UITextField当上的时<br />
+候，就会调出一块小键盘。</p>
+<p>第一响应对象也有可能被辞退。发送一个resignFirstResponder，就可以劝退。</p>
+<p>&nbsp;</p>
+<p><strong>4. 第一响应对象的任务</strong></p>
+<p>刚才说了第一响应对象可以处理摇动。就来看个范例吧：</p>
+<p>&nbsp;</p>
+<div class="codetitle"><a style="cursor:pointer;" data="38377" class="copybut" id="copybut38377"><u>复制代码</u></a> 代码如下:</div>
+<div class="codebody" id="code38377"><br />
+- (void) motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event<br />
+{<br />
+&nbsp;&nbsp;&nbsp; if(motion == UIEventSubtypeMotionShake)<br />
+&nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NSLog(@"Device is beginning to shake");<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [selfsetCircleColor:[UIColorredColor]];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [selfsetNeedsDisplay];<br />
+&nbsp;&nbsp;&nbsp; }<br />
+}<br />
+</div>
+<p></p>
+<p>当摇动开始时触发某些行为。</p>
+<p>&nbsp;</p>
+<p><strong>5. 获取当前第一响应对象</strong></p>
+<p>源自这篇讨论：http://stackoverflow.com/questions/1823317/get-the-current-firs<br />
+t-responder-without-using-a-private-api</p>
+<p>提问的家伙用了如下的方式来获取</p>
+<div class="codetitle"><a style="cursor:pointer;" data="77898" class="copybut" id="copybut77898"><u>复制代码</u></a> 代码如下:</div>
+<div class="codebody" id="code77898"><br />
+UIView&nbsp;&nbsp; *firstResponder = [keyWindow <br />
+performSelector:@selector(firstResponder)];<br />
+</div>
+<br />
+结果被苹果打回来，说用了非公开的API。。。<p></p>
+<p>于是这家伙只好苦逼地用递归了：</p>
+<div class="codetitle"><a style="cursor:pointer;" data="59336" class="copybut" id="copybut59336"><u>复制代码</u></a> 代码如下:</div>
+<div class="codebody" id="code59336"><br />
+implementationUIView (FindFirstResponder)<br />
+- (UIView *)findFirstResponder<br />
+{<br />
+&nbsp;&nbsp;&nbsp; if (self.isFirstResponder) {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return self;&nbsp;&nbsp;&nbsp;&nbsp; <br />
+&nbsp;&nbsp;&nbsp; }<br />
+&nbsp;&nbsp;&nbsp; for (UIView *subView in self.subviews) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIView *firstResponder = [subView findFirstResponder];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (firstResponder != nil) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return firstResponder;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />
+&nbsp;&nbsp;&nbsp; }<br />
+&nbsp;&nbsp;&nbsp; return nil;<br />
+} <br />
+@end<br />
+</div>
+<p></p>
+<p><strong>6.View的FirstResponder的释放问题</strong><br />
+今天遇到一个问题，当我隐藏掉一个正在接受用户输入的UITextField的时候，键盘并不会消失，而且键盘仍然接受用户输入，再次显示该TextField时候发现在隐藏状态下，所有的输入仍然传输到了该TextField中，于是查下官方资料找到如下解释：<br />
+&nbsp;<br />
+Important If you hide a view that is currently the first responder, the 
+view does not automatically resign its first responder status. Events 
+targeted at the first responder are still delivered to the hidden view. 
+To prevent this from happening, you should force your view to resign the
+ first responder status when you hide it.&nbsp;&nbsp;&nbsp; <br />
+&nbsp;<br />
+　　意思是如果这个View是当前的第一响应者的时候，隐藏该View并不会自动放弃其第一响应者的身份，而且会继续以第一响应者的身份接受消息。我们可以通过在隐藏View之前，手动调用resignFirstResponder来强制该view放弃第一响应者身份。<br />
+&nbsp;<br />
+　　下面请看小例子：</p>
+<div class="codetitle"><a style="cursor:pointer;" data="41582" class="copybut" id="copybut41582"><u>复制代码</u></a> 代码如下:</div>
+<div class="codebody" id="code41582"><br />
+SvTestFirstResponder.h<p></p>
+<p>//<br />
+//&nbsp; SvTestFirstResponder.h<br />
+//<br />
+//&nbsp; Created by maple on 3/15/12.<br />
+//&nbsp; Copyright (c) 2012 SmileEvday. All rights reserved.<br />
+//<br />
+//&nbsp; 当一个view时当前响应者时，调用其hidden方法并不会自动放弃第一响应者身份，所有的消息仍然会发送到这个view<br />
+//&nbsp; 可以通过在hidden前强制放弃第一响应者，恢复正常的消息传递<br />
+//</p>
+<p>#import &lt;UIKit/UIKit.h&gt;</p>
+<p></p>
+<p>@interface SvTestFirstResponder : UIView {<br />
+&nbsp;&nbsp;&nbsp; UITextField *_inputField;<br />
+}</p>
+<p>@end</p>
+</div>
+<br />
+<div class="codetitle"><a style="cursor:pointer;" data="68285" class="copybut" id="copybut68285"><u>复制代码</u></a> 代码如下:</div>
+<div class="codebody" id="code68285"><br />
+SvTestFirstResponder.m<p></p>
+<p>//<br />
+//&nbsp; SvTestFirstResponder.m<br />
+//<br />
+//&nbsp; Created by maple on 3/15/12.<br />
+//&nbsp; Copyright (c) 2012 SmileEvday. All rights reserved.<br />
+//</p>
+<p>#import "SvTestFirstResponder.h"</p>
+<p>@interface SvTestFirstResponder()</p>
+<p>- (void)hiddenInputView:(id)sender;<br />
+- (void)showInputView:(id)sender;</p>
+<p>@end</p>
+<p>@implementation SvTestFirstResponder</p>
+<p>- (id)initWithFrame:(CGRect)frame<br />
+{<br />
+&nbsp;&nbsp;&nbsp; self = [super initWithFrame:frame];<br />
+&nbsp;&nbsp;&nbsp; if (self) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Initialization code<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _inputField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _inputField.center = CGPointMake(160, 50);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [_inputField setFont:[UIFont systemFontOfSize:24]];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _inputField.text = @"input you text";<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _inputField.clearsOnBeginEditing = YES;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _inputField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter; <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _inputField.borderStyle = UITextBorderStyleRoundedRect;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [self addSubview:_inputField];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _inputField.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIButton *hiddenBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hiddenBtn.frame = CGRectMake(0, 0, 115, 40);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hiddenBtn.center = CGPointMake(80, 110);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [hiddenBtn setTitle:@"Hide TextField" forState:UIControlStateNormal];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [hiddenBtn addTarget:self action:@selector(hiddenInputView:) forControlEvents:UIControlEventTouchUpInside];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [self addSubview:hiddenBtn];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hiddenBtn.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hiddenBtn.titleLabel.lineBreakMode = UILineBreakModeTailTruncation;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIButton *showBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; showBtn.frame = CGRectMake(0, 0, 115, 40);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; showBtn.center = CGPointMake(240, 110);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [showBtn setTitle:@"Show TextField" forState:UIControlStateNormal];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [showBtn addTarget:self action:@selector(showInputView:) forControlEvents:UIControlEventTouchUpInside];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [self addSubview:showBtn];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; showBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; showBtn.titleLabel.lineBreakMode = UILineBreakModeTailTruncation;<br />
+&nbsp;&nbsp;&nbsp; }<br />
+&nbsp;&nbsp;&nbsp; return self;<br />
+}</p>
+<p>/*<br />
+// Only override drawRect: if you perform custom drawing.<br />
+// An empty implementation adversely affects performance during animation.<br />
+- (void)drawRect:(CGRect)rect<br />
+{<br />
+&nbsp;&nbsp;&nbsp; // Drawing code<br />
+}<br />
+*/</p>
+<p>- (void)hiddenInputView:(id)sender<br />
+{<br />
+&nbsp;&nbsp;&nbsp; _inputField.hidden = YES;<br />
+}</p>
+<p>- (void)showInputView:(id)sender<br />
+{<br />
+&nbsp;&nbsp;&nbsp; _inputField.hidden = NO;<br />
+}</p>
+<p>@end</p>
+</div>
+<p></p>
+<p>这个简单的例子中，当输入框进入接受用户输入状态的时候，点击hide按钮，键盘并不会消失而且会继续接收用户输入并且将用户输入传到TextField中去，后面再点击Show按钮的时候你会发现所有在隐藏状态下输入的文字都已经成功的被接收。我们可以修改hide方法如下：<br />
+&nbsp;</p>
+<div class="codetitle"><a style="cursor:pointer;" data="88175" class="copybut" id="copybut88175"><u>复制代码</u></a> 代码如下:</div>
+<div class="codebody" id="code88175"><br />
+- (void)hiddenInputView:(id)sender<p></p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp; if (_inputField.isFirstResponder) {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [_inputField resignFirstResponder];</p>
+<p>&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; _inputField.hidden = YES;</p>
+<p>} </p>
+</div>
+<p></p>
+<p>　　这样就可以在隐藏之前强制释放第一响应者身份，这个问题比较细节，但有时候可能就是这种细节问题导致一些莫名奇妙的问题，在隐藏一些可能成为第一响应者的view之前添加强制释放第一响应者身份，可能会帮我们避免一些奇怪的问题，而且也几乎不会有什么开销，何乐而不为呢。</p></body></html>

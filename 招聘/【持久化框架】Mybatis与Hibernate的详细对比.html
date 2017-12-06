@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-15T02:47:49Z"/><meta name="updated" content="2017-05-15T02:54:26Z"/><title>【持久化框架】Mybatis与Hibernate的详细对比</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h2 id="前言" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;">前言</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;">这篇博文我们重点分析一下<strong style="box-sizing:border-box;">Mybatis</strong>与<strong style="box-sizing:border-box;">Hibernate</strong>的区别，当然在前面的博文中我们已经深入的研究了Mybatis和Hibernate的原理。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><strong style="box-sizing:border-box;"><em style="box-sizing:border-box;">Mybatis</em></strong></p>
+<ol style="box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/45286191" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【持久化框架】Mybatis简介与原理</a></li>
+<li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/45132493" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【持久化框架】SpringMVC+Spring4+Mybatis3集成，开发简单Web项目+源码下载</a></li>
+</ol>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><strong style="box-sizing:border-box;"><em style="box-sizing:border-box;">Hibernate</em></strong></p>
+<ol style="box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/39078749" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【SSH进阶之路】Hibernate基本原理（一）</a></li>
+<li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/39380465" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【SSH进阶之路】Hibernate搭建开发环境+简单实例（二）</a></li>
+<li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/40153905" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【SSH进阶之路】Hibernate基本映射（三）</a></li>
+<li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/40345389" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【SSH进阶之路】Hibernate映射——多对一单向关联映射（四）</a></li>
+<li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/43819343" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【SSH进阶之路】Hibernate映射——一对一单向关联映射（五）</a></li>
+<li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/40384463" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【SSH进阶之路】Hibernate映射——一对一双向关联映射（六）</a></li>
+<li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/41015641" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【SSH进阶之路】Hibernate映射——一对多关联映射（七）</a></li>
+<li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/41015645" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【SSH进阶之路】Hibernate映射——多对多关联映射（八）</a></li>
+<li style="box-sizing:border-box;"><a href="http://blog.csdn.net/jiuqiyuliang/article/details/41318751" target="_blank" style="color:#ff9900;text-decoration:none;box-sizing:border-box;">【SSH进阶之路】Hibernate系列——总结篇(九)</a></li>
+</ol>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;">作为一位优秀的程序员，只知道一种ORM框架是远远不够的。在开发项目之前，架构的技术选型对于项目是否成功起到至关重要的作用。我们不仅要了解同类型框架的原理以及技术实现，还要深入的理解各自的优缺点，以便我们能够在项目的实施过程中面对的困难更少。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;">所以这篇博文我们要将Mybatis和Hibernate进行一下深入的对比，加深我们对<strong style="box-sizing:border-box;">持久化</strong>框架的理解。下面我们开始今天的旅行。</p>
+<h2 id="hibernate与mybatis对比" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t1" style="color:#ff9900;box-sizing:border-box;"></a>Hibernate与Mybatis对比</h2>
+<h3 id="1-简介" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t2" style="color:#ff9900;box-sizing:border-box;"></a>1. 简介</h3>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;">Hibernate：Hibernate是当前最流行的ORM框架之一，对JDBC提供了较为完整的封装。Hibernate的O/R Mapping实现了POJO 和数据库表之间的映射，以及SQL的自动生成和执行。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;">Mybatis：Mybatis同样也是非常流行的ORM框架，主要着力点在于 POJO 与 SQL 之间的映射关系。然后通过映射配置文件，将SQL所需的参数，以及返回的结果字段映射到指定 POJO 。相对Hibernate“O/R”而言，Mybatis 是一种“Sql Mapping”的ORM实现。</p>
+<h3 id="2-开发速度" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t3" style="color:#ff9900;box-sizing:border-box;"></a>2. 开发速度</h3>
+<ol style="box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">难易度</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Hibernate的真正掌握要比Mybatis困难，Hibernate比mybatis更加重量级一些。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Mybatis框架相对简单很容易上手，但也相对简陋些。</p>
+</li>
+<li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">开发工作量</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Mybatis需要我们手动编写SQL语句，回归最原始的方式，所以可以按需求指定查询的字段，提高程序的查询效率。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Hibernate也可以自己写SQL语句来指定需要查询的字段，但这样破坏了Hibernate封装以及简洁性。</p>
+</li>
+</ol>
+<h3 id="3-数据库移植性" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t4" style="color:#ff9900;box-sizing:border-box;"></a>3. 数据库移植性</h3>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;">Mybatis由于所有SQL都是依赖数据库书写的，所以扩展性，迁移性比较差。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;">Hibernate与数据库具体的关联都在XML中，所以HQL对具体是用什么数据库并不是很关心。</p>
+<h3 id="4-缓存机制对比" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t5" style="color:#ff9900;box-sizing:border-box;"></a>4. 缓存机制对比</h3>
+<ol style="box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">相同点</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Hibernate和Mybatis的二级缓存除了采用系统默认的缓存机制外，都可以通过实现你自己的缓存或为其他第三方缓存方案，创建适配器来完全覆盖缓存行为。</p>
+</li>
+<li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">不同点</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Hibernate的二级缓存配置在SessionFactory生成的配置文件中进行详细配置，然后再在具体的表-对象映射中配置是那种缓存。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">MyBatis的二级缓存配置都是在每个具体的表-对象映射中进行详细配置，这样针对不同的表可以自定义不同的缓存机制。并且Mybatis可以在命名空间中共享相同的缓存配置和实例，通过Cache-ref来实现。</p>
+</li>
+<li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">两者比较</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">因为Hibernate对查询对象有着良好的管理机制，用户无需关心SQL。所以在使用二级缓存时如果出现脏数据，系统会报出错误并提示。而MyBatis在这一方面，使用二级缓存时需要特别小心。如果不能完全确定数据更新操作的波及范围，避免Cache的盲目使用。否则，脏数据的出现会给系统的正常运行带来很大的隐患。</p>
+</li>
+</ol>
+<h3 id="5-两者对比总结" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t6" style="color:#ff9900;box-sizing:border-box;"></a>5. 两者对比总结</h3>
+<h4 id="两者相同点" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t7" style="color:#ff9900;box-sizing:border-box;"></a>两者相同点</h4>
+<ul style="box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Hibernate与MyBatis都可以是通过SessionFactoryBuider由XML配置文件生成SessionFactory，然后由SessionFactory 生成Session，最后由Session来开启执行事务和SQL语句。其中SessionFactoryBuider，SessionFactory，Session的生命周期都是差不多的。如下图所示：</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;"><img src="http://img.blog.csdn.net/20150430002033414" alt="这里写图片描述" title="" style="border:none;box-sizing:border-box;" /></p>
+</li>
+<li style="box-sizing:border-box;">Hibernate和MyBatis都支持JDBC和JTA事务处理。</li>
+</ul>
+<h4 id="hibernate优势" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t8" style="color:#ff9900;box-sizing:border-box;"></a>Hibernate优势</h4>
+<ul style="box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Hibernate的DAO层开发比MyBatis简单，Mybatis需要维护SQL和结果映射。</p>
+</li>
+<li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Hibernate对对象的维护和缓存要比MyBatis好，对增删改查的对象的维护要方便。</p>
+</li>
+<li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Hibernate数据库移植性很好，MyBatis的数据库移植性不好，不同的数据库需要写不同SQL。</p>
+</li>
+<li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Hibernate有更好的二级缓存机制，可以使用第三方缓存。MyBatis本身提供的缓存机制不佳。</p>
+</li>
+</ul>
+<h4 id="mybatis优势" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t9" style="color:#ff9900;box-sizing:border-box;"></a>Mybatis优势</h4>
+<ul style="box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">MyBatis可以进行更为细致的SQL优化，可以减少查询字段。</p>
+</li>
+<li style="box-sizing:border-box;"><p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">MyBatis容易掌握，而Hibernate门槛较高。</p>
+</li>
+</ul>
+<h2 id="一句话总结" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><a name="t10" style="color:#ff9900;box-sizing:border-box;"></a>一句话总结</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;">在博文的结尾，我们将Mybatis和Hibernate之间的区别自个用六个词做总结：</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><strong style="box-sizing:border-box;">Mybatis</strong>：小巧、方便、高效、简单、直接、半自动化</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><strong style="box-sizing:border-box;">Hibernate</strong>：强大、方便、高效、复杂、间接、全自动化</p></body></html>

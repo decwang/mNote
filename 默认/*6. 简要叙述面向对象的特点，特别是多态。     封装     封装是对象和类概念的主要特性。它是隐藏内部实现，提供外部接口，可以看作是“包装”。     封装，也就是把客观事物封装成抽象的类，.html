@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-10-12T09:04:55Z"/><meta name="updated" content="2016-10-12T09:04:57Z"/><title>*6. 简要叙述面向对象的特点，特别是多态。     封装     封装是对象和类概念的主要特性。它是隐藏内部实现，提供外部接口，可以看作是“包装”。     封装，也就是把客观事物封装成抽象的类，</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>*6. 简要叙述面向对象的特点，特别是多态。</div>
+<div><br />
+</div>
+<div>封装</div>
+<div><br />
+</div>
+<div>封装是对象和类概念的主要特性。它是隐藏内部实现，提供外部接口，可以看作是“包装”。</div>
+<div><br />
+</div>
+<div>封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，</div>
+<div><br />
+</div>
+<div>对不可信的进行信息隐藏。</div>
+<div><br />
+</div>
+<div>封装的目的是增强安全性和简化编程，使用者不必了解具体的实现细节，而只是要通过外部接口，</div>
+<div><br />
+</div>
+<div>以特定的访问权限来使用类的成员。</div>
+<div><br />
+</div>
+<div>好处：可以隐藏内部实现细节。通过大量功能类封装，加快后期开发速度。</div>
+<div><br />
+</div>
+<div>继承</div>
+<div><br />
+</div>
+<div>面向对象编程 (OOP) 语言的一个主要功能就是“继承”。</div>
+<div><br />
+</div>
+<div>继承是指这样一种能力：它可以使用现有类的所有功能，并在无需重新编写原来的类的情况下</div>
+<div><br />
+</div>
+<div>对这些功能进行扩展。</div>
+<div><br />
+</div>
+<div>通过继承创建的新类称为“子类”或“派生类”，被继承的类称为“基类”、“父类”或“超类”。</div>
+<div><br />
+</div>
+<div>继承的过程，就是从一般到特殊的过程。在考虑使用继承时，有一点需要注意，</div>
+<div><br />
+</div>
+<div>那就是两个类之间的关系应该是“属于”关系。</div>
+<div><br />
+</div>
+<div>例如，Employee(雇员)是一个人，Manager(领导)也是一个人，因此这两个类都可以继承Person类。</div>
+<div><br />
+</div>
+<div>但是 Leg(腿) 类却不能继承 Person 类，因为腿并不是一个人。</div>
+<div><br />
+</div>
+<div>多态</div>
+<div><br />
+</div>
+<div>多态性(polymorphism)是允许你将父对象设置成为和一个或更多的他的子对象相等的技术，</div>
+<div><br />
+</div>
+<div>赋值之后，父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。</div>
+<div><br />
+</div>
+<div>简单的说，就是一句话：允许将子类类型的指针赋值给父类类型的指针。</div>
+<div><br />
+</div>
+<div>不同对象以自己的方式响应相同的消息的能力叫做多态。</div>
+<div><br />
+</div>
+<div>意思就是假设生物类(life)都用有一个相同的 方法-eat;那人类属于生物，猪也属于生物，</div>
+<div><br />
+</div>
+<div>都继承了life后，实现各自的eat，但是调用是我们只需调用各自的eat方法。</div>
+<div><br />
+</div>
+<div>也就是不同的对象以 自己的方式响应了相同的消息(响应了eat这个选择器)。</div>
+<div><br />
+</div>
+<div>实现多态，有二种方式，覆盖，重载。</div>
+<div><br />
+</div>
+<div>? 覆盖(override)，是指子类重新定义父类的虚函数的做法。</div>
+<div><br />
+</div>
+<div>? 重载(overload)，是指允许存在多个同名函数，而这些函数的参数表不同</div>
+<div><br />
+</div>
+<div>(或许参数个数不同，或许参数类型不同，或许两者都不同)。</div>
+<div><br />
+</div>
+<div>这里注意：OC没有重载，因为OC只认函数名，不认参数类型。OC不允许存在多个同名函数。</div>
+<div><br />
+</div>
+<div>总结：封装可以隐藏实现细节，使得代码模块化;继承可以扩展已存在的代码模块(类);</div>
+<div><br />
+</div>
+<div>它们的目的都是为了——代码重用。</div>
+<div><br />
+</div>
+<div>而多态则是为了实现另一个目的——接口重用!</div>
+<div><br />
+</div>
+<div>多态的作用，就是为了类在继承和派生的时候，保证使用“家谱”中任一类的实例的某一属性时的正确调用。</div>
+<div><br />
+</div>
+<div>在类层次中，子类只继承一个父类的数据结构和方法，则称为单重继承。</div>
+<div><br />
+</div>
+<div>在类层次中，子类继承了多个父类的数据结构和方法，则称为多重继承。</div></body></html>

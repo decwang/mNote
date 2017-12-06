@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-13T09:26:50Z"/><meta name="updated" content="2017-06-13T09:26:58Z"/><title>暂定用以下步骤执行：  1.目前项目打包放在本地，存在一定安全隐患，建议在192.168.1.66服务器上同步svn源码，通过脚本自动构建项目。  2.在svn中增加只有“读”权限的用户puller</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>暂定用以下步骤执行：</div>
+<div>1.目前项目打包放在本地，存在一定安全隐患，建议在192.168.1.66服务器上同步svn源码，通过脚本自动构建项目。</div>
+<div>2.在svn中增加只有“读”权限的用户puller，专职进行项目的同步。</div>
+<div>3.更新的项目存放在/home/workspace/目录下，使用只有“读”权限的用户更新项目。</div>
+<div>4.如果项目是maven管理的，进入项目根目录，用命令mvn package进行打包；如果项目是原生的，进入项目根目录，用命令java -cvf [projectName].war ./*进行打包。</div>
+<div>5.通过ftp上传war包至生产环境发布。</div></body></html>

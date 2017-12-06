@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-15T03:00:34Z"/><meta name="updated" content="2017-05-15T03:00:39Z"/><title>java中 static,final,transient,volatile关键字的作用</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';orphans:2;widows:2;"><span class="ico ico_type_Original" style="display:inline-block;width:19px;height:19px;margin:0px 2px 0px 0px;background:url(&quot;../../../images/ico_Original.gif&quot;) 0px 0px no-repeat;vertical-align:middle;"><br />
+</span></div>
+<div class="article_manage clearfix" style="padding:0px 20px 5px;color:#999999;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;margin:0px -20px;overflow:hidden;orphans:2;widows:2;"><div class="article_r"><span class="link_postdate" style="margin:0px 5px 0px 0px;">2017-02-12 21:27</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_view.png&quot;) left center no-repeat;">291人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_comm.png&quot;) left center no-repeat;"><a href="http://blog.csdn.net/i0048egi/article/details/55005403#comments" style="color:#336699;text-decoration:none;">评论</a>(0)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 5px;"><a title="收藏" target="_blank" style="color:#336699;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/i0048egi/article/details/55005403#report" title="举报" style="color:#336699;text-decoration:none;">举报</a></span></div>
+</div>
+<div class="bog_copyright" style="padding:20px 0px;color:#333333;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><p class="copyright_p" style="height:14px;line-height:14px;border-left:3px solid #e41c1e;padding-left:10px;color:#666666;font-size:14px;">版权声明：本文为博主原创文章，未经博主允许不得转载。</p>
+</div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:26px;font-family:Arial;color:#333333;orphans:2;widows:2;"><p><strong>static 和final</strong>&nbsp;&nbsp;</p>
+<p>static &nbsp;静态修饰关键字，可以修饰 变量，程序块，类的方法；</p>
+<p>　当你定义一个static的变量的时候jvm会将将其分配在内存堆上，所有程序对它的引用都会指向这一个地址而不会重新分配内存；</p>
+<pre class="best-text mb-10" name="code" style="white-space:pre-wrap;word-wrap:break-word;">修饰一个程序块的时候(也就是直接将代码写在static{...}中)时候，虚拟机就会优先加载静态块中代码，这主要用于系统初始化；
+当修饰一个类方法时候你就可以直接通过类来调用而不需要新建对象。
+
+final 只能赋值一次；修饰变量、方法及类，
+当你定义一个final变量时，jvm会将其分配到常量池中，程序不可改变其值；当你定义一个方法时，改方法在子类中将不能被重写；当你修饰一个类时，该类不能被继承。
+
+static和final使用范围：类、方法、变量。
+
+2.区别和联系：
+
+2.1.static 含义：静态的，被 static 修饰的方法和属性只属于类不属于类的任何对象。
+2.2.static 用法：
+2.2.1.static 可以修饰【内部类】、方法和成员变量。
+2.2.2.static【不可以修饰外部类】、【不可以修饰局部变量】（因为 static 本身就是定义为类级别的，所以局部级别的变量是不可以用 static 修饰的）。
+
+2.3 final 含义：【只能赋值一次】的。
+2.2.final 用法：
+2.2.1.final 修饰属性，表示属性【只能赋值一次】，（1）基本类型：值不能被修改；（2）引用类型：引用不可以被修改该。
+2.2.2.final 修饰方法，表示方法不可以重写，但是可以被子类访问（如果方法不是 private 类型话）。
+2.2.2.final 修饰类，表示类不可以被继承。
+
+3.联合使用 static final</pre><p>3.1.适用范围：</p>
+<p>3.1.2.两者范围的交集，所以只能修饰：成员变量、方法、内部类。</p>
+<pre class="best-text mb-10" name="code" style="white-space:pre-wrap;word-wrap:break-word;">3.2.含义：也是二者交集：
+3.2.1.方法：属于类的方法且不可以被重写。
+3.2.2.成员变量：属于类的变量且只能赋值一次。
+3.2.3.内部类：属于外部类，且不能被继承<strong>transient </strong>类型修饰符，只能用来修饰字段，如果用transient声明一个实例变量，当对象存储时，它的值不需要维持。换句话来说就是，用transient关键字标记的成员变量不参与序列化过程。</pre><p><strong>volatile</strong><br />
+volatile也是变量修饰符，只能用来修饰变量。volatile修饰的成员变量在每次被线程访问时，都强迫从共享内存中重读该成员变量的值。而且，当成员变量发生变化时，强迫线程将变化值回写到共享内存。这样在任何时刻，两个不同的线程总是看到某个成员变量的同一个值。</p>
+<p>在此解释一下Java的内存机制：</p>
+<p>Java使用一个主内存来保存变量当前值，而每个线程则有其独立的工作内存。线程访问变量的时候会将变量的值拷贝到自己的工作内存中，这样，当线程对自己工作内存中的变量进行操作之后，就造成了工作内存中的变量拷贝的值与主内存中的变量值不同。</p>
+<p>Java语言规范中指出：为了获得最佳速度，允许线程保存共享成员变量的私有拷贝，而且只当线程进入或者离开同步代码块时才与共享成员变量的原始值对比。</p>
+<p>这样当多个线程同时与某个对象交互时，就必须要注意到要让线程及时的得到共享成员变量的变化。</p>
+<p>而volatile关键字就是提示VM：对于这个成员变量不能保存它的私有拷贝，而应直接与共享成员变量交互。</p>
+<p>使用建议：在两个或者更多的线程访问的成员变量上使用volatile。当要访问的变量已在synchronized代码块中，或者为常量时，不必使用。</p>
+<p>由于使用volatile屏蔽掉了VM中必要的代码优化，所以在效率上比较低，因此一定在必要时才使用此关键字。</p>
+</div></body></html>

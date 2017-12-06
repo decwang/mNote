@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-13T15:31:03Z"/><meta name="updated" content="2017-06-13T15:31:06Z"/><title> MySQL中char、varchar和text的区别    2015-10-10 13:50 2508人阅读 评论(0) 收藏 举报     分类：  MySQL（6）     版权声明：本文为博</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';orphans:2;widows:2;">&nbsp;<h1 style="margin:0px;padding:0px;display:inline;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-weight:normal;font-size:20px;line-height:30px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/yh88356656/article/details/49022469" style="color:#000000;text-decoration:none;">MySQL中char、varchar和text的区别</a></span></h1>
+</div>
+<div class="article_manage clearfix" style="padding:0px 20px 5px;color:#999999;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;margin:0px -20px;overflow:hidden;orphans:2;widows:2;"><div class="article_r"><span class="link_postdate" style="margin:0px 5px 0px 0px;">2015-10-10 13:50</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_view.png&quot;) left center no-repeat;">2508人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_comm.png&quot;) left center no-repeat;"><a href="http://blog.csdn.net/yh88356656/article/details/49022469#comments" style="color:#336699;text-decoration:none;">评论</a>(0)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 5px;"><a title="收藏" target="_blank" style="color:#336699;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/yh88356656/article/details/49022469#report" title="举报" style="color:#336699;text-decoration:none;">举报</a></span></div>
+</div>
+<div class="category clearfix" style="border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;margin:0px -20px;padding:5px 20px;color:#333333;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><div class="category_l" style="font-size:14px;float:left;display:inline-block;width:70px;line-height:28px;"><img src="http://static.blog.csdn.net/images/category_icon.jpg" style="border:none;vertical-align:middle;" />&nbsp;<span style="vertical-align:middle;display:inline-block;">分类：</span></div>
+<div class="category_r" style="font-size:14px;float:left;display:inline-block;color:#df3434;width:637.188px;"><label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">MySQL（6）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label></div>
+</div>
+<div class="bog_copyright" style="padding:20px 0px;color:#333333;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><p class="copyright_p" style="height:14px;line-height:14px;border-left:3px solid #e41c1e;padding-left:10px;color:#666666;font-size:14px;">版权声明：本文为博主原创文章，未经博主允许不得转载。</p>
+</div>
+<div id="article_content" class="article_content tracking-ad" data-mod="popu_307" data-dsm="post" style="margin:20px 0px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:26px;font-family:Arial;color:#333333;orphans:2;widows:2;"><span style="font-size:18px;"><br />
+</span><p><span style="font-size:18px;"><br />
+</span></p>
+<p><span style="font-size:18px;">1.他们的存储方式和数据的检索方式都不一样。</span></p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 数据的检索效率是：<span style="color:#3333ff;">char&gt;varchar&gt;text</span></span></p>
+<p><span style="font-size:18px;"><br />
+</span></p>
+<p><span style="font-size:18px;">2.空间占用方面，要具体情况具体分析了。</span></p>
+<table border="1" cellpadding="0" height="152" width="655"><tbody><tr><td><span style="font-size:18px;"><strong>&nbsp;&nbsp;&nbsp;&nbsp; CHAR</strong>(<em>M</em>)</span></td>
+<td><span style="font-size:18px;"><em>&nbsp;&nbsp; M</em>个字节，0 &lt;=<em>M</em>&lt;= 255</span></td>
+</tr>
+<tr><td><span style="font-size:18px;"><strong>&nbsp;&nbsp;&nbsp;&nbsp; VARCHAR</strong>(<em>M</em>)</span></td>
+<td><span style="font-size:18px;"><em>&nbsp;&nbsp;&nbsp; L</em>+1个字节，其中<em>L</em>&lt;=<em>M</em>且0 &lt;=<em>M</em>&lt;= 65535</span></td>
+</tr>
+<tr><td><span style="font-size:18px;"><strong>&nbsp;&nbsp;&nbsp;&nbsp; TEXT</strong></span></td>
+<td><span style="font-size:18px;"><em>&nbsp;&nbsp;&nbsp; L</em>+2个字节，其中<em>L</em>&lt; 2<sup>16</sup></span></td>
+</tr>
+</tbody>
+</table>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Char为定长，varchar，text为变长</span></p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Char在保存的时候，后面（右边）会用空格填充到指定的长度，在检索的时候后面的空格会去掉，所以检索出来的数据需要再用什么trim之类的函数去处理。(与sql server可能有些不同)</span></p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Varchar在保存的时候，不进行填充。当值保存和检索时尾部的空格仍保留。</span></p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TEXT列不能有默认值，存储或检索过程中，不存在大小写转换.</span></p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当存储的字符超过他们定义的长度时候，如果不是在sql服务器的严格模式下，都会自动截取合适的字段存储，而不会出现错误。但如果是中文的话同样要报错误。比如：定义char(4),然后insert (‘c哈哈’)</span></p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注意一点的，Char，Varchar不像数值类型，有系统默认长度，所以必须在括号里定义长度，可以有默认值</span></p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text不可以写默认值，后面如果指定长度，不会报错误，但是这个长度是不起作用的，意思就是你插入数据的时候，超过你指定的长度还是可以正常插入（严格模式下没有测试）</span></p>
+<p><span style="font-size:18px;"><br />
+</span></p>
+<p><span style="font-size:18px;">3.存储计算：</span></p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在使用UTF8字符集的时候，手册上是这样描叙的：</span></p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#3333ff;">(1)基本拉丁字母、数字和标点符号使用一个字节。</span></span></p>
+<p><span style="font-size:18px;color:#3333ff;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)大多数的欧洲和中东手写字母适合两个字节序列：扩展的拉丁字母（包括发音符号、长音符号、重音符号、低音符号和其它音符）、西里尔字母、希腊语、亚美尼亚语、希伯来语、阿拉伯语、叙利亚语和其它语言。</span></p>
+<p><span style="font-size:18px;color:#3333ff;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)韩语、中文和日本象形文字使用三个字节序列。</span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:18px;"><br />
+</span></p>
+<p><span style="font-size:18px;">4.char会造成空间浪费，但是有速度优势；而varchar节省了空间，但是速度就不如char。</span><span style="font-size:18px;"><br />
+</span></p>
+<p><span style="font-size:medium;"><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;">&nbsp;&nbsp;</span><span style="color:#ff0000;">(1)</span></span><span style="color:#ff0000;">经常变化的字段用varchar</span></span><span style="font-size:18px;color:#ff0000;"><br />
+</span></p>
+<p><span style="font-size:18px;color:#ff0000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(2)知道固定长度的用char</span><span style="font-size:18px;color:#ff0000;"><br />
+</span></p>
+<p><span style="font-size:18px;color:#ff0000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3)尽量用varchar</span><span style="font-size:18px;color:#ff0000;"><br />
+</span></p>
+<p><span style="font-size:18px;color:#ff0000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(4)超过255字节的只能用varchar或者text</span><span style="font-size:18px;color:#ff0000;"><br />
+</span></p>
+<p><span style="font-size:18px;color:#ff0000;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(5)能用varchar的地方不用text</span></p>
+</div></body></html>

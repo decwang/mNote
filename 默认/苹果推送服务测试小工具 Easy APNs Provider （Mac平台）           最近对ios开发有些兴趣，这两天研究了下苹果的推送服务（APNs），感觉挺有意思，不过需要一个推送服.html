@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-12-20T02:38:15Z"/><meta name="updated" content="2016-12-20T02:38:17Z"/><title>苹果推送服务测试小工具 Easy APNs Provider （Mac平台）           最近对ios开发有些兴趣，这两天研究了下苹果的推送服务（APNs），感觉挺有意思，不过需要一个推送服</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><table cellspacing="0" cellpadding="0" width="100%" style="outline:none;width:1308px;color:#333333;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-size:12px;orphans:2;widows:2;table-layout:fixed;"><tbody style="outline:none;"><tr style="outline:none;"><td height="100%" valign="top" id="td_tpc" style="outline:none;margin:0px -15px 0px 0px;padding:0px;word-break:break-all;word-wrap:break-word;border:0px;overflow:hidden;width:1122px;"><h1 id="subject_tpc" style="outline:none;margin:0px 0px 15px 15px;padding:0px;font-size:16px;color:#3366cc;font-weight:normal;line-height:1;">苹果推送服务测试小工具 Easy APNs Provider （Mac平台）&nbsp;&nbsp;&nbsp;</h1>
+<div class="c" style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;clear:both;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:0px;line-height:0px;font-family:Arial;overflow:hidden;height:0px;width:0px;"></div>
+<div class="tpc_content" style="outline:none;margin:0px;padding:0px 15px 20px;word-break:break-all;word-wrap:break-word;line-height:2em;"><div id="p_tpc" class="c" style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;clear:both;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:0px;line-height:0px;font-family:Arial;overflow:hidden;height:0px;width:0px;"></div>
+<div class="f14" id="read_tpc" style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;font-size:14px;clear:both;"><div class="fr" style="outline:none;margin:0px 0px 10px 10px;padding:0px;word-break:break-all;word-wrap:break-word;float:right;clear:right;"></div>
+最近对ios开发有些兴趣，这两天研究了下苹果的推送服务（APNs），感觉挺有意思，不过需要一个推送服务提供商（Apns Provider）方能发送推送来测试程序。由于本人只是出于个人学习，没有也不会架设PHP服务器，也没有啥其他更好的手段，就写了这样一个小程序来方便同为个人学习的朋友们来测试自己的代码~ 如果您觉得这程序您还能用得上，欢迎踩两脚。<br style="outline:none;" />
+<br style="outline:none;" />
+[2015.8.4]我就很好奇了，这软件第一次审核很轻松就过了，然后我提交了个新版本，主要功能什么都没改，就把外文翻译的几个错词改成对的，结果各种被拒——然后我还很天真的反复重新提交，结果审核团队均以“不知道你这软件是干啥的”为理由拒绝，擦擦擦~!<br style="outline:none;" />
+无奈，拖延症晚期就一直这么拖着，终于昨天还是费了点儿时间，做了个demo video……看看这次审核团队还有什么话说。。。<br style="outline:none;" />
+Demo video地址：<br style="outline:none;" />
+<a href="http://v.youku.com/v_show/id_XMTMwMDI1NTI3Mg==.html?from=y1.7-1.2" target="_blank" id="url_1" style="outline:none;text-decoration:none;color:#0070af;margin:0px;padding:0px;">http://v.youku.com/v_show/id_XMTMwMDI1NTI3Mg==.html?from=y1.7-1.2</a><br style="outline:none;" />
+<br style="outline:none;" />
+<span style="outline:none;color:#6600cc;">由于开发使用了StoryBoard，所以目前仅支持10.10 OSX</span><br style="outline:none;" />
+<br style="outline:none;" />
+下载地址（App Store）<br style="outline:none;" />
+<a href="https://itunes.apple.com/cn/app/easy-apns-provider/id989622350?mt=12" target="_blank" id="url_2" style="outline:none;text-decoration:none;color:#0070af;margin:0px;padding:0px;">https://itunes.apple.com/cn/app/easy-apns-provider/id989622350?mt=12</a><br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+这个是程序主界面：<br style="outline:none;" />
+<span id="att_88348" style="outline:none;"><br style="outline:none;" />
+<img src="http://cdn.cocimg.com/bbs/attachment/Fid_21/21_441468_ec13eecaf733121.png" border="0" style="outline:none;border:none;margin:0px;padding:0px;" /></span>&nbsp;<br style="outline:none;" />
+<br style="outline:none;" />
+第一步您需要添加待发送的Token。Add Token列表为您需要发送的设备Token，用以指定您要发送推送给哪个设备，这个Token可以从设备的AppDelegate中获得，相信各位大侠一定了解。我为添加Token设置了三种方法，点击Add Tokens可以进入如下界面：<br style="outline:none;" />
+<span id="att_88076" style="outline:none;"><br style="outline:none;" />
+<img src="http://cdn.cocimg.com/bbs/attachment/Fid_21/21_441468_219ebfcf265bf2f.png" border="0" style="outline:none;border:none;margin:0px;padding:0px;" /></span><br style="outline:none;" />
+第一种方法是手动输入十六进制的原生Token data，由于Token是32字节，两个十六进制字符代表一字节，所以您一共需要输入64个字符（‘A'-'Z','0'-'9')，来表征您的Token。如果您的输入有效，则“passed”会显示在文本框后，否则会显示“failed”。这种方法比较容易出错，所以不推荐手动输入~<br style="outline:none;" />
+<br style="outline:none;" />
+第二种法发是从若干32字节的文件中导入Token，大神可以将自己的设备token（NSData类型）使用wirteToFile方法写到文件中再设法传到您的mac下，即可导入。文件如果不是32字节则会导入失败。<br style="outline:none;" />
+<br style="outline:none;" />
+第三种方法是通过网络将token发送到本机。只要您点击了Add token，您可以注意3. 。。。。右边那个菊花， 如果是个菊花说服务器建立成功（如果是N/A，可能是由于端口被占用等原因服务器建立失败，则该方法不可用），您只需为iPhone写个代码让其将自己的Token发送到您mac的ip地址及2466端口号即可添加一个Token。<br style="outline:none;" />
+<br style="outline:none;" />
+注意，以上三种方法都需要您点击Confirm来确定，点击Abort放弃，或点击Remove删除一个刚刚添加的Token。另外，您需要为每个添加的Token设定一个名字（您可随便设置一个方便记忆的名字），设置方法就是双击列表里的Name字段，输入一个名字并按回车（不要忘了回车哈~）。<br style="outline:none;" />
+<br style="outline:none;" />
+添加完毕即可将Token添加到待发送推送的设备列表。这个Token列表会自动保存，方便您下次使用。<br style="outline:none;" />
+<br style="outline:none;" />
+第二步您需要选择您的推送服务证书。<br style="outline:none;" />
+点击Choose Certificate File，选择您从Apple申请的推送证书（是一个.cer）文件，注意这个文件一定要在您的钥匙串中有添加哈。<br style="outline:none;" />
+<span id="att_88077" style="outline:none;"><br style="outline:none;" />
+<img src="http://cdn.cocimg.com/bbs/attachment/Fid_21/21_441468_4267ea686c48424.png" border="0" style="outline:none;border:none;margin:0px;padding:0px;" /></span><br style="outline:none;" />
+<br style="outline:none;" />
+第三步就是连接苹果的APNs服务器。<br style="outline:none;" />
+注意Connect to后面的列表，选择对应的服务器（开发者：gateway.sandbox.push.apple.com;&nbsp;&nbsp;上架应用： gateway.push.apple.com）<br style="outline:none;" />
+选好以后点击Connect to即可发起链接，这是可能会弹窗说程序要访问您的钥匙串。点击允许。<br style="outline:none;" />
+<span id="att_88084" style="outline:none;"><br style="outline:none;" />
+<img src="http://cdn.cocimg.com/bbs/attachment/Fid_21/21_441468_2dccfb2f6ff292f.png" border="0" style="outline:none;border:none;margin:0px;padding:0px;" /></span>&nbsp;<br style="outline:none;" />
+<br style="outline:none;" />
+之后如果Status里面没有显示disconnected，便是连接成功啦~<br style="outline:none;" />
+<br style="outline:none;" />
+第四步，为了正确推送，您需要选择您发送的Payload。<br style="outline:none;" />
+这个Payload是个JSON字典，您如果对这个不熟悉也没关系，弱*****的我给您提供了三个模板方便您简化输入payload流程。<br style="outline:none;" />
+第一个模板是仅仅推送一个内容，第二个是推送内容+圈圈图标（badge），第三个是内容+图标+声音。您只需要修改里面的“your message here”改成你要发送的通知内容就可以啦。<br style="outline:none;" />
+<span id="att_88079" style="outline:none;"><br style="outline:none;" />
+<img src="http://cdn.cocimg.com/bbs/attachment/Fid_21/21_441468_3338148932ddd3b.png" border="0" style="outline:none;border:none;margin:0px;padding:0px;" /></span><br style="outline:none;" />
+<br style="outline:none;" />
+最后就是发送通知。<br style="outline:none;" />
+您点击Send APN来发送这个推送到服务器。如果您的推送设置有问题，可以查看Status里面的问题反馈。<br style="outline:none;" />
+<span id="att_88080" style="outline:none;"><br style="outline:none;" />
+<img src="http://cdn.cocimg.com/bbs/attachment/Fid_21/21_441468_e01f4ae0fbf1746.png" border="0" style="outline:none;border:none;margin:0px;padding:0px;" /></span>&nbsp;&nbsp;<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+如果大侠觉得这东西还凑合，麻烦帮顶哈~<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+AppIconMaker&nbsp;&nbsp;<a href="http://www.cocoachina.com/bbs/read.php?tid-290247-fpage-4.html" target="_blank" id="url_3" style="outline:none;text-decoration:none;color:#0070af;margin:0px;padding:0px;">http://www.cocoachina.com/bbs/read.php?tid-290247-fpage-4.html</a><div id="alert_tpc" style="outline:none;margin:30px 0px 0px;padding:0px;word-break:break-all;word-wrap:break-word;color:gray;">[ 此帖被fhydralisk在2015-11-25 16:09重新编辑 ]</div>
+<br style="outline:none;" />
+</div>
+<div id="att_88083" style="outline:none;margin:5px 0px;padding:0px;word-break:break-all;word-wrap:break-word;">图片:IMG_1729.PNG&nbsp;<br style="outline:none;" />
+<img src="http://cdn.cocimg.com/bbs/attachment/Fid_21/21_441468_5c65af4a2a8ca58.png" border="0" style="outline:none;border:none;margin:0px;padding:0px;" /></div>
+<div id="att_88116" style="outline:none;margin:5px 0px;padding:0px;word-break:break-all;word-wrap:break-word;">图片:Main.png&nbsp;<br style="outline:none;" />
+<img src="http://cdn.cocimg.com/bbs/attachment/Fid_21/21_441468_8921d82530fb61c.png" border="0" style="outline:none;border:none;margin:0px;padding:0px;" /></div>
+</div>
+</td>
+</tr>
+<tr class="r_one" style="outline:none;"><td style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;vertical-align:bottom;"><div id="att_88346" style="outline:none;margin:0px 10px 10px 40px;padding:0px;word-break:break-all;word-wrap:break-word;">附件:&nbsp;<img src="http://cdn.cocimg.com/bbs/images/wind2013/file/zip.gif" align="absmiddle" style="outline:none;border:none;margin:0px;padding:0px;" />&nbsp;<a href="http://www.cocoachina.com/bbs/job.php?action=download&amp;aid=88346" target="_blank" style="outline:none;text-decoration:none;color:#000000;margin:0px;padding:0px;"><span style="outline:none;color:red;">NPApnsProvider.zip</span></a>&nbsp;(1706 K) 下载次数:216</div>
+<div id="w_tpc" class="c" style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;clear:both;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:0px;line-height:0px;font-family:Arial;overflow:hidden;height:0px;width:0px;"></div>
+<div class="tal gray" style="outline:none;margin:10px 15px 0px;padding:0px;word-break:break-all;word-wrap:break-word;color:#4d4d4d;height:25px;"><span style="outline:none;float:left;">关键词:</span><a href="http://www.cocoachina.com/bbs/job.php?action=tag&amp;tagname=%BF%AA%B7%A2" style="outline:none;text-decoration:none;color:#4d4d4d;margin:0px;padding:0px;"><span class="s3" style="outline:none;color:#3366cc;">开发</span></a>&nbsp;<a href="http://www.cocoachina.com/bbs/job.php?action=tag&amp;tagname=ios" style="outline:none;text-decoration:none;color:#4d4d4d;margin:0px;padding:0px;"><span class="s3" style="outline:none;color:#3366cc;">ios</span></a>&nbsp;<a href="http://www.cocoachina.com/bbs/job.php?action=tag&amp;tagname=APNs" style="outline:none;text-decoration:none;color:#4d4d4d;margin:0px;padding:0px;"><span class="s3" style="outline:none;color:#3366cc;">APNs</span></a>&nbsp;<a href="http://www.cocoachina.com/bbs/job.php?action=tag&amp;tagname=%CD%C6%CB%CD" style="outline:none;text-decoration:none;color:#4d4d4d;margin:0px;padding:0px;"><span class="s3" style="outline:none;color:#3366cc;">推送</span></a></div>
+</td>
+</tr>
+</tbody>
+</table></body></html>

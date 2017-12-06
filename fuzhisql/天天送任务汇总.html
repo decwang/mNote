@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-31T08:49:29Z"/><meta name="updated" content="2017-05-31T08:50:02Z"/><title>天天送任务汇总</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>#前置任务查询</div>
+<div>SELECT A.ID,A.ACT_TITLE,,A.TTS_ACT_URL,A.TTS_ACT_IMAGEURL,A.TTS_ACT_TITLE,A.TASK_CONFIG_ID,B.NAME,B.CHANNEL_ID FROM TB_ACT_CONFIG A,TB_ACT_TASK_CONFIG B</div>
+<div>WHERE 1=1</div>
+<div>AND A.TASK_CONFIG_ID = B.ID</div>
+<div>AND A.TASK_CONFIG_ID &gt; 0</div>
+<div>ORDER BY A.ID DESC;</div>
+<div>#前置任务的人员完成情况.</div>
+<div><br />
+</div>
+<div>#查询任务</div>
+<div>#大转盘类任务</div>
+<div>select * from tb_task_bigwheel_config where TASK_TYPE != 2 and delete_flag = 0;</div>
+<div><br />
+</div>
+<div>#每日任务的转盘</div>
+<div>select * from daily_mission_config where delete_flag = 0;</div>
+<div><br />
+</div>
+<div>#每日cpa任务</div>
+<div>select * from daily_cpa_task_config;</div>
+<div><br />
+</div>
+<div>#新手任务</div>
+<div>#ttsong_act_config</div>
+<div><br />
+</div>
+<div>SELECT * from tb_channel_task</div>
+<div>where type = 3;</div>
+<div><br />
+</div></body></html>

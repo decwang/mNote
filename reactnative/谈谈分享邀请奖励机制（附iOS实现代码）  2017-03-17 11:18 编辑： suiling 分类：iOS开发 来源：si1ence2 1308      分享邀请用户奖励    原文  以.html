@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-04-11T10:18:23Z"/><meta name="updated" content="2017-04-11T10:18:26Z"/><title>谈谈分享邀请奖励机制（附iOS实现代码）  2017-03-17 11:18 编辑： suiling 分类：iOS开发 来源：si1ence2 1308      分享邀请用户奖励    原文  以</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h2 style="margin:11px 0px 12px;padding:0px;font-size:24px;font-weight:normal;line-height:38px;color:#3a3a3a;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;background-color:#fafafa;">谈谈分享邀请奖励机制（附iOS实现代码）</h2>
+<div class="p-ico clearfix" style="margin:15px 0px;padding:0px;color:#888888;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-size:12px;background-color:#fafafa;"><div style="margin:0px;padding:0px;"><span class="ml0" style="margin-left:0px !important;">2017-03-17 11:18</span>&nbsp;<span style="margin-left:10px;">编辑：&nbsp;<a href="" id="field_author" target="_blank" style="margin:0px;padding:0px;color:#3a3a3a;text-decoration:none;">suiling</a></span>&nbsp;<span style="margin-left:10px;">分类：<a href="http://www.cocoachina.com/ios/" target="_blank" style="margin:0px;padding:0px;color:#3a3a3a;text-decoration:none;">iOS开发</a></span>&nbsp;<span id="source" style="margin-left:10px;">来源：<a href="http://www.jianshu.com/p/5a848f5f8c85" target="_blank" style="margin:0px;padding:0px;color:#3a3a3a;text-decoration:none;">si1ence</a></span><div class="float-r" style="margin:0px;padding:0px;float:right;"><span id="artical_comment_cnt" style="margin-left:10px;">2</span>&nbsp;<span style="margin-left:10px;">1308</span></div>
+</div>
+</div>
+<div class="p-ico clearfix" style="margin:15px 0px;padding:0px;color:#888888;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-size:12px;background-color:#fafafa;"><p class="related float-l" style="margin-top:0px;margin-bottom:0px;padding:0px;float:left;"><a href="http://www.cocoachina.com/cms/tags.php?/%E5%88%86%E4%BA%AB%E9%82%80%E8%AF%B7/" target="_blank" style="margin:0px 10px 0px 0px;padding:3px 8px;color:#ffffff;text-decoration:none;display:inline-block;background-color:#7ebbff;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-right-radius:5px;border-bottom-left-radius:5px;">分享邀请</a><a href="http://www.cocoachina.com/cms/tags.php?/%E7%94%A8%E6%88%B7%E5%A5%96%E5%8A%B1/" target="_blank" style="margin:0px 10px 0px 0px;padding:3px 8px;color:#ffffff;text-decoration:none;display:inline-block;background-color:#7ebbff;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-right-radius:5px;border-bottom-left-radius:5px;">用户奖励</a></p>
+</div>
+<div id="detailbody" class="field_body" style="margin:0px;padding:0px;line-height:28px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;background-color:#fafafa;"><p style="margin-top:0px;margin-bottom:20px;padding:0px;"><a href="http://www.jianshu.com/p/5a848f5f8c85" target="_blank" style="margin:0px;padding:0px;color:#eb6100;text-decoration:none;">原文</a></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">以后不做标题党了，感觉现在越来越多的技术文章题目屌炸天，内容空泛没有干货，甚至好多把官方文档摘过来，还摘得不全，简直是垃圾。虽然我现在写不出牛逼的文章，但是我最起码不会去做我反对的那种人。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20170317/1489720244615640.jpg" title="1489720244615640.jpg" alt="1501122-d03a785db0e690d0.jpg" style="border:0px;margin:5px 0px;" /></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;">就像这样</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><span style="color:#00b050;"><strong>一、先说点没用的</strong></span></p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">经济学十大原理中有一条：人们会对激励做出反应。这一原理指出人们是通过比较成本和收益来做出决策，当收益和成本发生变化时，人的行为也会发生变化</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">简单介绍一下口碑经济，就是互联网时代，因为传播成本被极大降低，好到让用户忍不住发朋友圈的产品，可以通过大量几乎免费的赢得媒体，获得巨大的流量，同时提高转化率的商业现象(摘自 刘润老师 五分钟商学院)</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">一般情况下，用户第一次认识到一个产品的途径无非三种</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">1）付费媒体：报纸刊登的广告、冠名赞助的电视节目等</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">2）自有媒体：官方博客、公众号、官网等</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">3）赢得媒体：指那些不属于你，但是也没花钱，别人自发的传播，这个也是传播的最好形式</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><span style="color:#c00000;">那么为什么口碑经济是最好的传播形式呢？从用户的两方面需求来分析：</span></p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">心理需求：用户对于一个陌生的产品往往是持有一定的怀疑态度，通过与周边朋友的确认，朋友间的信任感给自己这个消费行为带来心理上的安全感</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">社交需求，当朋友都在讨论某产品时，会通过使用该产品的参与感提高自己在圈内的存在感和认同感</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><strong><img src="http://cc.cocimg.com/api/uploads/20170317/1489720298210750.jpeg" title="1489720298210750.jpeg" alt="1501122-088fd3a6ebe5c3e4.jpeg" style="border:0px;margin:5px 0px;" /></strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><span style="color:#00b050;"><strong>二、怎样才能最大限度上激发用户自主进行分享</strong></span></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">除了练习内功(自身产品优秀)之外，一些花把势(适当的奖励机制)也可以在一定限度上激发用户进行分享，先举几个别的行业的例子来说明问题：</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">有的四六级培训班在学员取得证书后(针对男同学)，请了一个淘宝模特，穿的美美的来给他们发证书来合影，结果那些学员的朋友圈无一幸免地做了广告</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">健身房里面介绍私教会员入会也会送给介绍人几节课</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">很多餐厅开业酬宾打七折，条件就是拍门店照片发朋友圈，凭借朋友圈截图享受折扣</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">这个激励措施是一定要基于产品好的基础上，就好比：你的女神已经对你有好感了，你卖个萌，她就答应做你女朋友了；如果妹子对你没有好感，“卖萌”只会让对方觉得丑人多作怪</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><span style="color:#00b050;"><strong>二、产品角度</strong></span></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><strong>1、奖励有哪些主要形式？</strong></p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">物质激励</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">实物：比如微博推广的转发抽奖送iPhone</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">虚拟物品：滴滴、ofo等交通共享平台分享就送的优惠券、充值卡</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">精神激励</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">存在感：点赞、评论、关注等，最直白的比如微博、贴吧等</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20170316/1489644384324832.png" title="1489644384324832.png" alt="1501122-ccbb6c55f016a915.png" style="border:0px;margin:5px 0px;" /></p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">荣誉:早期的QQ等级、支付宝会员的排行、keep、得到app的各种头衔、勋章，微信运动的排行榜</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20170316/1489644353566001.png" title="1489644353566001.png" alt="1501122-458061df56b5274c.png" style="border:0px;margin:5px 0px;" /></p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">权利：京东平台的会员等级越高，包邮的最低价格越低</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20170316/1489644325324966.png" title="1489644325324966.png" alt="1501122-7bd3e56fe74ae8a7.png" width="839" height="600" style="border:0px;margin:5px 0px;width:839px;height:600px;" /></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><strong>2、该功能主要界面</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">比如从banner活动页等入口进入“推荐有奖”活动h5页，该页面一般包括</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">我的成就：显示已经邀请多少人，获得多少奖励</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">奖励规则按钮：点击进入详细的推荐活动奖励规则</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">分享途径，总的来说包括以下三种：</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">1）分享到微信、qq、微博等第三方平台</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">2）二维码（点击后弹出二维码，方便当面分享）</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">3）复制短链接（考虑到相关论坛或其他聊天分享）</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20170316/1489644291450404.png" title="1489644291450404.png" alt="1501122-e8f4e7ca040ba6cc.png" style="border:0px;margin:5px 0px;" /></p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">也可以在导航栏添加一个“明细”按钮，点击后进入邀请明细界面，具体显示邀请了哪些好友，具体获得哪些奖励</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">分享出去的一个中间页，被分享者先看到这个活动页，然后在这个活动页点击下载按钮后，</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">已安装app的用户点击分享链接后会直接打开app里的内容页</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">未安装app的用户点击链接后自动跳转到应用商店.</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><strong><img src="http://cc.cocimg.com/api/uploads/20170316/1489644266793524.png" title="1489644266793524.png" alt="1501122-25e65785c50e5321.png" style="border:0px;margin:5px 0px;" /></strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><strong>3、产品必须要了解的技术</strong></p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">使用&nbsp;<a href="https://www.linkedme.cc/" target="_blank" style="margin:0px;padding:0px;color:#eb6100;text-decoration:none;">LinkedMe</a>&nbsp;技术生成一个每个推荐用户专属的短链接，然后分享出去，通过此链接下载的用户就会得到匹配，两个用户都得到相应的奖励，不需要用户输入邀请码</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">专属链接中可以自定义各种参数，比如推荐者的userId、分享平台、分享时间等</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">被邀请的用户触发深度链接后，LinkedME深度链接自动判断App是否安装</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">如果判断安装App，直接打开App对应深度链接的内容页面。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">如果判断没有安装，直接跳转到用户默认的应用商店，下载安装，注册登陆后直接跳转到具体内容页面。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><span style="color:#00b050;"><strong>三、技术实现思路</strong></span></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">1、linkedMe主要方法</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">linkedMe官方demo很清楚，集成文档也相对明了，集成的时候在plist文件添加key值的时候注意加前缀，文档没有着重说明，但是给的截图是直接添加了“linkedme_live_”的前缀</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">生成短链接的方法</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;padding:0px;font-size:12px;width:712.796875px;overflow:auto;background-color:#f7f7f7;">//&nbsp;因为涉及到若干个分享平台，因此封装一个生成短链接的方法
+//&nbsp;生成短链接后，进行相应的操作，因此
+-&nbsp;(void)createShotrUrlWithChannel:(NSString&nbsp;*)channel&nbsp;Success:(void&nbsp;(^)())block_success
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;failure:(void&nbsp;(^)())block_failure&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;LMUniversalObject&nbsp;*LMObj&nbsp;=&nbsp;[[LMUniversalObject&nbsp;alloc]&nbsp;initWithCanonicalIdentifier:@"item/12345"];
+&nbsp;&nbsp;&nbsp;&nbsp;LMObj.title&nbsp;=&nbsp;@"";//标题
+&nbsp;&nbsp;&nbsp;&nbsp;LMObj.canonicalUrl&nbsp;=&nbsp;@"http://";
+&nbsp;&nbsp;&nbsp;&nbsp;LMObj.contentDescription&nbsp;=&nbsp;@"plapla推荐活动";
+&nbsp;&nbsp;&nbsp;&nbsp;LMObj.imageUrl&nbsp;=&nbsp;@"http://yourActivityImageUrl";
+
+#warning&nbsp;注意，这里添加参数的方式有两种，一定和要和安卓添加的方式统一，因为涉及到两个平台的分享下载
+&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;添加参数方式一
+//&nbsp;&nbsp;&nbsp;&nbsp;[LMObj&nbsp;addMetadataKey:@"linkedMe_appid"&nbsp;value:@"appidNum"];
+//&nbsp;&nbsp;&nbsp;&nbsp;[LMObj&nbsp;addMetadataKey:@"linkedMe_udid"&nbsp;value:@"user_udid"];
+//&nbsp;&nbsp;&nbsp;&nbsp;[LMObj&nbsp;addMetadataKey:@"platform"&nbsp;value:channel];
+//&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*dateDescription&nbsp;=&nbsp;[[NSDate&nbsp;date]&nbsp;description];
+//&nbsp;&nbsp;&nbsp;&nbsp;[LMObj&nbsp;addMetadataKey:@"linkedMe_time"&nbsp;value:dateDescription];
+//&nbsp;&nbsp;&nbsp;&nbsp;[LMObj&nbsp;addMetadataKey:@"linkedMe_user"&nbsp;value:validId];
+
+&nbsp;&nbsp;&nbsp;&nbsp;self.linkedUniversalObject&nbsp;=&nbsp;LMObj;
+
+&nbsp;&nbsp;&nbsp;&nbsp;LMLinkProperties&nbsp;*linkProperties&nbsp;=&nbsp;[[LMLinkProperties&nbsp;alloc]&nbsp;init];
+&nbsp;&nbsp;&nbsp;&nbsp;linkProperties.channel&nbsp;=&nbsp;channel;//渠道(微信,微博,QQ,等...)
+&nbsp;&nbsp;&nbsp;&nbsp;linkProperties.feature&nbsp;=&nbsp;@"Share";//表示深度链接的特点，例如邀请，分享等等；
+&nbsp;&nbsp;&nbsp;&nbsp;linkProperties.tags=@[@"LinkedME",&nbsp;@"Demo"];//表示深度链接的标签特性，自定义任何值；
+&nbsp;&nbsp;&nbsp;&nbsp;linkProperties.stage&nbsp;=&nbsp;@"Live";//表示深度链接的阶段特性，比如第一版产品发布，第二版本测试等等；
+&nbsp;&nbsp;&nbsp;&nbsp;linkProperties.source&nbsp;=&nbsp;@"iOS";
+
+&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;添加参数方式二
+&nbsp;&nbsp;&nbsp;&nbsp;[linkProperties&nbsp;addControlParam:@"linkedMe_appid"&nbsp;withValue:AppID];//Demo标识
+&nbsp;&nbsp;&nbsp;&nbsp;[linkProperties&nbsp;addControlParam:@"linkedMe_udid"&nbsp;withValue:UDID];
+&nbsp;&nbsp;&nbsp;&nbsp;[linkProperties&nbsp;addControlParam:@"platform"&nbsp;withValue:channel];
+&nbsp;&nbsp;&nbsp;&nbsp;[linkProperties&nbsp;addControlParam:@"linkedMe_time"&nbsp;withValue:dateDescription];
+&nbsp;&nbsp;&nbsp;&nbsp;[linkProperties&nbsp;addControlParam:@"linkedMe_user"&nbsp;withValue:validId];
+&nbsp;&nbsp;&nbsp;&nbsp;[linkProperties&nbsp;setAndroidPathControlParam:@"*"];
+&nbsp;&nbsp;&nbsp;&nbsp;[linkProperties&nbsp;setIOSKeyControlParam:@"*"];
+
+&nbsp;&nbsp;&nbsp;&nbsp;parmas&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@"%@\n%@",[self.linkedUniversalObject&nbsp;description],[linkProperties&nbsp;description]];
+&nbsp;&nbsp;&nbsp;&nbsp;//开始请求短链
+&nbsp;&nbsp;&nbsp;&nbsp;[self.linkedUniversalObject&nbsp;getShortUrlWithLinkProperties:linkProperties&nbsp;andCallback:^(NSString&nbsp;*url,&nbsp;NSError&nbsp;*err)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(url)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"[LinkedME&nbsp;Info]&nbsp;SDK&nbsp;creates&nbsp;the&nbsp;url&nbsp;is:%@",&nbsp;url);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;h5中间页拼接短链接
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.shortUrl&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@"%@?download=%@",&nbsp;@"中间页的url",&nbsp;url];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(block_success)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block_success();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(block_failure)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;block_failure();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.shortUrl&nbsp;=&nbsp;H5_LIVE_URL;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}];
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;">由于活动页一般使用h5页，因此调用生成短链接的方式也是js调用来做</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;padding:0px;font-size:12px;width:712.796875px;overflow:auto;background-color:#f7f7f7;">-&nbsp;(void)checkoutLinkedMeWithOptions:(NSDictionary&nbsp;*)launchOptions&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;//初始化及实例
+&nbsp;&nbsp;&nbsp;&nbsp;LinkedME*&nbsp;linkedme&nbsp;=&nbsp;[LinkedME&nbsp;getInstance];
+
+&nbsp;&nbsp;&nbsp;&nbsp;//打印日志
+&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;[linkedme&nbsp;setDebug];
+
+&nbsp;&nbsp;&nbsp;&nbsp;//获取跳转参数
+&nbsp;&nbsp;&nbsp;&nbsp;[linkedme&nbsp;initSessionWithLaunchOptions:launchOptions&nbsp;automaticallyDisplayDeepLinkController:NO&nbsp;deepLinkHandler:^(NSDictionary*&nbsp;params,&nbsp;NSError*&nbsp;error)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!error)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//防止传递参数出错取不到数据,导致App崩溃这里一定要用try&nbsp;catch
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@try&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"LinkedME&nbsp;finished&nbsp;init&nbsp;with&nbsp;params&nbsp;=&nbsp;%@",[params&nbsp;description]);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//获取详情页类型(如新闻客户端,有图片类型,视频类型,文字类型等)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*title&nbsp;=&nbsp;[params&nbsp;objectForKey:@"$og_title"];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*tag&nbsp;=&nbsp;params[@"$control"][@"share_udid"];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(tag.length&nbsp;&gt;0)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;接口一：向服务器上报信息，表示该用户已经下载app
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;reportLinkedMeInfoWithPara:params];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;@catch&nbsp;(NSException&nbsp;*exception)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"exception--&gt;%@",&nbsp;exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;@finally&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"LinkedME&nbsp;failed&nbsp;init:&nbsp;%@",&nbsp;error);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}];
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;">在 AppDelegate 里面需要粘几个方法，这里着重说一下 被推荐用户第一次下载app后打开app处理的机制：点击分享出去的中间页 上的下载按钮之后，进入appStore下载后，在 didFinishLaunching 方法中需要进行一下检测拦截</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">其<span style="color:#c00000;">中 LinkedMe 官方 SDK 会自动做一个缓存，比如用户触发深度链接后，第一次打开app没有连接网络，第二次打开时（有网络状态）依旧会生效</span></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"></p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;padding:0px;font-size:12px;width:712.796875px;overflow:auto;background-color:#f7f7f7;">-&nbsp;(void)checkoutLinkedMeWithOptions:(NSDictionary&nbsp;*)launchOptions&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;//初始化及实例
+&nbsp;&nbsp;&nbsp;&nbsp;LinkedME*&nbsp;linkedme&nbsp;=&nbsp;[LinkedME&nbsp;getInstance];
+
+&nbsp;&nbsp;&nbsp;&nbsp;//打印日志
+&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;[linkedme&nbsp;setDebug];
+
+&nbsp;&nbsp;&nbsp;&nbsp;//获取跳转参数
+&nbsp;&nbsp;&nbsp;&nbsp;[linkedme&nbsp;initSessionWithLaunchOptions:launchOptions&nbsp;automaticallyDisplayDeepLinkController:NO&nbsp;deepLinkHandler:^(NSDictionary*&nbsp;params,&nbsp;NSError*&nbsp;error)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!error)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//防止传递参数出错取不到数据,导致App崩溃这里一定要用try&nbsp;catch
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@try&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"LinkedME&nbsp;finished&nbsp;init&nbsp;with&nbsp;params&nbsp;=&nbsp;%@",[params&nbsp;description]);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//获取详情页类型(如新闻客户端,有图片类型,视频类型,文字类型等)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*title&nbsp;=&nbsp;[params&nbsp;objectForKey:@"$og_title"];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*tag&nbsp;=&nbsp;params[@"$control"][@"share_udid"];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(tag.length&nbsp;&gt;0)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;接口一：向服务器上报信息，表示该用户已经下载app
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;reportLinkedMeInfoWithPara:params];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;@catch&nbsp;(NSException&nbsp;*exception)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"exception--&gt;%@",&nbsp;exception);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;@finally&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"LinkedME&nbsp;failed&nbsp;init:&nbsp;%@",&nbsp;error);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}];
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><strong>2、接口设计</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">第一个接口已在上面讲过：被推荐用户第一次打开app的时候，需要把获取到的 主动分享用户的appId、udid、userId等上报给服务器。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">第二个接口是获取奖励数目的api，通过传参可以获取 作为 推荐者 和 被推荐者 的奖励信息</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">第三个接口是领取奖励的api（被推荐的用户需要注册成功以后才可以领取奖励）,这个实在返回的领取奖励的数目大于0的时候自动调用的</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><strong>3、iOS 10.3 关于keychain 特性的改动</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">如果 App 被删除，之前存储于 keychain 的数据也一同被删除</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">如果使用了 keychain group，只要当group 所有相关的 App 被删除，keychain 中的数据就会被删除</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><span style="color:#c00000;">这一改动，虽未经 苹果官方公布，但是已经在论坛的帖子里得到了 Apple 员工的确认，原文如下：This is an intentional change in iOS 10.3 to protect user privacy. Information that can identify a user should not be left on the device after the app that created it has been removed.<br />
+It has never been a part of the API contract that keychain items created by an app would survive when the app is removed. This has always been an implementation detail.<br />
+If a keychain item is shared with other apps, it won’t be deleted until those other apps have been deleted as well.</span></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">得知这个消息的时候，我和我的小伙伴哭晕在厕所：</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20170316/1489635428998826.png" title="1489635428998826.png" alt="1501122-426660b8badb7e8c.png" width="461" height="183" style="border:0px;margin:5px 0px;width:461px;height:183px;" /></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">这意味着我们不能再根据设备号来追踪设备的唯一性，果然协议没白签</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20170316/1489635440983157.jpg" title="1489635440983157.jpg" alt="1501122-a1219e5224dc63ec.jpg" style="border:0px;margin:5px 0px;" /></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">在考虑了三个小时之后，实在想不出自己转行还能干啥的时候，只好微笑着拥抱变化</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;">后来研究知乎、微博等 App 重装后直接登录，用的不是简单的keyChain，而是 iOS9 推出的SFSafariViewController，这个可以将密码、共享Cookie、iCloud Web表单数据、证书等存储在系统里面，与 iCloud keyChain 进行绑定。感谢 iOS9，感谢SFSafariViewController！另外，领英也使用了相关技术，而且说得很直白</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20170316/1489635337656453.png" title="1489635337656453.png" alt="1501122-cc845535f0eef838.png" style="border:0px;margin:5px 0px;" /></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;"><strong>4、最后，下列坑已踩，后来者请直接绕过</strong></p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">微博设置了白名单，只有投放广告的app才能直接进入appStore。其他的要进入一个中间页再次点击下载</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">在plist文件设置LinkedMe id的时候，需要加上前缀</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">考虑到 SSO登录、SNS登录、新用户免登陆、老用户直接登录、token过期等问题，最好将检测 linkedMe 深度链接方法往后放，比如在进入主界面之后</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">添加参数的方式有两种，安卓和iOS要对应，demo中 安卓默认没有设置viewId，但是iOS有默认的唯一标识符，需要统一一下</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">LinkedMe安卓有问题，QQ应用宝就会加问题</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">缓存不需要做，LinkedMe内部已经做好了，这次没有网，下次会继续请求</p>
+</li>
+</ul>
+</div></body></html>

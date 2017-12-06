@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-09T10:06:48Z"/><meta name="updated" content="2017-06-09T10:06:51Z"/><title>mysql主从库同步错误：1062 Error 'Duplicate entry '1438019'&nb   (2014-05-05 10:03:38)转载▼      分类： mysql相关  </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="articalTitle" style="clear:both;line-height:20px;padding-bottom:10px;color:#464646;font-family:Verdana, 宋体, sans-serif;font-size:12px;"><h2 id="t_92e9262b0101qymd" class="titName SG_txta" style="margin:0px;padding:0px;border:0px;list-style:none;color:#3e73a0;font-size:18px;font-family:微软雅黑, 黑体;font-weight:300;display:inline;">mysql主从库同步错误：1062&nbsp;Error&nbsp;'Duplicate&nbsp;entry&nbsp;'1438019'&amp;nb</h2>
+&nbsp;<span class="time SG_txtc" style="color:#747474;white-space:nowrap;font-family:Arial;font-size:10px;margin-left:5px;margin-right:13px;">(2014-05-05 10:03:38)</span><div class="turnBoxzz" style="float:right;"><a class="SG_aBtn SG_aBtn_ico SG_turn" action-type="reblog" action-data="{srcBlog:1, blogId:'92e9262b0101qymd'}" style="color:#333333;cursor:pointer;padding:0px 0px 0px 3px;overflow:hidden;white-space:nowrap;display:inline-block;margin-right:6px;background-image:url(http://simg.sinajs.cn/blog7newtpl/image/30/30_1/images/sg_newsp.png);position:relative;letter-spacing:5px;width:86px;zoom:1;background-position:0px 0px;background-repeat:no-repeat no-repeat;"><cite style="font-style:normal;line-height:23px;padding:0px 20px 0px 32px;height:23px;min-width:1px;overflow-x:visible;background-image:url(http://simg.sinajs.cn/blog7newtpl/image/30/30_1/images/sg_newsp.png);width:34px;display:inline-block !important;background-position:100% -28px;background-repeat:no-repeat no-repeat;"><img class="SG_icon SG_icon111" src="http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif" width="15" height="15" align="absmiddle" style="margin:0px;padding:0px;border:0px;list-style:none;background-image:url(http://simg.sinajs.cn/blog7style/images/common/sg_icon.png?20131218);position:absolute;left:11px;top:4px;background-position:495px -60px;" />转载<span class="arrow" style="font-size:7px;position:absolute;right:5px;top:2px;">▼</span></cite></a></div>
+</div>
+<div class="articalTag" id="sina_keyword_ad_area" style="width:690px;clear:both;word-break:break-all;line-height:20px;color:#464646;font-family:Verdana, 宋体, sans-serif;font-size:12px;"><table style="margin:0px;padding:0px;"><tbody><tr><td class="blog_tag" style="margin:0px;padding:0px 10px 0px 0px;font-family:宋体;vertical-align:top;"></td>
+<td class="blog_class" style="margin:0px;padding:0px;font-family:宋体;vertical-align:top;width:220px;white-space:nowrap;"><span class="SG_txtb" style="color:#464646;">分类：</span>&nbsp;<a target="_blank" href="http://blog.sina.com.cn/s/articlelist_2464753195_9_1.html" style="text-decoration:none;color:#3e73a0;">mysql相关</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sina_keyword_ad_area2" class="articalContent " style="width:690px;clear:both;padding-top:18px;padding-bottom:30px;overflow:hidden;font-family:simsun;word-wrap:normal;word-break:normal;line-height:21px;color:#464646;"><div>mysql主从库同步错误：1062 Error 'Duplicate entry '1438019' for key 'PRIMARY'' on query</div>
+<div>mysql主从库在同步时会发生1062 Last_SQL_Error: Error ‘Duplicate entry ‘的问题：</div>
+<div><br />
+</div>
+<div>显然这个问题是因为插入重复主键导致从库不工作了，错误消息如下</div>
+<div><br />
+</div>
+<div>mysql&gt; show slave status\G;</div>
+<div>*************************** 1. row ***************************</div>
+<div>&nbsp;<wbr>Slave_IO_State: Waiting for master to send event</div>
+<div>&nbsp;<wbr>Master_Host: 192.168.10.100</div>
+<div>&nbsp;<wbr>Master_User: slave_user</div>
+<div>&nbsp;<wbr>Master_Port: 3306</div>
+<div>&nbsp;<wbr>Connect_Retry: 60</div>
+<div>&nbsp;<wbr>Master_Log_File: mysql-bin.000773</div>
+<div>&nbsp;<wbr>Read_Master_Log_Pos: 63325</div>
+<div>&nbsp;<wbr>Relay_Log_File: server122-relay-bin.000002</div>
+<div>&nbsp;<wbr>Relay_Log_Pos: 165661</div>
+<div>&nbsp;<wbr>Relay_Master_Log_File: mysql-bin.000771</div>
+<div>&nbsp;<wbr>Slave_IO_Running: Yes</div>
+<div>&nbsp;<wbr>Slave_SQL_Running: No</div>
+<div>&nbsp;<wbr>Replicate_Do_DB:</div>
+<div>&nbsp;<wbr>Replicate_Ignore_DB:</div>
+<div>&nbsp;<wbr>Replicate_Do_Table:</div>
+<div>&nbsp;<wbr>Replicate_Ignore_Table:</div>
+<div>&nbsp;<wbr>Replicate_Wild_Do_Table:</div>
+<div>&nbsp;<wbr>Replicate_Wild_Ignore_Table:</div>
+<div>&nbsp;<wbr>Last_Errno: 1062</div>
+<div>&nbsp;<wbr>Last_Error: Error 'Duplicate entry '1438019' for key 'PRIMARY'' on query. Default database: 'otrs'. Query: 'INSERT INTO ticket (tn, title, create_time_unix, queue_id, ticket_lock_id, user_id, group_id, ticket_priority_id, ticket_state_id, ticket_answered, escalation_start_time, timeout, valid_id, create_time, create_by, change_time, change_by) VALUES ('2012061310001851', 'Your order ORD201205A000016 was bounced back', 1339585744, 44, 1, 43, 1, 3, 4, 0, 1339585744, 0, 1, current_timestamp, 43, current_timestamp, 43)'</div>
+<div>&nbsp;<wbr>Skip_Counter: 0</div>
+<div>&nbsp;<wbr>Exec_Master_Log_Pos: 41969067</div>
+<div>&nbsp;<wbr>Relay_Log_Space: 625695</div>
+<div>&nbsp;<wbr>Until_Condition: None</div>
+<div>&nbsp;<wbr>Until_Log_File:</div>
+<div>&nbsp;<wbr>Until_Log_Pos: 0</div>
+<div>&nbsp;<wbr>Master_SSL_Allowed: No</div>
+<div>&nbsp;<wbr>Master_SSL_CA_File:</div>
+<div>&nbsp;<wbr>Master_SSL_CA_Path:</div>
+<div>&nbsp;<wbr>Master_SSL_Cert:</div>
+<div>&nbsp;<wbr>Master_SSL_Cipher:</div>
+<div>&nbsp;<wbr>Master_SSL_Key:</div>
+<div>&nbsp;<wbr>Seconds_Behind_Master: NULL</div>
+<div>&nbsp;<wbr>Master_SSL_Verify_Server_Cert: No</div>
+<div>&nbsp;<wbr>Last_IO_Errno: 0</div>
+<div>&nbsp;<wbr>Last_IO_Error:</div>
+<div>&nbsp;<wbr>Last_SQL_Errno: 1062</div>
+<div>&nbsp;<wbr>Last_SQL_Error: Error 'Duplicate entry '1438019' for key 'PRIMARY'' on query. Default database: 'otrs'. Query: 'INSERT INTO ticket (tn, title, create_time_unix, queue_id, ticket_lock_id, user_id, group_id, ticket_priority_id, ticket_state_id, ticket_answered, escalation_start_time, timeout, valid_id, create_time, create_by, change_time, change_by) VALUES ('2012061310001851', 'Your order ORD201205A000016 was bounced back', 1339585744, 44, 1, 43, 1, 3, 4, 0, 1339585744, 0, 1, current_timestamp, 43, current_timestamp, 43)'</div>
+<div>1 row in set (0.00 sec)</div>
+<div><br />
+</div>
+<div>ERROR:</div>
+<div>No query specified</div>
+<div>解决的办法是在从库上执行:</div>
+<div><br />
+</div>
+<div>mysql&gt; slave stop;</div>
+<div>&nbsp;<wbr>mysql&gt; set GLOBAL SQL_SLAVE_SKIP_COUNTER=1;</div>
+<div>&nbsp;<wbr>mysql&gt; slave start;</div>
+<div>上面的方法可以解决问题，还有一种解决问题的办法是通过修改mysql的配置文件，让从库的同步线程忽略这个错误，方法：</div>
+<div><br />
+</div>
+<div>修改mysql配置文件 /etc/my.cnf 在 [mysqld]下加一行 slave_skip_errors = 1062 ,保存.重启mysql. mysql slave可以正常同步了.</div>
+</div></body></html>

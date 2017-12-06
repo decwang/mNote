@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-04T08:58:51Z"/><meta name="updated" content="2017-05-04T09:00:51Z"/><title>MySQL忘记root密码操作</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">1、编辑 MySQL 配置文件 my.cnf</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><strong style="margin:0px;padding:0px;"><em style="margin:0px;padding:0px;">注意：&nbsp;</em></strong><em style="margin:0px;padding:0px;">以实际 my.cnf 配置文件路径为准</em></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">vim /etc/my.cnf</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">[mysqld]<br style="margin:0px;padding:0px;" />
+spik-grant-tables&nbsp; #增加</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">2、重启 MySQL 服务</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><strong style="margin:0px;padding:0px;"><em style="margin:0px;padding:0px;">注意：</em></strong><em style="margin:0px;padding:0px;">以实际 MySQL 启动脚本路径为准</em></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">/etc/init.d/mysqld restart</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">若报错，注意观察my.cnf配置文件中的内容</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">3、登陆数据库</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><strong style="margin:0px;padding:0px;">#/usr/bin/mysql</strong>&nbsp;</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">输入如下命令：</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><strong style="margin:0px;padding:0px;"><em style="margin:0px;padding:0px;">注意：</em></strong><em style="margin:0px;padding:0px;">以实际 MySQL 执行文件路径为准</em></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">mysql&gt; USE mysql;<br style="margin:0px;padding:0px;" />
+mysql&gt; UPDATE user SET Password = password ('新密码') WHERE User = 'root' ;<br style="margin:0px;padding:0px;" />
+mysql&gt; flush privileges ;&nbsp;<br style="margin:0px;padding:0px;" />
+mysql&gt; quit</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">4、删除或者注释第一步骤中添加的&nbsp;<strong style="margin:0px;padding:0px;">spik-grant-tables</strong></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">5、重启 MySQL 服务</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">/etc/init.d/mysqld restart</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">6、使用新密码测试</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">创建新用户,并使其可以任意机器上远程登录</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">create user fztest@'%' identified by 'A123456b';</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">Query OK, 0 rows affected (0.04 sec)</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">mysql&gt; grant all privileges on game.* to fztest@'%' identified by 'A123456b';</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">Query OK, 0 rows affected (0.05 sec)</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">mysql&gt; flush privileges;</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">Query OK, 0 rows affected (0.02 sec)</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">mysql&gt; grant all privileges on game.* to fztest@'%' identified by 'A123456b';</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">Query OK, 0 rows affected (0.02 sec)</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">mysql&gt; grant all privileges on game.* to fztest@'%' identified by 'A123456b' with grant option;</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">Query OK, 0 rows affected (0.12 sec)</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">mysql&gt; flush privileges;</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">Query OK, 0 rows affected (0.15 sec)</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">mysql&gt; grant all privileges on *.* to 'fztest'@'%' identified by 'A123456b' with grant option;</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">Query OK, 0 rows affected (0.13 sec)</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">mysql&gt; flush privileges;</p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><span class="Apple-tab-span" style="white-space:pre;">		</span></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin:10px auto;padding:0px;color:#333333;font-family:verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"></p></body></html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-01-16T07:05:30Z"/><meta name="updated" content="2017-01-16T07:05:32Z"/><title> IE浏览器下载APK变成zip的解决方案    2016-09-02 18:03 295人阅读 评论(0) 收藏 举报     分类：  android（77）     版权声明：本文为博主原创文</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';orphans:2;widows:2;">&nbsp;<h1 style="margin:0px;padding:0px;display:inline;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-weight:normal;font-size:20px;line-height:30px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/wuyou1336/article/details/52416021" style="color:#000000;text-decoration:none;">IE浏览器下载APK变成zip的解决方案</a></span></h1>
+</div>
+<div class="article_manage clearfix" style="padding:0px 20px 5px;color:#999999;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;margin:0px -20px;overflow:hidden;orphans:2;widows:2;"><div class="article_r"><span class="link_postdate" style="margin:0px 5px 0px 0px;">2016-09-02 18:03</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_view.png&quot;) left center no-repeat;">295人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_comm.png&quot;) left center no-repeat;"><a href="http://blog.csdn.net/wuyou1336/article/details/52416021#comments" style="color:#336699;text-decoration:none;">评论</a>(0)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 5px;"><a title="收藏" target="_blank" style="color:#336699;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/wuyou1336/article/details/52416021#report" title="举报" style="color:#336699;text-decoration:none;">举报</a></span></div>
+</div>
+<div class="category clearfix" style="margin:0px -20px;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;padding:5px 20px;color:#333333;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><div class="category_l" style="display:inline-block;font-size:14px;width:70px;float:left;line-height:28px;"><img src="http://static.blog.csdn.net/images/category_icon.jpg" style="border:none;vertical-align:middle;" />&nbsp;<span style="display:inline-block;vertical-align:middle;">分类：</span></div>
+<div class="category_r" style="display:inline-block;font-size:14px;color:#df3434;float:left;width:637.188px;"><label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">android（77）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label></div>
+</div>
+<div class="bog_copyright" style="padding:20px 0px;color:#333333;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><p class="copyright_p" style="height:14px;line-height:14px;border-left:3px solid #e41c1e;padding-left:10px;color:#666666;font-size:14px;">版权声明：本文为博主原创文章，未经博主允许不得转载。</p>
+</div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:26px;font-family:Arial;color:#333333;orphans:2;widows:2;">测试时发现网站上提供的Android手机应用程序文件“xxx.apk”，用<span style="color:#ff0000;">IE</span>浏览器下载，扩展名就被自动被重命名成了“xxx.zip”，拷贝到手机上无法安装。由于APK文件本身就是压缩包，如果用户的电脑上装了WinRAR（85%的装机量），用IE下载APK文件，扩展名就会被自动改为“.zip”。<p>&nbsp;</p>
+<p>&nbsp;&nbsp; APK文件其实是zip格式，但后缀名被修改为apk，通过UnZip解压后，可以看到Dex文件，Dex是Dalvik VM executes的全称，即<a href="http://lib.csdn.net/base/15" class="replace_word" title="undefined" target="_blank" style="color:#df3434;text-decoration:none;font-weight:bold;">Android</a>&nbsp;Dalvik执行程序，并非Java ME的字节码而是Dalvik字节码。</p>
+<p>&nbsp;</p>
+<p>　　如果你的下载服务器为Nginx服务器，那么，在Nginx安装目录下的<span style="color:#ff0000;">conf/mime.types</span>文件的对应位置，加上以下一行语句，指定APK文件的MIME类型为 application/vnd.android.package-archive 即可：<br />
+<span style="font-size:18px;color:#ff0000;">application/vnd.android.package-archive&nbsp;&nbsp;&nbsp;&nbsp; apk;</span></p>
+<p>注意：上面的配置只是在nginx那层好了，但如果你是用<span style="color:#ff0000;">nginx+tomcat</span>的方式，在ie下还是会变成zip的</p>
+<p>还需要在tomcat里面配置conf/<span style="color:#ff0000;">web.xml</span>&nbsp;里指定了apk类型</p>
+<p><span style="font-size:18px;">&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;">&lt;mime-mapping&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;extension&gt;apk&lt;/extension&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;mime-type&gt;application/vnd.android.package-archive&lt;/mime-type&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;/mime-mapping&gt;</span></span></p>
+<p>&nbsp;</p>
+<p>下面是各种文件名后缀在nginx的mime.types中的配置：<br />
+text/vnd.sun.j2me.app-descriptor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jad;<br />
+application/java-archive&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jar war ear;<br />
+application/x-java-archive-diff&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; jardiff;<br />
+application/vnd.android.package-archive apk;<br />
+application/vnd.ms-cab-compressed&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cab;<br />
+application/octet-stream&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bin exe dll;<br />
+application/vnd.symbian.install&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sis;<br />
+x-epoc/x-sisx-app&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sisx;<br />
+application/iphone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pxl ipa;<br />
+application/vnd.palm&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; prc pdb;<br />
+application/vnd.webos.ipk&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ipk;<br />
+application/vnd.rim.cod&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cod;<br />
+application/mrp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mrp;<br />
+x-nokia-widget&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wgz;<br />
+application/octet-stream&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; deb;</p>
+</div></body></html>

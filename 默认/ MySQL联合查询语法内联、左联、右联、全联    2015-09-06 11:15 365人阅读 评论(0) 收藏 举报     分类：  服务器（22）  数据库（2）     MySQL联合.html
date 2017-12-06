@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-07-20T04:10:31Z"/><meta name="updated" content="2017-07-20T04:10:33Z"/><title> MySQL联合查询语法内联、左联、右联、全联    2015-09-06 11:15 365人阅读 评论(0) 收藏 举报     分类：  服务器（22）  数据库（2）     MySQL联合</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-variant-ligatures:normal;font-variant-east-asian:normal;font-variant-position:normal;font-stretch:normal;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';orphans:2;widows:2;">&nbsp;<h1 style="margin:0px;padding:0px;display:inline;font-variant-ligatures:normal;font-variant-east-asian:normal;font-variant-position:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:30px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/einsteinlike/article/details/48241731" style="color:#000000;text-decoration:none;">MySQL联合查询语法内联、左联、右联、全联</a></span></h1>
+</div>
+<div class="article_manage clearfix" style="padding:0px 20px 5px;color:#999999;font-variant-ligatures:normal;font-variant-east-asian:normal;font-variant-position:normal;font-stretch:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;margin:0px -20px;overflow:hidden;orphans:2;widows:2;"><div class="article_r"><span class="link_postdate" style="margin:0px 5px 0px 0px;">2015-09-06 11:15</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_view.png&quot;) left center no-repeat;">365人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_comm.png&quot;) left center no-repeat;"><a href="http://blog.csdn.net/einsteinlike/article/details/48241731#comments" style="color:#ca0000;text-decoration:none;">评论</a>(0)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 5px;"><a title="收藏" target="_blank" style="color:#ca0000;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/einsteinlike/article/details/48241731#report" title="举报" style="color:#ca0000;text-decoration:none;">举报</a></span></div>
+</div>
+<div class="category clearfix" style="border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;margin:0px -20px;padding:5px 20px;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><div class="category_l" style="font-size:14px;float:left;display:inline-block;color:#333333;width:70px;line-height:28px;"><img src="http://static.blog.csdn.net/images/category_icon.jpg" style="border:none;vertical-align:middle;" />&nbsp;<span style="vertical-align:middle;display:inline-block;">分类：</span></div>
+<div class="category_r" style="font-size:14px;float:left;display:inline-block;color:#df3434;width:851.391px;"><label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">服务器（22）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label>&nbsp;<label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">数据库（2）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label></div>
+</div>
+<div id="article_content" class="article_content tracking-ad" data-mod="popu_307" data-dsm="post" style="margin:20px 0px 0px;font-variant-ligatures:normal;font-variant-east-asian:normal;font-variant-position:normal;font-stretch:normal;line-height:26px;font-family:Arial;orphans:2;widows:2;"><span style="line-height:26px;">MySQL联合查询效率较高，以下例子来说明联合查询（内联、左联、右联、全联）的好处：</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">T1表结构（用户名,密码） &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">userid（int） &nbsp; usernamevarchar（20） &nbsp; passwordvarchar（20） &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">1 &nbsp;&nbsp;</span><span style="line-height:26px;">jack &nbsp;</span><span style="line-height:26px;">jackpwd &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">2 &nbsp;&nbsp;</span><span style="line-height:26px;">owen &nbsp;</span><span style="line-height:26px;">owenpwd &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">T2表结构（用户名,密码） &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">userid（int） &nbsp; jifenvarchar（20） &nbsp; dengjivarchar（20） &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">&nbsp; &nbsp; 1 &nbsp;&nbsp;</span><span style="line-height:26px;">20 &nbsp;&nbsp;</span><span style="line-height:26px;">3 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">&nbsp; &nbsp; 3 &nbsp;&nbsp;</span><span style="line-height:26px;">50 &nbsp;&nbsp;</span><span style="line-height:26px;">6 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">第一：内联（inner join）</span><br style="line-height:26px;" />
+<span style="line-height:26px;">如果想把用户信息、积分、等级都列出来，那么一般会这样写：</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">select * from T1, T3 where T1.userid = T3.userid</span><br style="line-height:26px;" />
+<span style="line-height:26px;">（其实这样的结果等同于select * from T1 inner join T3 on T1.userid=T3.userid ）。</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">把两个表中都存在userid的行拼成一行（即内联），但后者的效率会比前者高很多，建议用后者（内联）的写法。</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">SQL语句：</span><br style="line-height:26px;" />
+<span style="line-height:26px;">select * from T1 inner join T2 on T1.userid = T2.userid</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">运行结果 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">T1.userid &nbsp; username &nbsp; password &nbsp; T2.userid &nbsp; jifen &nbsp; dengji &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">1 &nbsp; jack &nbsp; jackpwd &nbsp; 1 &nbsp; 20 &nbsp; 3 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">第二：左联（left outer join）</span><br style="line-height:26px;" />
+<span style="line-height:26px;">显示左表T1中的所有行，并把右表T2中符合条件加到左表T1中；</span><br style="line-height:26px;" />
+<span style="line-height:26px;">右表T2中不符合条件，就不用加入结果表中，并且NULL表示。</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">SQL语句：</span><br style="line-height:26px;" />
+<span style="line-height:26px;">select * from T1 left outer join T2 on T1.userid = T2.userid</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">运行结果 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">T1.userid &nbsp; username &nbsp; password &nbsp; T2.userid &nbsp; jifen &nbsp; dengji &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">1 &nbsp; jack &nbsp; jackpwd &nbsp; 1 &nbsp; 20 &nbsp; 3 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">2 &nbsp; owen &nbsp; owenpwd &nbsp; NULL &nbsp; NULL &nbsp; NULL &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"></p>
+<span style="line-height:26px;">第三：右联（right outer join）。</span><br style="line-height:26px;" />
+<span style="line-height:26px;">显示右表T2中的所有行，并把左表T1中符合条件加到右表T2中；</span><br style="line-height:26px;" />
+<span style="line-height:26px;">左表T1中不符合条件，就不用加入结果表中，并且NULL表示。</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">SQL语句：</span><br style="line-height:26px;" />
+<span style="line-height:26px;">select * from T1 right outer join T2 on T1.userid = T2.userid</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">运行结果 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">T1.userid &nbsp; username &nbsp; password &nbsp; T2.userid &nbsp; jifen &nbsp; dengji &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">1 &nbsp; jack &nbsp; jackpwd &nbsp; 1 &nbsp; 20 &nbsp; 3 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">NULL &nbsp; NULL &nbsp; NULL &nbsp; 3 &nbsp; 50 &nbsp; 6 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"></p>
+<span style="line-height:26px;">第四：全联（full outer join）</span><br style="line-height:26px;" />
+<span style="line-height:26px;">显示左表T1、右表T2两边中的所有行，即把左联结果表 + 右联结果表组合在一起，然后过滤掉重复的。</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">SQL语句：</span><br style="line-height:26px;" />
+<span style="line-height:26px;">select * from T1 full outer join T2 on T1.userid = T2.userid</span><br style="line-height:26px;" />
+<span style="line-height:26px;">&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">运行结果 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">T1.userid &nbsp; username &nbsp; password &nbsp; T2.userid &nbsp; jifen &nbsp; dengji &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">1 &nbsp; jack &nbsp; jackpwd &nbsp; 1 &nbsp; 20 &nbsp; 3 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">2 &nbsp; owen &nbsp; owenpwd &nbsp; NULL &nbsp; NULL &nbsp; NULL &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<span style="line-height:26px;">NULL &nbsp; NULL &nbsp; NULL &nbsp; 3 &nbsp; 50 &nbsp; 6 &nbsp;&nbsp;</span><br style="line-height:26px;" />
+<br style="line-height:26px;" />
+<span style="line-height:26px;">总结，关于联合查询，效率的确比较高，4种联合方式如果可以灵活使用，基本上复杂的语句结构也会简单起来。</span></div></body></html>

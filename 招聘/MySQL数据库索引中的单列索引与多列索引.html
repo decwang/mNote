@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-15T03:09:45Z"/><meta name="updated" content="2017-05-15T03:09:53Z"/><title>MySQL数据库索引中的单列索引与多列索引</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">以下的文章主要介绍的是<a target="_blank" rel="nofollow" href="http://database.51cto.com/art/200510/8400.htm" style="color:#336699;text-decoration:none;">MySQL</a>数据库索引，即单列索引与多列索引的介绍，以及对多列索引的SQL命令的示例，以下就是这些内容的介绍，望你在浏览之后会对<a href="http://lib.csdn.net/base/14" class="replace_word" title="undefined" target="_blank" style="color:#df3434;text-decoration:none;font-weight:bold;">MySQL</a>数据库索引的相关内容有更深入的了解。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">为了提高搜索效率，我们需要考虑运用多列MySQL数据库索引。如果为firstname、lastname和age这三个列创建一个多列索引，MySQL只需一次检索就能够找出正确的结果！下面是创建这个多列索引的SQL命令：</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>ALTER&nbsp;TABLE&nbsp;people&nbsp;ADD&nbsp;INDEX&nbsp;fname_lname_age&nbsp;(firstname,lastname,age)；&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">由于索引文件以B-树格式保存，MySQL能够立即转到合适的firstname，然后再转到合适的lastname，最后转到合适的age。在没有扫描数据文件任何一个记录的情况下，MySQL就正确地找出了搜索的目标记录！</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">那么，如果在firstname、lastname、age这三个列上分别创建单列索引，效果是否和创建一个firstname、lastname、age的多列MySQL数据库索引一样呢？答案是否定的，两者完全不同。<span style="color:#ffff00;"><span style="background-color:#3333ff;"><strong>当我们执行查询的时候，MySQL只能使用一个索引。如果你有三个单列的MySQL数据库索引，MySQL会试图选择一个限制最严格的索引。</strong></span></span></p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">但是，即使是限制最严格的单列索引，它的限制能力也肯定远远低于firstname、lastname、age这三个列上的多列索引。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">索引是快速搜索的关键。MySQL索引的建立对于MySQL的高效运行是很重要的。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;"><strong>下面介绍几种常见的MySQL索引类型：</strong></p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">在数据库表中，对字段建立索引可以大大提高查询速度。假如我们创建了一个 mytable表：</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>CREATE&nbsp;TABLE&nbsp;mytable(&nbsp;ID&nbsp;INT&nbsp;NOT&nbsp;NULL,&nbsp;username&nbsp;VARCHAR(16)&nbsp;NOT&nbsp;NULL&nbsp;);&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">我们随机向里面插入了10000条记录，其中有一条：5555, admin。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">在查找username="admin"的记录</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>SELECT&nbsp;*&nbsp;FROM&nbsp;mytable&nbsp;WHERE&nbsp;username='admin';&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">时，如果在username上已经建立了索引，MySQL无须任何扫描，即准确可找到该记录。相反，MySQL会扫描所有记录，即要查询10000条记录。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">索引分单列索引和组合索引。单列索引，即一个索引只包含单个列，一个表可以有多个单列索引，但这不是组合索引。组合索引，即一个索包含多个列。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;"><strong>MySQL索引类型包括：</strong></p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">(1)普通索引</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">这是最基本的索引，它没有任何限制。它有以下几种创建方式：</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">创建索引</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>CREATE&nbsp;INDEX&nbsp;indexName&nbsp;ON&nbsp;mytable(username(length));&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">如果是CHAR，VARCHAR类型，length可以小于字段实际长度;如果是BLOB和TEXT类型，必须指定 length，下同。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">修改表结构</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>ALTER&nbsp;mytable&nbsp;ADD&nbsp;INDEX&nbsp;[indexName]&nbsp;ON&nbsp;(username(length))&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">创建表的时候直接指定</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>CREATE&nbsp;TABLE&nbsp;mytable(&nbsp;ID&nbsp;INT&nbsp;NOT&nbsp;NULL,&nbsp;
+username&nbsp;VARCHAR(16)&nbsp;NOT&nbsp;NULL,&nbsp;INDEX&nbsp;[indexName]&nbsp;(username(length))&nbsp;);&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">删除索引的语法：</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>DROP&nbsp;INDEX&nbsp;[indexName]&nbsp;ON&nbsp;mytable;&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">(2)MySQL索引类型：唯一索引</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">它与前面的普通索引类似，不同的就是：<span style="color:#3333ff;">索引列的值必须唯一，但允许有空值。</span>如果是组合索引，则列值的组合必须唯一。它有以下几种创建方式：</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">创建索引</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>CREATE&nbsp;UNIQUE&nbsp;INDEX&nbsp;indexName&nbsp;ON&nbsp;mytable(username(length))&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">修改表结构</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>ALTER&nbsp;mytable&nbsp;ADD&nbsp;UNIQUE&nbsp;[indexName]&nbsp;ON&nbsp;(username(length))&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">创建表的时候直接指定</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>CREATE&nbsp;TABLE&nbsp;mytable(&nbsp;ID&nbsp;INT&nbsp;NOT&nbsp;NULL,&nbsp;
+username&nbsp;VARCHAR(16)&nbsp;NOT&nbsp;NULL,&nbsp;UNIQUE&nbsp;[indexName]&nbsp;(username(length))&nbsp;);&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">(3)MySQL索引类型：主键索引</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">它是一<span style="color:#3333ff;">种特殊的唯一索引，不允许有空值。一般是在建表的时候同时创建主键索引：</span></p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>CREATE&nbsp;TABLE&nbsp;mytable(&nbsp;ID&nbsp;INT&nbsp;NOT&nbsp;NULL,&nbsp;username&nbsp;VARCHAR(16)&nbsp;NOT&nbsp;NULL,&nbsp;PRIMARY&nbsp;KEY(ID)&nbsp;);&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">当然也可以用 ALTER 命令。记住：一个表只能有一个主键。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">(4)组合索引</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">为了形象地对比单列索引和组合索引，为表添加多个字段：</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>CREATE&nbsp;TABLE&nbsp;mytable(&nbsp;ID&nbsp;INT&nbsp;NOT&nbsp;NULL,&nbsp;username&nbsp;
+VARCHAR(16)&nbsp;NOT&nbsp;NULL,&nbsp;city&nbsp;VARCHAR(50)&nbsp;NOT&nbsp;NULL,&nbsp;age&nbsp;INT&nbsp;NOT&nbsp;NULL&nbsp;);&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">为了进一步榨取MySQL的效率，就要考虑建立组合索引。就是将 name, city, age建到一个索引里：</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>ALTER&nbsp;TABLE&nbsp;mytable&nbsp;ADD&nbsp;INDEX&nbsp;name_city_age&nbsp;(name(10),city,age);&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">建表时，usernname长度为 16，这里用 10。这是因为一般情况下名字的长度不会超过10，这样会加速索引查询速度，还会减少索引文件的大小，提高INSERT的更新速度。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;"><span style="color:#3333ff;">如果分别在 usernname，city，age上建立单列索引，让该表有3个单列索引，查询时和上述的组合索引效率也会大不一样，远远低于我们的组合索引。</span>虽然此时有了三个索引，但MySQL只能用到其中的那个它认为似乎是最有效率的单列索引。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">建立这样的组合索引，其实是相当于分别建立了下面三组组合索引：</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;font-variant-ligatures:normal;orphans:2;widows:2;"><ol><li>usernname,city,age&nbsp;usernname,city&nbsp;usernname&nbsp;</li>
+</ol>
+</pre><p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;">以上的相关内容就是对MySQL索引类型的部分内容的介绍，望你能有所收获。</p>
+<p style="color:#333333;font-family:Arial;font-variant-ligatures:normal;orphans:2;widows:2;"><a target="_blank" rel="nofollow" href="http://database.51cto.com/art/200511/12568.htm" style="color:#336699;text-decoration:none;">MySQL</a>全文搜索索引的字段来对搜索效率进行提高在实际中的应用还是比较多的，如果你对这一技术，心存好奇的话，以下的文章将会揭开它的神秘面纱，希望会给你带来一些帮助在此方面。</p></body></html>

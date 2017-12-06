@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-10-10T08:05:02Z"/><meta name="updated" content="2016-10-10T08:05:04Z"/><title> 多线程、特别是NSOperation 和 GCD 的内部原理    2016-01-19 15:44 2343人阅读 评论(0) 收藏 举报    多线程、特别是NSOperation 和 GCD</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin-bottom:21px;font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:normal;widows:1;">&nbsp;<h1 style="margin:0px;padding:0px;display:inline-block;vertical-align:middle;font-size:18px;"><span class="link_title"><a href="http://blog.csdn.net/charles91/article/details/50542940" style="text-decoration:none;color:#000000;">多线程、特别是NSOperation 和 GCD 的内部原理</a></span></h1>
+</div>
+<div class="article_manage clearfix" style="color:#999999;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#ededed;margin:0px -20px 10px;padding:0px 20px 5px;overflow:hidden;widows:1;"><div class="article_r"><span class="link_postdate" style="margin:0px 16px 0px 0px;">2016-01-19 15:44</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 16px 0px 5px;padding:0px 0px 0px 24px;display:inline-block;background:url(http://static.blog.csdn.net/skin/skin-yellow/images/skin-type-icon.png) 0px -25px no-repeat;">2343人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 16px 0px 5px;padding:0px 0px 0px 17px;display:inline-block;background-image:url(http://static.blog.csdn.net/skin/skin-yellow/images/skin-type-icon-yellow.png) !important;background-attachment:initial;background-color:initial;background-size:initial;background-origin:initial;background-clip:initial;background-position:0px -43px;background-repeat:no-repeat;"><a href="http://blog.csdn.net/charles91/article/details/50542940#comments" style="text-decoration:none;color:#c88326;">评论</a>(0)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 16px 0px 5px;display:inline-block;padding-left:17px;background-image:url(http://static.blog.csdn.net/skin/skin-yellow/images/skin-type-icon-yellow.png) !important;background-position:0px -62px;background-repeat:no-repeat;"><a title="收藏" target="_blank" style="color:#c88326;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 16px 0px 5px;display:inline-block;padding-left:17px;background-image:url(http://static.blog.csdn.net/skin/skin-yellow/images/skin-type-icon-yellow.png) !important;background-position:0px -81px;background-repeat:no-repeat;"><a href="http://blog.csdn.net/charles91/article/details/50542940#report" title="举报" style="text-decoration:none;color:#c88326;">举报</a></span></div>
+</div>
+<div id="article_content" class="article_content" style="margin:35px 0px;font-size:15px;color:#555555;line-height:35px;font-family:'microsoft yahei';font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;widows:1;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>多线程、特别是NSOperation 和 GCD 的内部原理</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>简介</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">多线程是一个比较轻量级的方法来实现单个应用程序内多个代码执行路径。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">在系统级别内，程序并排执行，程序分配到每个程序的执行时间是基于该程序的所需时间和其他程序的所需时间来决定的。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">然而，在每个程序内部，存在一个或者多个执行线程，它同时或在一个几乎同时发生的方式里执行不同的任务。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>概要提示：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">iPhone中的线程应用并不是无节制的，官方给出的资料显示，iPhone OS下的主线程的堆栈大小是1M，第二个线程开始就是512KB，并且该值不能通过编译器开关或线程API函数来更改，只有主线程有直接修改UI的能力</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>一、线程概述</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">有些程序是一条直线，起点到终点——如简单的hello world，运行打印完，它的生命周期便结束了，像是昙花一现。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">有些程序是一个圆，不断循环直到将它切断——如操作系统，一直运行直到你关机。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">一个运行着的程序就是一个进程或者叫做一个任务，一个进程至少包含一个线程，线程就是程序的执行流。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Mac和IOS中的程序启动，创建好一个进程的同时，一个线程便开始运作，这个线程叫做主线程。主线成在程序中的位置和其他线程不同，它是其他线程最终的父线程，且所有的界面的显示操作即AppKit或UIKit的操作必须在主线程进行。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">系统中每一个进程都有自己独立的虚拟内存空间，而同一个进程中的多个线程则公用进程的内存空间。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">每创建一个新的进成，都需要一些内存（如每个线程有自己的stack空间）和消耗一定的CPU时间。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">当多个进成对同一个资源出现争夺的时候需要注意线程安全问题</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">iOS有三种多线程编程的技术，分别是:</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>（一）NSThread&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>（二）Cocoa&nbsp;NSOperation&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>（三）GCD（全称：Grand&nbsp;Central&nbsp;Dispatch）&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>三种方式的优缺点介绍:</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>1）NSThread</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">优点：NSThread 比其他两个轻量级</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>缺点：</strong>需要自己管理线程的生命周期，线程同步。线程同步对数据的加锁会有一定的系统开销</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2）Cocoa&nbsp; NSOperation</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>优点:</strong>不需要关心线程管理， 数据同步的事情，可以把精力放在自己需要执行的操作上。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Cocoa operation相关的类是NSOperation, NSOperationQueue.</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">NSOperation是个抽象类,使用它必须用它的子类，可以实现它或者使用它定义好的两个子类: NSInvocationOperation和NSBlockOperation.</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">创建NSOperation子类的对象，把对象添加到NSOperationQueue队列里执行。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>3) GCD</strong>(全优点)</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Grand Central dispatch(GCD)是Apple开发的一个多核编程的解决方案。在iOS4.0开始之后才能使用。GCD是一个替代NSThread, NSOperationQueue,NSInvocationOperation等技术的很高效强大的技术。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">下面我用简单易于理解的代码实例来介绍NSThread在开发实践中的使用，具体使用时可以根据实际情况进行扩展:</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>一、NSThread的使用(基本已过时）</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>#import&nbsp;<strong>&lt;UIKit</strong>/UIKit.h<strong>&gt;</strong>&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>#define&nbsp;kURL&nbsp;@"http://www.iyi8.com/uploadfile/2014/0506/20140506085929652.jpg"&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>@interface&nbsp;ViewController&nbsp;:&nbsp;UIViewController&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7<span style="white-space:pre;"> </span>@end&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>#import&nbsp;"ViewController.h"&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>@interface&nbsp;ViewController&nbsp;()&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;UIImage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*_image;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;UIImageView&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*_imageView;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">8<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_tickets;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">9<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_count;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">10<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">11<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;NSThread&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*_threadOne;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">12<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;NSThread&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*_threadTwo;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">13<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;NSThread&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*_threadThree;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">14<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">15<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;NSCondition&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*_condition;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">16<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">17<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;NSLock&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*_lock;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">18<span style="white-space:pre;"> </span>}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">19<span style="white-space:pre;"> </span>@end&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">20<span style="white-space:pre;"> </span>&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">21<span style="white-space:pre;"> </span>@implementation&nbsp;ViewController&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">22<span style="white-space:pre;"> </span>&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">23<span style="white-space:pre;"> </span>-&nbsp;(id)initWithNibName:(NSString&nbsp;*)nibNameOrNil&nbsp;bundle:(NSBundle&nbsp;*)nibBundleOrNil&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">24<span style="white-space:pre;"> </span>{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">25<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;self&nbsp;=&nbsp;[super&nbsp;initWithNibName:nibNameOrNil&nbsp;bundle:nibBundleOrNil];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">26<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(self)&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">27<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">28<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;self;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">29<span style="white-space:pre;"> </span>}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>-&nbsp;(void)loadView&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;self.view&nbsp;=&nbsp;[[UIView&nbsp;alloc]&nbsp;initWithFrame:CGRectMake(0,&nbsp;0,&nbsp;320,&nbsp;480)];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"klfaklfa&nbsp;------&nbsp;-&nbsp;-&nbsp;");&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_imageView&nbsp;=&nbsp;[[UIImageView&nbsp;alloc]&nbsp;initWithFrame:CGRectMake(100,&nbsp;100,&nbsp;100,&nbsp;150)];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[self.view&nbsp;addSubview:_imageView];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">8<span style="white-space:pre;"> </span>&nbsp;}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">/** 测试NSthread使用*/</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>-&nbsp;(void)viewDidLoad&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;viewDidLoad];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_tickets&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;200;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_count&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;0;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_lock&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;[[NSLock&nbsp;alloc]&nbsp;init];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">8<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">9<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;//锁对象&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">10<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_condition&nbsp;=&nbsp;[[NSCondition&nbsp;alloc]&nbsp;init];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">11<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;//线程1&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">12<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_threadOne&nbsp;=&nbsp;[[NSThread&nbsp;alloc]&nbsp;initWithTarget:self&nbsp;selector:@selector(run)&nbsp;object:nil];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">13<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_threadOne.name&nbsp;=&nbsp;@"thread-1";&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">14<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[_threadOne&nbsp;start];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">15<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">16<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;//线程2&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">17<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_threadTwo&nbsp;=&nbsp;[[NSThread&nbsp;alloc]&nbsp;initWithTarget:self&nbsp;selector:@selector(run)&nbsp;object:nil];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">18<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_threadTwo.name&nbsp;=&nbsp;@"thread-2";&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">19<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[_threadTwo&nbsp;start];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">20<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">21<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;//线程3&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">22<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_threadThree&nbsp;=&nbsp;[[NSThread&nbsp;alloc]&nbsp;initWithTarget:self&nbsp;selector:@selector(run3)&nbsp;object:nil];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">23<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_threadThree.name&nbsp;=&nbsp;@"thread-3";&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">24<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[_threadThree&nbsp;start];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">25<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">26<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;//如果没有线程同步的lock，物品售出数量就会出现重复导致数据竞争不同步问题.加上lock之后线程同步保证了数据的正确性。&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">27<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;detachNewThreadSelector:@selector(downloadImage:)&nbsp;toTarget:self&nbsp;withObject:kURL];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">28<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;NSThread&nbsp;*thread&nbsp;=&nbsp;[[NSThread&nbsp;alloc]&nbsp;initWithTarget:self&nbsp;selector:@selector(downloadImage:)&nbsp;object:kURL];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">29<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[thread&nbsp;start];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">30<span style="white-space:pre;"> </span>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">/** 测试NSOperationQueue使用</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">使用 NSOperation的方式有两种，</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">一种是用定义好的两个子类：NSInvocationOperation 和 NSBlockOperation。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">另一种是继承NSOperation</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">如果你也熟悉Java，NSOperation就和java.lang.Runnable接口很相似。和Java的Runnable一样，NSOperation也是设计用来扩展的，只需继承重写NSOperation的一个方法main。相当与java 中Runnalbe的Run方法。然后把NSOperation子类的对象放入NSOperationQueue队列中，该队列就会启动并开始处理它。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>NSInvocationOperation例子：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">这里同样，我们实现一个下载图片的例子。新建一个Single View app，拖放一个ImageView控件到xib界面。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">实现代码如下</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">*/</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>-&nbsp;(void)viewDidLoad&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;viewDidLoad];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;NSInvocationOperation&nbsp;*operation&nbsp;=&nbsp;[[NSInvocationOperation&nbsp;alloc]&nbsp;initWithTarget:self&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;selector:@selector(downloadImage:)&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;object:kURL];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">8<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">9<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSOperationQueue&nbsp;*queue&nbsp;=&nbsp;[[NSOperationQueue&nbsp;alloc]&nbsp;init];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">10<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[queue&nbsp;addOperation:operation];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">11<span style="white-space:pre;"> </span>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>第二种方式继承NSOperation&nbsp;</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">在.m文件中实现main方法，main方法编写要执行的代码即可。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>如何控制线程池中的线程数？</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">队列里可以加入很多个NSOperation, 可以把NSOperationQueue看作一个线程池，可往线程池中添加操作（NSOperation）到队列中。线程池中的线程可看作消费者，从队列中取走操作，并执行它。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">通过下面的代码设置：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>&nbsp;[queue&nbsp;setMaxConcurrentOperationCount:5];&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">线程池中的线程数，也就是并发操作数。默认情况下是-1，-1表示没有限制，这样会同时运行队列中的全部的操作。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">/** 测试GCD的dispatch_async使用*/</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>[html]</strong>&nbsp;view plaincopy&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>-&nbsp;(void)viewDidLoad&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;viewDidLoad];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,&nbsp;0),&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSURL&nbsp;*&nbsp;url&nbsp;=&nbsp;[NSURL&nbsp;URLWithString:<strong>&lt;span&gt;</strong>kURL<strong>&lt;/span&gt;</strong>];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSData&nbsp;*&nbsp;data&nbsp;=&nbsp;[[NSData&nbsp;alloc]initWithContentsOfURL:url];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">8<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UIImage&nbsp;*image&nbsp;=&nbsp;[[UIImage&nbsp;alloc]initWithData:data];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">9<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">10<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(data&nbsp;!=&nbsp;nil)&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">11<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(dispatch_get_main_queue(),&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">12<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_imageView.image&nbsp;=&nbsp;image;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">13<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">14<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">15<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">16<span style="white-space:pre;"> </span>}&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>（三）GCD的介绍和使用</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>介绍：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Grand Central Dispatch 简称（GCD）是苹果公司开发的技术，以优化的应用程序支持多核心处理器和其他的对称多处理系统的系统。这建立在任务并行执行的线程池模式的基础上的。它首次发布在Mac OS X 10.6 ，iOS 4及以上也可用。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>设计：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">GCD的工作原理是：让程序平行排队的特定任务，根据可用的处理资源，安排他们在任何可用的处理器核心上执行任务。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">一个任务可以是一个函数(function)或者是一个block。 GCD的底层依然是用线程实现，不过这样可以让程序员不用关注实现的细节。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">GCD中的FIFO队列称为dispatch queue，它可以保证先进来的任务先得到执行。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">dispatch queue分为下面三种：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>Serial&nbsp;</strong>&nbsp; &nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">又称为private dispatch queues，同时只执行一个任务。Serial queue通常用于同步访问特定的资源或数据。当你创建多个Serial queue时，虽然它们各自是同步执行的，但Serial queue与Serial queue之间是并发执行的。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>Concurrent&nbsp;</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">又称为global dispatch queue，可以并发地执行多个任务，但是执行完成的顺序是随机的。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>Main dispatch queue&nbsp;</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">它是全局可用的serial queue，它是在应用程序主线程上执行任务的。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">我们看看dispatch queue如何使用？</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>1、常用的方法dispatch_async</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">为了避免界面在处理耗时的操作时卡死，比如读取网络数据，IO,数据库读写等，我们会在另外一个线程中处理这些操作，然后通知主线程更新界面。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">用GCD实现这个流程的操作比前面介绍的NSThread &nbsp;NSOperation的方法都要简单。代码框架结构如下</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">/** 测试GCD的dispatch_group_async使用*/</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>[html]</strong>&nbsp;view plaincopy&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>-&nbsp;(void)viewDidLoad&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;viewDidLoad];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;//此方法可以实现监听一组任务是否完成，如果完成后通知其他操作(如界面更新),此方法在下载附件时挺有用，&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//在搪行几个下载任务时，当下载完成后通过dispatch_group_notify通知主线程下载完成并更新相应界面&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;queue&nbsp;=&nbsp;dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT,&nbsp;0);&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">8<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_t&nbsp;group&nbsp;=&nbsp;dispatch_group_create();&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">9<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_async(group,&nbsp;queue,&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">10<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:0.09];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">11<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">12<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"group1");&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">13<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSURL&nbsp;*&nbsp;url&nbsp;=&nbsp;[NSURL&nbsp;URLWithString:kURL];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">14<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSData&nbsp;*&nbsp;data&nbsp;=&nbsp;[[NSData&nbsp;alloc]initWithContentsOfURL:url];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">15<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_image&nbsp;=&nbsp;[[UIImage&nbsp;alloc]initWithData:data];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">16<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">17<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">18<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_async(group,&nbsp;queue,&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">19<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:0.09];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">20<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"group2");&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">21<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">22<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_async(group,&nbsp;queue,&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">23<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:0.09];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">24<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"group3");&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">25<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">26<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">27<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dispatch_group_notify(group,&nbsp;dispatch_get_main_queue(),&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">28<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"updateUi");&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">29<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">30<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff2500;">_imageView.image</span>&nbsp;=&nbsp;_image;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">31<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">32<span style="white-space:pre;"> </span>}&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">/** 测试GCD的dispatch_barrier_async使用*/</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>[html]</strong>&nbsp;view plaincopy&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>-&nbsp;(void)viewDidLoad&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;viewDidLoad];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;//是在前面的任务执行结束后它才执行，而且它后面的任务等它执行完成之后才会执行&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_queue_t&nbsp;queue&nbsp;=&nbsp;dispatch_queue_create("gcd.devdiy.com",&nbsp;DISPATCH_QUEUE_CONCURRENT);&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(queue,&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">8<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:2];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">9<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"dispatch_async1");&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">10<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">11<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">12<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(queue,&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">13<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:4];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">14<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"dispatch_async2");&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">15<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">16<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">17<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_barrier_async(queue,&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">18<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"dispatch_barrier_async");&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">19<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:4];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">20<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">21<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">22<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;dispatch_async(queue,&nbsp;^{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">23<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:1];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">24<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"dispatch_async");&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">25<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">26<span style="white-space:pre;"> </span>}&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>[html]</strong>&nbsp;view plaincopy&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1<span style="white-space:pre;"> </span>-&nbsp;(void)run3&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2<span style="white-space:pre;"> </span>&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(true)&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[_condition&nbsp;lock];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:3];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"当前物品名称:%d,售出数量:%d,线程名-=-==:&nbsp;%@",&nbsp;_tickets,&nbsp;_count,&nbsp;[[NSThread&nbsp;currentThread]&nbsp;name]);&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">8<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[_condition&nbsp;signal];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">9<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[_condition&nbsp;unlock];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">10<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">11<span style="white-space:pre;"> </span>}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">12<span style="white-space:pre;"> </span>&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">13<span style="white-space:pre;"> </span>-&nbsp;(void)run&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">14<span style="white-space:pre;"> </span>{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">15<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;while&nbsp;(true)&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">16<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//上锁&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">17<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[_lock&nbsp;lock];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">18<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(_tickets&nbsp;<strong>&gt;</strong>&nbsp;0)&nbsp;{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">19<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;sleepForTimeInterval:0.09];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">20<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_count&nbsp;=&nbsp;200&nbsp;-&nbsp;_tickets;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">21<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"当前物品名称:%d,售出数量:%d,线程名:&nbsp;%@",&nbsp;_tickets,&nbsp;_count,&nbsp;[[NSThread&nbsp;currentThread]&nbsp;name]);&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">22<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_tickets--;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">23<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">24<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">25<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">26<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">27<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[_lock&nbsp;unlock];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">28<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">29<span style="white-space:pre;"> </span>}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">30<span style="white-space:pre;"> </span>&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">31<span style="white-space:pre;"> </span>/**&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">32<span style="white-space:pre;"> </span>&nbsp;*&nbsp;@param&nbsp;string&nbsp;url&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">33<span style="white-space:pre;"> </span>&nbsp;*/&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">34<span style="white-space:pre;"> </span>-&nbsp;(void)downloadImage:(NSString&nbsp;*)&nbsp;url{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">35<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;NSData&nbsp;*data&nbsp;=&nbsp;[[NSData&nbsp;alloc]&nbsp;initWithContentsOfURL:[NSURL&nbsp;URLWithString:url]];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">36<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;UIImage&nbsp;*image&nbsp;=&nbsp;[[UIImage&nbsp;alloc]&nbsp;initWithData:data];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">37<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;if(image&nbsp;==&nbsp;nil){&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">38<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;updateUI:image];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">39<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;}else{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">40<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;performSelectorOnMainThread:@selector(updateUI:)&nbsp;withObject:image&nbsp;waitUntilDone:YES];&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">41<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">42<span style="white-space:pre;"> </span>}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">43<span style="white-space:pre;"> </span>&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">44<span style="white-space:pre;"> </span>-&nbsp;(void)updateUI:(UIImage&nbsp;*)image&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">45<span style="white-space:pre;"> </span>{&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">46<span style="white-space:pre;"> </span>&nbsp;&nbsp;&nbsp;&nbsp;_imageView.image&nbsp;=&nbsp;image;&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">47<span style="white-space:pre;"> </span>}&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">48<span style="white-space:pre;"> </span>&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">49<span style="white-space:pre;"> </span>@end&nbsp;&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">是不是代码比NSThread &nbsp;NSOperation简洁很多，而且GCD会自动根据任务在多核处理器上分配资源，优化程序。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">系统给每一个应用程序提供了三个concurrent dispatch queues。这三个并发调度队列是全局的，它们只有优先级的不同。因为是全局的，我们不需要去创建。我们只需要通过使用函数dispath_get_global_queue去得到队列。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">以上代码组织的不是很好，只简单描述了一下多线程的基本概念，后续我再添加详细应用的实例，现只做为参考，在具体实际应用中还得我们自己来进行编写发挥。希望对大家有所帮助和启发。</p>
+</div></body></html>

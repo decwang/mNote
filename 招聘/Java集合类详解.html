@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-15T02:49:29Z"/><meta name="updated" content="2017-05-15T02:54:26Z"/><title>Java集合类详解</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';orphans:2;widows:2;"><span class="ico ico_type_Repost" style="display:inline-block;width:19px;height:19px;margin:0px 2px 0px 0px;background:url(&quot;../../../images/ico_Repost.gif&quot;) 0px 0px no-repeat;vertical-align:middle;"><br />
+</span></div>
+<div class="article_manage clearfix" style="padding:0px 20px 5px;color:#999999;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;margin:0px -20px;overflow:hidden;orphans:2;widows:2;"><div class="article_r"><span class="link_postdate" style="margin:0px 5px 0px 0px;">2016-08-01 21:09</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_view.png&quot;) left center no-repeat;">34855人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_comm.png&quot;) left center no-repeat;"><a href="http://blog.csdn.net/u014136713/article/details/52089156#comments" style="color:#6a3906;text-decoration:none;">评论</a>(3)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 5px;"><a title="收藏" target="_blank" style="color:#6a3906;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/u014136713/article/details/52089156#report" title="举报" style="color:#6a3906;text-decoration:none;">举报</a></span></div>
+</div>
+<div class="category clearfix" style="margin:0px -20px;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;padding:5px 20px;color:#362e2b;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><div class="category_l" style="display:inline-block;font-size:14px;color:#333333;width:70px;float:left;line-height:28px;"><img src="http://static.blog.csdn.net/images/category_icon.jpg" style="border:none;vertical-align:middle;" />&nbsp;<span style="display:inline-block;vertical-align:middle;">分类：</span></div>
+<div class="category_r" style="display:inline-block;font-size:14px;color:#df3434;float:left;width:630px;"><label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">程序员面试经典编程题（25）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label></div>
+</div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:26px;font-family:Arial;color:#362e2b;orphans:2;widows:2;"><p style="color:#333333;line-height:26px;"><span style="font-size:18px;">Collection<br />
+├List<br />
+│├LinkedList<br />
+│├ArrayList<br />
+│└Vector<br />
+│　└Stack<br />
+└Set<br />
+Map<br />
+├Hashtable<br />
+├HashMap<br />
+└WeakHashMap</span></p>
+<p style="color:#333333;line-height:26px;"><img src="http://my.csdn.net/uploads/201207/17/1342513304_6964.png" alt="" style="border:none;" /><img src="http://my.csdn.net/uploads/201207/17/1342513335_2987.png" alt="" style="border:none;" /></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;"><span style="font-size:18pt;">Collection接口</span><br />
+　　Collection是最基本的集合接口，一个Collection代表一组Object，即Collection的元素（Elements）。</span><span style="font-size:18px;"><span style="color:#ff0000;">Java SDK不提供直接继承自Collection的类，Java SDK提供的类都是继承自Collection的“子接口”如List和Set。<br />
+</span>　　所有实现Collection接口的类都必须提供两个标准的构造函数：无参数的构造函数用于创建一个空的Collection，有一个 Collection参数的构造函数用于创建一个新的Collection，这个新的Collection与传入的Collection有相同的元素。后一个构造函数允许用户复制一个Collection。<br />
+　　如何遍历Collection中的每一个元素？不论Collection的实际类型如何，它都支持一个iterator()的方法，该方法返回一个迭代子，使用该迭代子即可逐一访问Collection中每一个元素。典型的用法如下：<br />
+　　　　Iterator it = collection.iterator(); // 获得一个迭代子<br />
+　　　　while(it.hasNext()) {<br />
+　　　　　　Object obj = it.next(); // 得到下一个元素<br />
+　　　　}<br />
+　　由Collection接口派生的两个接口是List和Set。</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">让我们转到对框架实现的研究，具体的集合类遵循命名约定，并将基本数据结构和框架接口相结合。除了四个历史集合类外，Java 2 框架还引入了六个集合实现，如下表所示。关于历史集合类如何转换、比如说，如何修改<code>Hashtable</code>&nbsp;并结合到框架中，请参阅</span><a target="_blank" href="http://www.ibm.com/developerworks/cn/education/java/j-collections/section5.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">历史集合类</span></a><span style="font-size:18px;">&nbsp;。</span></p>
+<table border="1" style="color:#333333;font-size:14px;line-height:26px;"><tbody><tr><td><strong><span style="font-size:18px;">接口</span></strong></td>
+<td><strong><span style="font-size:18px;">实现</span></strong></td>
+<td><strong><span style="font-size:18px;">历史集合类</span></strong></td>
+</tr>
+<tr><td><code><span style="font-size:18px;">Set</span></code></td>
+<td><code><span style="font-size:18px;">HashSet</span></code></td>
+<td></td>
+</tr>
+<tr><td></td>
+<td><code><span style="font-size:18px;">TreeSet</span></code></td>
+<td></td>
+</tr>
+<tr><td><code><span style="font-size:18px;">List</span></code></td>
+<td><code><span style="font-size:18px;">ArrayList</span></code></td>
+<td><code><span style="font-size:18px;">Vector</span></code></td>
+</tr>
+<tr><td></td>
+<td><code><span style="font-size:18px;">LinkedList</span></code></td>
+<td><code><span style="font-size:18px;">Stack</span></code></td>
+</tr>
+<tr><td><code><span style="font-size:18px;">Map</span></code></td>
+<td><code><span style="font-size:18px;">HashMap</span></code></td>
+<td><code><span style="font-size:18px;">Hashtable</span></code></td>
+</tr>
+<tr><td></td>
+<td><code><span style="font-size:18px;">TreeMap</span></code></td>
+<td><code><span style="font-size:18px;">Properties</span></code></td>
+</tr>
+</tbody>
+</table>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">这里没有&nbsp;<code>Collection</code>&nbsp;接口的实现。历史集合类，之所以这样命名是因为从 Java 类库 1.0 发行版就开始沿用至今了。</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">如果从历史集合类转换到新的框架类，主要差异之一在于所有的操作都和新类不同步。您可以往新类中添加同步的实现，但您不能把它从旧的类中除去。</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;color:#ff0000;">Collection collection = new ArrayList();（这样写的好处在于，以后如果要理性不同的集合，可以省略很多麻烦。因为都是用Collection接口里的方法，）</span></p>
+<p style="color:#333333;line-height:26px;"></p>
+<table border="1" cellspacing="0" summary="" cellpadding="3" width="100%" style="color:#333333;font-size:14px;line-height:26px;"><tbody><tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#add(E)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">add</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="Collection 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;确保此 collection 包含指定的元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#addAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">addAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;? extends&nbsp;</span><a target="_blank" title="Collection 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;&nbsp;c)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将指定 collection 中的所有元素都添加到此 collection 中（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;void</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#clear()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">clear</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;移除此 collection 中的所有元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#contains(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">contains</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果此 collection 包含指定的元素，则返回&nbsp;<tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#containsAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">containsAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?&gt;&nbsp;c)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果此 collection 包含指定 collection 中的所有元素，则返回<tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#equals(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">equals</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;比较此 collection 与指定对象是否相等。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;int</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#hashCode()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">hashCode</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回此 collection 的哈希码值。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#isEmpty()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">isEmpty</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果此 collection 不包含元素，则返回&nbsp;<tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Iterator.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Iterator</span></a><span style="font-size:18px;">&lt;</span><a target="_blank" title="Collection 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#iterator()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">iterator</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回在此 collection 的元素上进行迭代的迭代器。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#remove(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">remove</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;从此 collection 中移除指定元素的单个实例，如果存在的话（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#removeAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">removeAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?&gt;&nbsp;c)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;移除此 collection 中那些也包含在指定 collection 中的所有元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#retainAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">retainAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?&gt;&nbsp;c)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;仅保留此 collection 中那些也包含在指定 collection 的元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;int</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#size()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">size</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回此 collection 中的元素数。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">[]</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#toArray()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">toArray</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回包含此 collection 中所有元素的数组。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code></code></span><table class=" " border="0" cellspacing="0" summary="" cellpadding="0"><tbody><tr valign="top" align="right"><td nowrap="nowrap"><span size="-1"><code><span style="font-size:18px;">&lt;T&gt; T[]</span></code></span></td>
+</tr>
+</tbody>
+</table>
+</td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html#toArray(T[])" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">toArray</span></a></strong><span style="font-size:18px;">(T[]&nbsp;a)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回包含此 collection 中所有元素的数组；返回数组的运行时类型与指定数组的运行时类型相同。</span></td>
+</tr>
+</tbody>
+</table>
+<p style="color:#333333;line-height:26px;"></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;color:#ff0000;">*All方法参数的类型都为Collection ，大多数方法都是返回boolean类型值，Collection 接口用于表示任何对象或元素组。想要尽可能以常规方式处理一组元素时，就使用这一接口。（如，可以直接add（100），可以是普通数据类型）。</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;color:#ff0000;">容器类对象在调用remove,contains等方法时需要比较对象是否相等地，这会涉及到对象类型的equals方法和hashcode方法。即，相等的对象应该有相等的hashcode.当然，如果是自定义的类型，需要重写这两个方法。</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">iterator接口</span></p>
+<table border="1" cellspacing="0" summary="" cellpadding="3" width="100%" style="color:#333333;font-size:14px;line-height:26px;"><tbody><tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Iterator.html#hasNext()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">hasNext</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果仍有元素可以迭代，则返回&nbsp;<tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="Iterator 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Iterator.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Iterator.html#next()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">next</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回迭代的下一个元素。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;void</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Iterator.html#remove()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">remove</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;从迭代器指向的集合中移除迭代器返回的最后一个元素（可选操作）。</span></td>
+</tr>
+</tbody>
+</table>
+<div style="color:#333333;line-height:21px;text-indent:18.05pt;"><strong><em><span style="line-height:24px;font-size:12pt;"><span style="font-size:18px;">Set</span></span></em></strong></div>
+<div style="color:#333333;line-height:21px;text-indent:18pt;"><span style="font-size:18px;"><span style="line-height:24px;font-size:12pt;">Set</span><span style="line-height:24px;font-size:12pt;">接口同样是</span><span style="line-height:24px;font-size:12pt;">Collection</span><span style="line-height:24px;font-size:12pt;">接口的一个子接口，它表示数学意义上的集合概念。</span><span style="line-height:24px;font-size:12pt;">Set</span><span style="line-height:24px;font-size:12pt;">中不包含重复的元素，即</span><span style="line-height:24px;font-size:12pt;">Set</span><span style="line-height:24px;font-size:12pt;">中不存两个这样的元素</span><span style="line-height:24px;font-size:12pt;">e1</span><span style="line-height:24px;font-size:12pt;">和</span><span style="line-height:24px;font-size:12pt;">e2</span><span style="line-height:24px;font-size:12pt;">，使得</span><span style="line-height:24px;font-size:12pt;">e1.equals(e2)</span><span style="line-height:24px;font-size:12pt;">为</span><span style="line-height:24px;font-size:12pt;">true</span><span style="line-height:24px;font-size:12pt;">。由于</span><span style="line-height:24px;font-size:12pt;">Set</span><span style="line-height:24px;font-size:12pt;">接口提供的数据结构是数学意义上集合概念的抽象，因此它需要支持对象的添加、删除，而不需提供随机访问。故</span><span style="line-height:24px;font-size:12pt;">Set</span><span style="line-height:24px;font-size:12pt;">接口与</span><span style="line-height:24px;font-size:12pt;">Collection</span></span><span style="line-height:24px;font-size:12pt;"><span style="font-size:18px;">的接口相同，在此对里面的方法不作介绍。</span></span><table border="1" cellspacing="0" summary="" cellpadding="3" width="100%"><tbody><tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#add(E)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">add</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="Set 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果 set 中尚未存在指定的元素，则添加此元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#addAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">addAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;? extends&nbsp;</span><a target="_blank" title="Set 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;&nbsp;c)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果 set 中没有指定 collection 中的所有元素，则将其添加到此 set 中（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;void</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#clear()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">clear</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;移除 set 中的所有元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#contains(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">contains</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果 set 包含指定的元素，则返回&nbsp;<tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#containsAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">containsAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?&gt;&nbsp;c)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果此 set 包含指定 collection 的所有元素，则返回&nbsp;<tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#equals(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">equals</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;比较指定对象与此 set 的相等性。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;int</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#hashCode()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">hashCode</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回 set 的哈希码值。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#isEmpty()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">isEmpty</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果 set 不包含元素，则返回&nbsp;<tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Iterator.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Iterator</span></a><span style="font-size:18px;">&lt;</span><a target="_blank" title="Set 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#iterator()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">iterator</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回在此 set 中的元素上进行迭代的迭代器。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#remove(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">remove</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果 set 中存在指定的元素，则将其移除（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#removeAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">removeAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?&gt;&nbsp;c)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;移除 set 中那些包含在指定 collection 中的元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#retainAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">retainAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?&gt;&nbsp;c)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;仅保留 set 中那些包含在指定 collection 中的元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;int</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#size()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">size</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回 set 中的元素数（其容量）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">[]</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#toArray()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">toArray</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回一个包含 set 中所有元素的数组。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code></code></span><table class=" " border="0" cellspacing="0" summary="" cellpadding="0"><tbody><tr valign="top" align="right"><td nowrap="nowrap"><span size="-1"><code><span style="font-size:18px;">&lt;T&gt; T[]</span></code></span></td>
+</tr>
+</tbody>
+</table>
+</td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Set.html#toArray(T[])" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">toArray</span></a></strong><span style="font-size:18px;">(T[]&nbsp;a)</span></code><span style="font-size:18px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回一个包含 set 中所有元素的数组；返回数组的运行时类型是指定数组的类型。</span></td>
+</tr>
+</tbody>
+</table>
+<p><span style="font-size:18px;">按照定义，<code>Set</code>&nbsp;接口继承&nbsp;<code>Collection</code>&nbsp;接口，而且它不允许集合中存在重复项。所有原始方法都是现成的，没有引入新方法。具体的<code>Set</code>&nbsp;实现类依赖添加的对象的&nbsp;<code><a target="_blank" href="http://java.sun.com/products/jdk/1.2/docs/api/java/util/Set.html#equals(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="color:#4c6e94;">equals()</span></a></code>方法来检查等同性。</span></p>
+<p><span style="font-size:18px;"><strong>HashSet 类和 TreeSet 类</strong></span></p>
+<p><span style="font-size:18px;">“集合框架”支持&nbsp;<code>Set</code>&nbsp;接口两种普通的实现：<code>HashSet</code>&nbsp;和<code>TreeSet</code>。在更多情况下，您会使用&nbsp;<code>HashSet</code>&nbsp;存储重复自由的集合。考虑到效率，添加到&nbsp;<code>HashSet</code>&nbsp;的对象需要采用恰当分配散列码的方式来实现<code>hashCode()</code>&nbsp;方法。虽然大多数系统类覆盖了&nbsp;<code>Object</code>&nbsp;中缺省的<code><a target="_blank" href="http://java.sun.com/products/jdk/1.2/docs/api/java/lang/Object.html#hashCode()" style="color:#336699;text-decoration:none;"><span style="color:#4c6e94;">hashCode()</span></a></code>实现，但创建您自己的要添加到&nbsp;<code>HashSet</code>&nbsp;的类时，别忘了覆盖&nbsp;<code>hashCode()</code>。当您要从集合中以有序的方式抽取元素时，<code>TreeSet</code>&nbsp;实现会有用处。为了能顺利进行，添加到<code>TreeSet</code>&nbsp;的元素必须是可排序的。 “集合框架”添加对&nbsp;<code>Comparable</code>&nbsp;元素的支持，在</span><a target="_blank" href="http://www.ibm.com/developerworks/cn/education/java/j-collections/section3.html#sorting" style="color:#336699;text-decoration:none;"><span style="font-size:18px;color:#4c6e94;">排序</span></a><span style="font-size:18px;">的“可比较的接口”部分中会详细介绍。我们暂且假定一棵树知道如何保持<code>java.lang</code>&nbsp;包装程序器类元素的有序状态。一般说来，先把元素添加到&nbsp;<code>HashSet</code>，再把集合转换为<code>TreeSet</code>&nbsp;来进行有序遍历会更快。</span></p>
+<p><span style="font-size:18px;">为优化&nbsp;<code>HashSet</code>&nbsp;空间的使用，您可以调优初始容量和负载因子。<code>TreeSet</code>&nbsp;不包含调优选项，因为树总是平衡的，保证了插入、删除、查询的性能为<code>log(n)</code>。</span></p>
+<p><span style="font-size:18px;"><code>HashSet</code>&nbsp;和&nbsp;<code>TreeSet</code>&nbsp;都实现&nbsp;<code>Cloneable</code>&nbsp;接口。</span></p>
+<p><span style="font-size:18px;"><strong>集的使用示例</strong></span></p>
+<p><span style="font-size:18px;">为演示具体&nbsp;<code>Set</code>&nbsp;类的使用，下面的程序创建了一个&nbsp;<code>HashSet</code>，并往里添加了一组名字，其中有个名字添加了两次。接着，程序把集中名字的列表打印出来，演示了重复的名字没有出现。接着，程序把集作为<code>TreeSet</code>&nbsp;来处理，并显示有序的列表。</span></p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;"><span style="font-size:18px;">import java.util.*;
+
+public class SetExample {
+  public static void main(String args[]) {
+    Set set = new HashSet();
+    set.add("Bernadine");
+    set.add("Elizabeth");
+    set.add("Gene");
+    set.add("Elizabeth");
+    set.add("Clara");
+    System.out.println(set);
+    Set sortedSet = new TreeSet(set);
+    System.out.println(sortedSet);
+  }
+}</span></pre><p><span style="font-size:18px;">运行程序产生了以下输出。请注意重复的条目只出现了一次，<span style="color:#ff0000;">列表的第二次输出已按字母顺序排序。</span></span></p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;"><span style="font-size:18px;">[Gene, Clara, Bernadine, Elizabeth]
+[Bernadine, Clara, Elizabeth, Gene]</span></pre><pre style="white-space:pre-wrap;word-wrap:break-word;"><p><a target="_blank" class=" " name="N104E7" style="color:#336699;"><span class="smalltitle"><strong><span style="font-size:18px;">List 接口</span></strong></span></a></p>
+<p><span style="font-size:18px;"><code>List</code> 接口继承了 <code>Collection</code> 接口以定义一个允许重复项的有序集合。该接口不但能够对列表的一部分进行处理，还添加了面向位置的操作。</span></p>
+<p><span style="font-size:18px;">有序的 collection（也称为<em>序列</em>）。此接口的用户可以对列表中每个元素的插入位置进行精确地控制。用户可以根据元素的整数索引（在列表中的位置）访问元素，并搜索列表中的元素。 </span></p>
+<p><span style="font-size:18px;">与 set 不同，列表通常允许重复的元素。更正式地说，列表通常允许满足 <tt>e1.equals(e2)</tt> 的元素对 <tt>e1</tt> 和 <tt>e2</tt>，并且如果列表本身允许 null 元素的话，通常它们允许多个 null 元素。难免有人希望通过在用户尝试插入重复元素时抛出运行时异常的方法来禁止重复的列表，但我们希望这种用法越少越好。 </span></p>
+<p><span style="font-size:18px;"><tt>List</tt> 接口在 <tt>iterator</tt>、<tt>add</tt>、<tt>remove</tt>、<tt>equals</tt> 和 <tt>hashCode</tt> 方法的协定上加了一些其他约定，超过了 <tt>Collection</tt> 接口中指定的约定。为方便起见，这里也包括了其他继承方法的声明。 </span></p>
+<p><span style="font-size:18px;"><tt>List</tt> 接口提供了 4 种对列表元素进行定位（索引）访问方法。列表（像 Java 数组一样）是基于 0 的。注意，这些操作可能在和某些实现（例如 <tt>LinkedList</tt> 类）的索引值成比例的时间内执行。因此，如果调用方不知道实现，那么在列表元素上迭代通常优于用索引遍历列表。 </span></p>
+<p><span style="font-size:18px;"><tt>List</tt> 接口提供了特殊的迭代器，称为 <tt>ListIterator</tt>，除了允许 <tt>Iterator</tt> 接口提供的正常操作外，该迭代器还允许元素插入和替换，以及双向访问。还提供了一个方法来获取从列表中指定位置开始的列表迭代器。 </span></p>
+<p><span style="font-size:18px;"><tt>List</tt> 接口提供了两种搜索指定对象的方法。从性能的观点来看，应该小心使用这些方法。在很多实现中，它们将执行高开销的线性搜索。 </span></p>
+<p><span style="font-size:18px;"><tt>List</tt> 接口提供了两种在列表的任意位置高效插入和移除多个元素的方法。 </span></p>
+<p><span style="font-size:18px;">注意：尽管列表允许把自身作为元素包含在内，但建议要特别小心：在这样的列表上，<tt>equals</tt> 和 <tt>hashCode</tt> 方法不再是定义良好的。 </span></p>
+<p><span style="font-size:18px;">某些列表实现对列表可能包含的元素有限制。例如，某些实现禁止 null 元素，而某些实现则对元素的类型有限制。试图添加不合格的元素会抛出未经检查的异常，通常是 <tt>NullPointerException</tt> 或 <tt>ClassCastException</tt>。试图查询不合格的元素是否存在可能会抛出异常，也可能简单地返回 false；某些实现会采用前一种行为，而某些则采用后者。概括地说，试图对不合格元素执行操作时，如果完成该操作后不会导致在列表中插入不合格的元素，则该操作可能抛出一个异常，也可能成功，这取决于实现的选择。此接口的规范中将这样的异常标记为“可选”。</span></p>
+<p></p>
+<p><span style="font-size:18px;">面向位置的操作包括插入某个元素或 <code>Collection</code> 的功能，还包括获取、除去或更改元素的功能。在 <code>List</code> 中搜索元素可以从列表的头部或尾部开始，如果找到元素，还将报告元素所在的位置。</span></p>
+<ul><li><span style="font-size:18px;"><code>void add(int index, Object element)</code> </span></li>
+<li><span style="font-size:18px;"><code>boolean addAll(int index, Collection collection)</code> </span></li>
+<li><span style="font-size:18px;"><code>Object get(int index)</code> </span></li>
+<li><span style="font-size:18px;"><code>int indexOf(Object element)</code> </span></li>
+<li><span style="font-size:18px;"><code>int lastIndexOf(Object element)</code> </span></li>
+<li><span style="font-size:18px;"><code>Object remove(int index)</code> </span></li>
+<li><span style="font-size:18px;"><code>Object set(int index, Object element)</code> </span></li>
+</ul>
+<p><span style="font-size:18px;"><code>List</code> 接口不但以位置友好的方式遍历整个列表，还能处理集合的子集：</span></p>
+<ul><li><span style="font-size:18px;"><code>ListIterator listIterator()</code> </span></li>
+<li><span style="font-size:18px;"><code>ListIterator listIterator(int startIndex)</code> </span></li>
+<li><span style="font-size:18px;"><code>List subList(int fromIndex, int toIndex)</code> </span></li>
+</ul>
+<p><span style="font-size:18px;">处理 <code><a target="_blank" href="http://java.sun.com/products/jdk/1.2/docs/api/java/util/List.html#subList(int, int)" style="color:#336699;text-decoration:none;"><span style="color:#4c6e94;">subList()</span></a> </code>时，位于 <code>fromIndex</code> 的元素在子列表中，而位于 <code>toIndex</code> 的元素则不是，提醒这一点很重要。以下 <code>for-loop</code> 测试案例大致反映了这一点：</span></p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;"><span style="font-size:18px;">for (int i=fromIndex; i&lt;toIndex; i++) {
+  // process element at position i
+}</span></pre><p><span style="font-size:18px;">此外，我们还应该提醒的是 ― 对子列表的更改（如 <code>add()</code>、<code>remove()</code> 和 <code>set()</code> 调用）对底层 <code>List</code> 也有影响。</span></p>
+<table border="1" cellspacing="0" summary="" cellpadding="3" width="100%"><tbody><tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#add(E)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">add</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;向列表的尾部追加指定的元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;void</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#add(int, E)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">add</span></a></strong><span style="font-size:18px;">(int&nbsp;index, </span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&nbsp;element)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在列表的指定位置插入指定元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#addAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">addAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?
+ extends </span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;&nbsp;c)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;追加指定
+ collection 中的所有元素到此列表的结尾，顺序是指定 collection 的迭代器返回这些元素的顺序（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#addAll(int, java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">addAll</span></a></strong><span style="font-size:18px;">(int&nbsp;index, </span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?
+ extends </span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;&nbsp;c)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将指定
+ collection 中的所有元素都插入到列表中的指定位置（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;void</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#clear()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">clear</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;从列表中移除所有元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#contains(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">contains</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果列表包含指定的元素，则返回 <tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#containsAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">containsAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?&gt;&nbsp;c)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果列表包含指定
+ collection 的所有元素，则返回 <tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#equals(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">equals</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;比较指定的对象与列表是否相等。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#get(int)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">get</span></a></strong><span style="font-size:18px;">(int&nbsp;index)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回列表中指定位置的元素。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;int</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#hashCode()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">hashCode</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回列表的哈希码值。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;int</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#indexOf(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">indexOf</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回列表中首次出现指定元素的索引，如果列表不包含此元素，则返回
+ -1。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#isEmpty()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">isEmpty</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果列表不包含元素，则返回 <tt>true</tt>。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Iterator.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Iterator</span></a><span style="font-size:18px;">&lt;</span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#iterator()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">iterator</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回以正确顺序在列表的元素上进行迭代的迭代器。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;int</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#lastIndexOf(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">lastIndexOf</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回列表中最后出现指定元素的索引，如果列表不包含此元素，则返回
+ -1。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/ListIterator.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">ListIterator</span></a><span style="font-size:18px;">&lt;</span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#listIterator()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">listIterator</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回列表中元素的列表迭代器（以正确的顺序）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/ListIterator.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">ListIterator</span></a><span style="font-size:18px;">&lt;</span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#listIterator(int)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">listIterator</span></a></strong><span style="font-size:18px;">(int&nbsp;index)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回列表中元素的列表迭代器（以正确的顺序），从列表的指定位置开始。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#remove(int)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">remove</span></a></strong><span style="font-size:18px;">(int&nbsp;index)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;移除列表中指定位置的元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#remove(java.lang.Object)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">remove</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">&nbsp;o)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;移除列表中出现的首个指定元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#removeAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">removeAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?&gt;&nbsp;c)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;从列表中移除指定
+ collection 中包含的所有元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;boolean</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#retainAll(java.util.Collection)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">retainAll</span></a></strong><span style="font-size:18px;">(</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/Collection.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Collection</span></a><span style="font-size:18px;">&lt;?&gt;&nbsp;c)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;仅在列表中保留指定
+ collection 中所包含的元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#set(int, E)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">set</span></a></strong><span style="font-size:18px;">(int&nbsp;index, </span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&nbsp;element)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用指定元素替换列表中指定位置的元素（可选操作）。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;int</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#size()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">size</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回列表中的元素数。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="java.util 中的接口" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">List</span></a><span style="font-size:18px;">&lt;</span><a target="_blank" title="List 中的类型参数" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">E</span></a><span style="font-size:18px;">&gt;</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#subList(int, int)" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">subList</span></a></strong><span style="font-size:18px;">(int&nbsp;fromIndex,
+ int&nbsp;toIndex)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回列表中指定的 <tt>fromIndex</tt>（包括 ）和 <tt>toIndex</tt>（不包括）之间的部分视图。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code><span style="font-size:18px;">&nbsp;</span><a target="_blank" title="java.lang 中的类" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/lang/Object.html" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">Object</span></a><span style="font-size:18px;">[]</span></code></span></td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#toArray()" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">toArray</span></a></strong><span style="font-size:18px;">()</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回以正确顺序包含列表中的所有元素的数组。</span></td>
+</tr>
+<tr class="TableRowColor" bgcolor="white"><td valign="top" width="1%" align="right"><span size="-1"><code></code></span><table class=" " border="0" cellspacing="0" summary="" cellpadding="0"><tbody><tr valign="top" align="right"><td nowrap="nowrap"><span size="-1"><code><span style="font-size:18px;">&lt;T&gt; T[]</span></code></span></td>
+</tr>
+</tbody>
+</table>
+</td>
+<td><code><strong><a target="_blank" href="file:///E:/%E8%AE%A1%E7%AE%97%E6%9C%BA/java/api/java/util/List.html#toArray(T[])" style="color:#336699;text-decoration:none;"><span style="font-size:18px;">toArray</span></a></strong><span style="font-size:18px;">(T[]&nbsp;a)</span></code><span style="font-size:18px;"> <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;返回以正确顺序包含列表中所有元素的数组；返回数组的运行时类型是指定数组的运行时类型。</span></td>
+</tr>
+</tbody>
+</table>
+</pre></div>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;"><img alt="" src="http://my.csdn.net/uploads/201205/13/1336889531_5636.jpg" style="border:none;" /></span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;color:#ff0000;">其中set方法返回的是被替换的内容。<img alt="" src="http://my.csdn.net/uploads/201205/13/1336889803_9040.jpg" style="border:none;" /></span></p>
+<p style="color:#333333;line-height:26px;">&nbsp;</p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;color:#ff0000;">Linked&nbsp;改快读慢</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;color:#ff0000;">Array&nbsp;读快改慢</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;color:#ff0000;">Hash 两都之间</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">Collection是集合接口<br />
+&nbsp;&nbsp;&nbsp; |————Set子接口:无序，不允许重复。<br />
+&nbsp;&nbsp;&nbsp; |————List子接口:有序，可以有重复元素。</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">&nbsp;&nbsp;&nbsp; 区别：Collections是集合类</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">&nbsp;&nbsp;&nbsp; Set和List对比：<br />
+&nbsp;&nbsp;&nbsp; Set：检索元素效率低下，删除和插入效率高，插入和删除不会引起元素位置改变。<br />
+&nbsp;&nbsp;&nbsp; List：和数组类似，List可以动态增长，查找元素效率高，插入删除元素效率低，因为会引起其他元素位置改变。</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">&nbsp;&nbsp;&nbsp; Set和List具体子类：<br />
+&nbsp;&nbsp;&nbsp; Set<br />
+&nbsp;&nbsp;&nbsp;&nbsp; |————HashSet：以哈希表的形式存放元素，插入删除速度很快。</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">&nbsp;&nbsp;&nbsp; List<br />
+&nbsp;&nbsp;&nbsp;&nbsp; |————ArrayList：动态数组<br />
+&nbsp;&nbsp;&nbsp;&nbsp; |————LinkedList：链表、队列、堆栈。</span></p>
+<p style="color:#333333;line-height:26px;"><span style="font-size:18px;">&nbsp;&nbsp;&nbsp; Array和java.util.Vector<br />
+&nbsp;&nbsp;&nbsp; Vector是一种老的动态数组，是线程同步的，效率很低，一般不赞成使用。</span></p>
+<p style="color:#333333;line-height:26px;">&nbsp;</p>
+<p style="color:#333333;line-height:26px;"><a target="_blank" class=" " name="mapusage" style="color:#336699;"><span class="smalltitle"><strong><span style="font-size:16px;"><code>Map</code>&nbsp;接口</span></strong></span></a></p>
+<p style="color:#333333;line-height:26px;"><code><span style="font-size:16px;">Map</span></code>&nbsp;接口不是&nbsp;<code><span style="font-size:16px;">Collection</span></code>&nbsp;接口的继承。而是从自己的用于维护键-值关联的接口层次结构入手。按定义，该接口描述了从不重复的键到值的映射。</p>
+<p style="color:#333333;line-height:26px;">我们可以把这个接口方法分成三组操作：改变、查询和提供可选视图。</p>
+<p style="color:#333333;line-height:26px;">改变操作允许您从映射中添加和除去键-值对。键和值都可以为&nbsp;<code><span style="font-size:16px;">null</span></code>。但是，您不能把<code><span style="font-size:16px;">Map</span></code>&nbsp;作为一个键或值添加给自身。</p>
+<ul style="color:#333333;line-height:26px;"><li><code><span style="font-size:16px;">Object put(Object key, Object value)<span style="color:#ff0000;">返回值是被替换的值。</span></span></code></li>
+<li><code><span style="font-size:16px;">Object remove(Object key)</span></code></li>
+<li><code><span style="font-size:16px;">void putAll(Map mapping)</span></code></li>
+<li><code><span style="font-size:16px;">void clear()</span></code></li>
+</ul>
+<p style="color:#333333;line-height:26px;">查询操作允许您检查映射内容：</p>
+<ul style="color:#333333;line-height:26px;"><li><code><span style="font-size:16px;">Object get(Object key)</span></code></li>
+<li><code><span style="font-size:16px;">boolean containsKey(Object key)</span></code></li>
+<li><code><span style="font-size:16px;">boolean containsValue(Object value)</span></code></li>
+<li><code><span style="font-size:16px;">int size()</span></code></li>
+<li><code><span style="font-size:16px;">boolean isEmpty()</span></code></li>
+</ul>
+<p style="color:#333333;line-height:26px;">最后一组方法允许您把键或值的组作为集合来处理。</p>
+<ul style="color:#333333;line-height:26px;"><li><code><span style="font-size:16px;">public Set keySet()</span></code></li>
+<li><code><span style="font-size:16px;">public Collection values()</span></code></li>
+<li><code><span style="font-size:16px;">public Set entrySet()</span></code></li>
+</ul>
+<p style="color:#333333;line-height:26px;">因为映射中键的集合必须是唯一的，您用&nbsp;<code><span style="font-size:16px;">Set</span></code>&nbsp;支持。因为映射中值的集合可能不唯一，您用<code><span style="font-size:16px;">Collection</span></code>&nbsp;支持。最后一个方法返回一个实现&nbsp;<code><span style="font-size:16px;">Map.Entry</span></code>&nbsp;接口的元素&nbsp;<code><span style="font-size:16px;">Set</span></code>。</p>
+<p style="color:#333333;line-height:26px;"><strong>Map.Entry 接口</strong></p>
+<p style="color:#333333;line-height:26px;"><code><span style="font-size:16px;">Map</span></code>&nbsp;的&nbsp;<code><span style="font-size:16px;">entrySet()</span></code>&nbsp;方法返回一个实现<code><span style="font-size:16px;">Map.Entry</span></code>&nbsp;接口的对象集合。集合中每个对象都是底层&nbsp;<code><span style="font-size:16px;">Map</span></code>&nbsp;中一个特定的键-值对。</p>
+<p style="color:#333333;line-height:26px;">通过这个集合迭代，您可以获得每一条目的键或值并对值进行更改。但是，如果底层&nbsp;<code><span style="font-size:16px;">Map</span></code>&nbsp;在<code><span style="font-size:16px;">Map.Entry</span></code>&nbsp;接口的<code><span style="font-size:16px;">setValue()</span></code>&nbsp;方法外部被修改，此条目集就会变得无效，并导致迭代器行为未定义。</p>
+<p style="color:#333333;line-height:26px;"><strong>HashMap 类和 TreeMap 类</strong></p>
+<p style="color:#333333;line-height:26px;">“集合框架”提供两种常规的&nbsp;<code><span style="font-size:16px;">Map</span></code>&nbsp;实现：<code><span style="font-size:16px;">HashMap</span></code>&nbsp;和<code><span style="font-size:16px;">TreeMap</span></code>。和所有的具体实现一样，使用哪种实现取决于您的特定需要。在<code><span style="font-size:16px;">Map</span></code>&nbsp;中插入、删除和定位元素，<code><span style="font-size:16px;">HashMap</span></code>&nbsp;是最好的选择。但如果您要按顺序遍历键，那么<code><span style="font-size:16px;">TreeMap</span></code>&nbsp;会更好。根据集合大小，先把元素添加到&nbsp;<code><span style="font-size:16px;">HashMap</span></code>，再把这种映射转换成一个用于有序键遍历的&nbsp;<code><span style="font-size:16px;">TreeMap</span></code>&nbsp;可能更快。使用<code><span style="font-size:16px;">HashMap</span></code>&nbsp;要求添加的键类明确定义了&nbsp;<code><span style="font-size:16px;">hashCode()</span></code>&nbsp;实现。有了<code><span style="font-size:16px;">TreeMap</span></code>&nbsp;实现，添加到映射的元素一定是可排序的。我们将在<a target="_blank" href="http://www.ibm.com/developerworks/cn/education/java/j-collections/section3.html#sorting" style="color:#336699;text-decoration:none;"><span style="color:#4c6e94;">排序</span></a>中详细介绍。</p>
+<p style="color:#333333;line-height:26px;">为了优化&nbsp;<code><span style="font-size:16px;">HashMap</span></code>&nbsp;空间的使用，您可以调优初始容量和负载因子。这个<code><span style="font-size:16px;">TreeMap</span></code>&nbsp;没有调优选项，因为该树总处于平衡状态。</p>
+<p style="color:#333333;line-height:26px;"><code><span style="font-size:16px;">HashMap</span></code>&nbsp;和&nbsp;<code><span style="font-size:16px;">TreeMap</span></code>&nbsp;都实现<code><span style="font-size:16px;">Cloneable</span></code>&nbsp;接口。</p>
+<p style="color:#333333;line-height:26px;"><code><span style="font-size:16px;">Hashtable</span></code>&nbsp;类和&nbsp;<code><span style="font-size:16px;">Properties</span></code>&nbsp;类是<code><span style="font-size:16px;">Map</span></code>&nbsp;接口的历史实现。我们将在<a target="_blank" href="http://www.ibm.com/developerworks/cn/education/java/j-collections/section5.html#dicthash" style="color:#336699;text-decoration:none;"><span style="color:#4c6e94;">Dictionary 类、Hashtable 类和 Properties 类</span></a>中讨论。</p>
+<p style="color:#333333;line-height:26px;"><strong>映射的使用示例</strong></p>
+<p style="color:#333333;line-height:26px;">以下程序演示了具体&nbsp;<code><span style="font-size:16px;">Map</span></code>&nbsp;类的使用。该程序对自命令行传递的词进行频率计数。<code><span style="font-size:16px;">HashMap</span></code>&nbsp;起初用于数据存储。后来，映射被转换为<code><span style="font-size:16px;">TreeMap</span></code>&nbsp;以显示有序的键列列表。</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;color:#333333;line-height:26px;">import java.util.*;
+
+public class MapExample {
+  public static void main(String args[]) {
+    Map map = new HashMap();
+    Integer ONE = new Integer(1);
+    for (int i=0, n=args.length; i&lt;n; i++) {
+      String key = args[i];
+      Integer frequency = (Integer)map.get(key);
+      if (frequency == null) {
+        frequency = ONE;
+      } else {
+        int value = frequency.intValue();
+        frequency = new Integer(value + 1);
+      }
+      map.put(key, frequency);
+    }
+    System.out.println(map);
+    Map sortedMap = new TreeMap(map);
+    System.out.println(sortedMap);
+  }
+}</pre><p style="color:#333333;line-height:26px;">用 Bill of Rights 的<a target="_blank" href="http://www.law.emory.edu/FEDERAL/usconst/amend.html#art-3" style="color:#336699;text-decoration:none;"><span style="color:#4c6e94;">第三篇文章</span></a>的文本运行程序产生下列输出，请注意有序输出看起来多么有用！</p>
+<p style="color:#333333;line-height:26px;">无序输出：</p>
+<p style="color:#333333;line-height:26px;"><code><span style="font-size:16px;">{prescribed=1, a=1, time=2, any=1, no=1, shall=1, nor=1, peace=1, owner=1, soldier=1, to=1, the=2, law=1, but=1, manner=1, without=1, house=1, in=4, by=1, consent=1, war=1, quartered=1, be=2, of=3}</span></code></p>
+<p style="color:#333333;line-height:26px;">有序输出：</p>
+<p style="color:#333333;line-height:26px;"><code><span style="font-size:16px;">{a=1, any=1, be=2, but=1, by=1, consent=1, house=1, in=4, law=1, manner=1, no=1, nor=1, of=3, owner=1, peace=1, prescribed=1, quartered=1, shall=1, soldier=1, the=2, time=2, to=1, war=1, without=1}</span></code></p>
+<p style="color:#333333;line-height:26px;">&nbsp;</p>
+<p style="color:#333333;line-height:26px;">&nbsp;</p>
+<p style="color:#333333;line-height:26px;">　<a target="_blank" href="http://blog.csdn.net/zsm653983/article/details/7562324" style="color:#336699;text-decoration:none;"><u><strong>Java</strong></u></a>集合框架是最常被问到的Java面试问题，要理解Java技术强大特性就有必要掌握集合框架。这里有一些实用问题，常在核心Java面试中问到。</p>
+<p style="color:#333333;line-height:26px;"><strong>　　1、什么是Java集合API</strong></p>
+<p style="color:#333333;line-height:26px;">　　Java集合框架API是用来表示和操作集合的统一框架，它包含接口、实现类、以及帮助程序员完成一些编程的算法。简言之，API在上层完成以下几件事：</p>
+<p style="color:#333333;line-height:26px;">　　● 编程更加省力，提高城程序速度和代码质量</p>
+<p style="color:#333333;line-height:26px;">　　● 非关联的API提高互操作性</p>
+<p style="color:#333333;line-height:26px;">　　● 节省<a target="_blank" href="http://blog.csdn.net/zsm653983/article/details/7562324" style="color:#336699;text-decoration:none;"><u><strong>学习</strong></u></a>使用新API成本</p>
+<p style="color:#333333;line-height:26px;">　　● 节省设计新API的时间</p>
+<p style="color:#333333;line-height:26px;">　　● 鼓励、促进软件重用</p>
+<p style="color:#333333;line-height:26px;">　　具体来说，有6个集合接口，最基本的是Collection接口，由三个接口Set、List、SortedSet继承，另外两个接口是Map、SortedMap，这两个接口不继承Collection，表示映射而不是真正的集合。</p>
+<p align="center" style="color:#333333;line-height:26px;"><a target="_blank" href="http://www.51testing.com/batch.download.php?aid=32965" style="color:#336699;text-decoration:none;"><img border="0" src="http://www.51testing.com/attachments/2012/05/346836_201205280945441piTi.jpg" alt="" style="border:none;" /></a></p>
+<p align="left" style="color:#333333;line-height:26px;"><strong>　　2、什么是Iterator</strong></p>
+<p align="left" style="color:#333333;line-height:26px;">　　一些集合类提供了内容遍历的功能，通过java.util.Iterator接口。这些接口允许遍历对象的集合。依次操作每个元素对象。当使用 Iterators时，在获得Iterator的时候包含一个集合快照。通常在遍历一个Iterator的时候不建议修改集合本省。</p>
+<p align="left" style="color:#333333;line-height:26px;"><strong>　　3、Iterator与ListIterator有什么区别？</strong></p>
+<p align="left" style="color:#333333;line-height:26px;">　　Iterator：只能正向遍历集合，适用于获取移除元素。ListIerator：继承Iterator，可以双向列表的遍历，同样支持元素的修改。</p>
+<p align="left" style="color:#333333;line-height:26px;"><strong>　　4、什么是HaspMap和Map？</strong></p>
+<p align="left" style="color:#333333;line-height:26px;">　　Map是接口，Java 集合框架中一部分，用于存储键值对，HashMap是用哈希算法实现Map的类。</p>
+<p align="left" style="color:#333333;line-height:26px;"><strong>　　5、HashMap与HashTable有什么区别？对比Hashtable VS HashMap</strong></p>
+<p align="left" style="color:#333333;line-height:26px;">　　两者都是用key-value方式获取数据。Hashtable是原始集合类之一（也称作遗留类）。HashMap作为新集合框架的一部分在Java2的1.2版本中加入。它们之间有一下区别：</p>
+<p align="left" style="color:#333333;line-height:26px;">　　● HashMap和Hashtable大致是等同的，除了非同步和空值（HashMap允许null值作为key和value，而Hashtable不可以）。</p>
+<p align="left" style="color:#333333;line-height:26px;">　　● HashMap没法保证映射的顺序一直不变，但是作为HashMap的子类LinkedHashMap，如果想要预知的顺序迭代（默认按照插入顺序），你可以很轻易的置换为HashMap，如果使用Hashtable就没那么容易了。</p>
+<p align="left" style="color:#333333;line-height:26px;">　　● HashMap不是同步的，而Hashtable是同步的。</p>
+<p align="left" style="color:#333333;line-height:26px;">　　● 迭代HashMap采用快速失败机制，而Hashtable不是，所以这是设计的考虑点。</p>
+<p align="left" style="color:#333333;line-height:26px;"><strong>　　6、在Hashtable上下文中同步是什么意思？</strong></p>
+<p align="left" style="color:#333333;line-height:26px;">　　同步意味着在一个时间点只能有一个线程可以修改哈希表，任何线程在执行hashtable的更新操作前需要获取对象锁，其他线程等待锁的释放。</p>
+<p align="left" style="color:#333333;line-height:26px;"><strong>　　7、什么叫做快速失败特性</strong></p>
+<p align="left" style="color:#333333;line-height:26px;">　　从高级别层次来说快速失败是一个系统或软件对于其故障做出的响应。一个快速失败系统设计用来即时报告可能会导致失败的任何故障情况，它通常用来停止正常的操作而不是尝试继续做可能有缺陷的<a target="_blank" href="http://blog.csdn.net/zsm653983/article/details/7562324" style="color:#336699;text-decoration:none;"><u><strong>工作</strong></u></a>。当有问题发生时，快速失败系统即时可见地发错错误告警。在Java中，快速失败与iterators有关。如果一个iterator在集合对象上创建了，其它线程欲“结构化”的修改该集合对象，并发修改异常 （ConcurrentModificationException） 抛出。</p>
+<p align="left" style="color:#333333;line-height:26px;"><strong>　　8、怎样使Hashmap同步？</strong></p>
+<p align="left" style="color:#333333;line-height:26px;">　　HashMap可以通过Map m = Collections.synchronizedMap（hashMap）来达到同步的效果。</p>
+<p align="left" style="color:#333333;line-height:26px;"><strong>　　9、什么时候使用Hashtable，什么时候使用HashMap</strong></p>
+<p align="left" style="color:#333333;line-height:26px;">　　基本的不同点是Hashtable同步HashMap不是的，所以无论什么时候有多个线程访问相同实例的可能时，就应该使用Hashtable，反之使用HashMap。非线程安全的数据结构能带来更好的性能。</p>
+<p align="left" style="color:#333333;line-height:26px;">　　如果在将来有一种可能—你需要按顺序获得键值对的方案时，HashMap是一个很好的选择，因为有HashMap的一个子类 LinkedHashMap。所以如果你想可预测的按顺序迭代（默认按插入的顺序），你可以很方便用LinkedHashMap替换HashMap。反观要是使用的Hashtable就没那么简单了。同时如果有多个线程访问HashMap，Collections.synchronizedMap（）可以代替，总的来说HashMap更灵活。</p>
+<p align="left" style="color:#333333;line-height:26px;"><strong>　　10、为什么Vector类认为是废弃的或者是非官方地不推荐使用？或者说为什么我们应该一直使用ArrayList而不是Vector</strong></p>
+<p align="left" style="color:#333333;line-height:26px;">　　你应该使用ArrayList而不是Vector是因为默认情况下你是非同步访问的，Vector同步了每个方法，你几乎从不要那样做，通常有想要同步的是整个操作序列。同步单个的操作也不安全（如果你迭代一个Vector，你还是要加锁，以避免其它线程在同一时刻改变集合）.而且效率更慢。当然同样有锁的开销即使你不需要，这是个很糟糕的方法在默认情况下同步访问。你可以一直使用Collections.sychronizedList来装饰一个集合。</p>
+<p align="left" style="color:#333333;line-height:26px;">　　事实上Vector结合了“可变数组”的集合和同步每个操作的实现。这是另外一个设计上的缺陷。Vector还有些遗留的方法在枚举和元素获取的方法，这些方法不同于List接口，如果这些方法在代码中程序员更趋向于想用它。尽管枚举速度更快，但是他们不能检查如果集合在迭代的时候修改了，这样将导致问题。尽管以上诸多原因，oracle也从没宣称过要废弃Vector。</p>
+</div></body></html>

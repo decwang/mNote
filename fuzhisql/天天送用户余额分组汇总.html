@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-31T08:49:42Z"/><meta name="updated" content="2017-05-31T08:49:58Z"/><title>天天送用户余额分组汇总</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>SELECT</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>ID,</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>POINT + BALANCE AS AMOUNT,</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>CASE POINT + BALANCE</div>
+<div>WHEN POINT*100 &nbsp;+ &nbsp;BALANCE &lt;= 0 THEN 'A0.0'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 0 AND POINT*100 + BALANCE &lt;= 50) THEN 'A0.5'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 050 AND POINT*100 + BALANCE &lt;= 100) THEN 'A1.0'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 100 AND POINT*100 + BALANCE &lt;= 500) THEN 'A5.0'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 500 AND POINT*100 + BALANCE &lt;= 1000) THEN 'A10.0'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 1000 AND POINT*100 + BALANCE &lt;= 5000) THEN 'A50.0'</div>
+<div>#ELSE 'AALL'</div>
+<div>END AS AMOUNTTYPE</div>
+<div>FROM</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>USER_INFO</div>
+<div>#WHERE MOBILE IN ( '15231647015' ,'18813155821','18501340804')</div>
+<div>LIMIT 10</div>
+<div>;</div>
+<div>/*</div>
+<div>SELECT ID,POINT,BALANCE, POINT*100+BALANCE AS AMOUNT FROM USER_INFO&nbsp;</div>
+<div>WHERE POINT*100+BALANCE &gt; 1000;</div>
+<div>*/</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>SELECT</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>ID,</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>POINT + BALANCE AS AMOUNT,</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>CASE POINT + BALANCE</div>
+<div>WHEN&nbsp;</div>
+<div>WHEN POINT*100 &nbsp;+ BALANCE &lt;= 0 THEN 'A0.0'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 0 AND POINT*100 + BALANCE &lt;= 50) THEN 'A0.5'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 050 AND POINT*100 + BALANCE &lt;= 100) THEN 'A1.0'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 100 AND POINT*100 + BALANCE &lt;= 500) THEN 'A5.0'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 500 AND POINT*100 + BALANCE &lt;= 1000) THEN 'A10.0'</div>
+<div>WHEN (POINT*100 + BALANCE &gt; 1000 AND POINT*100 + BALANCE &lt;= 5000) THEN 'A50.0'</div>
+<div>#ELSE 'AALL'</div>
+<div>END AS AMOUNTTYPE</div>
+<div>FROM</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>USER_INFO</div>
+<div>#WHERE MOBILE IN ( '15231647015' ,'18813155821','18501340804')</div>
+<div>LIMIT 10</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>SELECT A.ID,A.AMOUNT,</div>
+<div>CASE A.AMOUNT</div>
+<div>WHEN (A.AMOUNT is null ) THEN 'A0.0'</div>
+<div>WHEN (A.AMOUNT &gt;= 0 <span class="Apple-tab-span" style="white-space:pre;">		</span>AND A.AMOUNT &lt;= 50) THEN 'A0.5'</div>
+<div>WHEN (A.AMOUNT &gt; 50 <span class="Apple-tab-span" style="white-space:pre;">		</span>AND A.AMOUNT &lt;= 100) THEN 'A1.0'</div>
+<div>WHEN ( A.AMOUNT &lt;= 500) THEN 'A5.0'</div>
+<div>WHEN (A.AMOUNT &gt; 500 <span class="Apple-tab-span" style="white-space:pre;">	</span>AND A.AMOUNT &lt;= 1000) THEN 'A10.0'</div>
+<div>WHEN (A.AMOUNT &gt; 1000 <span class="Apple-tab-span" style="white-space:pre;">	</span>AND A.AMOUNT &lt;= 5000) THEN 'A50.0'</div>
+<div>#ELSE 'AALL'</div>
+<div>END AS AMOUNTTYPE</div>
+<div>&nbsp;FROM (</div>
+<div>SELECT ID, CONVERT(IFNULL(POINT,0)*100 + IFNULL(BALANCE,0)*100, SIGNED) AS AMOUNT FROM USER_INFO LIMIT 1</div>
+<div>)</div>
+<div>AS A</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>SELECT A.ID,A.USER_AMOUNT,</div>
+<div>CASE A.USER_AMOUNT</div>
+<div>#WHEN (A.USER_AMOUNT = 0 <span class="Apple-tab-span" style="white-space:pre;">		</span>AND 1=1) THEN 'A0.0'</div>
+<div>WHEN (A.USER_AMOUNT &gt;= 0 <span class="Apple-tab-span" style="white-space:pre;">		</span>AND A.USER_AMOUNT &lt;= 50) THEN 'A0.5'</div>
+<div>#ELSE 'AMAX'</div>
+<div>END AS AMOUNTTYPE</div>
+<div>&nbsp;FROM (</div>
+<div>SELECT ID, CONVERT(IFNULL(POINT,0)*100 + IFNULL(BALANCE,0)*100, SIGNED) AS USER_AMOUNT FROM USER_INFO LIMIT 10</div>
+<div>)</div>
+<div>AS A</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>SELECT ID,cast(POINT as SIGNED)+BALANCE*100 AS AMOUNT FROM USER_INFO LIMIT 10</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>SELECT ID, POINT, CAST(POINT*100 AS SIGNED) FROM USER_INFO LIMIT 10;</div>
+<div><br />
+</div>
+<div>SELECT A.ID,A.USER_AMOUNT,</div>
+<div>CASE A.USER_AMOUNT</div>
+<div>#WHEN (A.USER_AMOUNT = 0 <span class="Apple-tab-span" style="white-space:pre;">		</span>AND 1=1) THEN 'A0.0'</div>
+<div>WHEN (A.USER_AMOUNT &gt;= 0 <span class="Apple-tab-span" style="white-space:pre;">		</span>AND A.USER_AMOUNT &lt;= 50) THEN 'A0.5'</div>
+<div>#ELSE 'AMAX'</div>
+<div>END AS AMOUNTTYPE</div>
+<div>&nbsp;FROM (</div>
+<div>SELECT ID, CONVERT(IFNULL(POINT,0)*100 + IFNULL(BALANCE,0)*100, SIGNED) AS USER_AMOUNT FROM USER_INFO LIMIT 10</div>
+<div>)</div>
+<div>AS A</div>
+<div><br />
+</div>
+<div>select balance from user_info where balance &gt; 0&nbsp;</div>
+<div>limit 1000;</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>SELECT A.ID,A.USER_AMOUNT,</div>
+<div>CASE A.USER_AMOUNT</div>
+<div>WHEN (A.USER_AMOUNT = 0 <span class="Apple-tab-span" style="white-space:pre;">		</span>AND 1=1) THEN 'A0.0'</div>
+<div>WHEN (A.USER_AMOUNT &gt;= 0 <span class="Apple-tab-span" style="white-space:pre;">		</span>AND A.USER_AMOUNT &lt;= 50) THEN 'A0.5'</div>
+<div>#ELSE 'AMAX'</div>
+<div>END AS AMOUNTTYPE</div>
+<div>&nbsp;FROM (</div>
+<div>SELECT ID, balance AS USER_AMOUNT FROM USER_INFO &nbsp;where balance &gt; 0 LIMIT 10</div>
+<div>)</div>
+<div>AS A</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>LIMIT 10;</div>
+<div><br />
+</div>
+<div>#上面使用casewhen,发现有问题,改用count(casewhen)</div>
+<div>/*</div>
+<div>mysql 分组按条件统计</div>
+<div>&nbsp;</div>
+<div><br />
+</div>
+<div>百度经验</div>
+<div><br />
+</div>
+<div>COUNT(CASE WHEN (S.rank = 1) THEN S.loanContractId END ) AS 'MZ', &nbsp;//根据loanContractId 分组，并统计rank=1出现的次数</div>
+<div>*/</div>
+<div>SELECT&nbsp;</div>
+<div>COUNT(CASE WHEN POINT + BALANCE &lt;= 0.0 THEN 1 ELSE NULL END) AS CNT0,</div>
+<div>COUNT(CASE WHEN POINT + BALANCE &gt; &nbsp;0.0 AND POINT + BALANCE &lt;= 0.5 &nbsp;THEN 1 ELSE NULL END) AS CNT50,</div>
+<div>COUNT(CASE WHEN POINT + BALANCE &gt; &nbsp;0.5 AND POINT + BALANCE &lt;= 1.0 &nbsp;THEN 1 ELSE NULL END) AS CNT100,</div>
+<div>COUNT(CASE WHEN POINT + BALANCE &gt; &nbsp;1.0 AND POINT + BALANCE &lt;= 5.0 &nbsp;THEN 1 ELSE NULL END) AS CNT500,</div>
+<div>COUNT(CASE WHEN POINT + BALANCE &gt; &nbsp;5.0 AND POINT + BALANCE &lt;= 10.0 &nbsp;THEN 1 ELSE NULL END) AS CNT1000,</div>
+<div>COUNT(CASE WHEN POINT + BALANCE &gt; &nbsp;10.0 AND POINT + BALANCE &lt;= 50.0 &nbsp;THEN 1 ELSE NULL END) AS CNT5000,</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>COUNT(CASE WHEN POINT + BALANCE &gt; &nbsp;50.0 &nbsp; THEN 1 ELSE NULL END) AS CNTMAX</div>
+<div>FROM USER_INFO&nbsp;</div>
+<div>#GROUP BY POINT + BALANCE</div>
+<div><br />
+</div>
+<div>SELECT COUNT(*) FROM USER_INFO&nbsp;</div>
+<div>WHERE POINT + BALANCE &gt; 50.0</div>
+<div><br />
+</div>
+<div><br />
+</div></body></html>

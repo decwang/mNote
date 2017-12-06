@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-29T08:42:59Z"/><meta name="updated" content="2017-06-29T08:43:01Z"/><title>Java开发web的几种开发模式  Java Web开发方案有多种可供选择，这里列举一些经典的开发模式进行横向比较，为Java Web的开发模式选择提供参考。除此之外还有好多方案（如Tapestry</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h2 style="margin:0px 0px 4px;font-size:20px;"><a id="cb_post_title_url" href="http://www.cnblogs.com/mq0036/p/3868418.html" style="color:#223355;text-decoration:none;">Java开发web的几种开发模式</a></h2>
+<div class="postbody"><div id="cnblogs_post_body" style="margin-bottom:20px;word-break:break-word;font-family:Tahoma, Geneva, '\\5b8b\\4f53', sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><p style="margin:10px auto;">Java Web开发方案有多种可供选择，这里列举一些经典的开发模式进行横向比较，为Java Web的开发模式选择提供参考。除此之外还有好多方案（如Tapestry和Wicket等等）并不了解，这里就不列举了。<br />
+<br />
+JSP＋JAVABEAN开发模式：<br />
+&nbsp;&nbsp;&nbsp; 特点：该模式将业务逻辑与页面表现进行分离，在一定程度上增加了程序的可调试性和维护性。<br />
+&nbsp;&nbsp;&nbsp; 缺点：页面将控制与显示集于一身。<br />
+&nbsp;&nbsp;&nbsp; 结论：简单，适合小型项目的快速构建与运行。<br />
+<br />
+JSP＋Servlet＋JavaBean开发模式：<br />
+&nbsp;&nbsp;&nbsp; 特点：JSP作为视图，来表现页面；Servlet作为控制器，控制程序的流程并调用业务进行处理；JavaBean封装了业务逻辑。遵循了MVC设计模式。<br />
+&nbsp;&nbsp;&nbsp; 缺点：没有统一的开发框架导致开发周期长。<br />
+<br />
+Struts开发方案：<br />
+&nbsp;&nbsp;&nbsp; 特点：成熟的MVC开发框架。<br />
+&nbsp;&nbsp;&nbsp; 构成：控制器：ActionServlet 组件：Struts框架的中央控制器。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RequestProcessor 组件：每个子模块都具有的请求处理器。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Action 组件：业务代理，它将调用模型进行一项具体的业务逻辑处理。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 视图：主要由JSP页面构成<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 还包括HTML文档；标准标签库(JSTL)和Struts标签库；<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; JavaScript脚本和CSS样式；<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 多媒体文件；<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 消息资源文件；<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ActionForm类。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 模式：通常在Structs中使用其他模型组建来实现业务逻辑。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如：JavaBean技术、EJB技术、Hibernates设计模式。<br />
+结论：对于一些大型的项目，Struts框架会提高开发效率，并对后期的维护有很大好处。<br />
+<br />
+Spring开发方案：<br />
+&nbsp;&nbsp;&nbsp; 特点：拥有IOC和AOP两种先进的技术为基础，完美的简化了企业级开发的复杂度，<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 是一个理想的Web程序框架。<br />
+&nbsp;&nbsp;&nbsp; 构成：核心模块：实现了IOC模式，包含BeanFactory类负责对JavaBean的配置与管理。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 上下文模块：继承BeanFactory类，<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 添加了事件处理、国际化、资源装载、透明装载以及数据校验等功能，<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 提供了框架式的Bean访问方式和很多企业级功能。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如：JNDI访问、支持EJB、远程调用、继承模板框架、E-mail和定时任务调度等。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AOP模块：提供了用标准Java语言编写的AOP框架，<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 使应用程序抛开EJB的复杂性，但拥有传统EJB的关键功能。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DAO模块：提供了JDBC的抽象层，并且提供了对声明式事物和编程式事务的支持。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Web模块：建立在上下文模块基础之上，提供了Servlet监听器的Context和Web应用的上下文。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 对现有的Web框架如：JSF、Tapestry、Struts等提供了集成。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; O/R映射模块：提供了对现有ORM框架的支持如Hibernate。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Spring MVC框架：建立在核心模块之上，嫩够适应于多种多视图、模板技术、国际化和验证服务，<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 实现控制逻辑和业务逻辑清晰的分离。<br />
+<br />
+Struts＋HIbernate开发方案：<br />
+&nbsp;&nbsp;&nbsp; 特点：利用Struts的MVC设计模式，与Hibernate持久化对象组成的开发方案。<br />
+<br />
+Struts＋Spring＋Hibernate开发方案：<br />
+&nbsp;&nbsp;&nbsp; 特点：Struts负责表示层，<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Spring负责逻辑层的业务，<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hibernate持久层中数据库的操作，组成的开发方案。</p>
+<p style="margin:10px auto;">出处：http://blog.csdn.net/yue7603835/article/details/7479855</p>
+</div>
+<div id="MySignature" style="font-family:Tahoma, Geneva, '\\5b8b\\4f53', sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><div class="autograph" style="padding:15px;background-color:#fff7dc;border:2px solid #ffbfbf;font-family:&quot;Courier New&quot;, 微软雅黑, Consolas, Arial, 宋体;"></div>
+</div>
+</div></body></html>

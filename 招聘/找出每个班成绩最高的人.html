@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-15T03:16:40Z"/><meta name="updated" content="2017-05-15T03:18:36Z"/><title>找出每个班成绩最高的人</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>create table tb_score(uname varchar(20),uclass varchar(10),uscore int);</div>
+<div>insert into tb_score(uname,uclass,uscore)values('zhangsan','C1',90);</div>
+<div>insert into tb_score(uname,uclass,uscore)values('lisi','C1',91);</div>
+<div>insert into tb_score(uname,uclass,uscore)values('wanger','C2',89);</div>
+<div>insert into tb_score(uname,uclass,uscore)values('mazi','C2',92);</div>
+<div>insert into tb_score(uname,uclass,uscore)values('zhaoyi','C3',100);</div>
+<div>insert into tb_score(uname,uclass,uscore)values('qianer','C3',93);</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>#找出每个班成绩最高的人</div>
+<div>select uname,uclass,max(uscore) from tb_score&nbsp;</div>
+<div>group by uclass;</div></body></html>

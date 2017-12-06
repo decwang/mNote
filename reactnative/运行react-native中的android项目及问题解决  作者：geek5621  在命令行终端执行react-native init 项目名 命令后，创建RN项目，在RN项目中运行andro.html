@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-04-11T11:00:25Z"/><meta name="updated" content="2017-04-11T11:00:27Z"/><title>运行react-native中的android项目及问题解决  作者：geek5621  在命令行终端执行react-native init 项目名 命令后，创建RN项目，在RN项目中运行andro</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h1 style="box-sizing:border-box;margin:30px 0px 0px;font-size:22px;font-family:'Microsoft Yahei';font-weight:400;line-height:1.5em;color:#305786;padding:0px;background-image:none;text-align:center;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">运行react-native中的android项目及问题解决</h1>
+<p class="author" style="box-sizing:border-box;margin-top:0px;margin-bottom:0px;padding:30px 0px 0px;line-height:1.5em;color:#5592c1;text-align:center;font-family:'Microsoft Yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><span style="box-sizing:border-box;color:#999999;">作者：</span><a href="http://my.csdn.net/geek5621" target="_blank" style="box-sizing:border-box;background:transparent;color:#5592c1;text-decoration:none;">geek5621</a></p>
+<div class="divtexts" style="box-sizing:border-box;margin:30px 0px 0px;padding:0px;line-height:1.8;color:#565f69;position:relative;overflow:hidden;font-family:'Microsoft Yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;white-space:pre-wrap;">在命令行终端执行react-native init 项目名 命令后，创建RN项目，在RN项目中运行android的工程有两种方式：</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;white-space:pre-wrap;">第一种方式，使用webstorm打开RN项目,在webstorm工具的terminal终端中输入react-native run-android命令，webstorm会把android应用运行到设备或模拟器上</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;white-space:pre-wrap;"><img src="http://img.blog.csdn.net/20170105122242262?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2VlazU2MjE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="box-sizing:border-box;border:0px;vertical-align:middle;" /><br style="box-sizing:border-box;" />
+</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;white-space:pre-wrap;">
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">打开应用你可能会发现<span style="box-sizing:border-box;color:#ff0000;">报错</span>：&nbsp;红屏<span style="box-sizing:border-box;color:#ff0000;">"Could not get BatchedBridge, make sure your bundle is packaged correctly"</span></div>
+<img src="http://img.blog.csdn.net/20170105122043046?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2VlazU2MjE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="box-sizing:border-box;border:0px;vertical-align:middle;" /><br style="box-sizing:border-box;" />
+</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;white-space:pre-wrap;">
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">解决方案：打开设备悬浮窗，不同设备打开方式可能不一样，简单写两种设备的打开方式，一种是点击手机左下角菜单按钮打开悬浮窗，一种是要到手机的应用程序中去查找，之后可以在打开的程序中通过摇一摇手机打开悬浮窗。</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;"><img src="http://img.blog.csdn.net/20170105122427968?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2VlazU2MjE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="box-sizing:border-box;border:0px;vertical-align:middle;" /><br style="box-sizing:border-box;" />
+</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">打开悬浮窗之后，点击Dev Setting之后选择Debug serer host在弹出框中输入开启服务的ip和端口号（默认是8081）保存，回到程序页面再次打开悬浮窗点击reload即可成功运行程序。</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;"><img src="http://img.blog.csdn.net/20170105122509612?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2VlazU2MjE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="box-sizing:border-box;border:0px;vertical-align:middle;" /><br style="box-sizing:border-box;" />
+</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">第二种方式，通过android studio打开RN中的android项目并运行。</div>
+<img src="http://img.blog.csdn.net/20170105122552784?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2VlazU2MjE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="box-sizing:border-box;border:0px;vertical-align:middle;" /><br style="box-sizing:border-box;" />
+</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;white-space:pre-wrap;">
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">通过第二种方式打开android项目并运行不会自动的开启react-native服务，需要我们手动的去开启，如果react-native服务没有开启会报如下错误：<span style="box-sizing:border-box;color:#ff0000;">Could not connect to development server.</span></div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;"><span style="box-sizing:border-box;color:#ff0000;"><img src="http://img.blog.csdn.net/20170105122642128?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2VlazU2MjE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="box-sizing:border-box;border:0px;vertical-align:middle;" /><br style="box-sizing:border-box;" />
+</span></div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">出现这个问题我们需要手动的去开启服务，使用终端命令行工具cd进入到项目的根目录中，执行react-native start</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;"><img src="http://img.blog.csdn.net/20170105122728332?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2VlazU2MjE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="box-sizing:border-box;border:0px;vertical-align:middle;" /><br style="box-sizing:border-box;" />
+</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">再次通过android studio运行android项目到设备上，有可能会出现<span style="box-sizing:border-box;color:#ff0000;">"Could not get BatchedBridge, make sure your bundle is packaged correctly"</span>这个错误通过上面提到的方法进行解决，即可成功运行程序。</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;"><br style="box-sizing:border-box;" />
+</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">如果还是报<span style="box-sizing:border-box;color:#ff0000;">Could not get BatchedBridge, make sure your bundle is packaged correctly</span>这个错误可以尝试使用下面的方案进行解决，首先在RN项目的android-&gt;app-&gt;src-&gt;main目录下创建一个名为assets空文件夹，之后使用终端命令行进入到RN项目的根目录，执行</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">命令，之后重启react-native服务，并重新运行android项目。</div>
+<img src="http://img.blog.csdn.net/20170105122822692?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZ2VlazU2MjE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="box-sizing:border-box;border:0px;vertical-align:middle;" /><br style="box-sizing:border-box;" />
+</div>
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;white-space:pre-wrap;">
+<div style="box-sizing:border-box;margin:0px;padding:0px;line-height:1.5;">以上就是在RN项目中运行android工程的两种方式，在运行项目的过程中可能还会出现各种问题，在这里由于篇幅的原因就不一一列举了，会再开一篇记录在学习RN时遇到的各种问题及解决方案。</div>
+</div>
+</div></body></html>

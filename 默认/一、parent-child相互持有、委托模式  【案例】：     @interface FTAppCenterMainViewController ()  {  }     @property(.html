@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-10-10T10:22:46Z"/><meta name="updated" content="2016-10-10T10:22:50Z"/><title>一、parent-child相互持有、委托模式  【案例】：     @interface FTAppCenterMainViewController ()  {  }     @property(</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>一、parent-child相互持有、委托模式</div>
+<div>【案例】：</div>
+<div><br />
+</div>
+<div>@interface FTAppCenterMainViewController ()</div>
+<div>{</div>
+<div>}</div>
+<div><br />
+</div>
+<div>@property(weak,nonatomic) UITableView* myTableView;</div>
+<div>@end</div>
+<div>这里面的myTableView就使用了weak修饰符。</div>
+<div>@property (nonatomic, weak) &nbsp;iddelegate;</div>
+<div>【推荐方法】：</div>
+<div><br />
+</div>
+<div>child只有parent的对象为weak类型：</div>
+<div><br />
+</div>
+<div>@property (nonatomic, weak) &nbsp;iddelegate;</div>
+<div>二、block</div>
+<div>【案例】：</div>
+<div><br />
+</div>
+<div>看下面的代码：</div>
+<div><br />
+</div>
+<div>typedef void (^RequestNaviCallBack)(NSInteger naviCode,NSInteger httpCode,NSError * error);</div>
+<div>@interface FtNaviManager : NSObject</div>
+<div>{</div>
+<div>}</div>
+<div>@property (nonatomic, strong) &nbsp; RequestNaviCallBack naviCallBack;</div>
+<div>这是一个请求导航的类，类属性持有了RequestNaviCallBack，这时，如果RequestNaviCallBack再持有self，必然造成循环引用。</div>
+<div>【推荐方法】：</div>
+<div><br />
+</div>
+<div>如果有循环引用，编译器会提示警告。</div>
+<div>如果对象没有持有Block对象，那么不会产生循环引用。如果对象持有了block对象，那么在block引用self的时候这么定义：</div>
+<div><br />
+</div>
+<div>__weak typeof(self) weakSelf = self;</div>
+<div>三、NSTimer</div>
+<div>【案例】：</div>
+<div><br />
+</div>
+<div>@interface FtKeepAlive : NSObject</div>
+<div>{</div>
+<div>&nbsp; &nbsp; NSTimer* &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_keepAliveTimer; // 发送心跳timer</div>
+<div>}</div>
+<div>//实现文件</div>
+<div>_keepAliveTimer = [NSTimer scheduledTimerWithTimeInterval:_expired target:self selector:@selector(keepLiveStart) userInfo:nil repeats:YES];</div>
+<div>类持有了_keepAliveTimer，_keepAliveTimer又持有了self，造成循环引用。</div>
+<div><br />
+</div>
+<div>【推荐方法】：</div>
+<div><br />
+</div>
+<div>NSTimer会持有对象，所以：在删除对象之前，需要将timer的invalidate方法。</div>
+<div><br />
+</div>
+<div>-(void)stopKeepAlive{</div>
+<div>&nbsp; &nbsp; [_keepAliveTimer invalidate];</div>
+<div>&nbsp; &nbsp; _keepAliveTimer = nil;</div>
+<div>}</div></body></html>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-04-07T12:37:54Z"/><meta name="updated" content="2017-04-07T12:37:58Z"/><title>mac 下安装运行 redis        mac 上安装 redis 首先必须保证mac 已经安装 xcode.     因为make时要用到 Xcode 的command Tools .   </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>mac 下安装运行 redis</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>mac 上安装 redis 首先必须保证mac 已经安装 xcode.</div>
+<div><br />
+</div>
+<div>因为make时要用到 Xcode 的command Tools .</div>
+<div><br />
+</div>
+<div>(1)下载 redis &nbsp; http://redis.googlecode.com/files/redis-3.2.8.tar.gz 解压到当前目录.</div>
+<div><br />
+</div>
+<div>(2)你也可以在终端下载:</div>
+<div><br />
+</div>
+<div>curl -O http://redis.googlecode.com/files/redis-3.2.8.tar.gz</div>
+<div>sudo tar -zxf redis-3.2.8.tar.gz</div>
+<div>(3)修改文件夹名,编译</div>
+<div><br />
+</div>
+<div>mv redis-3.2.8 redis</div>
+<div>cd redis/</div>
+<div>sudo make</div>
+<div>sudo make test</div>
+<div>sudo make isntall</div>
+<div>(4)你会在redis 目录里找到一个 redis.conf 的配置文件,打开编辑此配置文件,找到 dir &nbsp;. &nbsp;这一行配置.</div>
+<div><br />
+</div>
+<div>此配置是将内存中的数据写入一个文件,这个数据库文件要保存到什么地方 就是这个配置项起到的作用.</div>
+<div><br />
+</div>
+<div>我在mac根目录下创建了 opt 的文件夹(注意此文件夹必须有可读写权限)</div>
+<div><br />
+</div>
+<div>所以这一行的配置是 dir &nbsp;/opt/redis/</div>
+<div><br />
+</div>
+<div>修改后保存配置文件,同时将配置文件移动到 /etc 目录下.</div>
+<div><br />
+</div>
+<div>sudo mv redis.conf /etc</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>(5) 上面第三步 make install 成功后,你就应该在这个目录下看到redis</div>
+<div><br />
+</div>
+<div>/usr/local/bin/redis-server</div>
+<div>(6) 尝试启动一下 redis</div>
+<div><br />
+</div>
+<div>/usr/local/bin/redis-server /etc/redis.conf</div>
+<div>如果运行成功,你会看到下面的redis启动服务画面.</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>多么霸气的启动界面.</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>(7) 服务器端已经顺利启动,下一步我们可以启动客户端来尝试连接一下redis服务端,同时写入数据测试一把</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>ok,成功连接服务端,并写入了数据.api 的介绍后续完善.</div></body></html>

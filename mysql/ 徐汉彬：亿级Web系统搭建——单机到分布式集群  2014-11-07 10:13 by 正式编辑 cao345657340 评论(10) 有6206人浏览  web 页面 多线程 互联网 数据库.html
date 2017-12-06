@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-21T09:08:54Z"/><meta name="updated" content="2017-06-21T09:11:08Z"/><title> 徐汉彬：亿级Web系统搭建——单机到分布式集群  2014-11-07 10:13 by 正式编辑 cao345657340 评论(10) 有6206人浏览  web 页面 多线程 互联网 数据库</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="clearfix" style="clear:both;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:12px;"><div class="title"><h3 style="font-size:16px;line-height:1.5em;margin:0px 0px 0.5em 100px;padding:0px;"><img alt="原创新闻" src="http://www.iteye.com/images/news/ori.gif?1448702469" style="border:0px;vertical-align:middle;" />&nbsp;<a href="http://www.iteye.com/news/29730" title="徐汉彬：亿级Web系统搭建——单机到分布式集群" style="color:#006699;text-decoration:none;">徐汉彬：亿级Web系统搭建——单机到分布式集群</a></h3>
+<div class="news_info" style="position:relative;background-color:transparent;padding:2px;color:gray;margin-left:100px;"><span class="date" style="margin:0px 6px;padding-left:0px;color:#a12a2a;background-repeat:no-repeat no-repeat;">2014-11-07 10:13</span>&nbsp;by 正式编辑&nbsp;<a href="http://cao345657340.iteye.com/" target="_blank" title="cao345657340" style="color:#006699;text-decoration:none;">cao345657340</a>&nbsp;<span class="comment" style="margin:0px 6px;padding-left:20px;background-image:url(http://www.iteye.com/images/icon_comment.gif);background-repeat:no-repeat no-repeat;"><a href="http://www.iteye.com/news/29730#comments" style="color:#006699;text-decoration:none;">评论(10)</a></span>&nbsp;<span class="view" style="margin:0px 6px;padding-left:20px;background-image:url(http://www.iteye.com/images/icon_arrow.gif);background-repeat:no-repeat no-repeat;">有6206人浏览</span></div>
+<div class="news_tag" style="clear:both;margin:10px 0px 5px 100px;line-height:20px;"><a href="http://www.iteye.com/news/tag/web" style="color:#ffffff;text-decoration:none;display:inline-block;margin:0px 5px 5px 0px;padding:0px 10px;background-color:#aab5c3;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-right-radius:10px;border-bottom-left-radius:10px;">web</a>&nbsp;<a href="http://www.iteye.com/news/tag/%E9%A1%B5%E9%9D%A2" style="color:#ffffff;text-decoration:none;display:inline-block;margin:0px 5px 5px 0px;padding:0px 10px;background-color:#aab5c3;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-right-radius:10px;border-bottom-left-radius:10px;">页面</a>&nbsp;<a href="http://www.iteye.com/news/tag/%E5%A4%9A%E7%BA%BF%E7%A8%8B" style="color:#ffffff;text-decoration:none;display:inline-block;margin:0px 5px 5px 0px;padding:0px 10px;background-color:#aab5c3;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-right-radius:10px;border-bottom-left-radius:10px;">多线程</a>&nbsp;<a href="http://www.iteye.com/news/tag/%E4%BA%92%E8%81%94%E7%BD%91" style="color:#ffffff;text-decoration:none;display:inline-block;margin:0px 5px 5px 0px;padding:0px 10px;background-color:#aab5c3;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-right-radius:10px;border-bottom-left-radius:10px;">互联网</a>&nbsp;<a href="http://www.iteye.com/news/tag/%E6%95%B0%E6%8D%AE%E5%BA%93" style="color:#ffffff;text-decoration:none;display:inline-block;margin:0px 5px 5px 0px;padding:0px 10px;background-color:#aab5c3;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-right-radius:10px;border-bottom-left-radius:10px;">数据库</a></div>
+</div>
+</div>
+<h4 class="copyright" style="font-size:12px;line-height:1.3em;margin:0px 0px 0.25em;padding:3px 0px 20px 3px;color:gray;font-family:Helvetica, Tahoma, Arial, sans-serif;">声明：ITeye资讯文章的版权属于ITeye网站所有，严禁任何网站转载本文，否则必将追究法律责任！</h4>
+<div class="newfors" style="font-family:微软雅黑;background-color:#effaff;border:1px solid #44a2d0;padding:10px;font-size:12px;"><span style="color:#666666;vertical-align:middle;">相关知识库：</span>&nbsp;<a target="_blank" href="http://lib.csdn.net/base/android" style="color:#006699;text-decoration:none;vertical-align:middle;display:inline-block;margin:0px 5px;"><img src="http://img.knowledge.csdn.net/upload/base/1455589744328_328.jpg" width="30" height="30" alt="" class="imgradius" style="border:1px solid #f2f0f0;vertical-align:middle;border-top-left-radius:30px;border-top-right-radius:30px;border-bottom-right-radius:30px;border-bottom-left-radius:30px;" />&nbsp;<span style="display:inline-block;margin-left:5px;color:#333333;">Android知识库</span></a>&nbsp;<a target="_blank" href="http://lib.csdn.net/base/react" style="color:#006699;text-decoration:none;vertical-align:middle;display:inline-block;margin:0px 5px;"><img src="http://img.knowledge.csdn.net/upload/base/1465887837340_340.jpg" width="30" height="30" alt="" class="imgradius" style="border:1px solid #f2f0f0;vertical-align:middle;border-top-left-radius:30px;border-top-right-radius:30px;border-bottom-right-radius:30px;border-bottom-left-radius:30px;" />&nbsp;<span style="display:inline-block;margin-left:5px;color:#333333;">React知识库</span></a>&nbsp;<a target="_blank" href="http://lib.csdn.net/base/ai" style="color:#006699;text-decoration:none;vertical-align:middle;display:inline-block;margin:0px 5px;"><img src="http://img.knowledge.csdn.net/upload/base/1479972981201_201.jpg" width="30" height="30" alt="" class="imgradius" style="border:1px solid #f2f0f0;vertical-align:middle;border-top-left-radius:30px;border-top-right-radius:30px;border-bottom-right-radius:30px;border-bottom-left-radius:30px;" />&nbsp;<span style="display:inline-block;margin-left:5px;color:#333333;">人工智能基础知识库</span></a>&nbsp;<a target="_blank" href="http://lib.csdn.net/base/java" style="color:#006699;text-decoration:none;vertical-align:middle;display:inline-block;margin:0px 5px;"><img src="http://img.knowledge.csdn.net/upload/base/1453701371636_636.jpg" width="30" height="30" alt="" class="imgradius" style="border:1px solid #f2f0f0;vertical-align:middle;border-top-left-radius:30px;border-top-right-radius:30px;border-bottom-right-radius:30px;border-bottom-left-radius:30px;" />&nbsp;<span style="display:inline-block;margin-left:5px;color:#333333;">Java 知识库</span></a></div>
+<div id="news_content" style="line-height:1.8em;font-family:Helvetica, Tahoma, Arial, sans-serif;"><strong>摘要</strong>：随着数据暴增，单服务器开始疲于应对海量用户的访问。自本期《问底》，徐汉彬将带大家开启异地跨集群分布式系统打造，本次关注的重点则是架构从单机到分布式集群的转变。&nbsp;<br />
+<span style="font-size:large;"><span style="color:red;">Web系统的缓存机制的建立和优化</span></span>&nbsp;<br />
+<br />
+刚刚我们讲完了Web系统的外部网络环境，现在我们开始关注我们Web系统自身的性能问题。我们的Web站点随着访问量的上升，会遇到很多的挑战，解决这些问题不仅仅是扩容机器这么简单，建立和使用合适的缓存机制才是根本。&nbsp;<br />
+<br />
+最开始，我们的Web系统架构可能是这样的，每个环节，都可能只有1台机器。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9203/1dc6dee6-8c29-35f8-9e98-2e1b0b06bd55.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+我们从最根本的数据存储开始看哈。&nbsp;<br />
+<br />
+<strong>一、 MySQL数据库内部缓存使用</strong>&nbsp;<br />
+<br />
+MySQL的缓存机制，就从先从MySQL内部开始，下面的内容将以最常见的InnoDB存储引擎为主。&nbsp;<br />
+<br />
+<span style="color:red;">1. 建立恰当的索引</span>&nbsp;<br />
+<br />
+最简单的是建立索引，索引在表数据比较大的时候，起到快速检索数据的作用，但是成本也是有的。首先，占用了一定的磁盘空间，其中组合索引最突出，使用需要谨慎，它产生的索引甚至会比源数据更大。其次，建立索引之后的数据insert/update/delete等操作，因为需要更新原来的索引，耗时会增加。当然，实际上我们的系统从总体来说，是以select查询操作居多，因此，索引的使用仍然对系统性能有大幅提升的作用。&nbsp;<br />
+<br />
+<span style="color:red;">2. 数据库连接线程池缓存</span>&nbsp;<br />
+<br />
+如果，每一个数据库操作请求都需要创建和销毁连接的话，对数据库来说，无疑也是一种巨大的开销。为了减少这类型的开销，可以在MySQL中配置thread_cache_size来表示保留多少线程用于复用。线程不够的时候，再创建，空闲过多的时候，则销毁。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9209/f2591111-4b67-3469-8479-f06c385711c5.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+其实，还有更为激进一点的做法，使用pconnect（数据库长连接），线程一旦创建在很长时间内都保持着。但是，在访问量比较大，机器比较多的情况下，这种用法很可能会导致“数据库连接数耗尽”，因为建立连接并不回收，最终达到数据库的max_connections（最大连接数）。因此，长连接的用法通常需要在CGI和MySQL之间实现一个“连接池”服务，控制CGI机器“盲目”创建连接数。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9211/46939e97-4a8e-3471-82df-3ba5944eab68.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+建立数据库连接池服务，有很多实现的方式，PHP的话，我推荐使用swoole（PHP的一个网络通讯拓展）来实现。&nbsp;<br />
+<br />
+<span style="color:red;">3. Innodb缓存设置（innodb_buffer_pool_size）</span>&nbsp;<br />
+<br />
+innodb_buffer_pool_size这是个用来保存索引和数据的内存缓存区，如果机器是MySQL独占的机器，一般推荐为机器物理内存的80%。在取表数据的场景中，它可以减少磁盘IO。一般来说，这个值设置越大，cache命中率会越高。&nbsp;<br />
+<br />
+<span style="color:red;">4. 分库/分表/分区。</span>&nbsp;<br />
+<br />
+MySQL数据库表一般承受数据量在百万级别，再往上增长，各项性能将会出现大幅度下降，因此，当我们预见数据量会超过这个量级的时候，建议进行分库/分表/分区等操作。最好的做法，是服务在搭建之初就设计为分库分表的存储模式，从根本上杜绝中后期的风险。不过，会牺牲一些便利性，例如列表式的查询，同时，也增加了维护的复杂度。不过，到了数据量千万级别或者以上的时候，我们会发现，它们都是值得的。&nbsp;<br />
+<br />
+<strong>二、 MySQL数据库多台服务搭建</strong>&nbsp;<br />
+<br />
+1台MySQL机器，实际上是高风险的单点，因为如果它挂了，我们Web服务就不可用了。而且，随着Web系统访问量继续增加，终于有一天，我们发现1台MySQL服务器无法支撑下去，我们开始需要使用更多的MySQL机器。当引入多台MySQL机器的时候，很多新的问题又将产生。&nbsp;<br />
+<br />
+<span style="color:red;">1. 建立MySQL主从，从库作为备份</span>&nbsp;<br />
+<br />
+这种做法纯粹为了解决“单点故障”的问题，在主库出故障的时候，切换到从库。不过，这种做法实际上有点浪费资源，因为从库实际上被闲着了。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9213/f32f5da1-7642-3715-9992-7ae0023ba693.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+<span style="color:red;">2. MySQL读写分离，主库写，从库读。</span>&nbsp;<br />
+<br />
+两台数据库做读写分离，主库负责写入类的操作，从库负责读的操作。并且，如果主库发生故障，仍然不影响读的操作，同时也可以将全部读写都临时切换到从库中（需要注意流量，可能会因为流量过大，把从库也拖垮）。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9215/b6138749-5189-3605-bb79-942d01213803.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+<span style="color:red;">3. 主主互备。</span>&nbsp;<br />
+<br />
+两台MySQL之间互为彼此的从库，同时又是主库。这种方案，既做到了访问量的压力分流，同时也解决了“单点故障”问题。任何一台故障，都还有另外一套可供使用的服务。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9217/17f56e92-c0d2-3c83-8771-7d30e48f7ba0.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+不过，这种方案，只能用在两台机器的场景。如果业务拓展还是很快的话，可以选择将业务分离，建立多个主主互备。&nbsp;<br />
+<br />
+<strong>三、 MySQL数据库机器之间的数据同步</strong>&nbsp;<br />
+<br />
+每当我们解决一个问题，新的问题必然诞生在旧的解决方案上。当我们有多台MySQL，在业务高峰期，很可能出现两个库之间的数据有延迟的场景。并且，网络和机器负载等，也会影响数据同步的延迟。我们曾经遇到过，在日访问量接近1亿的特殊场景下，出现，从库数据需要很多天才能同步追上主库的数据。这种场景下，从库基本失去效用了。&nbsp;<br />
+<br />
+于是，解决同步问题，就是我们下一步需要关注的点。&nbsp;<br />
+<br />
+<span style="color:red;">1. MySQL自带多线程同步</span>&nbsp;<br />
+<br />
+MySQL5.6开始支持主库和从库数据同步，走多线程。但是，限制也是比较明显的，只能以库为单位。MySQL数据同步是通过binlog日志，主库写入到binlog日志的操作，是具有顺序的，尤其当SQL操作中含有对于表结构的修改等操作，对于后续的SQL语句操作是有影响的。因此，从库同步数据，必须走单进程。&nbsp;<br />
+<br />
+<span style="color:red;">2. 自己实现解析binlog，多线程写入。</span>&nbsp;<br />
+<br />
+以数据库的表为单位，解析binlog多张表同时做数据同步。这样做的话，的确能够加快数据同步的效率，但是，如果表和表之间存在结构关系或者数据依赖的话，则同样存在写入顺序的问题。这种方式，可用于一些比较稳定并且相对独立的数据表。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9219/7f4896a9-a895-317b-a8f9-c523316c7de9.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+国内一线互联网公司，大部分都是通过这种方式，来加快数据同步效率。还有更为激进的做法，是直接解析binlog，忽略以表为单位，直接写入。但是这种做法，实现复杂，使用范围就更受到限制，只能用于一些场景特殊的数据库中（没有表结构变更，表和表之间没有数据依赖等特殊表）。&nbsp;<br />
+<br />
+<strong>四、 在Web服务器和数据库之间建立缓存</strong>&nbsp;<br />
+<br />
+实际上，解决大访问量的问题，不能仅仅着眼于数据库层面。根据“二八定律”，80%的请求只关注在20%的热点数据上。因此，我们应该建立Web服务器和数据库之间的缓存机制。这种机制，可以用磁盘作为缓存，也可以用内存缓存的方式。通过它们，将大部分的热点数据查询，阻挡在数据库之前。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9221/97d6f4f6-7f6b-3529-9aee-c2090102f99a.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+<span style="color:red;">1. 页面静态化</span>&nbsp;<br />
+<br />
+用户访问网站的某个页面，页面上的大部分内容在很长一段时间内，可能都是没有变化的。例如一篇新闻报道，一旦发布几乎是不会修改内容的。这样的话，通过CGI生成的静态html页面缓存到Web服务器的磁盘本地。除了第一次，是通过动态CGI查询数据库获取之外，之后都直接将本地磁盘文件返回给用户。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9223/df21f8fc-0eb6-3a52-a8e9-0c01f4eb4b3c.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+在Web系统规模比较小的时候，这种做法看似完美。但是，一旦Web系统规模变大，例如当我有100台的Web服务器的时候。那样这些磁盘文件，将会有100份，这个是资源浪费，也不好维护。这个时候有人会想，可以集中一台服务器存起来，呵呵，不如看看下面一种缓存方式吧，它就是这样做的。&nbsp;<br />
+<br />
+<span style="color:red;">2. 单台内存缓存</span>&nbsp;<br />
+<br />
+通过页面静态化的例子中，我们可以知道将“缓存”搭建在Web机器本机是不好维护的，会带来更多问题（实际上，通过PHP的apc拓展，可通过Key/value操作Web服务器的本机内存）。因此，我们选择搭建的内存缓存服务，也必须是一个独立的服务。&nbsp;<br />
+<br />
+内存缓存的选择，主要有redis/memcache。从性能上说，两者差别不大，从功能丰富程度上说，Redis更胜一筹。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9227/c7360770-be84-39bb-903e-f5c7f128f67f.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+<span style="color:red;">3. 内存缓存集群</span>&nbsp;<br />
+<br />
+当我们搭建单台内存缓存完毕，我们又会面临单点故障的问题，因此，我们必须将它变成一个集群。简单的做法，是给他增加一个slave作为备份机器。但是，如果请求量真的很多，我们发现cache命中率不高，需要更多的机器内存呢？因此，我们更建议将它配置成一个集群。例如，类似redis cluster。&nbsp;<br />
+<br />
+Redis cluster集群内的Redis互为多组主从，同时每个节点都可以接受请求，在拓展集群的时候比较方便。客户端可以向任意一个节点发送请求，如果是它的“负责”的内容，则直接返回内容。否则，查找实际负责Redis节点，然后将地址告知客户端，客户端重新请求。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9229/782a5c93-8955-379c-b35e-cf94f1eb2d25.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+对于使用缓存服务的客户端来说，这一切是透明的。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9231/06fb58ff-b4d2-3ead-b2eb-a373b6f9f64e.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+内存缓存服务在切换的时候，是有一定风险的。从A集群切换到B集群的过程中，必须保证B集群提前做好“预热”（B集群的内存中的热点数据，应该尽量与A集群相同，否则，切换的一瞬间大量请求内容，在B集群的内存缓存中查找不到，流量直接冲击后端的数据库服务，很可能导致数据库宕机）。&nbsp;<br />
+<br />
+<span style="color:red;">4. 减少数据库“写”</span>&nbsp;<br />
+<br />
+上面的机制，都实现减少数据库的“读”的操作，但是，写的操作也是一个大的压力。写的操作，虽然无法减少，但是可以通过合并请求，来起到减轻压力的效果。这个时候，我们就需要在内存缓存集群和数据库集群之间，建立一个修改同步机制。&nbsp;<br />
+<br />
+先将修改请求生效在cache中，让外界查询显示正常，然后将这些sql修改放入到一个队列中存储起来，队列满或者每隔一段时间，合并为一个请求到数据库中更新数据库。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9233/7cd502dc-d9fb-3bcc-8955-809d52109e0a.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+除了上述通过改变系统架构的方式提升写的性能外，MySQL本身也可以通过配置参数innodb_flush_log_at_trx_commit来调整写入磁盘的策略。如果机器成本允许，从硬件层面解决问题，可以选择老一点的RAID（Redundant Arrays of independent Disks，磁盘列阵）或者比较新的SSD（Solid State Drives，固态硬盘）。&nbsp;<br />
+<br />
+<span style="color:red;">5. NoSQL存储</span>&nbsp;<br />
+<br />
+不管数据库的读还是写，当流量再进一步上涨，终会达到“人力有穷时”的场景。继续加机器的成本比较高，并且不一定可以真正解决问题的时候。这个时候，部分核心数据，就可以考虑使用NoSQL的数据库。NoSQL存储，大部分都是采用key-value的方式，这里比较推荐使用上面介绍过Redis，Redis本身是一个内存cache，同时也可以当做一个存储来使用，让它直接将数据落地到磁盘。&nbsp;<br />
+<br />
+这样的话，我们就将数据库中某些被频繁读写的数据，分离出来，放在我们新搭建的Redis存储集群中，又进一步减轻原来MySQL数据库的压力，同时因为Redis本身是个内存级别的Cache，读写的性能都会大幅度提升。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9235/d8922646-5084-38bd-80da-d0e9985befa4.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+国内一线互联网公司，架构上采用的解决方案很多是类似于上述方案，不过，使用的cache服务却不一定是Redis，他们会有更丰富的其他选择，甚至根据自身业务特点开发出自己的NoSQL服务。&nbsp;<br />
+<br />
+<span style="color:red;">6. 空节点查询问题</span>&nbsp;<br />
+<br />
+当我们搭建完前面所说的全部服务，认为Web系统已经很强的时候。我们还是那句话，新的问题还是会来的。空节点查询，是指那些数据库中根本不存在的数据请求。例如，我请求查询一个不存在人员信息，系统会从各级缓存逐级查找，最后查到到数据库本身，然后才得出查找不到的结论，返回给前端。因为各级cache对它无效，这个请求是非常消耗系统资源的，而如果大量的空节点查询，是可以冲击到系统服务的。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9239/f212e7a7-f739-3caa-a620-d1b0abfaf311.jpg" style="border:0px;" />&nbsp;<br />
+</div>
+<br />
+在我曾经的工作经历中，曾深受其害。因此，为了维护Web系统的稳定性，设计适当的空节点过滤机制，非常有必要。&nbsp;<br />
+<br />
+我们当时采用的方式，就是设计一张简单的记录映射表。将存在的记录存储起来，放入到一台内存cache中，这样的话，如果还有空节点查询，则在缓存这一层就被阻挡了。&nbsp;<br />
+<div style="text-align:center;"><br />
+<img src="http://dl2.iteye.com/upload/attachment/0102/9241/712a075f-b0d2-32e7-baea-955bc1e8ef4f.jpg" style="border:0px;" />&nbsp;</div>
+<div style="text-align:center;"><br />
+</div>
+<div style="text-align:center;"><br />
+</div>
+<div style="text-align:center;"><br />
+</div>
+<div style="text-align:center;"><span style="font-size:12px;text-align:left;background-color:#f7f7f7;">比如数据库的拆分这都没写！？？</span><br style="font-size:12px;text-align:left;" />
+<span style="font-size:12px;text-align:left;background-color:#f7f7f7;">消息队列的引入！？</span><br style="font-size:12px;text-align:left;" />
+<span style="font-size:12px;text-align:left;background-color:#f7f7f7;">云计算的介入！？</span><br style="font-size:12px;text-align:left;" />
+<span style="font-size:12px;text-align:left;background-color:#f7f7f7;">等等等等...貌似系统大了考虑的真不是上文的这些点吧</span></div>
+</div></body></html>

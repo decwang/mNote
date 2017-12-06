@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-11-23T11:18:40Z"/><meta name="updated" content="2016-11-23T11:18:43Z"/><title>-(void)onImageClicked:(NSInteger)tagIndex  {    NSDictionary* item = [self.dataArray objectAtIndex:</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>-(void)onImageClicked:(NSInteger)tagIndex</div>
+<div>{</div>
+<div>&nbsp; NSDictionary* item = [self.dataArray objectAtIndex:tagIndex];</div>
+<div>&nbsp; NSInteger nType = [[item objectForKey:@"type"]integerValue];</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>if (nType == CELL_MSG)</div>
+<div>&nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //有个bug这里,需要做动态修复jspatch</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; if ((![CommonHelper isEmpty:itemModel.h5link]) &amp;&amp; ([itemModel.mediaType integerValue] == CHANNEL_MEDIA_HTML))</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [NavigationViewHelper switchToChannelContentH5:self withChannel:self.channelId withName:self.channelName withContent:[itemModel.contentId integerValue]</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; withLink:itemModel.h5link fromHome:NO];</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; }</div>
+<div>} &nbsp;&nbsp;</div></body></html>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-15T03:01:05Z"/><meta name="updated" content="2017-05-15T03:01:13Z"/><title>利用MySQL数据库如何解决大数据量存储问题？</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="pending_wrap" style="color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"><div class="question_main"><div class="question_tit"><h3 id="questionTitle" style="margin:0px;padding:0px;"><br />
+</h3>
+</div>
+<div id="questionContent" class="question_con">各位高手您们好，我最近接手公司里一个比较棘手的问题，关于如何利用MySQL存储大数据量的问题，主要是数据库中的两张历史数据表，一张模拟量历史数据和一张开关量历史数据表，这两张表字段设计的很简单（OrderNo，Value，DataTime）。<span style="color:#3333ff;">基本上每张表每天可以增加几千万条数据，我想问如何存储数据才能不影响检索速度呢？需不需要换oracle数据库呢？因为我是数据库方面的新手，希望可以说的详细一点，万分感谢！！?-0-#暂时可以先考虑用infobright 这是mysql的数据仓库解决方案如果这都满足不了需求 再考虑hadoop&nbsp;</span></div>
+</div>
+</div>
+<br style="color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;" />
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"><span style="color:#333333;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:14px;line-height:24px;background-color:#f5f5f5;">暂时可以先考虑用infobright&nbsp;&nbsp;这是<a href="http://lib.csdn.net/base/14" class="replace_word" title="undefined" target="_blank" style="text-decoration:none;color:#df3434;font-weight:bold;">MySQL</a>的数据仓库解决方案</span><br style="color:#333333;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:14px;line-height:24px;background-color:#f5f5f5;" />
+<br style="color:#333333;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:14px;line-height:24px;background-color:#f5f5f5;" />
+<br style="color:#333333;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:14px;line-height:24px;background-color:#f5f5f5;" />
+<span style="color:#333333;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:14px;line-height:24px;background-color:#f5f5f5;">如果这都满足不了需求&nbsp;再考虑hadoop</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"><span style="color:#333333;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:14px;line-height:24px;background-color:#f5f5f5;"><br />
+</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<fieldset style="color:#555555;font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;border:1px solid #cccccc;margin:0px 0px 5px;padding:0px 5px 5px;min-width:0px;list-style:none;outline:none 0px;overflow-x:hidden;word-wrap:break-word;word-break:break-word;font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:24px;background-color:#f5f5f5;"><blockquote style="padding:0px;margin:0px;border:none;list-style:none;outline:none 0px;"><span style="color:#333333;">好吧，你的检索SQL是怎么样的？</span><br />
+<span style="color:#333333;">每张表每天几千万，对于写入性能的要求也就很高了。10000000/3600/24，每秒要写入115条记录。</span><br />
+<span style="color:#333333;">而且你的数据属于归档类数据，</span><span style="color:#3333ff;">可以用mongodb来存储，写入速度和查询速度比MYSQL都要好很多</span><span style="color:#333333;">。</span></blockquote>
+</fieldset><p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"><span style="font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:14px;line-height:24px;background-color:#f5f5f5;"><br />
+</span></p>
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">提问：如何设计或优化千万级别的大表？此外无其他信息，个人觉得这个话题有点范，就只好简单说下该如何做，对于一个存储设计，必须考虑业务特点，收集的信息如下：</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">1.数据的容量：1-3年内会大概多少条数据，每条数据大概多少字节；&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">2.数据项：是否有大字段，那些字段的值是否经常被更新；&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">3.数据查询SQL条件：哪些数据项的列名称经常出现在WHERE、GROUP BY、ORDER BY子句中等；&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">4.数据更新类SQL条件：有多少列经常出现UPDATE或DELETE 的WHERE子句中；&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">5.SQL量的统计比，如：SELECT：UPDATE+DELETE：INSERT=多少？&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">6.预计大表及相关联的SQL，每天总的执行量在何数量级？&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">7.表中的数据：更新为主的业务 还是 查询为主的业务&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">8.打算采用什么数据库物理服务器，以及数据库服务器架构？&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">9.并发如何？&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">10.存储引擎选择InnoDB还是MyISAM？&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">大致明白以上10个问题，至于如何设计此类的大表，应该什么都清楚了！&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">至于优化若是指创建好的表，不能变动表结构的话，那建议InnoDB引擎，多利用点内存，减轻磁盘IO负载，因为IO往往是数据库服务器的瓶颈&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">另外对优化索引结构去解决性能问题的话，建议优先考虑修改类SQL语句，使他们更快些，不得已只靠索引组织结构的方式，当然此话前提是，&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">索引已经创建的非常好，若是读为主，可以考虑打开query_cache，&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">以及调整一些参数值：sort_buffer_size,read_buffer_size,read_rnd_buffer_size,join_buffer_size&nbsp;</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">更多信息参见：</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">MySQL数据库服务器端核心参数详解和推荐配置</span><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#222222;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<a target="_blank" href="http://www.mysqlops.com/2011/10/26/mysql-variables-one.html" class=" external" rel="nofollow" style="text-decoration:none;color:#0c89cf;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"><span class="invisible" style="font-size:0px;line-height:0;font-family:a;color:transparent;background-color:transparent;border:0px;">http://www.</span><span class="visible">mysqlops.com/2011/10/26</span><span class="invisible" style="font-size:0px;line-height:0;font-family:a;color:transparent;background-color:transparent;border:0px;">/mysql-variables-one.html</span></a><br style="font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:24px;background-color:#f5f5f5;" />
+<span style="font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:24px;background-color:#f5f5f5;">您好，主要是检索某段时间内的模拟量值（select&nbsp;*&nbsp;from&nbsp;table&nbsp;where&nbsp;datatime&nbsp;between&nbsp;t1&nbsp;and&nbsp;t2&nbsp;）,目前打算使用分表，分区的方式解决</span><br style="color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;" />
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"><span style="color:#333333;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:14px;line-height:24px;background-color:#f5f5f5;"><span style="line-height:24px;"><span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">不纸上谈兵，说一下我的思路以及我的解决，抛砖引玉了&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">我最近正在解决这个问题&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">我现在的公司有三张表，是5亿的数据，每天张表每天的增量是100w&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">每张表大概在10个columns左右&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">下面是我做的测试和对比&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">1.首先看engine,在大数据量情况下，在没有做分区的情况下&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">mysiam比innodb在只读的情况下，效率要高13％左右&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">2.在做了partition之后，你可以去读一下mysql的官方文档，其实对于partition，专门是对myisam做的优化，对于innodb，所有的数据是存在ibdata里面的，所以即使你可以看到schema变了，其实没有本质的变化&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">在分区出于同一个physical disk下面的情况下，提升大概只有1％&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">在分区在不同的physical disk下，我分到了三个不同的disks下，提升大概在3％，其实所谓的吞吐量，由很多因素决定的，比如你的explain parition时候可以看到，record在那一个分区，如果每个分区都有，其实本质上没有解决读的问题，这样只会提升写的效率。&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">另外一个问题在于，分区，你怎么分，如果一张表，有三个column都是经常被用于做查询条件的，其实是一件很悲惨的事情，因为你没有办法对所有的sql做针对性的分区，如果你只是如mysql官方文档上说的，只对时间做一个分区，而且你也只用时间查询的话，恭喜你&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">3.表主要用来读还是写，其实这个问题是不充分的，应该这样问，你在写入的时候，同时并发的查询多么？我的问题还比较简单，因为mongodb的shredding支持不能，在crush之后，还是回到mysql，所以在通常情况下，9am－9pm，写入的情况很多，这个时候我会做一个view，view是基于最近被插入或者经常被查询的，通过做view来分离读取，就是说写是在table上的，读在进行逻辑判断前是在view上操作的&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">4做一些archive table，比如先对这些大表做很多已有的统计分析，然后通过已有的分析＋增量来解决&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">5如果你用mysiam，还有一个问题你要注意，如果你的.configure的时候，加了一个max index length参数的时候，当你的record数大于制定长度的时候，这个index会被disable&nbsp;</span><br style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;" />
+<span style="color:#222222;font-family:&quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:13px;line-height:22px;">6&nbsp;</span><br />
+</span></span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;">照你的需求来看，可以有两种方式，一种是分表，另一种是分区<br />
+首先是分表，就像你自己所说的，可以按月分表，可以按用户ID分表等等，至于采用哪种方式分表，要看你的业务逻辑了，分表不好的地方就是查询有时候需要跨多个表。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;">然后是分区，分区可以将表分离在若干不同的表空间上，用分而治之的方法来支撑无限膨胀的大表，给大表在物理一级的可管理性。将大表分割成较小的分区可以改善表的维护、备份、恢复、事务及查询性能。分区的好处是分区的优点：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;">1　增强可用性：如果表的一个分区由于系统故障而不能使用，表的其余好的分区仍然可以使用；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;">2　减少关闭时间：如果系统故障只影响表的一部分分区，那么只有这部分分区需要修复，故能比整个大表修复花的时间更少；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;">3　维护轻松：如果需要重建表，独立管理每个分区比管理单个大表要轻松得多；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;">4　均衡I/O:可以把表的不同分区分配到不同的磁盘来平衡I/O改善性能；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;">5　改善性能：对大表的查询、增加、修改等操作可以分解到表的不同分区来并行执行，可使运行速度更快；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;">6　分区对用户透明，最终用户感觉不到分区的存在。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;color:#555555;font-family:'microsoft yahei';font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp;如今随着互联网的发展，数据的量级也是撑指数的增长，从GB到TB到PB。对数据的各种操作也是愈加的困难，传统的关系性数据库已经无法满足快速查询与插入数据的需求。这个时候NoSQL的出现暂时解决了这一危机。它通过降低数据的安全性，减少对事务的支持，减少对复杂查询的支持，来获取性能上的提升。但是，在有些场合NoSQL一些折衷是无法满足使用场景的，就比如有些使用场景是绝对要有事务与安全指标的。这个时候NoSQL肯定是无法满足的，所以还是需要使用关系性数据库。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 虽然关系型数据库在海量数据中逊色于NoSQL数据库，但是如果你操作正确，它的性能还是会满足你的需求的。针对数据的不同操作，其优化方向也是不尽相同。对于数据移植，查询和插入等操作，可以从不同的方向去考虑。而在优化的时候还需要考虑其他相关操作是否会产生影响。就比如你可以通过创建索引提高查询性能，但是这会导致插入数据的时候因为要建立更新索引导致插入性能降低，你是否可以接受这一降低那。所以，对数据库的优化是要考虑多个方向，寻找一个折衷的最佳方案。</p>
+<h1 style="margin:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><a name="t1" style="color:#0c89cf;"></a><a target="_blank" name="t0" style="color:#336699;"></a>&nbsp; 一：查询优化</h1>
+<div style="font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><br />
+</div>
+<h2 style="margin:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><a name="t2" style="color:#0c89cf;"></a><a target="_blank" name="t1" style="color:#336699;"></a>&nbsp; 1：创建索引。</h2>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 最简单也是最常用的优化就是查询。因为对于CRUD操作，read操作是占据了绝大部分的比例，所以read的性能基本上决定了应用的性能。对于查询性能最常用的就是创建索引。经过测试，2000万条记录，每条记录200字节两列varchar类型的。当不使用索引的时候查询一条记录需要一分钟，而当创建了索引的时候查询时间可以忽略。但是，当你在已有数据上添加索引的时候，则需要耗费非常大的时间。我插入2000万条记录之后，再创建索引大约话费了几十分钟的样子。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 创建索引的弊端和场合。虽然创建索引可以很大程度上优化查询的速度，但是弊端也是很明显的。一个是在插入数据的时候，创建索引也需要消耗部分的时间，这就使得插入性能在一定程度上降低；另一个很明显的是数据文件变的更大。在列上创建索引的时候，每条索引的长度是和你创建列的时候制定的长度相同的。比如你创建varchar(100)，当你在该列上创建索引，那么索引的长度则是102字节，因为长度超过64字节则会额外增加2字节记录索引的长度。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><img src="http://img.blog.csdn.net/20130925123428843?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvendhbjA1MTg=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;max-height:100%;height:auto;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 从上图可以看到我在YCSB_KEY这一列(长度100)上创建了一个名字为index_ycsb_key的索引，每条索引长度都为102，想象一下当数据变的巨大无比的时候，索引的大小也是不可以小觑的。而且从这也可以看出，索引的长度和列类型的长度还不同，比如varchar它是变长的字符类型(<a target="_blank" href="http://blog.csdn.net/zwan0518/article/details/8928822" style="text-decoration:none;color:#336699;">请看MySQL数据类型分析</a>)，实际存储长度是是实际字符的大小，但是索引却是你声明的长度的大小。你创建列的时候声明100字节，那么索引长度就是这个字节再加上2，它不管你实际存储是多大。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 除了创建索引需要消耗时间，索引文件体积会变的越来越大之外，创建索引也需要看的你存储数据的特征。当你存储数据很大一部分都是重复记录，那这个时候创建索引是百害而无一利。请先查看<a target="_blank" href="http://blog.csdn.net/zwan0518/article/details/8883128" style="text-decoration:none;color:#336699;">MySQL索引介绍</a>。所以，当很多数据重复的时候，索引带来的查询提升的效果是可以直接忽略的，但是这个时候你还要承受插入数据的时候创建索引带来的性能消耗。</p>
+<h2 style="margin:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><a name="t3" style="color:#0c89cf;"></a><a target="_blank" name="t2" style="color:#336699;"></a>&nbsp; 2：缓存的配置。</h2>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 在MySQL中有多种多样的缓存，有的缓存负责缓存查询语句，也有的负责缓存查询数据。这些缓存内容客户端无法操作，是由server端来维护的。它会随着你查询与修改等相应不同操作进行不断更新。通过其配置文件我们可以看到在MySQL中的缓存：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><img src="http://img.blog.csdn.net/20130925125815468?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvendhbjA1MTg=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;max-height:100%;height:auto;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 在这里主要分析query cache，它是主要用来缓存查询数据。当你想使用该cache，必须把query_cache_size大小设置为非0。当设置大小为非0的时候，server会就会缓存每次查询返回的结果，到下次相同查询server就直接从缓存获取数据，而不是再执行查询。能缓存的数据量就和你的size大小设置有关，所以当你设置的足够大，数据可以完全缓存到内存，速度就会非常之快。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 但是，query cache也有它的弊端。当你对数据表做任何的更新操作(update/insert/delete)等操作，server为了保证缓存与数据库的一致性，会强制刷新缓存数据，导致缓存数据全部失效。所以，当一个表格的更新数据表操作非常多的话，query cache是不会起到查询提升的性能，还会影响其他操作的性能。</p>
+<h2 style="margin:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><a name="t4" style="color:#0c89cf;"></a><a target="_blank" name="t3" style="color:#336699;"></a>&nbsp; 3：slow_query_log分析。</h2>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 其实对于查询性能提升，最重要也是最根本的手段也是slow_query的设置。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><img src="http://img.blog.csdn.net/20130925130949593?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvendhbjA1MTg=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;max-height:100%;height:auto;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 当你设置slow_query_log为on的时候，server端会对每次的查询进行记录，当超过你设置的慢查询时间(long_query_time)的时候就把该条查询记录到日志。而你对性能进行优化的时候，就可以分析慢查询日志，对慢查询的查询语句进行有目的的优化。可以通过创建各种索引，可以通过分表等操作。那为什么要分库分表那，当不分库分表的时候那个地方是限制性能的地方啊。下面我们就简单介绍。</p>
+<h2 style="margin:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><a name="t5" style="color:#0c89cf;"></a><a target="_blank" name="t4" style="color:#336699;"></a>&nbsp; 4：分库分表</h2>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 分库分表应该算是查询优化的杀手锏了。上述各种措施在数据量达到一定等级之后，能起到优化的作用已经不明显了。这个时候就必须对数据量进行分流。分流一般有分库与分表两种措施。而分表又有垂直切分与水平切分两种方式。下面我们就针对每一种方式简单介绍。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 对于mysql，其数据文件是以文件形式存储在磁盘上的。当一个数据文件过大的时候，操作系统对大文件的操作就会比较麻烦与耗时，而且有的操作系统就不支持大文件，所以这个时候就必须分表了。另外对于mysql常用的存储引擎是Innodb，它的底层数据结构是B+树。当其数据文件过大的时候，B+树就会从层次和节点上比较多，当查询一个节点的时候可能会查询很多层次，而这必定会导致多次IO操作进行装载进内存，肯定会耗时的。除此之外还有Innodb对于B+树的锁机制。对每个节点进行加锁，那么当更改表结构的时候，这时候就会树进行加锁，当表文件大的时候，这可以认为是不可实现的。&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 所以综上我们就必须进行分表与分库的操作。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"></p>
+<h1 style="margin:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><a name="t6" style="color:#0c89cf;"></a><a target="_blank" name="t5" style="color:#336699;"></a>&nbsp;二：数据转移</h1>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 当数据量达到一定等级之后，那么移库将是一个非常慎重又危险的工作。在移库中保证前后数据的一致性，各种突发情况的处理，移库过程中数据的变迁，每一个都是一个非常困难的问题。</p>
+<h2 style="margin:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;"><a name="t7" style="color:#0c89cf;"></a><a target="_blank" name="t6" style="color:#336699;"></a>&nbsp; 2.1：插入数据</h2>
+<div style="font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">&nbsp; 当进行数据迁移的时候，肯定会存在大数据的重新导入，你可以选择直接load文件，有的时候可能就需要代码插入了。这个时候就需要对插入语句进行一定的优化了。这个时候可以使用INSERT DELAYED语句，该语句是当你发出插入请求的时候，部马上就插入到数据库而是放在缓存里面，等待时机成熟之后再进行插入。</div>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-variant-ligatures:normal;orphans:2;widows:2;color:#333333;font-family:Arial;line-height:26px;">待补充。。。</p>
+<h1 class="postTitle" style="margin:0px;padding:0px;color:#555555;font-variant-ligatures:normal;orphans:2;widows:2;position:relative;width:690px;border:none;overflow:hidden;font-family:verdana, Arial, Helvetica;"><a name="t8" style="color:#0c89cf;"></a><a target="_blank" id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/buffer/archive/2011/04/16/2018531.html" style="text-decoration:none;color:#6a6352;margin:0px;padding:0px;font-family:微软雅黑, 华文细黑, 黑体, Arial;font-size:18px;font-weight:normal;">mysql大数据量处理</a></h1>
+<div class="clear" style="color:#555555;font-size:15px;font-variant-ligatures:normal;orphans:2;widows:2;margin:0px;padding:0px;clear:both;font-family:verdana, Arial, Helvetica;"></div>
+<div class="postBody" style="font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;margin:0px;padding:0px;position:relative;width:690px;height:auto;border:none;overflow:hidden;color:#494949;line-height:1.6;"><div id="cnblogs_post_body" style="margin:0px 0px 20px;padding:0px;"><div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">一、概述</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">分表是个目前算是比较炒的比较流行的概念，特别是在大负载的情况下，分表是一个良好分散数据库压力的好方法。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">首先要了解为什么要分表，分表的好处是什么。我们先来大概了解以下一个数据库执行SQL的过程：</div>
+<div style="margin:0px;padding:0px;">接收到SQL --&gt; 放入SQL执行队列 --&gt; 使用分析器分解SQL --&gt; 按照分析结果进行数据的提取或者修改 --&gt; 返回处理结果</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">当然，这个流程图不一定正确，这只是我自己主观意识上这么我认为。那么这个处理过程当中，最容易出现问题的是什么？就是说，如果前一个SQL没有执行完毕的话，后面的SQL是不会执行的，因为为了保证数据的完整性，必须对数据表文件进行锁定，包括共享锁和独享锁两种锁定。共享锁是在锁定的期间，其它线程也可以访问这个数据文件，但是不允许修改操作，相应的，独享锁就是整个文件就是归一个线程所有，其它线程无法访问这个数据文件。一般MySQL中最快的存储引擎MyISAM，它是基于表锁定的，就是说如果一锁定的话，那么整个数据文件外部都无法访问，必须等前一个操作完成后，才能接收下一个操作，那么在这个前一个操作没有执行完成，后一个操作等待在队列里无法执行的情况叫做阻塞，一般我们通俗意义上叫做“锁表”。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">锁表直接导致的后果是什么？就是大量的SQL无法立即执行，必须等队列前面的SQL全部执行完毕才能继续执行。这个无法执行的SQL就会导致没有结果，或者延迟严重，影响用户体验。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">特别是对于一些使用比较频繁的表，比如SNS系统中的用户信息表、论坛系统中的帖子表等等，都是访问量大很大的表，为了保证数据的快速提取返回给用户，必须使用一些处理方式来解决这个问题，这个就是我今天要聊到的分表技术。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">分表技术顾名思义，就是把若干个存储相同类型数据的表分成几个表分表存储，在提取数据的时候，不同的用户访问不同的表，互不冲突，减少锁表的几率。比如，目前保存用户分表有两个表，一个是user_1表，还有一个是 user_2 表，两个表保存了不同的用户信息，user_1 保存了前10万的用户信息，user_2保存了后10万名用户的信息，现在如果同时查询用户 heiyeluren1 和 heiyeluren2 这个两个用户，那么就是分表从不同的表提取出来，减少锁表的可能。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">我下面要讲述的两种分表方法我自己都没有实验过，不保证准确能用，只是提供一个设计思路。下面关于分表的例子我假设是在一个贴吧系统的基础上来进行处理和构建的。（如果没有用过贴吧的用户赶紧Google一下）</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">二、基于基础表的分表处理</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">这个基于基础表的分表处理方式大致的思想就是：一个主要表，保存了所有的基本信息，如果某个项目需要找到它所存储的表，那么必须从这个基础表中查找出对应的表名等项目，好直接访问这个表。如果觉得这个基础表速度不够快，可以完全把整个基础表保存在缓存或者内存中，方便有效的查询。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">我们基于贴吧的情况，构建假设如下的3张表：</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">1. 贴吧版块表: 保存贴吧中版块的信息</div>
+<div style="margin:0px;padding:0px;">2. 贴吧主题表：保存贴吧中版块中的主题信息，用于浏览</div>
+<div style="margin:0px;padding:0px;">3. 贴吧回复表：保存主题的原始内容和回复内容</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">“贴吧版块表”包含如下字段：</div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">版块</span><span style="margin:0px;padding:0px;">ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; board_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int(10)</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">版块名称</span><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp; board_name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; char(50)</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">子表</span><span style="margin:0px;padding:0px;">ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; table_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; smallint(5)</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">产生时间</span><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp; created&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; datetime</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">“贴吧主题表”包含如下字段：</div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">主题</span><span style="margin:0px;padding:0px;">ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; topic_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int(10)</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">主题名称</span><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; topic_name&nbsp;&nbsp;&nbsp;&nbsp; char(255)</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">版块</span><span style="margin:0px;padding:0px;">ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; board_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int(10)</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">创建时间</span><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; created&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; datetime</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">“贴吧回复表”的字段如下：</div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">回复</span><span style="margin:0px;padding:0px;">ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; reply_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int(10)</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">回复内容</span><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; reply_text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; text</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">主题</span><span style="margin:0px;padding:0px;">ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; topic_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int(10)</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">版块</span><span style="margin:0px;padding:0px;">ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; board_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int(10)</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">创建时间</span><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; created&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; datetime</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">那么上面保存了我们整个贴吧中的表结构信息，三个表对应的关系是：</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">版块</span><span style="margin:0px;padding:0px;">&nbsp;--&gt;&nbsp;</span><span style="margin:0px;padding:0px;">多个主题</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">主题</span><span style="margin:0px;padding:0px;">&nbsp;--&gt;&nbsp;</span><span style="margin:0px;padding:0px;">多个回复</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">那么就是说，表文件大小的关系是：</div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">版块表文件</span><span style="margin:0px;padding:0px;">&nbsp;&lt;&nbsp;</span><span style="margin:0px;padding:0px;">主题表文件</span><span style="margin:0px;padding:0px;">&nbsp;&lt;&nbsp;</span><span style="margin:0px;padding:0px;">回复表文件</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">所以基本可以确定需要对主题表和回复表进行分表，已增加我们数据检索查询更改时候的速度和性能。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">看了上面的表结构，会明显发现，在“版块表”中保存了一个"table_id"字段，这个字段就是用于保存一个版块对应的主题和回复都是分表保存在什么表里的。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">比如我们有一个叫做“PHP”的贴吧，board_id是1，子表ID也是1，那么这条记录就是：</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">board_id | board_name | table_id | created</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">1 | PHP | 1 | 2007-01-19 00:30:12</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">相应的，如果我需要提取“PHP”吧里的所有主题，那么就必须按照表里保存的table_id来组合一个存储了主题的表名称，比如我们主题表的前缀是“topic_”，那么组合出来“PHP”吧对应的主题表应该是：“topic_1”，那么我们执行：</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">SELECT * FROM topic_1 WHERE board_id = 1 ORDER BY topic_id DESC LIMIT 10</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">这样就能够获取这个主题下面回复列表，方便我们进行查看，如果需要查看某个主题下面的回复，我们可以继续使用版块表中保存的“table_id”来进行查询。比如我们回复表的前缀是“reply_”，那么就可以组合出“PHP”吧的ID为1的主题的回复：</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">SELECT * FROM reply_1 WHERE topic_id = 1 ORDER BY reply_id DESC LIMIT 10</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">这里，我们能够清晰的看到，其实我们这里使用了基础表，基础表就是我们的版块表。那么相应的，肯定会说：基础表的数据量大了以后如何保证它的速度和效率？</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">当然，我们就必须使得这个基础表保持最好的速度和性能，比如，可以采用MySQL的内存表来存储，或者保存在内存当中，比如Memcache之类的内存缓存等等，可以按照实际情况来进行调整。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">一般基于基础表的分表机制在SNS、交友、论坛等Web2.0网站中是个比较不错的解决方案，在这些网站中，完全可以单独使用一个表来来保存基本标识和目标表之间的关系。使用表保存对应关系的好处是以后扩展非常方便，只需要增加一个表记录。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">【<span style="margin:0px;padding:0px;">优势</span>】增加删除节点非常方便，为后期升级维护带来很大便利</div>
+<div style="margin:0px;padding:0px;">【<span style="margin:0px;padding:0px;">劣势</span>】需要增加表或者对某一个表进行操作，还是无法离开数据库，会产生瓶颈</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">三、基于Hash算法的分表处理</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">我们知道Hash表就是通过某个特殊的Hash算法计算出的一个值，这个值必须是惟一的，并且能够使用这个计算出来的值查找到需要的值，这个叫做哈希表。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">我们在分表里的hash算法跟这个思想类似：通过一个原始目标的ID或者名称通过一定的hash算法计算出数据存储表的表名，然后访问相应的表。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">继续拿上面的贴吧来说，每个贴吧有版块名称和版块ID，那么这两项值是固定的，并且是惟一的，那么我们就可以考虑通过对这两项值中的一项进行一些运算得出一个目标表的名称。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">现在假如我们针对我们这个贴吧系统，假设系统最大允许1亿条数据，考虑每个表保存100万条记录，那么整个系统就不超过100个表就能够容纳。按照这个标准，我们假设在贴吧的版块ID上进行hash，获得一个key值，这个值就是我们的表名，然后访问相应的表。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">我们构造一个简单的hash算法：</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">function get_hash($id){</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp; $str = bin2hex($id);</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp; $hash = substr($str, 0, 4);</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp; if (strlen($hash)&lt;4){</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $hash = str_pad($hash, 4, "0");</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp; }</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp; return $hash;</span></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">}</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">算法大致就是传入一个版块ID值，然后函数返回一个4位的字符串，如果字符串长度不够，使用0进行补全。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">比如：<span style="margin:0px;padding:0px;">get_hash(1)</span>，输出的结果是“3100”，输入：<span style="margin:0px;padding:0px;">get_hash(23819)</span>，得到的结果是：3233，那么我们经过简单的跟表前缀组合，就能够访问这个表了。那么我们需要访问ID为1的内容时候哦，组合的表将是：topic_3100、reply_3100，那么就可以直接对目标表进行访问了。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">当然，使用hash算法后，有部分数据是可能在同一个表的，这一点跟hash表不同，hash表是尽量解决冲突，我们这里不需要，当然同样需要预测和分析表数据可能保存的表名。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">如果需要存储的数据更多，同样的，可以对版块的名字进行hash操作，比如也是上面的二进制转换成十六进制，因为汉字比数字和字母要多很多，那么重复几率更小，但是可能组合成的表就更多了，相应就必须考虑一些其它的问题。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">归根结底，使用hash方式的话必须选择一个好的hash算法，才能生成更多的表，然数据查询的更迅速。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">【<span style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">优点</span>hash算法直接得出目标表名称，效率很高</span>】通过</div>
+<div style="margin:0px;padding:0px;">【<span style="margin:0px;padding:0px;">劣势</span>】扩展性比较差，选择了一个hash算法，定义了多少数据量，以后只能在这个数据量上跑，不能超过过这个数据量，可扩展性稍差</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">四、其它问题</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">1.&nbsp;搜索问题</span></div>
+<div style="margin:0px;padding:0px;">现在我们已经进行分表了，那么就无法直接对表进行搜索，因为你无法对可能系统中已经存在的几十或者几百个表进行检索，所以搜索必须借助第三方的组件来进行，比如Lucene作为站内搜索引擎是个不错的选择。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">2.&nbsp;表文件问题</span></div>
+<div style="margin:0px;padding:0px;">我们知道MySQL的MyISAM引擎每个表都会生成三个文件，*.frm、*.MYD、*.MYI 三个文件，分表用来保存表结构、表数据和表索引。Linux下面每个目录下的文件数量最好不要超过1000个，不然检索数据将更慢，那么每个表都会生成三个文件，相应的如果分表超过300个表，那么将检索非常慢，所以这时候就必须再进行分，比如在进行数据库的分离。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">使用基础表，我们可以新增加一个字段，用来保存这个表保存在什么数据。使用Hash的方式，我们必须截取hash值中第几位来作为数据库的名字。这样，完好的解决这个问题。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;">五、总结</span></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">在大负载应用当中，数据库一直是个很重要的瓶颈，必须要突破，本文讲解了两种分表的方式，希望对很多人能够有启发的作用。当然，本文代码和设想没有经过任何代码测试，所以无法保证设计的完全准确实用，具体还是需要读者在使用过程当中认真分析实施。</div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;"></div>
+<div style="margin:0px;padding:0px;">文章写的比较匆忙，质量可能无法保证，遇到错误，不要见怪，欢迎提出批评指教，谢谢~~~~！</div>
+</div>
+</div></body></html>

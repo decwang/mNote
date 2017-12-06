@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-04-06T08:58:25Z"/><meta name="updated" content="2017-04-06T08:58:34Z"/><title> Mac下ZooKeeper环境部署，Linux方法相同 2016-09-23</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>&nbsp;Mac下ZooKeeper环境部署，Linux方法相同</div>
+<div>2016-09-23 11:36 982人阅读 评论(0) 收藏 举报</div>
+<div>&nbsp;分类： Mac OS X（4） &nbsp; 分布式</div>
+<div>版权声明：本文为博主原创文章，未经博主允许不得转载。</div>
+<div>1、首先到官网下载Zookeeper，目前的稳定版本为3.4.9，下载地址。Liniux下可以直接进入/usr目录，使用wget命令直接下载。</div>
+<div>[plain] view plain copy 在CODE上查看代码片派生到我的代码片</div>
+<div>cd /usr &nbsp;</div>
+<div>sudo wget https://mirrors.tuna.tsinghua.edu.cn/apache/zookeeper/zookeeper-3.4.9/zookeeper-3.4.9.tar.gz &nbsp;</div>
+<div><br />
+</div>
+<div>2、解压下载ZooKeeper-3.4.9.tar.gz包，重命名目录ZooKeeper-3.4.9为ZooKeeper，删除下载的ZooKeeper-3.4.9包；</div>
+<div>[python] view plain copy 在CODE上查看代码片派生到我的代码片</div>
+<div>sudo tar -xf ZooKeeper-3.4.9.tar.gz &nbsp;</div>
+<div>sudo mv ZooKeeper-3.4.9 ZooKeeper &nbsp;</div>
+<div>sudo rm -f ZooKeeper-3.4.9.tar.gz &nbsp;</div>
+<div><br />
+</div>
+<div>3、修改环境变量，在profile文件的最后部分导出ZooKeeper的安装路径，这里我把ZooKeeper放在了/Library/文件夹下，大家可以随意放置。</div>
+<div>[python] view plain copy 在CODE上查看代码片派生到我的代码片</div>
+<div>sudo vim /etc/profile &nbsp;</div>
+<div># ZooKeeper配置 &nbsp;</div>
+<div>export ZOOKEEPER_INSTALL=/Library/ZooKeeper &nbsp;</div>
+<div>export PATH=$PATH:$ZOOKEEPER_INSTALL/bin &nbsp;</div>
+<div>4、创建ZooKeeper配置文件</div>
+<div>[python] view plain copy 在CODE上查看代码片派生到我的代码片</div>
+<div>cd ZooKeeper/conf &nbsp;</div>
+<div>cp zoo_sample.cfg zoo.cfg &nbsp;</div>
+<div><br />
+</div>
+<div>5、执行vim zoo.cfg，修改配置文件内容</div>
+<div><br />
+</div>
+<div>[plain] view plain copy 在CODE上查看代码片派生到我的代码片</div>
+<div># The number of milliseconds of each tick &nbsp;</div>
+<div>tickTime=2000 &nbsp;</div>
+<div># The number of ticks that the initial &nbsp;</div>
+<div># synchronization phase can take &nbsp;</div>
+<div>initLimit=10 &nbsp;</div>
+<div># The number of ticks that can pass between &nbsp;</div>
+<div># sending a request and getting an acknowledgement &nbsp;</div>
+<div>syncLimit=5 &nbsp;</div>
+<div># the directory where the snapshot is stored. &nbsp;</div>
+<div># do not use /tmp for storage, /tmp here is just &nbsp;</div>
+<div># example sakes. &nbsp;</div>
+<div>dataDir=/tmp/zookeeper/data &nbsp;</div>
+<div>dataLogDir=/tmp/zookeeper/log &nbsp;</div>
+<div># the port at which the clients will connect &nbsp;</div>
+<div>clientPort=2181 &nbsp;</div>
+<div># the maximum number of client connections. &nbsp;</div>
+<div># increase this if you need to handle more clients &nbsp;</div>
+<div>#maxClientCnxns=60 &nbsp;</div>
+<div># &nbsp;</div>
+<div># Be sure to read the maintenance section of the &nbsp;</div>
+<div># administrator guide before turning on autopurge. &nbsp;</div>
+<div># &nbsp;</div>
+<div># http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance &nbsp;</div>
+<div><br />
+</div>
+<div>6、创建配置中相应的目录</div>
+<div>[python] view plain copy 在CODE上查看代码片派生到我的代码片</div>
+<div>cd /tmp &nbsp;</div>
+<div>mkdir ZooKeeper &nbsp;</div>
+<div>cd ZooKeeper &nbsp;</div>
+<div>mkdir log &nbsp;</div>
+<div>mkdir data &nbsp;</div>
+<div><br />
+</div>
+<div>7、启动ZooKeeper</div>
+<div>[python] view plain copy 在CODE上查看代码片派生到我的代码片</div>
+<div>cd /Library/Zookeeper/bin &nbsp;</div>
+<div>./zkServer.sh &nbsp;</div>
+<div><br />
+</div>
+<div>8、可以使用ZooKeeper自带的客户端工具zkCli.sh来查看ZooKeeper的节点简历情况，至此ZooKeeper环境部署完成。</div></body></html>

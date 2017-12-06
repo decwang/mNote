@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-12-12T09:20:15Z"/><meta name="updated" content="2016-12-12T09:20:18Z"/><title>里再补充在qcon演讲未来得及考虑成熟的一个方面，用户规模影响设计，具体是指用户数每上一个数量级，许多设计需要重新考虑。  10万用户级别    单服务器，前端、后端、cache、db在一起。   </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p>里再补充在qcon演讲未来得及考虑成熟的一个方面，用户规模影响设计，具体是指用户数每上一个数量级，许多设计需要重新考虑。</p>
+<p><strong>10万用户级别</strong></p>
+<ul>
+<li> 单服务器，前端、后端、cache、db在一起。</li>
+</ul>
+<p><strong>百万级</strong></p>
+<ul>
+<li> db和cache单独部署服务器，db或按业务进行拆分(sharding)</li>
+<li> cache或使用一致性hash扩展。</li>
+<li> 前端后端还是在一起，但是根据业务拆分，每个业务可分配不同数量的服务器</li>
+</ul>
+<p><strong> 千万级</strong></p>
+<ul>
+<li> 开始重视架构设计，有专门技术架构师</li>
+<li> 需跨机房部署，前端在远程增加反向代理加速，数据库在异地机房使用slave数据库副本</li>
+<li> 后端拆分出来，系统内部需要远程调用，内部需远程调用协议。</li>
+</ul>
+<p><strong>亿级</strong></p>
+<ul>
+<li> 架构更细分，或增加数据架构师，cache架构师，分布式架构师</li>
+<li> 数据库sharding碰到烦恼，开始考虑分布式数据服务</li>
+<li> 数据访问需要根据业务特点细分。</li>
+<li> 开发、运维、测量、调优具备有自己的专有工具。</li>
+<li> 所有服务需要地理多机房分布，具备IDC容灾设计。</li>
+<li> 服务可降级</li>
+</ul>
+<p>上面的数字仅供理解“用户规模影响设计”，数字本身并无具体指导价值。</p></body></html>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-07T10:00:42Z"/><meta name="updated" content="2017-06-07T10:00:44Z"/><title>mysql中You can't specify target table for update in FROM clause错误的意思是说，不能先select出同一表中的某些值，再update这个表</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p style="margin-top:0px;margin-bottom:0px;padding:5px 0px;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;">mysql中You can't specify target table for update in FROM clause错误的意思是说，不能先select出同一表中的某些值，再update这个表(在同一语句中)。 例如下面这个sql：</p>
+<div class="codetitle" style="margin:3px auto 0px;padding:0px 3px;background-color:#f2f6fb;width:640px;clear:both;border-top-width:1px;border-top-style:solid;border-top-color:#0099cc;border-right-width:1px;border-right-style:solid;border-right-color:#0099cc;border-left-width:1px;border-left-style:solid;border-left-color:#0099cc;line-height:25.2px;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;"><span style="line-height:21.6px;font-size:12px;float:right;"><a data="31203" class="copybut" id="copybut31203" style="color:#333333;cursor:pointer;"><u>复制代码</u></a></span>代码如下:</div>
+<div class="codebody" id="code31203" style="margin:0px auto 3px;padding:0px 3px 0px 5px;line-height:25.2px;background-color:#ddedfb;border:1px solid #0099cc;width:638px;clear:both;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;"><br />
+delete from tbl where id in&nbsp;<br />
+(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select max(id) from tbl a where EXISTS<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select 1 from tbl b where a.tac=b.tac group by tac HAVING count(1)&gt;1<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; group by tac<br />
+)<br />
+</div>
+<p style="margin-top:0px;margin-bottom:0px;padding:5px 0px;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:5px 0px;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;">改写成下面就行了：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:5px 0px;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<div class="codetitle" style="margin:3px auto 0px;padding:0px 3px;background-color:#f2f6fb;width:640px;clear:both;border-top-width:1px;border-top-style:solid;border-top-color:#0099cc;border-right-width:1px;border-right-style:solid;border-right-color:#0099cc;border-left-width:1px;border-left-style:solid;border-left-color:#0099cc;line-height:25.2px;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;"><span style="line-height:21.6px;font-size:12px;float:right;"><a data="22917" class="copybut" id="copybut22917" style="color:#333333;cursor:pointer;"><u>复制代码</u></a></span>代码如下:</div>
+<div class="codebody" id="code22917" style="margin:0px auto 3px;padding:0px 3px 0px 5px;line-height:25.2px;background-color:#ddedfb;border:1px solid #0099cc;width:638px;clear:both;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;"><br />
+delete from tbl where id in&nbsp;<br />
+(<br />
+&nbsp;&nbsp;&nbsp; select a.id from&nbsp;<br />
+&nbsp;&nbsp;&nbsp; (<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select max(id) id from tbl a where EXISTS<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select 1 from tbl b where a.tac=b.tac group by tac HAVING count(1)&gt;1<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; group by tac<br />
+&nbsp;&nbsp;&nbsp; ) a<br />
+)<br />
+</div>
+<p style="margin-top:0px;margin-bottom:0px;padding:5px 0px;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:5px 0px;font-family:tahoma, arial, 宋体;font-variant-ligatures:normal;orphans:2;widows:2;">也就是说将select出的结果再通过中间表select一遍，这样就规避了错误。注意，这个问题只出现于mysql，mssql和oracle不会出现此问题。</p></body></html>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-07-03T03:20:35Z"/><meta name="updated" content="2017-07-03T09:42:46Z"/><title>js点击button按钮跳转到另一个新页面</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div><div>js点击button按钮跳转到另一个新页面</div>
+<div>点击按钮怎么跳转到另外一个页面呢？我们在网站制作中可能是需要的，因为有时我们需要做这样的效果，尤其是将按钮做成一个图片，而点击图片要跳转到新的页面时，怎么做到呢？</div>
+<div>这样的效果可以：onclick="window.location='新页面'" 来实现。</div>
+<div>1.在原来的窗体中直接跳转用</div>
+<div>代码如下</div>
+<div>window.location.href="你所要跳转的页面";</div>
+<div>2、在新窗体中打开页面用：</div>
+<div>代码如下</div>
+<div>window.open('你所要跳转的页面');</div>
+<div>window.history.back(-1);返回上一页</div>
+<div>代码如下</div>
+<div>&lt;input type="submit" name="Submit" value="同意" onclick=window.open(http://www.jb51.net/)&gt;</div>
+<div>如果要在点击按钮提交时验证输入款是否填入了内容，要怎么做呢？当用户名输入或者其它的为空的时候，点击按钮不提交，可以按下列的方法做。</div>
+<div>代码如下</div>
+<div>复制代码 代码如下:</div>
+<div><br />
+</div>
+<div>&lt;input type="submit" name="submit" onclick="open()"&gt;</div>
+<div>&lt;script language=javascript&gt;</div>
+<div>fuction open(){</div>
+<div>if(!document.form_name.username.value) {</div>
+<div>alert("请输入用户名！"); document.form_name.username.focus(); return false;</div>
+<div>}else document.form_name.action="aaa.htm";</div>
+<div>}</div>
+<div>&lt;/script&gt;</div>
+<div><br />
+</div>
+<div>这样的话，当空值时，点击按钮还是不会跳转到另外的页面呢？这样就达到了效果了。</div>
+<div>JS跳转页面参考代码</div>
+<div>代码如下</div>
+<div>第一种：</div>
+<div>&lt;script language="javascript" type="text/javascript"&gt;</div>
+<div>window.location.href="login.jsp?backurl="+window.location.href;</div>
+<div>&lt;/script&gt;</div>
+<div>第二种：</div>
+<div>&lt;script language="javascript"&gt;</div>
+<div>alert("返回");</div>
+<div>window.history.back(-1);</div>
+<div>&lt;/script&gt;</div>
+<div>第三种：</div>
+<div>&lt;script language="javascript"&gt;</div>
+<div>window.navigate("top.jsp");</div>
+<div>&lt;/script&gt;</div>
+<div>第四种：</div>
+<div>&lt;script language="JavaScript"&gt;</div>
+<div>self.location='top.htm';</div>
+<div>&lt;/script&gt;</div>
+<div>第五种：</div>
+<div>&lt;script language="javascript"&gt;</div>
+<div>alert("非法访问！");</div>
+<div>top.location='xx.jsp';</div>
+<div>&lt;/script&gt;</div>
+<div>＝＝＝＝＝javascript中弹出选择框跳转到其他页面＝＝＝＝＝</div>
+<div>复制代码 代码如下:</div>
+<div><br />
+</div>
+<div>&lt;script language="javascript"&gt;</div>
+<div>&lt;!--</div>
+<div>function logout()...{</div>
+<div>if (confirm("你确定要注销身份吗？是－选择确定，否-选择取消"))...{</div>
+<div>window.location.href="logout.asp?act=logout"</div>
+<div>}</div>
+<div>}</div>
+<div>--&gt;</div>
+<div>&lt;/script&gt;</div>
+<div><br />
+</div>
+<div>＝＝＝＝＝javascript中弹出提示框跳转到其他页面＝＝＝＝＝</div>
+<div>复制代码 代码如下:</div>
+<div><br />
+</div>
+<div>&lt;script language="javascript"&gt;</div>
+<div>&lt;!--</div>
+<div>function logout()...{</div>
+<div>alert("你确定要注销身份吗？");</div>
+<div>window.location.href="logout.asp?act=logout"</div>
+<div>}</div>
+<div>--&gt;</div>
+<div>&lt;/script&gt;</div>
+</div></body></html>

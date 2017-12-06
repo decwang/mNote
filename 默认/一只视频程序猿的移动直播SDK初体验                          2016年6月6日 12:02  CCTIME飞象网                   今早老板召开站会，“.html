@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-03-13T05:48:34Z"/><meta name="updated" content="2017-03-13T05:48:46Z"/><title>一只视频程序猿的移动直播SDK初体验                          2016年6月6日 12:02  CCTIME飞象网                   今早老板召开站会，“</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><table width="100%" border="0" cellspacing="0" cellpadding="0" style="color:#333333;font-family:STHeiti;font-size:14px;orphans:2;widows:2;"><tbody><tr><td align="center" style="font-size:16px;vertical-align:top;line-height:22px;color:#2846a0;">一只视频程序猿的移动直播SDK初体验</td>
+</tr>
+<tr><td align="center" style="font-size:14px;vertical-align:top;line-height:22px;"><table width="100%" border="0" cellspacing="0" cellpadding="0"><tbody><tr><td colspan="2" height="5" style="font-size:14px;vertical-align:top;line-height:22px;"></td>
+</tr>
+<tr><td width="50%" style="font-size:14px;vertical-align:top;line-height:22px;"></td>
+<td width="50%" style="font-size:14px;vertical-align:top;line-height:22px;"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr><td height="5" style="font-size:14px;vertical-align:top;line-height:22px;"></td>
+</tr>
+<tr><td style="font-size:14px;vertical-align:top;line-height:22px;"><table width="100%" border="0" cellspacing="0" cellpadding="0"><tbody><tr><td align="right" class="dateAndSource" style="vertical-align:top;line-height:22px;color:#666666;">2016年6月6日 12:02&nbsp;&nbsp;CCTIME飞象网&nbsp;&nbsp;</td>
+<td width="15" style="font-size:14px;vertical-align:top;line-height:22px;"></td>
+<td width="280" style="font-size:14px;vertical-align:top;line-height:22px;"><iframe width="280" height="24" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0" scrolling="no" border="0" src="http://widget.weibo.com/relationship/followbutton.php?language=zh_cn&amp;width=300&amp;height=24&amp;uid=1654140974&amp;style=3&amp;btn=light&amp;dpc=1" class="weibo"></iframe></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr><td style="font-size:14px;vertical-align:top;line-height:22px;color:#010101;padding:10px 20px;"><div class="art_content" style="line-height:21px;padding:0px 5px 0px 3px;"><p>今早老板召开站会，“移动直播这么火，市面上有一百多个APP，小斌，你下周交个原型APP瞅瞅!”</p>
+<p>　　小弟心中一万匹草泥马奔过，这玩意儿哪儿是几天就能弄出来的?问候归问候，咱还是赶紧调研吧，端午还约了妹子游泳呢。</p>
+<p>　　一、 方案选项</p>
+<p>　　作为公司音视频大神，对流媒体基本概念还是OK的。咱首先看看市面上火热的某客、某椒APP怎么工作的。主播端推流使用RTMP推向流媒体源站，服务器内部通过RTMP协议多级拉流至边缘CDN节点，播放端从边缘CDN节点获取直播内容，大致如下图：</p>
+<p style="text-align:center;">　　<img alt="" src="http://www.cctime.com/upLoadFile/2016/6/6/2016661543734.jpg" width="499" height="362" style="border:none;" /></p>
+<p>　　其中上行RTMP推流很普遍了，很多游戏直播都使用obs推RTMP流。</p>
+<p>　　在整个过程中，涉及很多流媒体的基本概念，先说说GOP。</p>
+<p>　　GOP即Group of picture(图像组)，指两个I帧之间的距离。即几秒有一个关键帧。分析线上主流的移动直播APP，大都在2、3秒之间。</p>
+<p style="text-align:center;">　　<img alt="" src="http://www.cctime.com/upLoadFile/2016/6/6/2016661543580.jpg" width="535" height="102" style="border:none;" /></p>
+<p>　　一般的云服务公司都会提供多种协议的拉流方式，优缺点如下：</p>
+<p>　　l HLS协议，移动h5浏览器支持较好，但是延迟较大。移动端播放前需要产生三个分片，每个分片至少得是一个GOP。一个GOP即使是2秒，也意味着这个环节耗费了6秒的延时。</p>
+<p>　　l RTMP协议，需要访问1935端口，支持双向互动，实时性很好，<a class="xuxian" href="http://product.pcpop.com/PC/00000_1.html" target="_blank" data-other="spm:2014.12675146.6.a123b2860762" style="color:#0000ff;line-height:22px;text-decoration:none;">PC</a>&nbsp;flash原生支持。</p>
+<p>　　l HTTP-FLV，不支持双向互动，实时性和RTMP协议一致。</p>
+<p>　　基于以下几点理由，小弟准备采用HTTP-FLV作为拉流协议：</p>
+<p>　　1. 国内网络情况的恶劣程度，并不是每个网络防火墙都允许1935包通过。</p>
+<p>　　2. RTMP协议和HTTP-FLV，实际传输的内容都是相同的FLV，实时性也一样。</p>
+<p>　　3. RTMP协议握手方式比HTTP复杂。</p>
+<p>　　确定好了拉流协议，再看看推流侧依赖的参数。</p>
+<p>　　l FPS，每秒编码传输的视频帧数;</p>
+<p>　　l 码率，每秒编码传输的音视频比特数;</p>
+<p>　　l GOP，关键帧间隔;</p>
+<p>　　l 分辨率。</p>
+<p>　　在相同码率的情况下，FPS和分辨率越大，视频的图像质量越差。为了平衡主播上行带宽、用户观看下行带宽和图像质量的关系，需要很好处理这几个值。</p>
+<p>　　二、 SDK下载</p>
+<p>　　首先，Android/<a class="xuxian" href="http://product.pcpop.com/tabletpc/00000_p13903ov12555_1.html" target="_blank" data-other="spm:2014.12675146.6.a123b2860762" style="color:#0000ff;line-height:22px;text-decoration:none;">iOS</a>系统上，并不包含RTMP推流组件，这块需要自己开发。系统自带的<a class="xuxian" href="http://product.pcpop.com/MP3/00000_1.html" target="_blank" data-other="spm:2014.12675146.6.a123b2860762" style="color:#0000ff;line-height:22px;text-decoration:none;">播放器</a>也不支持flv文件的播放。小弟只能去阿里云、腾讯云、百度云、金山云等大牛云服务公司找解决方案了。把每个帐号都注册一遍，大致情形如下。</p>
+<p style="text-align:center;">　　<img alt="" src="http://www.cctime.com/upLoadFile/2016/6/6/2016661543621.jpg" width="515" height="146" style="border:none;" /></p>
+<p>　　其中，腾讯云ILVB实名认证后需要人工审核5个工作日，反正至今没有看到SDK。</p>
+<p>　　更令人震惊的是，虽然阿里云提供多媒体云服务，但是至今尚未提供移动直播SDK。</p>
+<p>　　总体来说，开放较好的是金山云，SDK放到了git<a class="xuxian" href="http://product.pcpop.com/USB_Hub/00000_1.html" target="_blank" data-other="spm:2014.12675146.6.a123b2860762" style="color:#0000ff;line-height:22px;text-decoration:none;">hub</a>上，每次change log都很清楚，几乎每周都有更新。 腾讯云就有些犹抱琵琶半遮面，给SDK试用都不痛快。</p>
+<p>　　三、 SDK功能对比</p>
+<p>　　拿到SDK，首先对比一下相关功能。其中腾讯云LVB直播只提供了播放SDK，还仅只支持HLS播放，这个方案首先扑街。ILVB互动直播未拿到SDK，暂且不表。这样一来，可供选择的大型云服务商的方案就剩下金山云和百度云。</p>
+<p>　　移动直播SDK涉及的功能比较多，我先解释一下几个基本功能点：</p>
+<p>　　l 推流编码，涉及软件编码和硬解编码。相同码率，软编图像质量更清晰，但是耗电更高;</p>
+<p>　　l 网络自适应，当网络抖动时根据网络情况调整发送速率;</p>
+<p>　　l 美颜，对主播图像进行美白、液化、磨皮等处理;</p>
+<p>　　l 混音，当主播聊天时，可以把背景音乐混到音视频里面;</p>
+<p>　　l 播放视频旋转，可以根据视频宽高，决定横屏还是竖屏播放;</p>
+<p>　　l 直播重加载，当播放状况不佳时，重新拉流播放。</p>
+<p>　　为了对比其他方案，做了几张表格。</p>
+<p>　　Android推流功能列表如下：</p>
+<p style="text-align:center;">　　<img alt="" src="http://www.cctime.com/upLoadFile/2016/6/6/2016661543360.jpg" width="239" height="511" style="border:none;" /></p>
+<p>　　从表中可以看到，</p>
+<p>　　1) 百度云接口还很粗糙，连移动直播必选的美颜功能都不支持，首先淘汰。</p>
+<p>　　2) 小弟想有噪声抑制功能，但是这些SDK都没有支持，不过令人欣喜的是，金山云支持自定义音频数据处理，可以把自己的噪声抑制代码挂载进去。</p>
+<p>　　3) 相比而已，金山云的接口较开放。其中金山云SDK支持的功能更丰富些，能满足当前移动直播的要求。</p>
+<p>　　<a class="xuxian" href="http://product.pcpop.com/tabletpc/00000_p13903ov12555_1.html" target="_blank" data-other="spm:2014.12675146.6.a123b2860762" style="color:#0000ff;line-height:22px;text-decoration:none;">ios</a>推流功能列表如下：</p>
+<p style="text-align:center;">　　<img alt="" src="http://www.cctime.com/upLoadFile/2016/6/6/2016661544371.jpg" width="229" height="577" style="border:none;" /></p>
+<p>　　1) 从表中可以看出，iOS推流功能丰富程度普遍较高，这和市面上主播大量使用iPhone推流有密切关系。</p>
+<p>　　2) 从特色功能来看，只有金山云支持画中画和美声功能。</p>
+<p>　　3) 自定义滤镜和原始数据处理，体现了SDK的开放程度，这方面百度云是严重失分的。</p>
+<p>　　4) 在细节功能上，对声音和美颜的处理，体现了当前SDK对移动直播市场的重视程度。</p>
+<p>　　Android播放功能列表如下：</p>
+<p style="text-align:center;">　　<img alt="" src="http://www.cctime.com/upLoadFile/2016/6/6/2016661544797.jpg" width="286" height="346" style="border:none;" /></p>
+<p>　　iOS播放功能列表如下：</p>
+<p style="text-align:center;">　　<img alt="" src="http://www.cctime.com/upLoadFile/2016/6/6/2016661544112.jpg" width="286" height="312" style="border:none;" /></p>
+<p>　　播放端关注点和推流端还有些不一样，播放侧除了考虑功能丰富以外，还需要考虑稳定性、功耗、包大小、开播速度等，静态对比可以作为参考。金山云支持直播重加载，能有效降低播放卡顿率。</p>
+<p>　　总结一下，通过试用大型云服务商的移动直播SDK，得出以下结论：</p>
+<p>　　1) 能完全运行起来的是金山云、百度云提供的SDK。腾讯云、阿里云尚未提供真正可用的移动直播SDK。</p>
+<p>　　2) 从Android/iOS推流功能以及播放功能来看，金山云提供的功能最为丰富。</p>
+<p>　　3) 百度云提供的推流功能还比较简单，离市面的要求有些距离。</p>
+<p>　　最后，小斌想说的是：幸好有了靠谱的视频云服务公司，一周做出一款移动直播产品才不是梦，才不会耽误端午约妹子游泳哟。</p>
+</div>
+</td>
+</tr>
+</tbody>
+</table></body></html>

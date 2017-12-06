@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-10-11T04:14:39Z"/><meta name="updated" content="2016-10-11T04:14:43Z"/><title>[Objective-C]关联(objc_setAssociatedObject、objc_getAssociatedObject、objc_removeAssociatedObjects）    </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';widows:1;"><h1 style="margin:0px;padding:0px;display:inline;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-weight:normal;font-size:20px;line-height:30px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/qq_27561705/article/details/52116231" style="color:#000000;text-decoration:none;">[Objective-C]关联(objc_setAssociatedObject、objc_getAssociatedObject、objc_removeAssociatedObjects）</a></span></h1>
+</div>
+<div class="article_manage clearfix" style="padding:0px 20px 5px;color:#999999;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#ededed;margin:0px -20px;overflow:hidden;widows:1;"><div class="article_l" style="width:700px;float:left;"><span class="link_categories" style="margin:0px 5px;float:left;">标签：&nbsp;<a href="http://www.csdn.net/tag/objective-c" target="_blank" style="color:#6a3906;text-decoration:none;display:inline-block;margin-right:10px;">objective-c</a><a href="http://www.csdn.net/tag/%e5%85%b3%e8%81%94" target="_blank" style="color:#6a3906;text-decoration:none;display:inline-block;margin-right:10px;">关联</a></span></div>
+<div class="article_r"><span class="link_postdate" style="margin:0px 5px 0px 0px;">2016-08-04 09:42</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(http://static.blog.csdn.net/images/ico_view.png) 0% 50% no-repeat;">16人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(http://static.blog.csdn.net/images/ico_comm.png) 0% 50% no-repeat;"><a href="http://blog.csdn.net/qq_27561705/article/details/52116231#comments" style="color:#6a3906;text-decoration:none;">评论</a>(0)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 5px;"><a title="收藏" target="_blank" style="color:#6a3906;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/qq_27561705/article/details/52116231#report" title="举报" style="color:#6a3906;text-decoration:none;">举报</a></span></div>
+</div>
+<div class="category clearfix" style="margin:0px -20px;border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#ededed;padding:5px 20px;color:#362e2b;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:normal;widows:1;"><div class="category_l" style="display:inline-block;font-size:14px;color:#333333;width:70px;float:left;line-height:28px;"><img src="http://static.blog.csdn.net/images/category_icon.jpg" style="border:none;vertical-align:middle;" />&nbsp;<span style="display:inline-block;vertical-align:middle;">分类：</span></div>
+<div class="category_r" style="display:inline-block;font-size:14px;color:#df3434;float:left;width:630px;"><label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">Object-C--笔录（13）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label></div>
+</div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:26px;font-family:Arial;color:#362e2b;widows:1;"><div class="markdown_views" style="font-family:'microsoft yahei';"><p style="box-sizing:border-box;margin-top:0px;margin-bottom:1.1em;">关联是指把两个对象相互关联起来，使得其中的一个对象作为另外一个对象的一部分。&nbsp;<br style="box-sizing:border-box;" />
+关联特性只有在Mac OS X V10.6以及以后的版本上才是可用的。&nbsp;<br style="box-sizing:border-box;" />
+在类的定义之外为类增加额外的存储空间&nbsp;<br style="box-sizing:border-box;" />
+使用关联，我们可以不用修改类的定义而为其对象增加存储空间。这在我们无法访问到类的源码的时候或者是考虑到二进制兼容性的时候是非常有用。&nbsp;<br style="box-sizing:border-box;" />
+关联是基于关键字的，因此，我们可以为任何对象增加任意多的关联，每个都使用不同的关键字即可。关联是可以保证被关联的对象在关联对象的整个生命周期都是可用的（在垃圾自动回收环境下也不会导致资源不可回收）。&nbsp;<br style="box-sizing:border-box;" />
+创建关联&nbsp;<br style="box-sizing:border-box;" />
+创建关联要使用到Objective-C的运行时函数：objc_setAssociatedObject来把一个对象与另外一个对象进行关联。该函数需要四个参数：源对象，关键字，关联的对象和一个关联策略。当然，此处的关键字和关联策略是需要进一步讨论的。&nbsp;<br style="box-sizing:border-box;" />
+■ 关键字是一个void类型的指针。每一个关联的关键字必须是唯一的。通常都是会采用静态变量来作为关键字。&nbsp;<br style="box-sizing:border-box;" />
+■ 关联策略表明了相关的对象是通过赋值，保留引用还是复制的方式进行关联的；还有这种关联是原子的还是非原子的。这里的关联策略和声明属性时的很类似。这种关联策略是通过使用预先定义好的常量来表示的。&nbsp;<br style="box-sizing:border-box;" />
+下面的代码展示了如何把一个字符串关联到一个数组上。</p>
+<pre class="prettyprint" name="code" style="white-space:nowrap;word-wrap:break-word;box-sizing:border-box;position:relative;overflow-y:hidden;overflow-x:auto;margin-top:0px;margin-bottom:1.1em;font-family:'Source Code Pro', monospace;padding:5px 5px 5px 60px;line-height:1.45;word-break:break-all;color:#333333;border:1px solid rgba(128, 128, 128, 0.0745098);border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;background-color:rgba(128, 128, 128, 0.0470588);"><code class="hljs objectivec has-numbering" style="display:block;padding:0px;color:inherit;box-sizing:border-box;font-family:'Source Code Pro', monospace;font-size:inherit;white-space:pre;border-radius:0px;word-wrap:normal;background:transparent;">导入头文件<span class="hljs-preprocessor" style="color:#444444;box-sizing:border-box;">#import <span class="hljs-title" style="box-sizing:border-box;">&lt;objc/runtime.h&gt;</span></span>  <span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">static</span> <span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">char</span> overviewKey;  <span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSArray</span> * array =[[<span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSArray</span> alloc] initWidthObjects:@<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"One"</span>, @<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"Two"</span>, @<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"Three"</span>, <span class="hljs-literal" style="color:#006666;box-sizing:border-box;">nil</span>];  <span class="hljs-comment" style="color:#880000;box-sizing:border-box;">//为了演示的目的，这里使用initWithFormat:来确保字符串可以被销毁  </span> <span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSString</span> * overview = [[<span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSString</span> alloc] initWithFormat:@<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"@"</span>,@<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"First three numbers"</span>];  
+objc_setAssociatedObject(array, &amp;overviewKey, overview, OBJC_ASSOCIATION_RETAIN);  
+
+[overview release];  <span class="hljs-comment" style="color:#880000;box-sizing:border-box;">//(1) overview仍然是可用的  </span> [array release];  <span class="hljs-comment" style="color:#880000;box-sizing:border-box;">//(2)overview 不可用 </span></code><ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right-width:1px;border-right-style:solid;border-right-color:#dddddd;list-style:none;text-align:right;background-color:#eeeeee;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+<li style="box-sizing:border-box;padding:0px 5px;">2</li>
+<li style="box-sizing:border-box;padding:0px 5px;">3</li>
+<li style="box-sizing:border-box;padding:0px 5px;">4</li>
+<li style="box-sizing:border-box;padding:0px 5px;">5</li>
+<li style="box-sizing:border-box;padding:0px 5px;">6</li>
+<li style="box-sizing:border-box;padding:0px 5px;">7</li>
+<li style="box-sizing:border-box;padding:0px 5px;">8</li>
+<li style="box-sizing:border-box;padding:0px 5px;">9</li>
+<li style="box-sizing:border-box;padding:0px 5px;">10</li>
+<li style="box-sizing:border-box;padding:0px 5px;">11</li>
+<li style="box-sizing:border-box;padding:0px 5px;">12</li>
+<li style="box-sizing:border-box;padding:0px 5px;">13</li>
+<li style="box-sizing:border-box;padding:0px 5px;">14</li>
+</ul>
+<ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right-width:1px;border-right-style:solid;border-right-color:#dddddd;list-style:none;text-align:right;background-color:#eeeeee;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+<li style="box-sizing:border-box;padding:0px 5px;">2</li>
+<li style="box-sizing:border-box;padding:0px 5px;">3</li>
+<li style="box-sizing:border-box;padding:0px 5px;">4</li>
+<li style="box-sizing:border-box;padding:0px 5px;">5</li>
+<li style="box-sizing:border-box;padding:0px 5px;">6</li>
+<li style="box-sizing:border-box;padding:0px 5px;">7</li>
+<li style="box-sizing:border-box;padding:0px 5px;">8</li>
+<li style="box-sizing:border-box;padding:0px 5px;">9</li>
+<li style="box-sizing:border-box;padding:0px 5px;">10</li>
+<li style="box-sizing:border-box;padding:0px 5px;">11</li>
+<li style="box-sizing:border-box;padding:0px 5px;">12</li>
+<li style="box-sizing:border-box;padding:0px 5px;">13</li>
+<li style="box-sizing:border-box;padding:0px 5px;">14</li>
+</ul>
+</pre><p style="box-sizing:border-box;margin-top:0px;margin-bottom:1.1em;">在（1）处，字符串overview仍然是可用的，这是因为OBJC_ASSOCIATION_RETAIN策略指明了数组要保有相关的对象。当数组array被销毁的时候，也就是在（2）处overview也就会被释放，因此而被销毁。如果此时还想使用overview，例如想通过log来输出overview的值，则会出现运行时异常。&nbsp;<br style="box-sizing:border-box;" />
+获取相关联的对象&nbsp;<br style="box-sizing:border-box;" />
+获取相关联的对象时使用Objective-C函数objc_getAssociatedObject。接着上面列表7-1的代码，我们可以使用如下代码来获取与array相关联的字符串：</p>
+<pre class="prettyprint" name="code" style="white-space:nowrap;word-wrap:break-word;box-sizing:border-box;position:relative;overflow-y:hidden;overflow-x:auto;margin-top:0px;margin-bottom:1.1em;font-family:'Source Code Pro', monospace;padding:5px 5px 5px 60px;line-height:1.45;word-break:break-all;color:#333333;border:1px solid rgba(128, 128, 128, 0.0745098);border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;background-color:rgba(128, 128, 128, 0.0470588);"><code class="hljs objectivec has-numbering" style="display:block;padding:0px;color:inherit;box-sizing:border-box;font-family:'Source Code Pro', monospace;font-size:inherit;white-space:pre;border-radius:0px;word-wrap:normal;background:transparent;"><span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSString</span> * associatedObject = (<span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSString</span> *)objc_getAssociatedObject(array, &amp;oveviewKey);  </code><ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right-width:1px;border-right-style:solid;border-right-color:#dddddd;list-style:none;text-align:right;background-color:#eeeeee;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+</ul>
+<ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right-width:1px;border-right-style:solid;border-right-color:#dddddd;list-style:none;text-align:right;background-color:#eeeeee;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+</ul>
+</pre><p style="box-sizing:border-box;margin-top:0px;margin-bottom:1.1em;">断开关联&nbsp;<br style="box-sizing:border-box;" />
+断开关联是使用objc_setAssociatedObject函数，传入nil值即可。&nbsp;<br style="box-sizing:border-box;" />
+接着列表7-1中的程序，我们可以使用如下的代码来断开字符串overview和arry之间的关联：</p>
+<pre class="prettyprint" name="code" style="white-space:nowrap;word-wrap:break-word;box-sizing:border-box;position:relative;overflow-y:hidden;overflow-x:auto;margin-top:0px;margin-bottom:1.1em;font-family:'Source Code Pro', monospace;padding:5px 5px 5px 60px;line-height:1.45;word-break:break-all;color:#333333;border:1px solid rgba(128, 128, 128, 0.0745098);border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;background-color:rgba(128, 128, 128, 0.0470588);"><code class="hljs delphi has-numbering" style="display:block;padding:0px;color:inherit;box-sizing:border-box;font-family:'Source Code Pro', monospace;font-size:inherit;white-space:pre;border-radius:0px;word-wrap:normal;background:transparent;">    objc_setAssociatedObject(<span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">array</span>, &amp;overviewKey, <span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">nil</span>, OBJC_ASSOCIATION_ASSIGN);  </code><ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right-width:1px;border-right-style:solid;border-right-color:#dddddd;list-style:none;text-align:right;background-color:#eeeeee;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+<li style="box-sizing:border-box;padding:0px 5px;">2</li>
+</ul>
+<ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right-width:1px;border-right-style:solid;border-right-color:#dddddd;list-style:none;text-align:right;background-color:#eeeeee;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+<li style="box-sizing:border-box;padding:0px 5px;">2</li>
+</ul>
+</pre><p style="box-sizing:border-box;margin-top:0px;margin-bottom:1.1em;">其中，被关联的对象为nil，此时关联策略也就无关紧要了。&nbsp;<br style="box-sizing:border-box;" />
+使用函数objc_removeAssociatedObjects可以断开所有关联。通常情况下不建议使用这个函数，因为他会断开所有关联。只有在需要把对象恢复到“原始状态”的时候才会使用这个函数。&nbsp;<br style="box-sizing:border-box;" />
+一个完整的实例程序&nbsp;<br style="box-sizing:border-box;" />
+下面的程序综合了前面的代码.</p>
+<pre class="prettyprint" name="code" style="white-space:nowrap;word-wrap:break-word;box-sizing:border-box;position:relative;overflow-y:hidden;overflow-x:auto;margin-top:0px;margin-bottom:1.1em;font-family:'Source Code Pro', monospace;padding:5px 5px 5px 60px;line-height:1.45;word-break:break-all;color:#333333;border:1px solid rgba(128, 128, 128, 0.0745098);border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;background-color:rgba(128, 128, 128, 0.0470588);"><code class="hljs objectivec has-numbering" style="display:block;padding:0px;color:inherit;box-sizing:border-box;font-family:'Source Code Pro', monospace;font-size:inherit;white-space:pre;border-radius:0px;word-wrap:normal;background:transparent;">     <span class="hljs-preprocessor" style="color:#444444;box-sizing:border-box;">#import <span class="hljs-title" style="box-sizing:border-box;">&lt;Foundation/Foundation.h&gt;</span>  </span>     <span class="hljs-preprocessor" style="color:#444444;box-sizing:border-box;">#import <span class="hljs-title" style="box-sizing:border-box;">&lt;objc/runtime.h&gt;</span>  </span>     <span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">int</span> main(<span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">int</span> argc, <span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">const</span> <span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">char</span>* argv[])  
+    {  
+        <span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSAutoreleasePool</span> * pool = [[<span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSAutoreleasePool</span>] alloc init];  
+
+        <span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">static</span> <span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">char</span> overviewKey;  
+        <span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSArray</span> *array =[[<span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSArray</span> alloc] initWidthObjects:@<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"One"</span>, @<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"Two"</span>, @<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"Three"</span>, <span class="hljs-literal" style="color:#006666;box-sizing:border-box;">nil</span>];  
+        <span class="hljs-comment" style="color:#880000;box-sizing:border-box;">//为了演示的目的，这里使用initWithFormat:来确保字符串可以被销毁  </span>         <span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSString</span> * overview = [[<span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSString</span> alloc] initWithFormat:@<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"@"</span>,@<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"First three numbers"</span>];  
+        objc_setAssociatedObject(array, &amp;overviewKey, overview, OBJC_ASSOCIATION_RETAIN);  
+        [overview release];  
+
+        <span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSString</span> *associatedObject = (<span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSString</span> *)objc_getAssociatedObject(arrray, &amp;overviewKey);  
+        <span class="hljs-built_in" style="color:#660066;box-sizing:border-box;">NSLog</span>(@<span class="hljs-string" style="color:#008800;box-sizing:border-box;">"associatedObject:%@"</span>, associatedObject);  
+
+        objc_setAssociatedObject(array, &amp;overviewKey, <span class="hljs-literal" style="color:#006666;box-sizing:border-box;">nil</span>, OBJC_ASSOCIATION_ASSIGN);  
+        [array release];  
+
+        [pool drain];  
+        <span class="hljs-keyword" style="color:#000088;box-sizing:border-box;">return</span> <span class="hljs-number" style="color:#006666;box-sizing:border-box;">0</span>;  
+    }  </code><ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right-width:1px;border-right-style:solid;border-right-color:#dddddd;list-style:none;text-align:right;background-color:#eeeeee;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+<li style="box-sizing:border-box;padding:0px 5px;">2</li>
+<li style="box-sizing:border-box;padding:0px 5px;">3</li>
+<li style="box-sizing:border-box;padding:0px 5px;">4</li>
+<li style="box-sizing:border-box;padding:0px 5px;">5</li>
+<li style="box-sizing:border-box;padding:0px 5px;">6</li>
+<li style="box-sizing:border-box;padding:0px 5px;">7</li>
+<li style="box-sizing:border-box;padding:0px 5px;">8</li>
+<li style="box-sizing:border-box;padding:0px 5px;">9</li>
+<li style="box-sizing:border-box;padding:0px 5px;">10</li>
+<li style="box-sizing:border-box;padding:0px 5px;">11</li>
+<li style="box-sizing:border-box;padding:0px 5px;">12</li>
+<li style="box-sizing:border-box;padding:0px 5px;">13</li>
+<li style="box-sizing:border-box;padding:0px 5px;">14</li>
+<li style="box-sizing:border-box;padding:0px 5px;">15</li>
+<li style="box-sizing:border-box;padding:0px 5px;">16</li>
+<li style="box-sizing:border-box;padding:0px 5px;">17</li>
+<li style="box-sizing:border-box;padding:0px 5px;">18</li>
+<li style="box-sizing:border-box;padding:0px 5px;">19</li>
+<li style="box-sizing:border-box;padding:0px 5px;">20</li>
+<li style="box-sizing:border-box;padding:0px 5px;">21</li>
+<li style="box-sizing:border-box;padding:0px 5px;">22</li>
+<li style="box-sizing:border-box;padding:0px 5px;">23</li>
+<li style="box-sizing:border-box;padding:0px 5px;">24</li>
+<li style="box-sizing:border-box;padding:0px 5px;">25</li>
+</ul>
+<ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right-width:1px;border-right-style:solid;border-right-color:#dddddd;list-style:none;text-align:right;background-color:#eeeeee;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+<li style="box-sizing:border-box;padding:0px 5px;">2</li>
+<li style="box-sizing:border-box;padding:0px 5px;">3</li>
+<li style="box-sizing:border-box;padding:0px 5px;">4</li>
+<li style="box-sizing:border-box;padding:0px 5px;">5</li>
+<li style="box-sizing:border-box;padding:0px 5px;">6</li>
+<li style="box-sizing:border-box;padding:0px 5px;">7</li>
+<li style="box-sizing:border-box;padding:0px 5px;">8</li>
+<li style="box-sizing:border-box;padding:0px 5px;">9</li>
+<li style="box-sizing:border-box;padding:0px 5px;">10</li>
+<li style="box-sizing:border-box;padding:0px 5px;">11</li>
+<li style="box-sizing:border-box;padding:0px 5px;">12</li>
+<li style="box-sizing:border-box;padding:0px 5px;">13</li>
+<li style="box-sizing:border-box;padding:0px 5px;">14</li>
+<li style="box-sizing:border-box;padding:0px 5px;">15</li>
+<li style="box-sizing:border-box;padding:0px 5px;">16</li>
+<li style="box-sizing:border-box;padding:0px 5px;">17</li>
+<li style="box-sizing:border-box;padding:0px 5px;">18</li>
+<li style="box-sizing:border-box;padding:0px 5px;">19</li>
+<li style="box-sizing:border-box;padding:0px 5px;">20</li>
+<li style="box-sizing:border-box;padding:0px 5px;">21</li>
+<li style="box-sizing:border-box;padding:0px 5px;">22</li>
+<li style="box-sizing:border-box;padding:0px 5px;">23</li>
+<li style="box-sizing:border-box;padding:0px 5px;">24</li>
+<li style="box-sizing:border-box;padding:0px 5px;">25</li>
+</ul>
+</pre></div>
+</div>
+<div class="bdsharebuttonbox tracking-ad bdshare-button-style0-16" data-mod="popu_172" data-bd-bind="1476000501004" style="zoom:1;color:#362e2b;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:normal;widows:1;float:right;"><a href="http://blog.csdn.net/qq_27561705/article/details/52116231#" class="bds_more" data-cmd="more" target="_blank" style="color:#333333;text-decoration:none;float:left;padding-left:17px;line-height:16px;height:16px;cursor:pointer;margin:6px 6px 6px 0px;background-image:url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important;background-position:0px 0px !important;background-repeat:no-repeat no-repeat;"></a><a href="http://blog.csdn.net/qq_27561705/article/details/52116231#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间" target="_blank" style="color:#6a3906;text-decoration:none;float:left;padding-left:17px;line-height:16px;height:16px;cursor:pointer;margin:6px 6px 6px 0px;background-image:url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=91362611.png);background-position:0px -52px !important;background-repeat:no-repeat no-repeat;"></a><a href="http://blog.csdn.net/qq_27561705/article/details/52116231#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" target="_blank" style="color:#6a3906;text-decoration:none;float:left;padding-left:17px;line-height:16px;height:16px;cursor:pointer;margin:6px 6px 6px 0px;background-image:url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=91362611.png);background-position:0px -104px !important;background-repeat:no-repeat no-repeat;"></a><a href="http://blog.csdn.net/qq_27561705/article/details/52116231#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博" target="_blank" style="color:#6a3906;text-decoration:none;float:left;padding-left:17px;line-height:16px;height:16px;cursor:pointer;margin:6px 6px 6px 0px;background-image:url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=91362611.png);background-position:0px -260px !important;background-repeat:no-repeat no-repeat;"></a><a href="http://blog.csdn.net/qq_27561705/article/details/52116231#" class="bds_renren" data-cmd="renren" title="分享到人人网" target="_blank" style="color:#6a3906;text-decoration:none;float:left;padding-left:17px;line-height:16px;height:16px;cursor:pointer;margin:6px 6px 6px 0px;background-image:url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=91362611.png);background-position:0px -208px !important;background-repeat:no-repeat no-repeat;"></a><a href="http://blog.csdn.net/qq_27561705/article/details/52116231#" class="bds_weixin" data-cmd="weixin" title="分享到微信" target="_blank" style="color:#6a3906;text-decoration:none;float:left;padding-left:17px;line-height:16px;height:16px;cursor:pointer;margin:6px 6px 6px 0px;background-image:url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=91362611.png);background-position:0px -1612px !important;background-repeat:no-repeat no-repeat;"></a></div>
+<div id="digg" articleid="52116231" style="clear:both;width:182px;margin:0px auto;padding:30px 0px 15px;text-align:center;color:#362e2b;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:normal;widows:1;"><dl id="btnDigg" class="digg digg_disable" style="display:inline-block;float:left;width:72px;height:72px;overflow:hidden;margin:0px 2px;color:#ffffff;background-color:#999999;background-position:initial initial;background-repeat:initial initial;"></dl></div></body></html>

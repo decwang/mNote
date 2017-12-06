@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-01-19T12:45:03Z"/><meta name="updated" content="2017-01-19T12:45:07Z"/><title>路由跳转的思考（iOS）  独家号 iOS开发基础 作者 唯敬原文链接  业务需要  一切脱离业务需求的结构设计都是耍流氓（我觉得我们这小打小闹完全谈不上架构这个词）  那我们先梳理一下我们现在的业</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h2 class="m-t-lg m-b-md" style="box-sizing:border-box;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:500;line-height:1.1;color:#58666e;margin-top:30px;margin-bottom:20px;font-size:30px;font-variant-ligatures:normal;orphans:2;widows:2;">路由跳转的思考（iOS）</h2>
+<h4 class="meta" style="box-sizing:border-box;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:300;line-height:1.1;color:#58666e;margin-top:10px;margin-bottom:10px;font-variant-ligatures:normal;orphans:2;widows:2;"><span style="box-sizing:border-box;display:inline-block;margin-right:5px;padding-top:2px;padding-bottom:2px;"><span class="name" style="box-sizing:border-box;display:inline-block;margin-right:5px;padding:2px 8px;border-color:#dee5e7 #dee5e7 #d8e1e3;border-width:1px;border-style:solid;box-shadow:rgba(90, 90, 90, 0.0980392) 0px 1px 1px;border-top-left-radius:12px;border-top-right-radius:12px;border-bottom-right-radius:12px;border-bottom-left-radius:12px;">独家号</span>&nbsp;<span style="box-sizing:border-box;display:inline-block;margin-right:5px;padding-top:2px;padding-bottom:2px;"><a href="https://toutiao.io/subjects/23127" style="box-sizing:border-box;background-color:transparent;color:#363f44;text-decoration:none;cursor:pointer;">iOS开发基础</a></span></span>&nbsp;<span class="name" style="box-sizing:border-box;display:inline-block;margin-right:5px;padding:2px 8px;border-color:#dee5e7 #dee5e7 #d8e1e3;border-width:1px;border-style:solid;box-shadow:rgba(90, 90, 90, 0.0980392) 0px 1px 1px;border-top-left-radius:12px;border-top-right-radius:12px;border-bottom-right-radius:12px;border-bottom-left-radius:12px;">作者</span>&nbsp;<span style="box-sizing:border-box;display:inline-block;margin-right:5px;padding-top:2px;padding-bottom:2px;">唯敬</span><a target="_blank" class="pull-right" href="http://awhisper.github.io/2016/06/12/%E8%B7%AF%E7%94%B1%E8%B7%B3%E8%BD%AC%E7%9A%84%E6%80%9D%E8%80%83/" style="box-sizing:border-box;background-color:transparent;color:#363f44;text-decoration:none;cursor:pointer;float:right;">原文链接</a></h4>
+<div class="preview " style="box-sizing:border-box;color:#58666e;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><h1 id="业务需要" style="box-sizing:border-box;margin:15px 0px 5px;font-size:21px;font-family:inherit;font-weight:500;line-height:1.1;color:inherit;padding:5px 0px;">业务需要</h1>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">一切脱离业务需求的结构设计都是耍流氓（我觉得我们这小打小闹完全谈不上架构这个词）</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">那我们先梳理一下我们现在的业务场景</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">目前我们有一个首要问题是跳转</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;">书架banner是个运营位置，需要灵活可配的各种跳转</li>
+<li style="box-sizing:border-box;">开机弹框也是个运营位置，依然需要各种跳转</li>
+<li style="box-sizing:border-box;">push，更别说了，各种跳转</li>
+<li style="box-sizing:border-box;">H5书城，运营活动H5落地页，通过Bridge还需要各种跳转</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">我们现在是怎么做的呢？拿书架banner举例</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">服务器会下发一个type号，（随便假设）1代表打开webview，2代表打开图书，3代表打开个人中心…等等，相关参数会随着type的不同，下发不同字段，因此代码会长这样</p>
+<pre class="prettyprint lang-js" style="box-sizing:border-box;overflow:auto;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:13px;padding:9.5px;margin-top:0px;margin-bottom:10px;line-height:1.42857;color:#333333;word-break:break-all;word-wrap:break-word;background-color:#f5f5f5;border:1px solid #cccccc;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;max-width:100%;">switch (type) {
+  case 1:
+  {
+    //jumping code
+    //NSString *url = /*解析对应url字段*/
+    //NSString *title = /*解析对应title字段*/
+    //NSString *ydwebview = [[ydwebview alloc]init];
+    ydwebview.url = url;
+    ydwebview.navititle = title;
+    [self.navigationController pushViewController:ydwebview animated:YES];
+
+  }
+        
+    break;
+
+  case 2:
+  {
+  	 //balabalaba
+  }
+  	 break;</pre><p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">可以看下我们的switch有多恐怖</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;">书架banner跳转有6个switch，其中第一个switch有4种子switch</li>
+<li style="box-sizing:border-box;">开机弹窗有2个switch，支持能力弱</li>
+<li style="box-sizing:border-box;">push，这可了不得有20个switch</li>
+<li style="box-sizing:border-box;">H5bridge跳转，有10+个switch</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">那我们每次新增加一个功能模块的时候改怎么办呢？</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">假设新作一个模块叫”英式没品笑话百科”(我很爱看的一个微博号╮(╯_╰)╭)</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">我们就需要在书架，弹框，push，H5Bridge，四处核心跳转点全都新增代码，先要import “EnglishJoke.h”，然后还要新增一个switch，新增一坨跳转viewcontroller的代码</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">有没有感觉？what the fuck！</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">我们的代码就好像是这样，一团乱麻。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;"><a href="http://7rf34y.com2.z0.glb.qiniucdn.com/c/9b6cccbe693a7777644a87e7ffac34db" class="fancybox" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"><img src="http://7rf34y.com2.z0.glb.qiniucdn.com/c/9b6cccbe693a7777644a87e7ffac34db" alt="一团乱麻" style="box-sizing:border-box;border:0px;vertical-align:middle;display:block;margin:10px auto 20px;height:auto;" /></a></p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">假如A模块是书架，它本身含有书架banner的跳转代码，所以他需要耦合各种跳转目标。比如跳转到B模块书城，形成了 A==&gt;B</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">假如B模块是书城，它本身含有书城H5Brdige的跳转代码，所以他也需要耦合各种跳转目标，比如跳转到A模块书架，形成了 B==&gt;A</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">假如所有模块都有这种蛋疼的跳转其他模块的需求，他们之间相互跳来跳去（没错，有时候需求就是这么的不讲道理），那么我们的代码结构就会如图一样，随着业务结构的逐渐庞大，就会变成一张复杂的蜘蛛网，难以维护。</p>
+<h1 id="结构梳理" style="box-sizing:border-box;margin:15px 0px 5px;font-size:21px;font-family:inherit;font-weight:500;line-height:1.1;color:inherit;padding:5px 0px;"><a href="http://awhisper.github.io/2016/06/12/%E8%B7%AF%E7%94%B1%E8%B7%B3%E8%BD%AC%E7%9A%84%E6%80%9D%E8%80%83/#%E7%BB%93%E6%9E%84%E6%A2%B3%E7%90%86" class="headerlink" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"></a>结构梳理</h1>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">仔细思考一下，我们的业务需求的最直接痛点所在就是各种跳转，但往深层考虑一下，这里面其实是耦合的问题，这里说的不是业务逻辑耦合，而是引用耦合。</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;">逻辑耦合，作为程序员，作为面向对象开发的基本思路，一个业务逻辑模块，做到模块化，不把自己自身的业务逻辑与外部不相干的模块进行混杂，所有都以接口的形式提供给外部调用，这是一个最基本的设计理念，这是没有问题，也是必须要做到的</li>
+<li style="box-sizing:border-box;">引用耦合，被抽象成一个模块，外部要使用的时候势必要import这个模块的头文件，再根据头文件的api，进行调用，这无可厚非，但是如果发生这种处理需要统一跳转多个不同模块的逻辑的时候，引用耦合就会显得混乱不好管理</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">但是面对这种当引用耦合一团乱麻的情况下，在业务逐渐壮大，我们面对着一张复杂的如同蛛网一般的引用关系的时候，我们又该如何去处理？</p>
+<a id="more" style="box-sizing:border-box;background-color:transparent;color:#428bca;cursor:pointer;"></a><p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">其实有两种方案，都在被普遍使用</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;">中间人</li>
+<li style="box-sizing:border-box;">urlroute</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">这个思路其实源自这篇文章&nbsp;<a href="http://www.jianshu.com/p/15e5b83ab70e" target="_blank" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;">iOS移动端架构的那些事</a>，但只是这篇文章中提到的一部分，我们的app还没发展到需要严谨的组件化设计才能支撑下去多条业务的合作，但是里面思想我们是可以提前参考和规划的</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">首先看一下，无论是选择哪个方案，归根结底，都是抽象出一个中间层来对纷乱的引用关系来进行统一的跳转，这是软件工程的基本思路，而Mediator和URLRouter两种方案就是在思考下面2个问题上，产生了不同</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;">中间层到底该如何调用真正的模块或者组件</li>
+<li style="box-sizing:border-box;">一个模块如果只跟中间层通信，他如何知道其他模块有啥api</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">原文引用自<a href="http://wereadteam.github.io/2016/03/19/iOS-Component/" target="_blank" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;">iOS组件化方案探索</a>，本文也很大程度的参考bang的这篇文章</p>
+<h1 id="URLRoute" style="box-sizing:border-box;margin:15px 0px 5px;font-size:21px;font-family:inherit;font-weight:500;line-height:1.1;color:inherit;padding:5px 0px;"><a href="http://awhisper.github.io/2016/06/12/%E8%B7%AF%E7%94%B1%E8%B7%B3%E8%BD%AC%E7%9A%84%E6%80%9D%E8%80%83/#URLRoute" class="headerlink" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"></a>URLRoute</h1>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">Github上有很多开源的URLRoute方案，一艘能搜到很多，但不外乎都是以注册block，注册viewcontroller为主的，比如<a href="https://github.com/clayallsopp/routable-ios" target="_blank" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;">Routable-ios</a>,Github上1000多个star</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">他就是一种基于注册式的URLRoute的统跳协议</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;">注册url</li>
+<li style="box-sizing:border-box;">各模块需要一种以字典为媒介的统一创建模式</li>
+<li style="box-sizing:border-box;">openUrl</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">希望通过注册URL的方式，来实现通过一个url就能任意打开已注册的界面。</p>
+<pre class="prettyprint lang-js" style="box-sizing:border-box;overflow:auto;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:13px;padding:9.5px;margin-top:0px;margin-bottom:10px;line-height:1.42857;color:#333333;word-break:break-all;word-wrap:break-word;background-color:#f5f5f5;border:1px solid #cccccc;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;max-width:100%;">//首先需要注册url，urlroute只能识别注册过的url，在注册url的同时也注册参数信息
+[[Routable sharedRouter] map:@"users/:id" toController:[UserController class]];
+
+//其次需要各个界面模块统一一个创建模式，只认分析url分析出来的字典结果
+@implementation UserController
+- (id)initWithRouterParams:(NSDictionary *)params {
+  if ((self = [self initWithNibName:nil bundle:nil])) {
+    self.userId = [params objectForKey:@"id"];
+  }
+  return self;
+}
+
+//任何代码只要想跳转，只需要一个url，使用Router,openurl即可
+NSString *aUrl = @"users/4";
+[[Routable sharedRouter] open:aUrl];</pre><p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">这种Router一般都支持2种注册，注册viewcontroller，注册callback，一般就是通过一个注册方法-map:toXX:来把一个字符串一级所对应的函数代码块或者界面初始化代码块，在一个统一的hash表里面进行key-value注册。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">当router识别url的时候，发现是对应已注册过的字符key，并且把url字符串里面的参数信息解析完毕后，通过字符key，找到对应的代码块去执行代码。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">底层实现类似下面的代码，其中必然还包括复杂的字符串url，params解析等，这里只写个最核心的map注册思路，有兴趣可以看源码，非常好理解也非常好学习</p>
+<pre class="prettyprint lang-js" style="box-sizing:border-box;overflow:auto;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:13px;padding:9.5px;margin-top:0px;margin-bottom:10px;line-height:1.42857;color:#333333;word-break:break-all;word-wrap:break-word;background-color:#f5f5f5;border:1px solid #cccccc;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;max-width:100%;">- (void)map:(NSString *)url toCallback:(componentBlock)blk {
+    [hashMap setObject:blk forKey:urlPattern];
+}
+
+- (void)openURL:(NSString *)url {
+   componentBlock blk = [hashMap objectForKey:url];
+   if (blk) blk(param);
+}</pre><p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">他的代码结构是这样的</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;"><a href="http://7rf34y.com2.z0.glb.qiniucdn.com/c/015d2efd6d2dcb343dad959547510fa1" class="fancybox" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"><img src="http://7rf34y.com2.z0.glb.qiniucdn.com/c/015d2efd6d2dcb343dad959547510fa1" alt="urlroute" style="box-sizing:border-box;border:0px;vertical-align:middle;display:block;margin:10px auto 20px;height:auto;" /></a></p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">发起调用方的模块只依赖URLRoute模块，但是视注册的情况，URLRoute不一定会依赖各个模块</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;">以VC形式注册，由于强制要求固定名称和参数的构造函数，以Runtime Call的方案，URLRoute不依赖各个模块（见源码）</li>
+<li style="box-sizing:border-box;">以Block形式注册，由于执行代码是外部block传入的，因此在注册block的时候必然会产生模块依赖</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">这种方案虽然已经被广泛使用，并且非常适合解决我们的困境，页面之间的各种跳转，对于结构梳理时候的2个问题，他的答案是</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;">中间层到底该如何调用真正的模块或者组件？<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:0px;"><li style="box-sizing:border-box;">使用block的形式，在注册的时候模块调用写在block里</li>
+<li style="box-sizing:border-box;">使用map VC的形式，所有VC都统一字典创建入口，在注册的时候识别参数，构建字典</li>
+</ul>
+</li>
+<li style="box-sizing:border-box;">一个模块如果只跟中间层通信，他如何知道其他模块有啥api？<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:0px;"><li style="box-sizing:border-box;">维护一个注册表</li>
+<li style="box-sizing:border-box;">只有注册过的apiName，才能被router识别</li>
+</ul>
+</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">但这种方案并不是我目前打算采用的方案，原因后面会说。我们先看另外一种</p>
+<h1 id="中间人" style="box-sizing:border-box;margin:15px 0px 5px;font-size:21px;font-family:inherit;font-weight:500;line-height:1.1;color:inherit;padding:5px 0px;"><a href="http://awhisper.github.io/2016/06/12/%E8%B7%AF%E7%94%B1%E8%B7%B3%E8%BD%AC%E7%9A%84%E6%80%9D%E8%80%83/#%E4%B8%AD%E9%97%B4%E4%BA%BA" class="headerlink" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"></a>中间人</h1>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">我们把所有的调用都集合在一起，使用一个中间人来管理，抽象出一个Mediator类</p>
+<pre class="prettyprint lang-js" style="box-sizing:border-box;overflow:auto;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:13px;padding:9.5px;margin-top:0px;margin-bottom:10px;line-height:1.42857;color:#333333;word-break:break-all;word-wrap:break-word;background-color:#f5f5f5;border:1px solid #cccccc;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;max-width:100%;">//Mediator.m
+#import "ModuleA.h"
+#import "ModuleB.h"
+@implementation Mediator
++ (UIViewController *)ModuleA_viewController:(NSString *)AName {
+	ModuleA *a = [[ModuleA alloc]initWithName:AName];
+	return a;
+}
++ (UIViewController *)ModuleB_viewController:(NSString *)BID {
+    ModuleB *b = [[ModuleB alloc]initWithID:BID];
+	return b;
+}
+@end</pre><p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">所有调用的地方只需要使用中间人的方法，就可以调用另外一个模块</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">[Mediator ModuleA_viewController:@"name"]</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">这样就形成了这样的引用依赖</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;"><a href="http://7rf34y.com2.z0.glb.qiniucdn.com/c/a0359daa20bb3b11ad5ac7e7244e5cd8" class="fancybox" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"><img src="http://7rf34y.com2.z0.glb.qiniucdn.com/c/a0359daa20bb3b11ad5ac7e7244e5cd8" alt="中间人1" style="box-sizing:border-box;border:0px;vertical-align:middle;display:block;margin:10px auto 20px;height:auto;" /></a></p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">有人会说，你这无非就是封装了一层而已，只是起到了便于维护和管理的作用，但是引用耦合依然存在，以前A与B直接相互引用依赖，现在A引用依赖中间层，中间层引用依赖B，这种引用耦合并没有解决的。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">想解决这种引用耦合？完全没问题，OC有运行时，我完全可以这么做</p>
+<pre class="prettyprint lang-js" style="box-sizing:border-box;overflow:auto;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:13px;padding:9.5px;margin-top:0px;margin-bottom:10px;line-height:1.42857;color:#333333;word-break:break-all;word-wrap:break-word;background-color:#f5f5f5;border:1px solid #cccccc;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;max-width:100%;">//Mediator.m
+@implementation Mediator
++ (UIViewController *)ModuleA_viewController:(NSString *)AName {
+	Class cls = NSClassFromString(@"ModuleA");
+	/* runtime msgsend call initWithName*/
+	return a;
+}
++ (UIViewController *)ModuleB_viewController:(NSString *)BID {
+	Class cls = NSClassFromString(@"ModuleB");
+	/* runtime msgsend call initWithName*/
+	return b;
+}
+@end</pre><p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">我们完全不importA和B的类，完全通过拼接字符串，使用OC的runtime运行时来动态的调用方法，如何写runtime代码还是比较繁琐，并且要求一定的OC runtime知识，在此我先进行了省略因为后面会介绍一个运行时神器工具（自卖自夸一把）。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">这样引用关系就变成了这样</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;"><a href="http://7rf34y.com2.z0.glb.qiniucdn.com/c/723f14e04a8c337c977575a57229960a" class="fancybox" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"><img src="http://7rf34y.com2.z0.glb.qiniucdn.com/c/723f14e04a8c337c977575a57229960a" alt="中间人2" style="box-sizing:border-box;border:0px;vertical-align:middle;display:block;margin:10px auto 20px;height:auto;" /></a></p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">这样做有啥好处呢？引用依赖彻底消失，如果我的工程完全删掉D的代码，整个工程也能build通，完全不会报错，不需要修改代码。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">此外，只要做好Mediator的异常判断和保护，也可以完全不担心，因为删掉D的代码而产生的崩溃。</p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">这种方案对于结构梳理时候的2个问题，他的答案是</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;">中间层到底该如何调用真正的模块或者组件？<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:0px;"><li style="box-sizing:border-box;">使用runtime的形式，完全不import，不依赖任何模块代码</li>
+</ul>
+</li>
+<li style="box-sizing:border-box;">一个模块如果只跟中间层通信，他如何知道其他模块有啥api？<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:0px;"><li style="box-sizing:border-box;">所有跨模块通信的API都写在mediator的头文件里，这样就可以享受Xcode的自动代码提示</li>
+</ul>
+</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">同时他还有两个好处</p>
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;"><li style="box-sizing:border-box;"><p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">可以设计任意形式的跨模块调用API，接口形式没有任何限制，传参种类没有任何限制</p>
+</li>
+<li style="box-sizing:border-box;"><p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">随着业务模块逐渐增多，还可以以category的形式，按种类，把众多代码分类保存和管理</p>
+</li>
+</ul>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">题外话：有人会说，干嘛还要中间人，所有模块之间完全都使用runtime去调用，不就彻底没依赖了么？当然可以，但这也太蛋疼了，对使用者要求高，且代码复杂没有自动提示，封装在mediator里，至少可以保证写mediator的人开发一次，其他使用者就再也不用考虑和担心runtime的问题了。</p>
+<h1 id="基于中间人的URLAction" style="box-sizing:border-box;margin:15px 0px 5px;font-size:21px;font-family:inherit;font-weight:500;line-height:1.1;color:inherit;padding:5px 0px;"><a href="http://awhisper.github.io/2016/06/12/%E8%B7%AF%E7%94%B1%E8%B7%B3%E8%BD%AC%E7%9A%84%E6%80%9D%E8%80%83/#%E5%9F%BA%E4%BA%8E%E4%B8%AD%E9%97%B4%E4%BA%BA%E7%9A%84URLAction" class="headerlink" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"></a>基于中间人的URLAction</h1>
+<h1 id="彻底解除引用耦合" style="box-sizing:border-box;margin:15px 0px 5px;font-size:21px;font-family:inherit;font-weight:500;line-height:1.1;color:inherit;padding:5px 0px;"><a href="http://awhisper.github.io/2016/06/12/%E8%B7%AF%E7%94%B1%E8%B7%B3%E8%BD%AC%E7%9A%84%E6%80%9D%E8%80%83/#%E5%BD%BB%E5%BA%95%E8%A7%A3%E9%99%A4%E5%BC%95%E7%94%A8%E8%80%A6%E5%90%88" class="headerlink" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"></a>彻底解除引用耦合</h1>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;">未完待续</p>
+<h1 id="本文参考博客" style="box-sizing:border-box;margin:15px 0px 5px;font-size:21px;font-family:inherit;font-weight:500;line-height:1.1;color:inherit;padding:5px 0px;"><a href="http://awhisper.github.io/2016/06/12/%E8%B7%AF%E7%94%B1%E8%B7%B3%E8%BD%AC%E7%9A%84%E6%80%9D%E8%80%83/#%E6%9C%AC%E6%96%87%E5%8F%82%E8%80%83%E5%8D%9A%E5%AE%A2" class="headerlink" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;"></a>本文参考博客</h1>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;"><a href="http://www.jianshu.com/p/15e5b83ab70e" target="_blank" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;">iOS移动端架构的那些事</a></p>
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:10px;line-height:1.7em;"><a href="http://wereadteam.github.io/2016/03/19/iOS-Component/" target="_blank" style="box-sizing:border-box;background-color:transparent;color:#428bca;text-decoration:none;cursor:pointer;">iOS 组件化方案探索</a></p>
+</div></body></html>

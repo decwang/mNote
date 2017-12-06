@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-13T07:21:30Z"/><meta name="updated" content="2017-06-13T07:21:32Z"/><title>Spring3 Shedule Task之注解实现 （两次启动Schedule Task 的解决方案）  博客分类： Spring  Schedule    spring taskquartz任务重</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="blog_title" style="margin-bottom:15px;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><h3 style="font-size:16px;line-height:1.5em;margin:0px 0px 0.5em;padding:10px 0px 0px;"><a href="http://josh-persistence.iteye.com/blog/1984331" style="color:#006600;">Spring3 Shedule Task之注解实现 （两次启动Schedule Task 的解决方案）</a></h3>
+<ul class="blog_categories" style="margin:0px;padding:0px;list-style-type:none;"><strong>博客分类：</strong>&nbsp;<li style="margin:0px 5px 0px 0px;padding:0px;list-style-type:none;display:inline;"><a href="http://josh-persistence.iteye.com/category/280435" style="color:#006600;">Spring</a></li>
+<li style="margin:0px 5px 0px 0px;padding:0px;list-style-type:none;display:inline;"><a href="http://josh-persistence.iteye.com/category/299159" style="color:#006600;">Schedule</a></li>
+</ul>
+<div class="news_tag" style="clear:both;margin:10px 0px 5px;line-height:20px;"><a href="http://www.iteye.com/blogs/tag/spring%20task" style="color:#ffffff;text-decoration:none;display:inline-block;margin:0px 5px 5px 0px;padding:0px 10px;background-color:#aab5c3;border-radius:10px;">spring task</a><a href="http://www.iteye.com/blogs/tag/quartz" style="color:#ffffff;text-decoration:none;display:inline-block;margin:0px 5px 5px 0px;padding:0px 10px;background-color:#aab5c3;border-radius:10px;">quartz</a><a href="http://www.iteye.com/blogs/tag/%E4%BB%BB%E5%8A%A1%E9%87%8D%E5%A4%8D%E6%89%A7%E8%A1%8C2%E6%AC%A1" style="color:#ffffff;text-decoration:none;display:inline-block;margin:0px 5px 5px 0px;padding:0px 10px;background-color:#aab5c3;border-radius:10px;">任务重复执行2次</a>&nbsp;</div>
+</div>
+<div id="blog_content" class="blog_content" style="line-height:1.8em;font-family:Helvetica, Tahoma, Arial, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><div class="iteye-blog-content-contain"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">在spring3&nbsp;中的新引入的task&nbsp;命名空间。可以部分取代&nbsp;quartz 功能，配置和API更加简单，并且支持注解方式。但是如果需要使用比较复杂的任务调度。还是建议使用quartz。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>第一步：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在Spring的相关配置文件中（applicationContext.xml或者是{project_name}_servelt.xml或者是独立的配置文件如XXX_quartz.xml)中配置并开启Spring Schedule Task.注意其中高亮的部分是必须的。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br />
+&lt;beans xmlns="http://www.springframework.org/schema/beans"<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:aop="http://www.springframework.org/schema/aop"<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:tx="http://www.springframework.org/schema/tx"<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:context="http://www.springframework.org/schema/context"<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:mvc="http://www.springframework.org/schema/mvc"<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:p="http://www.springframework.org/schema/p"&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>&nbsp;xmlns:task="http://www.springframework.org/schema/task"</strong><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xsi:schemaLocation="<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>http://www.springframework.org/schema/task</strong><br />
+<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; http://www.springframework.org/schema/task/spring-task-3.0.xsd</strong><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;mvc:annotation-driven /&gt;<br />
+<br />
+&nbsp;&nbsp;&nbsp; &lt;context:component-scan base-package="com.mytools.validator.engine" /&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp; &lt;!-- 启动定时器 --&gt;<br />
+&nbsp;&nbsp;&nbsp;<strong>&nbsp;&lt;task:annotation-driven/&gt;</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&lt;/beans&gt;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>第二步：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 可以在类中的需要定时执行的方法下指定如下Annotation</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;@Scheduled(cron="0 33/3 * * * ?") //每小时的33分钟开始执行，每3分钟执行1次<br />
+&nbsp;&nbsp;&nbsp; public void start() throws ServletException {<br />
+&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; validate();<br />
+}</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">备注：其实@Scheduled中可以指定如下3中时间表达式：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">（1）fixedRate：每隔多少毫秒执行一次该方法。如：</p>
+<p style="margin-top:0px;margin-bottom:0px;margin-left:40px;padding:0px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @Scheduled(fixedRate=2000)&nbsp; // 每隔2秒执行一次<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void scheduleMethod(){&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.out.println("Hello world...");&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;<br />
+&nbsp; 　&nbsp; （2）fixedDelay：当一次方法执行完毕之后，延迟多少毫秒再执行该方法。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin-left:40px;padding:0px;">　</p>
+<p style="margin-top:0px;margin-bottom:0px;margin-left:40px;padding:0px;">　　（3）cron：详细配置了该方法在什么时候执行。cron值是一个cron表达式。如：</p>
+<p style="margin-top:0px;margin-bottom:0px;margin-left:40px;padding:0px;"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @Scheduled(cron="0 0 0 * * SAT")&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public voidarchiveOldSpittles() {&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // ...&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>到指定时间后，任务总是执行2次的解决方案：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">这是因为我们很容易在一个基于Spring的Web工程中启动2个定时线程：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">第一次：web容器启动的时候，读取applicationContext.xml（或者别的Spring核心配置文件）文件时，会加载一次。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><br />
+第二次：Spring本身会加载applicationContext.xml（或者别的Spring核心配置文件）一次。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">解决方案：将你的Task的相关配置独立出来并在web.xml中通过context-param加载。而不是通过spring加载。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1） 独立出Spring-Task，如新命名一个文件名叫cms_quartz.xml</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2)&nbsp;&nbsp;&nbsp; 在web.xml中去加载该文件：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&lt;context-param&gt;<br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;<br />
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;param-value&gt;/WEB-INF/cms-servlet.xml,<strong>classpath:cms-quartz.xml&lt;/param-value&gt;</strong><br />
+&nbsp;&nbsp;&nbsp; &lt;/context-param&gt;</p>
+</div>
+</div></body></html>

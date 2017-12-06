@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-07-14T04:25:27Z"/><meta name="updated" content="2017-07-14T04:25:30Z"/><title>缓存雪崩，缓存穿透解决方案  2016-03-03 22:06 by MikeZhou, 2157 阅读, 0 评论, 收藏, 编辑 1. 缓存穿透：查询一个必然不存在的数据。比如文章表，查询一个不</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h2 style="font-size:18px;letter-spacing:-1px;background-image:url(file:///Applications/mNote.app/Contents/Resources/images/dotsH.gif);margin:0px;padding:6px 0px;font-weight:normal;line-height:21.6px;color:#333333;font-family:Verdana, 'Lucida Grande', Geneva, Arial, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;background-position:left bottom;background-repeat:repeat no-repeat;"><a id="cb_post_title_url" href="http://www.cnblogs.com/jinjiangongzuoshi/p/5240280.html" style="outline:none;text-decoration:none;color:#6699cc;">缓存雪崩，缓存穿透解决方案</a></h2>
+<small style="font-size:12px;color:#ababab;display:block;text-align:right;font-family:Verdana, 'Lucida Grande', Geneva, Arial, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;">2016-03-03 22:06 by MikeZhou,&nbsp;<span id="post_view_count">2157</span>&nbsp;阅读,&nbsp;<span id="post_comment_count">0</span>&nbsp;评论,&nbsp;<a href="http://www.cnblogs.com/jinjiangongzuoshi/archive/2016/03/03/5240280.html#" style="outline:none;text-decoration:none;color:#ababab;">收藏</a>,&nbsp;<a href="https://i.cnblogs.com/EditPosts.aspx?postid=5240280" rel="nofollow" style="outline:none;text-decoration:none;color:#ababab;">编辑</a></small><div class="entry" style="font-variant-ligatures:normal;font-variant-east-asian:normal;font-variant-position:normal;font-stretch:normal;font-family:Georgia, 'Times New Roman', Times, sans-serif;line-height:1.8;word-break:break-all;color:#333333;orphans:2;widows:2;"><div id="cnblogs_post_body" style="margin-bottom:20px;word-break:break-word;"><p style="line-height:1.8;margin:10px auto;">1.<strong>&nbsp;缓存穿透：</strong>查询一个必然不存在的数据。比如文章表，查询一个不存在的id，每次都会访问DB，如果有人恶意破坏，很可能直接对DB造成影响。</p>
+<p style="line-height:1.8;margin:10px auto;">解决办法：对所有可能查询的参数以hash形式存储，在控制层先进行校验，不符合则丢弃。</p>
+<p style="line-height:1.8;margin:10px auto;"><strong>2.缓存失效：</strong>如果缓存集中在一段时间内失效，DB的压力凸显。这个没有完美解决办法，但可以分析用户行为，尽量让失效时间点均匀分布。</p>
+<p style="line-height:1.8;margin:10px auto;">&nbsp;</p>
+<p style="line-height:1.8;margin:10px auto;">&nbsp;</p>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">缓存雪崩</h3>
+<p style="line-height:1.8;margin:10px auto;">缓存雪崩可能是因为数据未加载到缓存中，或者缓存同一时间大面积的失效，从而导致所有请求都去查数据库，导致数据库CPU和<span id="5_nwp" style="line-height:1.8;">内存负载过高，甚至宕机。</span></p>
+<p style="line-height:1.8;margin:10px auto;">解决思路：</p>
+<p style="line-height:1.8;margin:10px auto;">1，采用加锁计数，或者使用合理的队列数量来避免缓存失效时对数据库造成太大的压力。这种办法虽然能缓解数据库的压力，但是同时又降低了系统的吞吐量。</p>
+<p style="line-height:1.8;margin:10px auto;">2，分析用户行为，尽量让失效时间点均匀分布。避免缓存雪崩的出现。</p>
+<p style="line-height:1.8;margin:10px auto;">3，如果是因为某台缓存服务器宕机，可以考虑做主备，比如：redis主备，但是双缓存涉及到更新事务的问题，update可能读到脏数据，需要好好解决。</p>
+<p style="line-height:1.8;margin:10px auto;">&nbsp;</p>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">缓存穿透</h3>
+<p style="line-height:1.8;margin:10px auto;">缓存穿透是指用户查询数据，在数据库没有，自然在缓存中也不会有。这样就导致用户查询的时候，在缓存中找不到，每次都要去数据库中查询。</p>
+<p style="line-height:1.8;margin:10px auto;">解决思路：</p>
+<p style="line-height:1.8;margin:10px auto;">1，如果查询<span id="6_nwp" style="line-height:1.8;"><a id="6_nwl" href="http://cpro.baidu.com/cpro/ui/uijs.php?adclass=0&amp;app_id=0&amp;c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;is_app=0&amp;jk=9d81f77002e20c6d&amp;k=%CA%FD%BE%DD%BF%E2&amp;k0=%CA%FD%BE%DD%BF%E2&amp;kdi0=0&amp;luki=7&amp;mcpm=0&amp;n=10&amp;p=baidu&amp;q=smileking_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=6d0ce20270f7819d&amp;ssp2=1&amp;stid=9&amp;t=tpclicked3_hc&amp;td=1682280&amp;tu=u1682280&amp;u=http%3A%2F%2Fwww%2Eth7%2Ecn%2Fdb%2Fnosql%2F201510%2F136276%2Eshtml&amp;urlid=0" target="_blank" style="outline:none;text-decoration:none;color:#3d81ee;border-bottom-width:1px;border-bottom-style:dashed;">数据库</a>也为空，直接设置一个默认值存放到缓存，这样第二次到缓冲中获取就有值了，而不会继续访问数据库，这种办法最简单粗暴。</span></p>
+<p style="line-height:1.8;margin:10px auto;">2，根据缓存数据Key的规则。例如我们公司是做<span id="4_nwp" style="line-height:1.8;">机顶盒的，缓存数据以Mac为Key，Mac是有规则，如果不符合规则就过滤掉，这样可以过滤一部分查询。在做缓存规划的时候，Key有一定规则的话，可以采取这种办法。这种办法只能缓解一部分的压力，过滤和系统无关的查询，但是无法根治。</span></p>
+<p style="line-height:1.8;margin:10px auto;">3，采用布隆<span id="2_nwp" style="line-height:1.8;"><span id="3_nwp" style="line-height:1.8;"><a id="3_nwl" href="http://cpro.baidu.com/cpro/ui/uijs.php?adclass=0&amp;app_id=0&amp;c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;is_app=0&amp;jk=9d81f77002e20c6d&amp;k=%B9%FD%C2%CB%C6%F7&amp;k0=%B9%FD%C2%CB%C6%F7&amp;kdi0=0&amp;luki=6&amp;mcpm=0&amp;n=10&amp;p=baidu&amp;q=smileking_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=6d0ce20270f7819d&amp;ssp2=1&amp;stid=9&amp;t=tpclicked3_hc&amp;td=1682280&amp;tu=u1682280&amp;u=http%3A%2F%2Fwww%2Eth7%2Ecn%2Fdb%2Fnosql%2F201510%2F136276%2Eshtml&amp;urlid=0" target="_blank" style="outline:none;text-decoration:none;color:#3d81ee;border-bottom-width:1px;border-bottom-style:dashed;">过滤器</a>，将所有可能存在的数据哈希到一个足够大的BitSet中，不存在的数据将会被拦截掉，从而避免了对<span id="3_nwp" style="line-height:1.8;"><span id="2_nwp" style="line-height:1.8;"><a id="2_nwl" href="http://cpro.baidu.com/cpro/ui/uijs.php?adclass=0&amp;app_id=0&amp;c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;is_app=0&amp;jk=9d81f77002e20c6d&amp;k=%B5%D7%B2%E3&amp;k0=%B5%D7%B2%E3&amp;kdi0=0&amp;luki=2&amp;mcpm=0&amp;n=10&amp;p=baidu&amp;q=smileking_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=6d0ce20270f7819d&amp;ssp2=1&amp;stid=9&amp;t=tpclicked3_hc&amp;td=1682280&amp;tu=u1682280&amp;u=http%3A%2F%2Fwww%2Eth7%2Ecn%2Fdb%2Fnosql%2F201510%2F136276%2Eshtml&amp;urlid=0" target="_blank" style="outline:none;text-decoration:none;color:#3d81ee;border-bottom-width:1px;border-bottom-style:dashed;">底层</a>存储系统的查询压力。关于布隆<span id="5_nwp" style="line-height:1.8;"><a id="5_nwl" href="http://cpro.baidu.com/cpro/ui/uijs.php?adclass=0&amp;app_id=0&amp;c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;is_app=0&amp;jk=9d81f77002e20c6d&amp;k=%B9%FD%C2%CB%C6%F7&amp;k0=%B9%FD%C2%CB%C6%F7&amp;kdi0=0&amp;luki=6&amp;mcpm=0&amp;n=10&amp;p=baidu&amp;q=smileking_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=6d0ce20270f7819d&amp;ssp2=1&amp;stid=9&amp;t=tpclicked3_hc&amp;td=1682280&amp;tu=u1682280&amp;u=http%3A%2F%2Fwww%2Eth7%2Ecn%2Fdb%2Fnosql%2F201510%2F136276%2Eshtml&amp;urlid=0" target="_blank" style="outline:none;text-decoration:none;color:#3d81ee;border-bottom-width:1px;border-bottom-style:dashed;">过滤器</a>，详情查看：基于BitSet的布隆过滤器(Bloom Filter)&nbsp;</span></span></span></span></span></p>
+<p style="line-height:1.8;margin:10px auto;">大并发的缓存穿透会导致缓存雪崩。</p>
+<p style="line-height:1.8;margin:10px auto;">&nbsp;</p>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">缓存预热</h3>
+<p style="line-height:1.8;margin:10px auto;">单机web系统情况下比较简单。</p>
+<p style="line-height:1.8;margin:10px auto;">解决思路：</p>
+<p style="line-height:1.8;margin:10px auto;">1，直接写个缓存刷新页面，上线时手工操作下。</p>
+<p style="line-height:1.8;margin:10px auto;">2，数据量不大，可以在WEB系统启动的时候加载。</p>
+<p style="line-height:1.8;margin:10px auto;">3，搞个<span id="4_nwp" style="line-height:1.8;"><a id="4_nwl" href="http://cpro.baidu.com/cpro/ui/uijs.php?adclass=0&amp;app_id=0&amp;c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;is_app=0&amp;jk=9d81f77002e20c6d&amp;k=%B6%A8%CA%B1%C6%F7&amp;k0=%B6%A8%CA%B1%C6%F7&amp;kdi0=0&amp;luki=5&amp;mcpm=0&amp;n=10&amp;p=baidu&amp;q=smileking_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=6d0ce20270f7819d&amp;ssp2=1&amp;stid=9&amp;t=tpclicked3_hc&amp;td=1682280&amp;tu=u1682280&amp;u=http%3A%2F%2Fwww%2Eth7%2Ecn%2Fdb%2Fnosql%2F201510%2F136276%2Eshtml&amp;urlid=0" target="_blank" style="outline:none;text-decoration:none;color:#3d81ee;border-bottom-width:1px;border-bottom-style:dashed;">定时器</a>定时刷新缓存，或者由用户触发都行。<br />
+</span></p>
+<p style="line-height:1.8;margin:10px auto;"><span id="1_nwp" style="line-height:1.8;"><a id="1_nwl" href="http://cpro.baidu.com/cpro/ui/uijs.php?adclass=0&amp;app_id=0&amp;c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;is_app=0&amp;jk=9d81f77002e20c6d&amp;k=%B7%D6%B2%BC%CA%BD&amp;k0=%B7%D6%B2%BC%CA%BD&amp;kdi0=0&amp;luki=3&amp;mcpm=0&amp;n=10&amp;p=baidu&amp;q=smileking_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=6d0ce20270f7819d&amp;ssp2=1&amp;stid=9&amp;t=tpclicked3_hc&amp;td=1682280&amp;tu=u1682280&amp;u=http%3A%2F%2Fwww%2Eth7%2Ecn%2Fdb%2Fnosql%2F201510%2F136276%2Eshtml&amp;urlid=0" target="_blank" style="outline:none;text-decoration:none;color:#3d81ee;border-bottom-width:1px;border-bottom-style:dashed;">分布式</a>缓存系统，如Memcached，Redis，比如缓存系统比较大，由十几台甚至几十台机器组成，这样预热会复杂一些。</span></p>
+<p style="line-height:1.8;margin:10px auto;">解决思路：</p>
+<p style="line-height:1.8;margin:10px auto;">1，写个程序去跑。</p>
+<p style="line-height:1.8;margin:10px auto;">2，单个缓存预热<span id="0_nwp" style="line-height:1.8;"><a id="0_nwl" href="http://cpro.baidu.com/cpro/ui/uijs.php?adclass=0&amp;app_id=0&amp;c=news&amp;cf=1001&amp;ch=0&amp;di=128&amp;fv=17&amp;is_app=0&amp;jk=9d81f77002e20c6d&amp;k=%BF%F2%BC%DC&amp;k0=%BF%F2%BC%DC&amp;kdi0=0&amp;luki=1&amp;mcpm=0&amp;n=10&amp;p=baidu&amp;q=smileking_cpr&amp;rb=0&amp;rs=1&amp;seller_id=1&amp;sid=6d0ce20270f7819d&amp;ssp2=1&amp;stid=9&amp;t=tpclicked3_hc&amp;td=1682280&amp;tu=u1682280&amp;u=http%3A%2F%2Fwww%2Eth7%2Ecn%2Fdb%2Fnosql%2F201510%2F136276%2Eshtml&amp;urlid=0" target="_blank" style="outline:none;text-decoration:none;color:#3d81ee;border-bottom-width:1px;border-bottom-style:dashed;">框架</a>。<br />
+</span></p>
+<p style="line-height:1.8;margin:10px auto;">缓存预热的目标就是在系统上线前，将数据加载到缓存中。</p>
+<p style="line-height:1.8;margin:10px auto;">&nbsp;</p>
+<h4 style="margin:10px 0px;">缓存穿透</h4>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">什么是缓存穿透？</h3>
+<p style="line-height:1.8;margin:10px auto;">一般的缓存系统，都是按照key去缓存查询，如果不存在对应的value，就应该去后端系统查找（比如DB）。如果key对应的value是一定不存在的，并且对该key并发请求量很大，就会对后端系统造成很大的压力。这就叫做缓存穿透。 &nbsp;</p>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">如何避免？</h3>
+<p style="line-height:1.8;margin:10px auto;">1：对查询结果为空的情况也进行缓存，缓存时间设置短一点，或者该key对应的数据insert了之后清理缓存。 2：对一定不存在的key进行过滤。可以把所有的可能存在的key放到一个大的Bitmap中，查询时通过该bitmap过滤。【感觉应该用的不多吧】</p>
+<h4 style="margin:10px 0px;">缓存雪崩</h4>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">什么是缓存雪崩？</h3>
+<p style="line-height:1.8;margin:10px auto;">当缓存服务器重启或者大量缓存集中在某一个时间段失效，这样在失效的时候，也会给后端系统(比如DB)带来很大压力。</p>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">如何避免？</h3>
+<p style="line-height:1.8;margin:10px auto;">1：在缓存失效后，通过加锁或者队列来控制读数据库写缓存的线程数量。比如对某个key只允许一个线程查询数据和写缓存，其他线程等待。 2：不同的key，设置不同的过期时间，让缓存失效的时间点尽量均匀。 3：做二级缓存，A1为原始缓存，A2为拷贝缓存，A1失效时，可以访问A2，A1缓存失效时间设置为短期，A2设置为长期（此点为补充） &nbsp;</p>
+<h4 style="margin:10px 0px;">分布式缓存系统</h4>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">分布式缓存系统面临的问题</h3>
+<h4 style="margin:10px 0px;">缓存一致性问题</h4>
+<p style="line-height:1.8;margin:10px auto;">1：缓存系统与底层数据的一致性。这点在底层系统是“可读可写”时，写得尤为重要&nbsp;</p>
+<p style="line-height:1.8;margin:10px auto;">2：有继承关系的缓存之间的一致性。为了尽量提高缓存命中率，缓存也是分层：全局缓存，二级缓存。他们是存在继承关系的。全局缓存可以有二级缓存来组成。&nbsp;</p>
+<p style="line-height:1.8;margin:10px auto;">3：多个缓存副本之间的一致性。为了保证系统的高可用性，缓存系统背后往往会接两套存储系统（如memcache，redis等）</p>
+<h4 style="margin:10px 0px;">缓存穿透和缓存雪崩</h4>
+<p style="line-height:1.8;margin:10px auto;">上面有讲述。 &nbsp;</p>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">缓存数据的淘汰</h3>
+<p style="line-height:1.8;margin:10px auto;">缓存淘汰的策略有两种： (1) 定时去清理过期的缓存。 （2）当有用户请求过来时，再判断这个请求所用到的缓存是否过期，过期的话就去底层系统得到新数据并更新缓存。&nbsp; 两者各有优劣，第一种的缺点是维护大量缓存的key是比较麻烦的，第二种的缺点就是每次用户请求过来都要判断缓存失效，逻辑相对比较复杂，具体用哪种方案，大家可以根据自己的应用场景来权衡。 &nbsp; 1. 预估失效时间 2. 版本号（必须单调递增，时间戳是最好的选择）3. 提供手动清理缓存的接口。</p>
+<p style="line-height:1.8;margin:10px auto;">&nbsp;</p>
+<h3 style="font-size:16px;line-height:1.5;margin:10px 0px;">缓存算法</h3>
+<p style="line-height:1.8;margin:10px auto;">FIFO算法：First in First out，先进先出。原则：一个数据最先进入缓存中，则应该最早淘汰掉。也就是说，当缓存满的时候，应当把最先进入缓存的数据给淘汰掉。<br />
+LFU算法：Least Frequently Used，最不经常使用算法。<br />
+LRU算法：Least Recently Used，近期最少使用算法。请查看：Memcached之你真正理解LRU吗(4)</p>
+<p style="line-height:1.8;margin:10px auto;">LRU和LFU的区别。LFU算法是根据在一段时间里数据项被使用的次数选择出最少使用的数据项，即根据使用次数的差异来决定。而LRU是根据使用时间的差异来决定的</p>
+</div>
+</div></body></html>

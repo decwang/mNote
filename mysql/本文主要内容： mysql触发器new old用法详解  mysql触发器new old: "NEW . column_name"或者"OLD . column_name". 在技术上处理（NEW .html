@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-20T03:36:49Z"/><meta name="updated" content="2017-06-21T09:09:29Z"/><title>本文主要内容： mysql触发器new old用法详解  mysql触发器new old: "NEW . column_name"或者"OLD . column_name". 在技术上处理（NEW </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p style="margin:20px auto 0px;padding:0px;border:0px;line-height:24px;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;">本文主要内容：<br />
+mysql触发器new old用法详解</p>
+<p style="margin:20px auto 0px;padding:0px;border:0px;line-height:24px;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;">mysql触发器new old:<br />
+"NEW . column_name"或者"OLD . column_name".<br />
+在技术上处理（NEW | OLD . column_name）新和旧的列名属于创建了过渡变量（"transition variables"）。</p>
+<p style="margin:20px auto 0px;padding:0px;border:0px;line-height:24px;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;">对于INSERT语句,只有NEW是合法的；对于DELETE语句，只有OLD才合法；而UPDATE语句可以在和NEW以及OLD同时使用。</p>
+<p style="margin:20px auto 0px;padding:0px;border:0px;line-height:24px;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;">一个UPDATE中同时使用NEW和OLD的例子。<br />
+&nbsp;</p>
+<div class="codetitle" style="margin:3px auto 0px;padding:2px 3px;border-width:1px 1px 0px;border-top-style:solid;border-right-style:solid;border-left-style:solid;border-top-color:#a2b7db;border-right-color:#a2b7db;border-left-color:#a2b7db;width:625px;background-color:#f2f6fb;clear:both;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;"><span style="margin:0px;padding:0px;border:0px;float:right;cursor:pointer;"><u>复制代码</u></span>代码示例:</div>
+<div id="c_tR76iPUM" class="codebody" style="margin:0px auto 3px;padding:0px 3px 5px 5px;border:1px solid #a2b7db;width:623px;background-color:#f3f5fc;clear:both;font-family:Arial;font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">CREATE TRIGGER tr1&nbsp;&nbsp;<br />
+BEFORE UPDATE ON t22&nbsp;&nbsp;&nbsp;<br />
+FOR EACH ROW&nbsp;&nbsp;&nbsp;<br />
+BEGIN&nbsp;&nbsp;&nbsp;<br />
+SET @old = OLD.s1;&nbsp;&nbsp;&nbsp;<br />
+SET @new = NEW.s1;&nbsp;&nbsp;&nbsp;<br />
+END;</div>
+<p style="margin:20px auto 0px;padding:0px;border:0px;line-height:24px;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;">在触发器中，还要看触发器的时机，如果是插入前动手的，也可以写成set @t_time=NOW();t_time不需要预先定义，也不用NEW,或是OLD。<br />
+例子：<br />
+&nbsp;</p>
+<div class="codetitle" style="margin:3px auto 0px;padding:2px 3px;border-width:1px 1px 0px;border-top-style:solid;border-right-style:solid;border-left-style:solid;border-top-color:#a2b7db;border-right-color:#a2b7db;border-left-color:#a2b7db;width:625px;background-color:#f2f6fb;clear:both;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;"><span style="margin:0px;padding:0px;border:0px;float:right;cursor:pointer;"><u>复制代码</u></span>代码示例:</div>
+<div id="c_T5HjXTU9" class="codebody" style="margin:0px auto 3px;padding:0px 3px 5px 5px;border:1px solid #a2b7db;width:623px;background-color:#f3f5fc;clear:both;font-family:Arial;font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">begin<br />
+set @t_id= (select max(ID) from P_Booth);<br />
+set @t_name= 'P_Booth';<br />
+set @t_time=NOW();<br />
+INSERT INTO `L_InsertLogs` (`Counts`, `TablesName`,`OperateTime`) VALUES (@t_id,@t_name,@t_time);<br />
+&nbsp;&nbsp; end</div>
+<p style="margin:20px auto 0px;padding:0px;border:0px;line-height:24px;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;">如果是在更新之后要动手的，那需要用NEW来定义， 如下：<br />
+&nbsp;</p>
+<div class="codetitle" style="margin:3px auto 0px;padding:2px 3px;border-width:1px 1px 0px;border-top-style:solid;border-right-style:solid;border-left-style:solid;border-top-color:#a2b7db;border-right-color:#a2b7db;border-left-color:#a2b7db;width:625px;background-color:#f2f6fb;clear:both;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;"><span style="margin:0px;padding:0px;border:0px;float:right;cursor:pointer;"><u>复制代码</u></span>代码示例:</div>
+<div id="c_uejffTEz" class="codebody" style="margin:0px auto 3px;padding:0px 3px 5px 5px;border:1px solid #a2b7db;width:623px;background-color:#f3f5fc;clear:both;font-family:Arial;font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">begin<br />
+set @t_id= new.ID;<br />
+set @t_name= 'P_Booth';<br />
+set @t_time=NOW();<br />
+INSERT INTO `L_UpdateLogs` (`Counts`, `TablesName`,`OperateTime`) VALUES (@t_id,@t_name,@t_time);<br />
+end</div>
+<p style="margin:20px auto 0px;padding:0px;border:0px;line-height:24px;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;">如果是在删除之后要动手的，那就需要用OLD来定义了，如下：<br />
+因为ID值其实已经被删除，却还是可以用，实在是有点不太理解数据库删除数据的真正机制。<br />
+&nbsp;</p>
+<div class="codetitle" style="margin:3px auto 0px;padding:2px 3px;border-width:1px 1px 0px;border-top-style:solid;border-right-style:solid;border-left-style:solid;border-top-color:#a2b7db;border-right-color:#a2b7db;border-left-color:#a2b7db;width:625px;background-color:#f2f6fb;clear:both;font-family:΢���ź�, ����;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;"><span style="margin:0px;padding:0px;border:0px;float:right;cursor:pointer;"><u>复制代码</u></span>代码示例:</div>
+<div id="c_JnaQRJnE" class="codebody" style="margin:0px auto 3px;padding:0px 3px 5px 5px;border:1px solid #a2b7db;width:623px;background-color:#f3f5fc;clear:both;font-family:Arial;font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">begin<br />
+set @t_id= old.ID;<br />
+set @t_name= 'P_Booth';<br />
+set @t_time=NOW();<br />
+INSERT INTO `L_DeleteLogs` (`Counts`, `TablesName`,`OperateTime`) VALUES (@t_id,@t_name,@t_time);<br />
+end</div></body></html>

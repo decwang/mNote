@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-03-10T10:40:44Z"/><meta name="updated" content="2017-03-10T10:40:45Z"/><title>return scaleImageSizeToWidth(attachmentWidth)}func scaleImageSizeToWidth:(CGFloat)width   {    let </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>return scaleImageSizeToWidth(attachmentWidth)}func scaleImageSizeToWidth:(CGFloat)width&nbsp;</div>
+<div>{ &nbsp; &nbsp;let factor = CGFloat(width / self.image.size.width) &nbsp; &nbsp;return CGRect(x: 0, y: 0, width: self.image.size.width &nbsp;factor, self.image.size.height * factor)}</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>func textAttachment(fontSize: CGFloat) -&gt; NSTextAttachment {</div>
+<div>&nbsp; &nbsp; let font = UIFont.systemFontOfSize(fontSize) //set accordingly to your font, you might pass it in the function</div>
+<div>&nbsp; &nbsp; let textAttachment = NSTextAttachment()</div>
+<div>&nbsp; &nbsp; let image = //some image</div>
+<div>&nbsp; &nbsp; textAttachment.image = image</div>
+<div>&nbsp; &nbsp; let mid = font.descender + font.capHeight</div>
+<div>&nbsp; &nbsp; textAttachment.bounds = CGRectIntegral(CGRect(x: 0, y: font.descender - image.size.height / 2 + mid + 2, width: image.size.width, height: image.size.height))</div>
+<div>&nbsp; &nbsp; return textAttachment</div>
+<div>}</div>
+<div>Should work and shouldn't be blurry in any way (thanks to CGRectIntegral)</div>
+<div><br />
+</div>
+<div>shareimprove this answer</div>
+<div>answered Dec 1 '15 at 18:17</div>
+<div><br />
+</div>
+<div>Oliver Borchert</div>
+<div>1,53411640</div>
+<div>7<span class="Apple-tab-span" style="white-space:pre;">	</span> <span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div>Should be the accepted answer – Roi Mulia Jan 13 '16 at 21:24&nbsp;</div>
+<div>&nbsp; <span class="Apple-tab-span" style="white-space:pre;">	</span> <span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div>Thanks for posting this, it lead to me to a pretty good approach. I noticed that you are adding a somewhat magic 2 to your y coordinate calculation. – Ben Aug 9 '16 at 21:20</div>
+<div>2<span class="Apple-tab-span" style="white-space:pre;">	</span> <span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div>Here's what I used for my y-calculation: descender + (abs(descender) + capHeight)/2 - iconHeight/2 – Ben Aug 9 '16 at 21:22&nbsp;</div>
+<div>&nbsp; <span class="Apple-tab-span" style="white-space:pre;">	</span> <span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div>Why the +2 for the Y origin? – William LeGate Sep 29 '16 at 20:20</div>
+<div>&nbsp; <span class="Apple-tab-span" style="white-space:pre;">	</span> <span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div>@WilliamLeGate I really don't know, just tried it out and it worked for all the font sizes I tested for (the ones I needed) .. – Oliver Borchert Sep 29 '16 at 20:22</div></body></html>

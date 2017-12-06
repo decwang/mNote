@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-10-10T10:11:24Z"/><meta name="updated" content="2016-10-10T10:11:46Z"/><title>ios gcd信号量</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div><span class="Apple-tab-span" style="white-space:pre;">	</span>NSString *urlString =@"";</div>
+<div>&nbsp;NSURL *url = [NSURL URLWithString:urlString];</div>
+<div>&nbsp;NSURLRequest *request = [NSURLRequest requestWithURL:url];</div>
+<div>&nbsp;dispatch_semaphore_t disp = dispatch_semaphore_create(0);</div>
+<div>&nbsp; &nbsp; NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //处理model</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;dispatch_semaphore_signal(disp);</div>
+<div>&nbsp; &nbsp; }];</div>
+<div>&nbsp; &nbsp; [dataTask resume];</div>
+<div>&nbsp;dispatch_semaphore_wait(disp, DISPATCH_TIME_FOREVER);</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>使用信号量，swift版本：</div>
+<div><br />
+</div>
+<div>public static func requestSynchronousData(request: NSURLRequest) -&gt; NSData? {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; var data: NSData? = nil</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; let semaphore: dispatch_semaphore_t = dispatch_semaphore_create(0)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; let task = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; taskData, _, error -&gt; () in</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; data = taskData</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if data == nil, let error = error {print(error)}</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dispatch_semaphore_signal(semaphore);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; })</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; task.resume()</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; return data</div>
+<div>}</div></body></html>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-08-04T12:58:46Z"/><meta name="updated" content="2017-08-04T12:59:02Z"/><title>统一被动打开服务</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>统一打开服务</div>
+<div>场景</div>
+<div>1 后端服务主动向APP推送要打开的内容</div>
+<div>推送内容如下:</div>
+<div>{</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>"title":"您的朋友xxx已经成功加入天天送,快点去领奖励吧",</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>"badge":"1",</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>"sound":"dingdong.mp3",</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>"custom":</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>{</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>"url":"ilucky://open?action=callApi&amp;url=http://www.fuzhi99.com/callapi?msgId=xxxx"</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>}</div>
+<div>}</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div>app在收到消息后,</div>
+<div>判断点击链接为callApi,则使用http调用该链接,并拼上兹有参数.</div>
+<div><br />
+</div>
+<div>{</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>"retCode":0,</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>"retMessage":"",</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>"detail":{</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>"callUrl":"结果点击跳转链接"</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>}</div>
+<div>}</div>
+<div><br />
+</div>
+<div>异步执行,在返回的retCode,retMessage中,如果retCode == 0,且retMessage不为空,则iToast呈现retMessage,并执行callUrl.</div>
+<div><br />
+</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span></div></body></html>

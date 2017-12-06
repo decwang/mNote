@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-15T03:02:20Z"/><meta name="updated" content="2017-05-15T03:02:28Z"/><title>Spring DI(依赖注入) IOC（控制反转） AOP（面向切面编程）</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div><br />
+</div>
+<div><br />
+</div>
+<div>2011-2-24 22:58:00来源：Java</div>
+<div><br />
+</div>
+<div>spring 的优点？</div>
+<div>1.降低了组件之间的耦合性 ，实现了软件各层之间的解耦</div>
+<div>2.可以使用容易提供的众多服务，如事务管理，消息服务等</div>
+<div>3.容器提供单例模式支持</div>
+<div>4.容器提供了AOP技术，利用它很容易实现如权限拦截，运行期监控等功能</div>
+<div>5.容器提供了众多的辅助类，能加快应用的开发</div>
+<div>6.spring对于主流的应用框架提供了集成支持，如hibernate，JPA，Struts等</div>
+<div>7.spring属于低侵入式设计，代码的污染极低</div>
+<div>8.独立于各种应用服务器</div>
+<div>9.spring的DI机制降低了业务对象替换的复杂性</div>
+<div>10.Spring的高度开放性，并不强制应用完全依赖于Spring，开发者可以自由选择spring的部分或全部</div>
+<div><br />
+</div>
+<div>&nbsp;什么是DI机制？</div>
+<div>依赖注入（Dependecy Injection）和控制反转（Inversion of Control）是同一个概念，具体的讲：当某个角色</div>
+<div>需要另外一个角色协助的时候，在传统的程序设计过程中，通常由调用者来创建被调用者的实例。但在spring中</div>
+<div>创建被调用者的工作不再由调用者来完成，因此称为控制反转。创建被调用者的工作由spring来完成，然后注入调用者</div>
+<div>因此也称为依赖注入。</div>
+<div>spring以动态灵活的方式来管理对象 ， 注入的两种方式，设置注入和构造注入。</div>
+<div>设置注入的优点：直观，自然</div>
+<div>构造注入的优点：可以在构造器中决定依赖关系的顺序。</div>
+<div><br />
+</div>
+<div>&nbsp;什么是AOP？</div>
+<div>面向切面编程（AOP）完善spring的依赖注入（DI），面向切面编程在spring中主要表现为两个方面</div>
+<div>1.面向切面编程提供声明式事务管理</div>
+<div>2.spring支持用户自定义的切面</div>
+<div><br />
+</div>
+<div>面向切面编程（aop）是对面向对象编程（oop）的补充，</div>
+<div>面向对象编程将程序分解成各个层次的对象，面向切面编程将程序运行过程分解成各个切面。</div>
+<div>AOP从程序运行角度考虑程序的结构，提取业务处理过程的切面，oop是静态的抽象，aop是动态的抽象，</div>
+<div>是对应用执行过程中的步骤进行抽象，，从而获得步骤之间的逻辑划分。</div>
+<div><br />
+</div>
+<div>aop框架具有的两个特征：</div>
+<div>1.各个步骤之间的良好隔离性</div>
+<div>2.源代码无关性</div>
+<div><br />
+</div>
+<div>?</div>
+<div><br />
+</div>
+<div>-----------------------------------------------------------------------------------------------</div>
+<div><br />
+</div>
+<div>DI 和 IOC?的区别</div>
+<div>DI 和 IOC?</div>
+<div>DI和IOC是差不多的概念。?</div>
+<div>一个重要特征是接口依赖，是把对象关系推迟到运行时去确定.?</div>
+<div>DI是一个初始化实例的过程，分为三种1.setter based 2.constructor based 3.interface based,在spring 中就是应用前两种;但又不仅仅是初始化实例，而且是运用接口的概念去实现这种注入依赖。静态地看，只是依赖一个接口，但实际运行起来，是依赖一个实现了该 接口的具体类。?</div>
+<div>IOC就是面向接口编程的应用?</div>
+<div>1.一个通常的做法（非面向接口编程的方法），对象A依赖对象B，B会作为A的属性，可以理解为A直接控制B;?</div>
+<div>2.IOC的做法，对象A依赖于接口C，而不直接依赖于实现了接口C的B，也就是A不能直接控制是哪个具体实现了C的B去做相应的事情，而是由我们控制可以由哪个实现了接口C的B去处理，也就是控制反过来了，是由B来决定了，而不是由A，实现就是面向接口编程。?</div>
+<div><br />
+</div>
+<div>AOP?</div>
+<div><br />
+</div>
+<div>AOP是动态代理的应用，将具体业务和相应的其它方面（比如日志，权限之类的）划分开来，业务不会知道还有没有其它的功能来辅助，需要的话我就给他加上一个配置就可以，而不用去修改业务代码。?</div>
+<div><br />
+</div>
+<div>原先是这个样子?</div>
+<div><br />
+</div>
+<div>｛?</div>
+<div><br />
+</div>
+<div>//日志?</div>
+<div><br />
+</div>
+<div>//权限?</div>
+<div><br />
+</div>
+<div>//业务代码?</div>
+<div><br />
+</div>
+<div>｝?</div>
+<div><br />
+</div>
+<div>现在?</div>
+<div><br />
+</div>
+<div>｛?</div>
+<div><br />
+</div>
+<div>//业务代码?</div>
+<div><br />
+</div>
+<div>｝?</div>
+<div><br />
+</div>
+<div>而权限和日志则写在其它的类advice中，只要在配置中说明在调用业务方法时（或前，或后，或别的），调用一下advice就OK了。很容易把一个方面，比如权限或日志从业务代码中剥离出来。?</div>
+<div><br />
+</div>
+<div>在SPRING中，实现AOP的流程如下：?</div>
+<div><br />
+</div>
+<div>1.定义业务接口?</div>
+<div>2.定义业务实现类?</div>
+<div>3.定义interceptor注入类?</div>
+<div>4.配置Bean，设置class为proxyFactoryBean?</div>
+<div>设置其三个属性1.）proxyInterfaces为1?</div>
+<div>2.）interceptorNames为3?</div>
+<div>3.）target为2</div></body></html>

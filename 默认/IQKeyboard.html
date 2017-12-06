@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-12-14T05:11:15Z"/><meta name="updated" content="2016-12-14T05:11:35Z"/><title>IQKeyboard</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article"><div class="preview"><h1 class="title">关于IQKeyBoardManager挤出导航栏的解决方案</h1>
+          <div class="meta-top">
+            <span class="wordage">字数506</span>             <span class="views-count">阅读2190</span>             <span class="comments-count">评论11</span>             <span class="likes-count">喜欢12</span>           </div>
+          
+          
+          
+
+          <div class="show-content"><h3>写在前面</h3>
+<p>  虽然修改后能解决导航栏被挤出去的问题，但是就目前来看是有副作用的，写这篇文章就是想大家来一起讨论，毕竟键盘处理还是比较头疼的。</p>
+<h5>如何修改</h5>
+<p>其实我也就注释了一段代码<br />
+文件位置：IQKeyManager&gt;Categorise&gt;IQUIView+Hierarchy.m</p>
+<div class="image-package imagebubble" widget="ImageBubble">
+<img src="http://upload-images.jianshu.io/upload_images/1397114-3b991cd00e19a41f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/1397114-3b991cd00e19a41f.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" /><br />
+<div class="image-caption">屏幕快照 2016-06-16 上午11.31.59.png</div>
+</div>
+<p>注释了框出来的代码，前面也说了，这样做虽然能解决问题但是是有副作用的</p>
+<h5>目前已经发现的修改后的bug</h5>
+<p>1.当push后立马给输入框获取焦点的时候，收起键盘后，self.view会向上偏移64个单位，也就是导航栏的高度。</p>
+<p>原理是如果不注释这段代码，那么该方法返回的是导航栏控制器，IQKeyBoard会将导航栏控制器的view一起偏移，注释掉后返回的就是viewController而不是NavigationViewController。</p>
+<h6>Eg:</h6>
+<pre class="hljs swift"><code class="swift"> -(void)viewDidLoad{
+    [<span class="hljs-keyword">super</span> viewDidLoad];
+    <span class="hljs-keyword">self</span>.title = @<span class="hljs-string">"键盘处理"</span>;
+
+    _inputTV = [[<span class="hljs-type">UITextView</span> alloc] <span class="hljs-keyword">init</span>];
+    [<span class="hljs-keyword">self</span>.view addSubview:_inputTV];
+    [_inputTV mas_makeConstraints:^(<span class="hljs-type">MASConstraintMaker</span> *make) {
+    make.<span class="hljs-keyword">left</span>.<span class="hljs-keyword">right</span>.equalTo(<span class="hljs-keyword">self</span>.view);
+    make.top.equalTo(<span class="hljs-keyword">self</span>.view).offset(<span class="hljs-number">20</span>);
+    make.height.equalTo(@<span class="hljs-number">40</span>);
+}];
+  <span class="hljs-comment">// 如果在view初始化玩后就让其成为第一响应，在键盘收起时，self.view就会向上偏移</span> [_inputTV becomeFirstResponder];    
+}</code></pre> <h5>尝试</h5>
+<p>我只是猜想，因为IQKeyBoard是通过注册各种通知，TextView 、UITextField  
+还有键盘的通知，是不是在viewdidload里 
+becomeFirstResponder时，通知发送顺序的影响加上我注释了那段代码（因为不注释是没有问题的）。<br />
+所以，我改在viewDidAppear里 becomeFirstResponder，解决问题，当然，这不是最好的解决方案。</p>
+<h3>写在最后</h3>
+<p>大神写的IQKeyBoardManager确实好用，但是还是有一点点瑕疵，如果有小伙伴采用了我的方法，可能会有其他的bug，如果发现了大家一起讨论讨论，菜逼在此感激不尽，（我特么实在不想自己去一个个的处理键盘，原谅我的懒惰与菜）</p>
+</div>
+        </div>
+      </div>
+      <div class="visitor_edit">
+        
+        <div id="further-readings" data-user-slug="" data-user-nickname="">
+          
+          <ul id="further-readings-list" class="reading-list unstyled"></ul>
+          <div id="further-reading-new" class="reading-edit">
+              <a data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in">                  推荐拓展阅读</a>            <div id="further-reading-form"></div>
+          </div>
+        </div>
+        <div class="pull-right">
+          
+          <div class="author-copyright pull-right" data-toggle="tooltip" data-html="true" title="" data-original-title="转载请联系作者获得授权，并标注“简书作者”。">
+            <a> 著作权归作者所有</a>           </div>
+        </div>
+      </div>
+      
+        <div class="support-author">
+          <p>如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作！</p>
+            <a class="btn btn-pay" data-toggle="modal" href="http://www.jianshu.com/p/a5f655b57805#pay-modal">¥ 打赏支持</a>           <div class="avatar-list"></div>
+        </div>
+      
+      <div class="meta-bottom clearfix">
+        
+        <div class="like ">
+            <div class="like-button">
+              <a id="like-note" class="like-content" data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in">                   喜欢</a></div>
+          <span id="likes-count" data-toggle="tooltip" data-placement="right" title="" data-original-title="查看所有喜欢的用户">12</span>        </div>
+        
+        <div class="share-group pull-right">
+          <a data-name="weibo">             分享到微博
+          </a>           <a data-toggle="modal" href="http://www.jianshu.com/p/a5f655b57805#share-weixin-modal" data-name="weixin">             分享到微信
+          </a>           <div class="more">
+            <a data-toggle="dropdown">更多分享</a>             
+          </div>
+        </div>
+      </div>
+      
+      
+
+      
+      
+      
+      
+      <div id="likes-modal" class="modal modal_new support_list-modal fullscreen hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        </div>
+</div>
+</div>
+</div>
+<div id="likes-modal" class="modal modal_new support_list-modal fullscreen hide fade" tabindex="-1" role="dialog" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h3>喜欢的用户</h3>
+      </div>
+      <div class="modal-body">
+        <ul class="unstyled users">
+        <li data-user-id="2460589"> <a class="avatar" href="http://www.jianshu.com/users/0747c6126010"> <img src="http://upload.jianshu.io/users/upload_avatars/2460589/13fd03c5ce97?imageMogr/thumbnail/90x90/quality/100" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/0747c6126010">取个帅气的昵称也不行</a> <span class="time">2016.11.02 17:44</span></li>
+<li data-user-id="1284473"> <a class="avatar" href="http://www.jianshu.com/users/44b811bc27de"> <img src="http://upload.jianshu.io/users/upload_avatars/1284473/9d5be361ffcb.jpg?imageMogr/thumbnail/90x90/quality/100" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/44b811bc27de">only99</a> <span class="time">2016.09.20 09:43</span></li>
+<li data-user-id="947738"> <a class="avatar" href="http://www.jianshu.com/users/9bec921088b4"> <img src="http://upload.jianshu.io/users/upload_avatars/947738/bd33a50f85c8?imageMogr/thumbnail/90x90/quality/100" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/9bec921088b4">薛凯凯圆滚滚</a> <span class="time">2016.09.08 08:57</span></li>
+<li data-user-id="1397114"> <a class="avatar" href="http://www.jianshu.com/users/39837c70897a"> <img src="http://upload.jianshu.io/users/upload_avatars/1397114/9a4ec98ca3b7.jpg?imageMogr/thumbnail/90x90/quality/100" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/39837c70897a">怀恋ooO</a> <span class="time">2016.08.03 11:17</span></li>
+<li data-user-id="1954668"> <a class="avatar" href="http://www.jianshu.com/users/3f9d2d503f75"> <img src="http://upload.jianshu.io/users/upload_avatars/1954668/e5c74c93ef5e.jpg?imageMogr/thumbnail/90x90/quality/100" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/3f9d2d503f75">周周周周小飞</a> <span class="time">2016.08.03 10:01</span></li>
+<li data-user-id="1932693"> <a class="avatar" href="http://www.jianshu.com/users/06de329860c2"> <img src="http://cdn-qn0.jianshu.io/assets/default_avatar/9-ece2d3668ecf525c902de6c8672b6435.jpg" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/06de329860c2">辣么萌的小伙计</a> <span class="time">2016.06.21 19:47</span></li>
+<li data-user-id="1963572"> <a class="avatar" href="http://www.jianshu.com/users/b6b746b74cd3"> <img src="http://upload.jianshu.io/users/upload_avatars/1963572/8125360a7e7a?imageMogr/thumbnail/90x90/quality/100" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/b6b746b74cd3">Review丨陌路</a> <span class="time">2016.06.19 23:06</span></li>
+<li data-user-id="634959"> <a class="avatar" href="http://www.jianshu.com/users/3f0075454d65"> <img src="http://cdn-qn0.jianshu.io/assets/default_avatar/7-a82e998966cef5ab3eeda59b4297b619.jpg" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/3f0075454d65">kakukeme</a> <span class="time">2016.06.18 12:35</span></li>
+<li data-user-id="1238108"> <a class="avatar" href="http://www.jianshu.com/users/6bfe650aaaf5"> <img src="http://upload.jianshu.io/users/upload_avatars/1238108/38f3f85f2219?imageMogr/thumbnail/90x90/quality/100" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/6bfe650aaaf5">北辰小平</a> <span class="time">2016.06.18 03:35</span></li>
+<li data-user-id="1627180"> <a class="avatar" href="http://www.jianshu.com/users/c5d971a31633"> <img src="http://upload.jianshu.io/users/upload_avatars/1627180/c3d42ae45774?imageMogr/thumbnail/90x90/quality/100" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/c5d971a31633">呆死萌</a> <span class="time">2016.06.17 16:27</span></li>
+<li data-user-id="619669"> <a class="avatar" href="http://www.jianshu.com/users/760903bb21a5"> <img src="http://upload.jianshu.io/users/upload_avatars/619669/204c58f6cdc5.png?imageMogr/thumbnail/90x90/quality/100" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/760903bb21a5">低调做事</a> <span class="time">2016.06.17 10:47</span></li>
+<li data-user-id="678633"> <a class="avatar" href="http://www.jianshu.com/users/f0d864f90e8f"> <img src="http://cdn-qn0.jianshu.io/assets/default_avatar/8-77a9d346e43ea9a5ea58086d74909362.jpg" /> </a> <a class="blue-link" href="http://www.jianshu.com/users/f0d864f90e8f">娶个名字真难</a> <span class="time">2016.06.17 10:31</span></li>
+</ul>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    <div id="comments" class="comment-list clearfix">
+        <div class="comment-head clearfix">
+          11条评论
+          <span class="order">             （
+            <a data-order="asc" class="active">按时间正序</a>·
+            <a data-order="desc">按时间倒序</a>·
+            <a data-order="likes_count">按喜欢排序</a>             ）
+          </span>             <a class="goto-comment pull-right" data-signin-link="true" data-toggle="modal" href="http://www.jianshu.com/sign_in">               添加新评论</a>        </div>
+        <div id="comment-list">
+
+
+<div class="note-comment clearfix" id="comment-2794578">
+  <div class="content">
+      <div class="meta-top">
+        <a class="avatar" href="http://www.jianshu.com/users/4cd75d0ee059">           <img src="http://upload.jianshu.io/users/upload_avatars/902254/aa64d93f6b4c?imageMogr/thumbnail/90x90/quality/100" alt="100" /> </a>        <p>
+          <a class="author-name" href="http://www.jianshu.com/users/4cd75d0ee059">Wws</a>         </p>
+        <span class="reply-time">           <small>2 楼 · </small>           <a href="http://www.jianshu.com/p/a5f655b57805/comments/2794578#comment-2794578">2016.06.17 20:58</a></span>       </div>
+      <p>[IQkeyBoardxxxx sharedXXXX]  拿到manager enable = NO  , 或者Toolxx = NO 我记得在Apper 的disappear里面写就行</p>
+      <div class="comment-footer clearfix text-right">
+        <a data-id="2794578" class="like pull-left">           喜欢(0)</a>        
+
+        <a data-id="2794578" data-nickname="Wws" class="reply">回复</a>         
+        
+      </div>
+    
+  </div>
+</div>
+<div class="note-comment clearfix" id="comment-2835829">
+  <div class="content">
+      <div class="meta-top">
+        <a class="avatar" href="http://www.jianshu.com/users/fefdb84b345d">           <img src="http://upload.jianshu.io/users/upload_avatars/1476624/20cedf4cb4e8?imageMogr/thumbnail/90x90/quality/100" alt="100" /> </a>        <p>
+          <a class="author-name" href="http://www.jianshu.com/users/fefdb84b345d">紫星轩</a>         </p>
+        <span class="reply-time">           <small>3 楼 · </small>           <a href="http://www.jianshu.com/p/a5f655b57805/comments/2835829#comment-2835829">2016.06.21 16:59</a></span>       </div>
+      <p>其实没这么麻烦的, 我之前也遇到这个问题, 后来一个大神指点出来的, 
+IQKeyBoardManager继承的是UIScrollView, 
+只需要把使用IQKeyBoardManager的Controller的view继承类改成UIScrollView就可以了</p>
+      <div class="comment-footer clearfix text-right">
+        <a data-id="2835829" class="like pull-left">           喜欢(0)</a>        
+
+        <a data-id="2835829" data-nickname="紫星轩" class="reply">回复</a>         
+        
+      </div>
+    <div class="child-comment-list ">
+        <div class="child-comment" id="comment-2835854" data-id="2835854">
+    <p>
+      <a class="blue-link" href="http://www.jianshu.com/users/39837c70897a">怀恋ooO</a>：
+      <a href="http://www.jianshu.com/users/fefdb84b345d" class="maleskine-author" target="_blank" data-user-slug="fefdb84b345d">@紫星轩</a> z这个方法我也试过，只不过这种方法好像在用纯代码自动布局时不好用
+    </p>
+    <div class="child-comment-footer text-right clearfix">
+      
+      <a data-id="2835829" data-nickname="怀恋ooO" class="reply">回复</a>       
+      
+      <span class="reply-time pull-left">         <a href="http://www.jianshu.com/p/a5f655b57805/comments/2835854#comment-2835854">2016.06.21 17:01</a></span>       
+    </div>
+  </div>
+  <div class="child-comment" id="comment-2835906" data-id="2835906">
+    <p>
+      <a class="blue-link" href="http://www.jianshu.com/users/fefdb84b345d">紫星轩</a>：
+      <a href="http://www.jianshu.com/users/39837c70897a" class="maleskine-author" target="_blank" data-user-slug="39837c70897a">@怀恋ooO</a> 是的, 我使用的xib
+    </p>
+    <div class="child-comment-footer text-right clearfix">
+      
+      <a data-id="2835829" data-nickname="紫星轩" class="reply">回复</a>       
+      
+      <span class="reply-time pull-left">         <a href="http://www.jianshu.com/p/a5f655b57805/comments/2835906#comment-2835906">2016.06.21 17:05</a></span>       
+    </div>
+  </div>
+  <div class="child-comment" id="comment-3172631" data-id="3172631">
+    <p>
+      <a class="blue-link" href="http://www.jianshu.com/users/0cefda0cf778">愚人船</a>：
+      <a href="http://www.jianshu.com/users/fefdb84b345d" class="maleskine-author" target="_blank" data-user-slug="fefdb84b345d">@紫星轩</a>  我改成uiscrollview 布局不起作用  全乱套了怎么回事？ &nbsp; &nbsp;&nbsp;</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></body></html>

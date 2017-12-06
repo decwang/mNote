@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-02-21T06:35:30Z"/><meta name="updated" content="2017-02-21T06:35:32Z"/><title>程序自启动及后台持续运行的研究（voip和GPS方式）    时间：2014-07-28 19:16:14      阅读：3740      评论：0      收藏：0      [点我收藏+]</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="detailtitle divtextaligncenter divborderbottomdotted" style="font-family:Arial, Helvetica, sans-serif;padding:15px 0px;font-size:16px;color:#023e9a;text-align:center;border-bottom-width:1px;border-bottom-color:#dadada;border-bottom-style:dotted;font-weight:bold;"><h1 id="Htitle" class="detailtitle" style="padding:15px 0px;font-size:16px;">程序自启动及后台持续运行的研究（voip和GPS方式）</h1>
+</div>
+<div class="detail1 divtextaligncenter" style="font-family:Arial, Helvetica, sans-serif;padding:0px;font-size:12px;color:#3f3f3f;text-align:center;margin:20px 0px;">时间：<span id="Label2" class="colorlv" style="padding:0px;">2014-07-28 19:16:14</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 阅读：<span id="Label1" class="colorCheng" style="padding:0px;">3740</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 评论：<span id="lblcommentcount" class="colorCheng" style="padding:0px;">0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 收藏：<span id="lblfavorite" class="colorCheng" style="padding:0px;">0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="infofavorite" class="acursorpointer" style="padding:0px;color:#333333;cursor:pointer;">[点我收藏+]</a></div>
+<div class="detailcontennt" style="font-family:Arial, Helvetica, sans-serif;padding:0px;font-size:12px;color:#3f3f3f;margin:20px 0px;line-height:30px;word-wrap:break-word;"><span id="Label3" style="padding:0px;"><p style="padding:0px;font-size:14px;line-height:30px;">标签：<a href="http://www.mamicode.com/so/1/des" title="des" style="padding:0px;color:#333333;text-decoration:none;">des</a>&nbsp;&nbsp;&nbsp;<a href="http://www.mamicode.com/so/1/io" title="io" style="padding:0px;color:#333333;text-decoration:none;">io</a>&nbsp;&nbsp;&nbsp;<a href="http://www.mamicode.com/so/1/for" title="for" style="padding:0px;color:#333333;text-decoration:none;">for</a>&nbsp;&nbsp;&nbsp;<a href="http://www.mamicode.com/so/1/art" title="art" style="padding:0px;color:#333333;text-decoration:none;">art</a>&nbsp;&nbsp;&nbsp;<a href="http://www.mamicode.com/so/1/cti" title="cti" style="padding:0px;color:#333333;text-decoration:none;">cti</a>&nbsp;&nbsp;&nbsp;<a href="http://www.mamicode.com/so/1/%e4%bb%a3%e7%a0%81" title="代码" style="padding:0px;color:#333333;text-decoration:none;">代码</a>&nbsp;&nbsp;&nbsp;<a href="http://www.mamicode.com/so/1/ar" title="ar" style="padding:0px;color:#333333;text-decoration:none;">ar</a>&nbsp;&nbsp;&nbsp;<a href="http://www.mamicode.com/so/1/%e6%97%b6%e9%97%b4" title="时间" style="padding:0px;color:#333333;text-decoration:none;">时间</a>&nbsp;&nbsp;&nbsp;</p>
+<p style="padding:0px;font-size:14px;line-height:30px;">1，voip方式<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;1）首先要修改应用的plist配置，添加下面的设置：<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;Application does not run in background: NO<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;Required background modes: VOIP<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;注：添加这些配置之后，程序重启解锁就会自动运行application: &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;didFinishLaunchingWithOptions方法。<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;2）主要测试代码：<br style="padding:0px;" />
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions<br style="padding:0px;" />
+{<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp; __block UIBackgroundTaskIdentifier background_task;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; background_task = [application beginBackgroundTaskWithExpirationHandler:^ {<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //打开后台运行任务<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; }];<br style="padding:0px;" />
+&nbsp; &nbsp;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; static dispatch_queue_t _queue ;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; _queue = dispatch_queue_create("sddfgfgwerty456567fre4ghghkjdsfbnjfrtyrt", DISPATCH_QUEUE_SERIAL);<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; dispatch_async(_queue, ^{<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while(TRUE)<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //打印进程id<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NSLog(@"processID = %d++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++CurrentThread = %@",[SSProcessInfo processID],[[NSThread currentThread] description]);<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [NSThread sleepForTimeInterval: 5]; //wait for 15 min<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; });<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; sleep(1);<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; return YES;<br style="padding:0px;" />
+}<br style="padding:0px;" />
+<br style="padding:0px;" />
+注：程序测试必须真机下，观察log信息用Xcode上自带的Organizer工具。<br style="padding:0px;" />
+经过分析log信息，发现processID过一段时间就会变，说明程序运行一段时间就会被kill掉，然后程序会自动重启。虽然达到了持续运行的目的，但是不符合程序持续运行要求。<br style="padding:0px;" />
+<br style="padding:0px;" />
+2，GPS方式<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;1）首先要修改应用的plist配置，添加下面的设置：<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;Application does not run in background: NO<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;Required background modes: App registers for location updates<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;添加这两项之后可以保证程序在后台运行<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;2）主要测试代码：<br style="padding:0px;" />
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions<br style="padding:0px;" />
+{<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; if ([CLLocationManager significantLocationChangeMonitoringAvailable])<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp; {<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [self.locationManager startUpdatingLocation];<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br style="padding:0px;" />
+&nbsp;&nbsp; else<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp; {<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NSLog(@"Significant location change monitoring is not available.");<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp; }<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp; return YES;<br style="padding:0px;" />
+}<br style="padding:0px;" />
+<br style="padding:0px;" />
+- (CLLocationManager *)locationManager<br style="padding:0px;" />
+{<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; if (_locationManager == nil) {<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _locationManager = [[CLLocationManager alloc] init];<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _locationManager.delegate = self;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if([CLLocationManager locationServicesEnabled])<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NSLog(@"无限运行................................................");<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //这个分支进入后台后，运行时间和前台一样，是无限的<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [_locationManager startMonitoringSignificantLocationChanges];<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _locationManager.distanceFilter= 1;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _locationManager.pausesLocationUpdatesAutomatically = NO;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _locationManager.activityType = CLActivityTypeAutomotiveNavigation;<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [_locationManager startUpdatingLocation];<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; }<br style="padding:0px;" />
+&nbsp; return _locationManager;<br style="padding:0px;" />
+&nbsp;&nbsp; &nbsp;<br style="padding:0px;" />
+}<br style="padding:0px;" />
+<br style="padding:0px;" />
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations<br style="padding:0px;" />
+{<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; while (true) {<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [NSThread sleepForTimeInterval:1];<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NSLog(@"processID = %d++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++CurrentThread = %@",[SSProcessInfo processID],[[NSThread currentThread] description]);<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [self.locationManager allowDeferredLocationUpdatesUntilTraveled:CLLocationDistanceMax timeout:10];<br style="padding:0px;" />
+&nbsp;&nbsp;&nbsp; }<br style="padding:0px;" />
+}<br style="padding:0px;" />
+<br style="padding:0px;" />
+注：程序测试必须真机下，观察log信息用Xcode上自带的Organizer工具。<br style="padding:0px;" />
+经过分析log信息，发现processID不会变，说明程序能够持续运行。</p>
+</span></div></body></html>

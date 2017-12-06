@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-08-03T06:09:41Z"/><meta name="updated" content="2017-08-03T06:09:43Z"/><title>写在开头：  本来这篇内容准备写在AFNetworking到底做了什么?（三）中的，但是因为我想在三中完结这个系列，碍于篇幅所限、并且这一块内容独立性比较强，所以单独拎出来，写成一篇。  本文从源码</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><strong>写在开头：</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">本来这篇内容准备写在AFNetworking到底做了什么?（三）中的，但是因为我想在三中完结这个系列，碍于篇幅所限、并且这一块内容独立性比较强，所以单独拎出来，写成一篇。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">本文从源码的角度，去分析AFNetworking对https的认证过程。旨在让读者明白我们去做https请求：</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">如果使用AF，需要做什么。</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">不使用的话，直接用原生NSUrlSession，又需要做什么。</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">当我们使用自签证书的https，又需要注意哪些问题。</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">单独看并不影响阅读。如果有需要了解更多AF相关内容，可以关注楼主的系列文章：</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><a href="http://www.jianshu.com/p/856f0e26279d" target="_blank" style="margin:0px;padding:0px;color:#eb6100;text-decoration:none;">AFNetworking到底做了什么?</a></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><a href="http://www.jianshu.com/p/f32bd79233da" target="_blank" style="margin:0px;padding:0px;color:#eb6100;text-decoration:none;">AFNetworking到底做了什么？（二）</a></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">那么正文开始了：</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">简单的理解下https：<strong>https在http请求的基础上多加了一个证书认证的流程</strong>。认证通过之后，数据传输都是加密进行的。<br />
+关于https的更多概念，我就不赘述了，网上有大量的文章，小伙伴们可以自行查阅。在这里大概的讲讲https的认证过程吧，如下图所示：</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20161219/1482135572859442.jpg" title="1482135572859442.jpg" alt="2702646-c6f158b5d4ad4602.jpg" style="border:0px;margin:5px 0px;" /></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;text-align:center;">https单向认证过程.jpg</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><strong>1. 客户端发起HTTPS请求</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">这个没什么好说的，就是用户在浏览器里输入一个https网址，然后连接到server的443端口。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><strong>2. 服务端的配置</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">采用HTTPS协议的服务器必须要有一套数字证书，可以自己制作，也可以向组织申请。区别就是自己颁发的证书需要客户端验证通过，才可以继续访问，而使用受信任的公司申请的证书则不会弹出提示页面。这套证书其实就是一对公钥和私钥。如果对公钥和私钥不太理解，可以想象成一把钥匙和一个锁头，只是全世界只有你一个人有这把钥匙，你可以把锁头给别人，别人可以用这个锁把重要的东西锁起来，然后发给你，因为只有你一个人有这把钥匙，所以只有你才能看到被这把锁锁起来的东西。<br />
+<strong>3. 传送证书</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">这个证书其实就是公钥，只是包含了很多信息，如证书的颁发机构，过期时间等等。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><strong>4. 客户端解析证书</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">这部分工作是有客户端的TLS/SSL来完成的，首先会验证公钥是否有效，比如颁发机构，过期时间等等，如果发现异常，则会弹出一个警告框，提示证书存在问题。如果证书没有问题，那么就生成一个随机值。然后用证书对该随机值进行加密。就好像上面说的，把随机值用锁头锁起来，这样除非有钥匙，不然看不到被锁住的内容。<br />
+<strong>5. 传送加密信息</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">这部分传送的是用证书加密后的随机值，目的就是让服务端得到这个随机值，以后客户端和服务端的通信就可以通过这个随机值来进行加密解密了。<br />
+<strong>6. 服务段解密信息</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">服务端用私钥解密后，得到了客户端传过来的随机值(私钥)，然后把内容通过该值进行对称加密。所谓对称加密就是，将信息和私钥通过某种算法混合在一起，这样除非知道私钥，不然无法获取内容，而正好客户端和服务端都知道这个私钥，所以只要加密算法够彪悍，私钥够复杂，数据就够安全。<br />
+<strong>7. 传输加密后的信息</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">这部分信息是服务段用私钥加密后的信息，可以在客户端被还原。<br />
+<strong>8. 客户端解密信息</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">客户端用之前生成的私钥解密服务段传过来的信息，于是获取了解密后的内容。整个过程第三方即使监听到了数据，也束手无策。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">这就是整个https验证的流程了。简单总结一下：</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">就是用户发起请求，服务器响应后返回一个证书，证书中包含一些基本信息和公钥。</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">用户拿到证书后，去验证这个证书是否合法，不合法，则请求终止。</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">合法则生成一个随机数，作为对称加密的密钥，用服务器返回的公钥对这个随机数加密。然后返回给服务器。</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">服务器拿到加密后的随机数，利用私钥解密，然后再用解密后的随机数（对称密钥），把需要返回的数据加密，加密完成后数据传输给用户。</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">最后用户拿到加密的数据，用一开始的那个随机数（对称密钥），进行数据解密。整个过程完成。</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">当然这仅仅是一个单向认证，https还会有双向认证，相对于单向认证也很简单。仅仅多了服务端验证客户端这一步。感兴趣的可以看看这篇：<a href="http://blog.csdn.net/duanbokan/article/details/50847612" target="_blank" style="margin:0px;padding:0px;color:#eb6100;text-decoration:none;">Https单向认证和双向认证</a>。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">了解了https认证流程后，接下来我们来讲讲AFSecurityPolicy这个类，AF就是用这个类来满足我们各种https认证需求。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">在这之前我们来看看AF用来做https认证的代理：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">-&nbsp;(void)URLSession:(NSURLSession&nbsp;*)session
+didReceiveChallenge:(NSURLAuthenticationChallenge&nbsp;*)challenge
+&nbsp;completionHandler:(void&nbsp;(^)(NSURLSessionAuthChallengeDisposition&nbsp;disposition,&nbsp;NSURLCredential&nbsp;*credential))completionHandler
+{
+&nbsp;&nbsp;&nbsp;&nbsp;//挑战处理类型为&nbsp;默认
+&nbsp;&nbsp;&nbsp;&nbsp;/*
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSURLSessionAuthChallengePerformDefaultHandling：默认方式处理
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSURLSessionAuthChallengeUseCredential：使用指定的证书
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSURLSessionAuthChallengeCancelAuthenticationChallenge：取消挑战
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;NSURLSessionAuthChallengeDisposition&nbsp;disposition&nbsp;=&nbsp;NSURLSessionAuthChallengePerformDefaultHandling;
+&nbsp;&nbsp;&nbsp;&nbsp;__block&nbsp;NSURLCredential&nbsp;*credential&nbsp;=&nbsp;nil;
+
+&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;sessionDidReceiveAuthenticationChallenge是自定义方法，用来如何应对服务器端的认证挑战
+
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(self.sessionDidReceiveAuthenticationChallenge)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disposition&nbsp;=&nbsp;self.sessionDidReceiveAuthenticationChallenge(session,&nbsp;challenge,&nbsp;&amp;credential);
+&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;此处服务器要求客户端的接收认证挑战方法是NSURLAuthenticationMethodServerTrust
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;也就是说服务器端需要客户端返回一个根据认证挑战的保护空间提供的信任（即challenge.protectionSpace.serverTrust）产生的挑战证书。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;而这个证书就需要使用credentialForTrust:来创建一个NSURLCredential对象
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;([challenge.protectionSpace.authenticationMethod&nbsp;isEqualToString:NSURLAuthenticationMethodServerTrust])&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;基于客户端的安全策略来决定是否信任该服务器，不信任的话，也就没必要响应挑战
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;([self.securityPolicy&nbsp;evaluateServerTrust:challenge.protectionSpace.serverTrust&nbsp;forDomain:challenge.protectionSpace.host])&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;创建挑战证书（注：挑战方式为UseCredential和PerformDefaultHandling都需要新建挑战证书）
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;credential&nbsp;=&nbsp;[NSURLCredential&nbsp;credentialForTrust:challenge.protectionSpace.serverTrust];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;确定挑战的方式
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(credential)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//证书挑战&nbsp;&nbsp;设计policy,none，则跑到这里
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disposition&nbsp;=&nbsp;NSURLSessionAuthChallengeUseCredential;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disposition&nbsp;=&nbsp;NSURLSessionAuthChallengePerformDefaultHandling;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//取消挑战
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disposition&nbsp;=&nbsp;NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//默认挑战方式
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disposition&nbsp;=&nbsp;NSURLSessionAuthChallengePerformDefaultHandling;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;//完成挑战
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(completionHandler)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completionHandler(disposition,&nbsp;credential);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">更多的这个方法的细节问题，可以看注释，或者查阅楼主之前的相关文章，都有去讲到这个代理方法。在这里我们大概的讲讲这个方法做了什么：<br />
+1）首先指定了https为默认的认证方式。<br />
+2）判断有没有自定义Block:sessionDidReceiveAuthenticationChallenge，有的话，使用我们自定义Block,生成一个认证方式，并且可以给credential赋值，即我们需要接受认证的证书。然后直接调用completionHandler，去根据这两个参数，执行系统的认证。至于这个系统的认证到底做了什么，可以看文章最后，这里暂且略过。<br />
+3）如果没有自定义Block，我们判断如果服务端的认证方法要求是NSURLAuthenticationMethodServerTrust,则只需要验证服务端证书是否安全（即https的单向认证，这是AF默认处理的认证方式，其他的认证方式，只能由我们自定义Block的实现）<br />
+4）接着我们就执行了AFSecurityPolicy相关的一个方法，做了一个AF内部的一个https认证：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">[self.securityPolicy&nbsp;evaluateServerTrust:challenge.protectionSpace.serverTrust&nbsp;forDomain:challenge.protectionSpace.host])</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">AF默认的处理是，如果这行返回NO、说明AF内部认证失败，则取消https认证，即取消请求。返回YES则进入if块，用服务器返回的一个serverTrust去生成了一个认证证书。（注：这个serverTrust是服务器传过来的，里面包含了服务器的证书信息，是用来我们本地客户端去验证该证书是否合法用的，后面会更详细的去讲这个参数）然后如果有证书，则用证书认证方式，否则还是用默认的验证方式。最后调用completionHandler传递认证方式和要认证的证书，去做系统根证书验证。</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">总结一下这里securityPolicy存在的作用就是，使得在系统底层自己去验证之前，AF可以先去验证服务端的证书。如果通不过，则直接越过系统的验证，取消http的网络<span style="line-height:1.8;">请求。否则，继续去走系统根证书的验证。</span></p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">接下来我们看看AFSecurityPolicy内部是如果做https认证的:</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">如下方式，我们可以创建一个securityPolicy：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">AFSecurityPolicy&nbsp;*policy&nbsp;=&nbsp;[AFSecurityPolicy&nbsp;defaultPolicy];</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">内部创建：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">+&nbsp;(instancetype)defaultPolicy&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;AFSecurityPolicy&nbsp;*securityPolicy&nbsp;=&nbsp;[[self&nbsp;alloc]&nbsp;init];
+&nbsp;&nbsp;&nbsp;&nbsp;securityPolicy.SSLPinningMode&nbsp;=&nbsp;AFSSLPinningModeNone;
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;securityPolicy;
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">默认指定了一个SSLPinningMode模式为AFSSLPinningModeNone。<br />
+对于AFSecurityPolicy，一共有4个重要的属性：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">//https验证模式
+@property&nbsp;(readonly,&nbsp;nonatomic,&nbsp;assign)&nbsp;AFSSLPinningMode&nbsp;SSLPinningMode;
+//可以去匹配服务端证书验证的证书
+@property&nbsp;(nonatomic,&nbsp;strong,&nbsp;nullable)&nbsp;NSSet&nbsp;&nbsp;*pinnedCertificates;
+//是否支持非法的证书（例如自签名证书）
+@property&nbsp;(nonatomic,&nbsp;assign)&nbsp;BOOL&nbsp;allowInvalidCertificates;
+//是否去验证证书域名是否匹配
+@property&nbsp;(nonatomic,&nbsp;assign)&nbsp;BOOL&nbsp;validatesDomainName;</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">它们的作用我添加在注释里了，第一条就是AFSSLPinningMode, 共提供了3种验证方式：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">typedef&nbsp;NS_ENUM(NSUInteger,&nbsp;AFSSLPinningMode)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;//不验证
+&nbsp;&nbsp;&nbsp;&nbsp;AFSSLPinningModeNone,
+&nbsp;&nbsp;&nbsp;&nbsp;//只验证公钥
+&nbsp;&nbsp;&nbsp;&nbsp;AFSSLPinningModePublicKey,
+&nbsp;&nbsp;&nbsp;&nbsp;//验证证书
+&nbsp;&nbsp;&nbsp;&nbsp;AFSSLPinningModeCertificate,
+};</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">我们接着回到代理https认证的这行代码上：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">[self.securityPolicy&nbsp;evaluateServerTrust:challenge.protectionSpace.serverTrust&nbsp;forDomain:challenge.protectionSpace.host]</pre><ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">我们传了两个参数进去，一个是SecTrustRef类型的serverTrust，这是什么呢？我们看到苹果的文档介绍如下：</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><span style="color:#595959;">CFType used for performing X.509 certificate trust evaluations.</span></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">大概意思是用于执行X。509证书信任评估，<br />
+再讲简单点，其实就是一个容器，装了服务器端需要验证的证书的基本信息、公钥等等，不仅如此，它还可以装一些评估策略，还有客户端的锚点证书，这个客户端的证书，可以用来和服务端的证书去匹配验证的。</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">除此之外还把服务器域名传了过去。</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">我们来到这个方法，代码如下：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">//验证服务端是否值得信任
+-&nbsp;(BOOL)evaluateServerTrust:(SecTrustRef)serverTrust
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;forDomain:(NSString&nbsp;*)domain
+{
+&nbsp;&nbsp;&nbsp;&nbsp;//判断矛盾的条件
+&nbsp;&nbsp;&nbsp;&nbsp;//判断有域名，且允许自建证书，需要验证域名，
+&nbsp;&nbsp;&nbsp;&nbsp;//因为要验证域名，所以必须不能是后者两种：AFSSLPinningModeNone或者添加到项目里的证书为0个。
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(domain&nbsp;&amp;&amp;&nbsp;self.allowInvalidCertificates&nbsp;&amp;&amp;&nbsp;self.validatesDomainName&nbsp;&amp;&amp;&nbsp;(self.SSLPinningMode&nbsp;==&nbsp;AFSSLPinningModeNone&nbsp;||&nbsp;[self.pinnedCertificates&nbsp;count]&nbsp;==&nbsp;0))&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/NetworkingTopics/Articles/OverridingSSLChainValidationCorrectly.html
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;According&nbsp;to&nbsp;the&nbsp;docs,&nbsp;you&nbsp;should&nbsp;only&nbsp;trust&nbsp;your&nbsp;provided&nbsp;certs&nbsp;for&nbsp;evaluation.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;Pinned&nbsp;certificates&nbsp;are&nbsp;added&nbsp;to&nbsp;the&nbsp;trust.&nbsp;Without&nbsp;pinned&nbsp;certificates,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;there&nbsp;is&nbsp;nothing&nbsp;to&nbsp;evaluate&nbsp;against.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;From&nbsp;Apple&nbsp;Docs:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Do&nbsp;not&nbsp;implicitly&nbsp;trust&nbsp;self-signed&nbsp;certificates&nbsp;as&nbsp;anchors&nbsp;(kSecTrustOptionImplicitAnchors).
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Instead,&nbsp;add&nbsp;your&nbsp;own&nbsp;(self-signed)&nbsp;CA&nbsp;certificate&nbsp;to&nbsp;the&nbsp;list&nbsp;of&nbsp;trusted&nbsp;anchors."
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"In&nbsp;order&nbsp;to&nbsp;validate&nbsp;a&nbsp;domain&nbsp;name&nbsp;for&nbsp;self&nbsp;signed&nbsp;certificates,&nbsp;you&nbsp;MUST&nbsp;use&nbsp;pinning.");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//不受信任，返回
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;NO;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;//用来装验证策略
+&nbsp;&nbsp;&nbsp;&nbsp;NSMutableArray&nbsp;*policies&nbsp;=&nbsp;[NSMutableArray&nbsp;array];
+&nbsp;&nbsp;&nbsp;&nbsp;//要验证域名
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(self.validatesDomainName)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;如果需要验证domain，那么就使用SecPolicyCreateSSL函数创建验证策略，其中第一个参数为true表示验证整个SSL证书链，第二个参数传入domain，用于判断整个证书链上叶子节点表示的那个domain是否和此处传入domain一致
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//添加验证策略
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[policies&nbsp;addObject:(__bridge_transfer&nbsp;id)SecPolicyCreateSSL(true,&nbsp;(__bridge&nbsp;CFStringRef)domain)];
+&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;如果不需要验证domain，就使用默认的BasicX509验证策略
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[policies&nbsp;addObject:(__bridge_transfer&nbsp;id)SecPolicyCreateBasicX509()];
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;//serverTrust：X。509服务器的证书信任。
+&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;为serverTrust设置验证策略，即告诉客户端如何验证serverTrust
+&nbsp;&nbsp;&nbsp;&nbsp;SecTrustSetPolicies(serverTrust,&nbsp;(__bridge&nbsp;CFArrayRef)policies);
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;//有验证策略了，可以去验证了。如果是AFSSLPinningModeNone，是自签名，直接返回可信任，否则不是自签名的就去系统根证书里去找是否有匹配的证书。
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(self.SSLPinningMode&nbsp;==&nbsp;AFSSLPinningModeNone)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//如果支持自签名，直接返回YES,不允许才去判断第二个条件，判断serverTrust是否有效
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;self.allowInvalidCertificates&nbsp;||&nbsp;AFServerTrustIsValid(serverTrust);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;//如果验证无效AFServerTrustIsValid，而且allowInvalidCertificates不允许自签，返回NO
+&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if&nbsp;(!AFServerTrustIsValid(serverTrust)&nbsp;&amp;&amp;&nbsp;!self.allowInvalidCertificates)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;NO;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;//判断SSLPinningMode
+&nbsp;&nbsp;&nbsp;&nbsp;switch&nbsp;(self.SSLPinningMode)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;理论上，上面那个部分已经解决了self.SSLPinningMode)为AFSSLPinningModeNone)等情况，所以此处再遇到，就直接返回NO
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;AFSSLPinningModeNone:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;NO;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//验证证书类型
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;AFSSLPinningModeCertificate:&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSMutableArray&nbsp;*pinnedCertificates&nbsp;=&nbsp;[NSMutableArray&nbsp;array];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//把证书data，用系统api转成&nbsp;SecCertificateRef&nbsp;类型的数据,SecCertificateCreateWithData函数对原先的pinnedCertificates做一些处理，保证返回的证书都是DER编码的X.509证书
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(NSData&nbsp;*certificateData&nbsp;in&nbsp;self.pinnedCertificates)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[pinnedCertificates&nbsp;addObject:(__bridge_transfer&nbsp;id)SecCertificateCreateWithData(NULL,&nbsp;(__bridge&nbsp;CFDataRef)certificateData)];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;将pinnedCertificates设置成需要参与验证的Anchor&nbsp;Certificate（锚点证书，通过SecTrustSetAnchorCertificates设置了参与校验锚点证书之后，假如验证的数字证书是这个锚点证书的子节点，即验证的数字证书是由锚点证书对应CA或子CA签发的，或是该证书本身，则信任该证书），具体就是调用SecTrustEvaluate来验证。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//serverTrust是服务器来的验证，有需要被验证的证书。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SecTrustSetAnchorCertificates(serverTrust,&nbsp;(__bridge&nbsp;CFArrayRef)pinnedCertificates);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//自签在之前是验证通过不了的，在这一步，把我们自己设置的证书加进去之后，就能验证成功了。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//再去调用之前的serverTrust去验证该证书是否有效，有可能：经过这个方法过滤后，serverTrust里面的pinnedCertificates被筛选到只有信任的那一个证书
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!AFServerTrustIsValid(serverTrust))&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;NO;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;obtain&nbsp;the&nbsp;chain&nbsp;after&nbsp;being&nbsp;validated,&nbsp;which&nbsp;*should*&nbsp;contain&nbsp;the&nbsp;pinned&nbsp;certificate&nbsp;in&nbsp;the&nbsp;last&nbsp;position&nbsp;(if&nbsp;it's&nbsp;the&nbsp;Root&nbsp;CA)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//注意，这个方法和我们之前的锚点证书没关系了，是去从我们需要被验证的服务端证书，去拿证书链。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;服务器端的证书链，注意此处返回的证书链顺序是从叶节点到根节点
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSArray&nbsp;*serverCertificates&nbsp;=&nbsp;AFCertificateTrustChainForServerTrust(serverTrust);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//reverseObjectEnumerator逆序
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(NSData&nbsp;*trustChainCertificate&nbsp;in&nbsp;[serverCertificates&nbsp;reverseObjectEnumerator])&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//如果我们的证书中，有一个和它证书链中的证书匹配的，就返回YES
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;([self.pinnedCertificates&nbsp;containsObject:trustChainCertificate])&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;YES;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//没有匹配的
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;NO;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//公钥验证&nbsp;AFSSLPinningModePublicKey模式同样是用证书绑定(SSL&nbsp;Pinning)方式验证，客户端要有服务端的证书拷贝，只是验证时只验证证书里的公钥，不验证证书的有效期等信息。只要公钥是正确的，就能保证通信不会被窃听，因为中间人没有私钥，无法解开通过公钥加密的数据。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;AFSSLPinningModePublicKey:&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSUInteger&nbsp;trustedPublicKeyCount&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;从serverTrust中取出服务器端传过来的所有可用的证书，并依次得到相应的公钥
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSArray&nbsp;*publicKeys&nbsp;=&nbsp;AFPublicKeyTrustChainForServerTrust(serverTrust);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//遍历服务端公钥
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(id&nbsp;trustChainPublicKey&nbsp;in&nbsp;publicKeys)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//遍历本地公钥
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(id&nbsp;pinnedPublicKey&nbsp;in&nbsp;self.pinnedPublicKeys)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//判断如果相同&nbsp;trustedPublicKeyCount+1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(AFSecKeyIsEqualToKey((__bridge&nbsp;SecKeyRef)trustChainPublicKey,&nbsp;(__bridge&nbsp;SecKeyRef)pinnedPublicKey))&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;trustedPublicKeyCount&nbsp;+=&nbsp;1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;trustedPublicKeyCount&nbsp;&gt;&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;NO;
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">代码的注释很多，这一块确实比枯涩，大家可以参照着源码一起看，加深理解。</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">这个方法是AFSecurityPolicy最核心的方法，其他的都是为了配合这个方法。这个方法完成了服务端的证书的信任评估。我们总结一下这个方法做了什么（细节可以看注释）：</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">1.根据模式，如果是AFSSLPinningModeNone，则肯定是返回YES，不论是自签还是公信机构的证书。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">2.如果是AFSSLPinningModeCertificate，则从serverTrust中去获取证书链，然后和我们一开始初始化设置的证书集合self.pinnedCertificates去匹配，如果有一对能匹配成功的，就返回YES，否则NO。<br />
+看到这可能有小伙伴要问了，什么是证书链？下面这段是我从百科上摘来的:</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">证书链由两个环节组成—信任锚（CA 证书）环节和已签名证书环节。自我签名的证书仅有一个环节的长度—信任锚环节就是已签名证书本身。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">简单来说，证书链就是就是根证书，和根据根证书签名派发得到的证书。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">3.如果是AFSSLPinningModePublicKey公钥验证，则和第二步一样还是从serverTrust，获取证书链每一个证书的公钥，放到数组中。和我们的self.pinnedPublicKeys，去配对，如果有一个相同的，就返回YES，否则NO。至于这个self.pinnedPublicKeys,初始化的地方如下：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">//设置证书数组
+-&nbsp;(void)setPinnedCertificates:(NSSet&nbsp;*)pinnedCertificates&nbsp;{
+
+_pinnedCertificates&nbsp;=&nbsp;pinnedCertificates;
+
+//获取对应公钥集合
+if&nbsp;(self.pinnedCertificates)&nbsp;{
+&nbsp;&nbsp;&nbsp;//创建公钥集合
+&nbsp;&nbsp;&nbsp;NSMutableSet&nbsp;*mutablePinnedPublicKeys&nbsp;=&nbsp;[NSMutableSet&nbsp;setWithCapacity:[self.pinnedCertificates&nbsp;count]];
+&nbsp;&nbsp;&nbsp;//从证书中拿到公钥。
+&nbsp;&nbsp;&nbsp;for&nbsp;(NSData&nbsp;*certificate&nbsp;in&nbsp;self.pinnedCertificates)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;publicKey&nbsp;=&nbsp;AFPublicKeyForCertificate(certificate);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!publicKey)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[mutablePinnedPublicKeys&nbsp;addObject:publicKey];
+&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;self.pinnedPublicKeys&nbsp;=&nbsp;[NSSet&nbsp;setWithSet:mutablePinnedPublicKeys];
+}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;self.pinnedPublicKeys&nbsp;=&nbsp;nil;
+}
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">AF复写了设置证书的set方法，并同时把证书中每个公钥放在了self.pinnedPublicKeys中。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">这个方法中关联了一系列的函数，我在这边按照调用顺序一一列出来（有些是系统函数，不在这里列出，会在下文集体描述作用）：</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">函数一：AFServerTrustIsValid</p>
+</li>
+</ul>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">//判断serverTrust是否有效
+static&nbsp;BOOL&nbsp;AFServerTrustIsValid(SecTrustRef&nbsp;serverTrust)&nbsp;{
+
+&nbsp;&nbsp;&nbsp;&nbsp;//默认无效
+&nbsp;&nbsp;&nbsp;&nbsp;BOOL&nbsp;isValid&nbsp;=&nbsp;NO;
+&nbsp;&nbsp;&nbsp;&nbsp;//用来装验证结果，枚举
+&nbsp;&nbsp;&nbsp;&nbsp;SecTrustResultType&nbsp;result;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;//__Require_noErr_Quiet&nbsp;用来判断前者是0还是非0，如果0则表示没错，就跳到后面的表达式所在位置去执行，否则表示有错就继续往下执行。
+
+&nbsp;&nbsp;&nbsp;&nbsp;//SecTrustEvaluate系统评估证书的是否可信的函数，去系统根目录找，然后把结果赋值给result。评估结果匹配，返回0，否则出错返回非0
+&nbsp;&nbsp;&nbsp;&nbsp;//do&nbsp;while&nbsp;0&nbsp;,只执行一次，为啥要这样写....
+&nbsp;&nbsp;&nbsp;&nbsp;__Require_noErr_Quiet(SecTrustEvaluate(serverTrust,&nbsp;&amp;result),&nbsp;_out);
+
+&nbsp;&nbsp;&nbsp;&nbsp;//评估没出错走掉这，只有两种结果能设置为有效，isValid=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;//当result为kSecTrustResultUnspecified（此标志表示serverTrust评估成功，此证书也被暗中信任了，但是用户并没有显示地决定信任该证书）。
+&nbsp;&nbsp;&nbsp;&nbsp;//或者当result为kSecTrustResultProceed（此标志表示评估成功，和上面不同的是该评估得到了用户认可），这两者取其一就可以认为对serverTrust评估成功
+&nbsp;&nbsp;&nbsp;&nbsp;isValid&nbsp;=&nbsp;(result&nbsp;==&nbsp;kSecTrustResultUnspecified&nbsp;||&nbsp;result&nbsp;==&nbsp;kSecTrustResultProceed);
+
+&nbsp;&nbsp;&nbsp;&nbsp;//out函数块,如果为SecTrustEvaluate，返回非0，则评估出错，则isValid为NO
+_out:
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;isValid;
+}</pre><ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">这个方法用来验证serverTrust是否有效，其中主要是交由系统APISecTrustEvaluate来验证的，它验证完之后会返回一个SecTrustResultType枚举类型的result，然后我们根据这个result去判断是否证书是否有效。</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">其中比较有意思的是，它调用了一个系统定义的宏函数__Require_noErr_Quiet，函数定义如下：</p>
+</li>
+</ul>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">#ifndef&nbsp;__Require_noErr_Quiet
+&nbsp;&nbsp;#define&nbsp;__Require_noErr_Quiet(errorCode,&nbsp;exceptionLabel)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;do&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(&nbsp;__builtin_expect(0&nbsp;!=&nbsp;(errorCode),&nbsp;0)&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;goto&nbsp;exceptionLabel;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;while&nbsp;(&nbsp;0&nbsp;)
+#endif</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">这个函数主要作用就是，判断errorCode是否为0，不为0则，程序用goto跳到exceptionLabel位置去执行。这个exceptionLabel就是一个代码位置标识，类似上面的_out。<br />
+说它有意思的地方是在于，它用了一个do...while(0)循环，循环条件为0，也就是只执行一次循环就结束。对这么做的原因，楼主百思不得其解...看来系统原生API更是高深莫测...经冰霜大神的提醒，这么做是为了适配早期的API??!</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">函数二、三（两个函数类似，所以放在一起）：获取serverTrust证书链证书，获取serverTrust证书链公钥</p>
+</li>
+</ul>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">//获取证书链
+static&nbsp;NSArray&nbsp;*&nbsp;AFCertificateTrustChainForServerTrust(SecTrustRef&nbsp;serverTrust)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;//使用SecTrustGetCertificateCount函数获取到serverTrust中需要评估的证书链中的证书数目，并保存到certificateCount中
+&nbsp;&nbsp;&nbsp;&nbsp;CFIndex&nbsp;certificateCount&nbsp;=&nbsp;SecTrustGetCertificateCount(serverTrust);
+&nbsp;&nbsp;&nbsp;&nbsp;//创建数组
+&nbsp;&nbsp;&nbsp;&nbsp;NSMutableArray&nbsp;*trustChain&nbsp;=&nbsp;[NSMutableArray&nbsp;arrayWithCapacity:(NSUInteger)certificateCount];
+&nbsp;&nbsp;&nbsp;&nbsp;////&nbsp;使用SecTrustGetCertificateAtIndex函数获取到证书链中的每个证书，并添加到trustChain中，最后返回trustChain
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(CFIndex&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;&nbsp;certificateCount;&nbsp;i++)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SecCertificateRef&nbsp;certificate&nbsp;=&nbsp;SecTrustGetCertificateAtIndex(serverTrust,&nbsp;i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[trustChain&nbsp;addObject:(__bridge_transfer&nbsp;NSData&nbsp;*)SecCertificateCopyData(certificate)];
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[NSArray&nbsp;arrayWithArray:trustChain];
+}</pre><pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">//&nbsp;从serverTrust中取出服务器端传过来的所有可用的证书，并依次得到相应的公钥
+static&nbsp;NSArray&nbsp;*&nbsp;AFPublicKeyTrustChainForServerTrust(SecTrustRef&nbsp;serverTrust)&nbsp;{
+
+&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;接下来的一小段代码和上面AFCertificateTrustChainForServerTrust函数的作用基本一致，都是为了获取到serverTrust中证书链上的所有证书，并依次遍历，取出公钥。
+&nbsp;&nbsp;&nbsp;&nbsp;//安全策略
+&nbsp;&nbsp;&nbsp;&nbsp;SecPolicyRef&nbsp;policy&nbsp;=&nbsp;SecPolicyCreateBasicX509();
+&nbsp;&nbsp;&nbsp;&nbsp;CFIndex&nbsp;certificateCount&nbsp;=&nbsp;SecTrustGetCertificateCount(serverTrust);
+&nbsp;&nbsp;&nbsp;&nbsp;NSMutableArray&nbsp;*trustChain&nbsp;=&nbsp;[NSMutableArray&nbsp;arrayWithCapacity:(NSUInteger)certificateCount];
+&nbsp;&nbsp;&nbsp;&nbsp;//遍历serverTrust里证书的证书链。
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;(CFIndex&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;&nbsp;certificateCount;&nbsp;i++)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//从证书链取证书
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SecCertificateRef&nbsp;certificate&nbsp;=&nbsp;SecTrustGetCertificateAtIndex(serverTrust,&nbsp;i);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//数组
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SecCertificateRef&nbsp;someCertificates[]&nbsp;=&nbsp;{certificate};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//CF数组
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CFArrayRef&nbsp;certificates&nbsp;=&nbsp;CFArrayCreate(NULL,&nbsp;(const&nbsp;void&nbsp;**)someCertificates,&nbsp;1,&nbsp;NULL);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SecTrustRef&nbsp;trust;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;根据给定的certificates和policy来生成一个trust对象
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//不成功跳到&nbsp;_out。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__Require_noErr_Quiet(SecTrustCreateWithCertificates(certificates,&nbsp;policy,&nbsp;&amp;trust),&nbsp;_out);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SecTrustResultType&nbsp;result;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;使用SecTrustEvaluate来评估上面构建的trust
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//评估失败跳到&nbsp;_out
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__Require_noErr_Quiet(SecTrustEvaluate(trust,&nbsp;&amp;result),&nbsp;_out);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;如果该trust符合X.509证书格式，那么先使用SecTrustCopyPublicKey获取到trust的公钥，再将此公钥添加到trustChain中
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[trustChain&nbsp;addObject:(__bridge_transfer&nbsp;id)SecTrustCopyPublicKey(trust)];
+
+&nbsp;&nbsp;&nbsp;&nbsp;_out:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//释放资源
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(trust)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CFRelease(trust);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(certificates)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CFRelease(certificates);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;continue;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;CFRelease(policy);
+&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;返回对应的一组公钥
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[NSArray&nbsp;arrayWithArray:trustChain];
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">两个方法功能类似，都是调用了一些系统的API，利用For循环，获取证书链上每一个证书或者公钥。具体内容看源码很好理解。唯一需要注意的是，这个获取的证书排序，是从证书链的叶节点，到根节点的。</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">函数四：判断公钥是否相同</p>
+</li>
+</ul>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">//判断两个公钥是否相同
+static&nbsp;BOOL&nbsp;AFSecKeyIsEqualToKey(SecKeyRef&nbsp;key1,&nbsp;SecKeyRef&nbsp;key2)&nbsp;{
+
+#if&nbsp;TARGET_OS_IOS&nbsp;||&nbsp;TARGET_OS_WATCH&nbsp;||&nbsp;TARGET_OS_TV
+&nbsp;&nbsp;&nbsp;&nbsp;//iOS&nbsp;判断二者地址
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[(__bridge&nbsp;id)key1&nbsp;isEqual:(__bridge&nbsp;id)key2];
+#else
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[AFSecKeyGetData(key1)&nbsp;isEqual:AFSecKeyGetData(key2)];
+#endif
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">方法适配了各种运行环境，做了匹配的判断。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">接下来列出验证过程中调用过得系统原生函数：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">//1.创建一个验证SSL的策略，两个参数，第一个参数true则表示验证整个证书链
+//第二个参数传入domain，用于判断整个证书链上叶子节点表示的那个domain是否和此处传入domain一致
+SecPolicyCreateSSL(,&nbsp;)
+SecPolicyCreateBasicX509();
+//2.默认的BasicX509验证策略,不验证域名。
+SecPolicyCreateBasicX509();
+//3.为serverTrust设置验证策略，即告诉客户端如何验证serverTrust
+SecTrustSetPolicies(,&nbsp;)
+//4.验证serverTrust,并且把验证结果返回给第二参数&nbsp;result
+SecTrustEvaluate(,&nbsp;)
+//5.判断前者errorCode是否为0，为0则跳到exceptionLabel处执行代码
+__Require_noErr(,&nbsp;)
+//6.根据证书data,去创建SecCertificateRef类型的数据。
+SecCertificateCreateWithData(,&nbsp;)
+//7.给serverTrust设置锚点证书，即如果以后再次去验证serverTrust，会从锚点证书去找是否匹配。
+SecTrustSetAnchorCertificates(serverTrust,&nbsp;(__bridge&nbsp;CFArrayRef)pinnedCertificates);
+//8.拿到证书链中的证书个数
+CFIndex&nbsp;certificateCount&nbsp;=&nbsp;SecTrustGetCertificateCount(serverTrust);
+//9.去取得证书链中对应下标的证书。
+SecTrustGetCertificateAtIndex(serverTrust,&nbsp;i)
+//10.根据证书获取公钥。
+SecTrustCopyPublicKey(trust)</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">其功能如注释，大家可以对比着源码，去加以理解~</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20161219/1482136222575589.jpg" title="1482136222575589.jpg" alt="2702646-98c6dc4cddc9aef6.jpg" width="746" height="297" style="border:0px;margin:5px 0px;width:746px;height:297px;" /></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;text-align:center;">分割图.png</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">可能看到这，又有些小伙伴迷糊了，讲了这么多，那如果做https请求，真正需要我们自己做的到底是什么呢？这里来解答一下，分为以下两种情况：</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">如果你用的是付费的公信机构颁发的证书，标准的https，那么无论你用的是AF还是NSUrlSession,什么都不用做，代理方法也不用实现。你的网络请求就能正常完成。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">如果你用的是自签名的证书:</p>
+<ol class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:decimal;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">首先你需要在plist文件中，设置可以返回不安全的请求（关闭该域名的ATS）。</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:decimal;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">其次，如果是NSUrlSesion，那么需要在代理方法实现如下：</p>
+</li>
+</ol>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">-&nbsp;(void)URLSession:(NSURLSession&nbsp;*)session
+didReceiveChallenge:(NSURLAuthenticationChallenge&nbsp;*)challenge
+completionHandler:(void&nbsp;(^)(NSURLSessionAuthChallengeDisposition&nbsp;disposition,&nbsp;NSURLCredential&nbsp;*credential))completionHandler
+{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;__block&nbsp;NSURLCredential&nbsp;*credential&nbsp;=&nbsp;nil;
+
+&nbsp;&nbsp;&nbsp;&nbsp;credential&nbsp;=&nbsp;[NSURLCredential&nbsp;credentialForTrust:challenge.protectionSpace.serverTrust];&nbsp;
+&nbsp;&nbsp;&nbsp;//&nbsp;确定挑战的方式
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(credential)&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//证书挑战&nbsp;则跑到这里
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disposition&nbsp;=&nbsp;NSURLSessionAuthChallengeUseCredential;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;//完成挑战
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(completionHandler)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completionHandler(disposition,&nbsp;credential);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">其实上述就是AF的相对于自签证书的实现的简化版。<br />
+如果是AF，你则需要设置policy：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">//允许自签名证书，必须的
+policy.allowInvalidCertificates&nbsp;=&nbsp;YES;
+//是否验证域名的CN字段
+//不是必须的，但是如果写YES，则必须导入证书。
+policy.validatesDomainName&nbsp;=&nbsp;NO;</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">当然还可以根据需求，你可以去验证证书或者公钥，前提是，你把自签的服务端证书，或者自签的CA根证书导入到项目中：</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;text-align:center;"><img src="http://cc.cocimg.com/api/uploads/20161219/1482136292811021.jpg" title="1482136292811021.jpg" alt="2702646-4a0eb2f182322d25.jpg" style="border:0px;margin:5px 0px;" /></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;text-align:center;">证书.png</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">并且如下设置证书：</p>
+<pre class="brush:js;toolbar:false" style="margin-top:0px;margin-bottom:1em;padding:0px;font-size:12px;width:712.797px;overflow:auto;background-color:#f7f7f7;color:#252525;font-variant-ligatures:normal;orphans:2;widows:2;background-position:initial initial;background-repeat:initial initial;">NSString&nbsp;*certFilePath&nbsp;=&nbsp;[[NSBundle&nbsp;mainBundle]&nbsp;pathForResource:@"AFUse_server.cer"&nbsp;ofType:nil];
+NSData&nbsp;*certData&nbsp;=&nbsp;[NSData&nbsp;dataWithContentsOfFile:certFilePath];
+NSSet&nbsp;*certSet&nbsp;=&nbsp;[NSSet&nbsp;setWithObjects:certData,certData,&nbsp;nil];&nbsp;&nbsp;&nbsp;&nbsp;
+policy.pinnedCertificates&nbsp;=&nbsp;certSet;</pre><p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">这样你就可以使用AF的不同AFSSLPinningMode去验证了。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">最后总结一下，AF之于https到底做了什么：</p>
+<ul class=" list-paddingleft-2" style="margin:0px 0px 20px 2em;padding:0px;list-style-position:initial;list-style-image:initial;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">AF可以让你在系统验证证书之前，就去自主验证。然后如果自己验证不正确，直接取消网络请求。否则验证通过则继续进行系统验证。</p>
+</li>
+<li style="margin:0px;padding:0px;list-style:disc;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">讲到这，顺便提一下，系统验证的流程：</p>
+</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">系统的验证，首先是去系统的根证书找，看是否有能匹配服务端的证书，如果匹配，则验证成功，返回https的安全数据。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">如果不匹配则去判断ATS是否关闭，如果关闭，则返回https不安全连接的数据。如果开启ATS，则拒绝这个请求，请求失败。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">总之一句话：<strong>AF的验证方式不是必须的，但是对有特殊验证需求的用户确是必要的。</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><strong>写在结尾：</strong></p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">看完之后，有些小伙伴可能还是会比较迷惑，建议还是不清楚的小伙伴，可以自己生成一个自签名的证书或者用百度地址等做请求，然后设置AFSecurityPolicy不同参数，打断点，一步步的看AF是如何去调用函数作证书验证的。相信这样能加深你的理解。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">最后关于自签名证书的问题，等2017年1月1日，也没多久了...一个月不到。除非有特殊原因说明，否则已经无法审核通过了。详细的可以看看这篇文章：<a href="http://www.jianshu.com/p/36ddc5b009a7" target="_blank" style="margin:0px;padding:0px;color:#eb6100;text-decoration:none;">iOS 10 适配 ATS</a>（app支持https通过App Store审核）。</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">最后的最后，希望大家能点个赞，关注一下~（楼主看到赞和关注会很开心...） 有什么不同意见或者建议可以评论或者简信我~万一有人转载，麻烦注明出处，谢谢~~</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;">后续文章：</p>
+<p style="margin-top:0px;margin-bottom:20px;padding:0px;color:#252525;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#fafafa;"><a href="http://www.jianshu.com/p/4ffeb1ba3046" target="_blank" style="margin:0px;padding:0px;color:#eb6100;text-decoration:none;">AFNetworking之UIKit扩展与缓存实现</a><br />
+<a href="http://www.jianshu.com/p/7ed7c0be15b4" target="_blank" style="margin:0px;padding:0px;color:#eb6100;text-decoration:none;">AFNetworking到底做了什么？(终)</a></p></body></html>

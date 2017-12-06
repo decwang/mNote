@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-21T08:58:19Z"/><meta name="updated" content="2017-06-21T09:09:29Z"/><title> 一步一步打造MySQL高可用平台  2017-04-10 15:37 by 资深编辑 jihong10102006 评论(0) 有2479人浏览  mysql      相关知识库：  MySQL</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="clearfix" style="clear:both;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:12px;"><div class="title"><h3 style="font-size:16px;line-height:1.5em;margin:0px 0px 0.5em 100px;padding:0px;"><img alt="转载新闻" src="http://www.iteye.com/images/news/zz.gif?1448702469" style="border:0px;vertical-align:middle;" />&nbsp;<a href="http://www.iteye.com/news/32310" title="一步一步打造MySQL高可用平台" style="color:#006699;text-decoration:none;">一步一步打造MySQL高可用平台</a></h3>
+<div class="news_info" style="position:relative;background-color:transparent;padding:2px;color:gray;margin-left:100px;"><span class="date" style="margin:0px 6px;padding-left:0px;color:#a12a2a;background-repeat:no-repeat no-repeat;">2017-04-10 15:37</span>&nbsp;by 资深编辑&nbsp;<a href="http://jihong10102006.iteye.com/" target="_blank" title="jihong10102006" style="color:#006699;text-decoration:none;">jihong10102006</a>&nbsp;<span class="comment" style="margin:0px 6px;padding-left:20px;background-image:url(http://www.iteye.com/images/icon_comment.gif);background-repeat:no-repeat no-repeat;"><a href="http://www.iteye.com/news/32310#comments" style="color:#006699;text-decoration:none;">评论(0)</a></span>&nbsp;<span class="view" style="margin:0px 6px;padding-left:20px;background-image:url(http://www.iteye.com/images/icon_arrow.gif);background-repeat:no-repeat no-repeat;">有2479人浏览</span></div>
+<div class="news_tag" style="clear:both;margin:10px 0px 5px 100px;line-height:20px;"><a href="http://www.iteye.com/news/tag/mysql" style="color:#ffffff;text-decoration:none;display:inline-block;margin:0px 5px 5px 0px;padding:0px 10px;background-color:#aab5c3;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-right-radius:10px;border-bottom-left-radius:10px;">mysql</a></div>
+</div>
+</div>
+<div class="newfors" style="font-family:微软雅黑;background-color:#effaff;border:1px solid #44a2d0;padding:10px;font-size:12px;"><span style="color:#666666;vertical-align:middle;">相关知识库：</span>&nbsp;<a target="_blank" href="http://lib.csdn.net/base/mysql" style="color:#006699;text-decoration:none;vertical-align:middle;display:inline-block;margin:0px 5px;"><img src="http://img.knowledge.csdn.net/upload/base/1454051093684_684.jpg" width="30" height="30" alt="" class="imgradius" style="border:1px solid #f2f0f0;vertical-align:middle;border-top-left-radius:30px;border-top-right-radius:30px;border-bottom-right-radius:30px;border-bottom-left-radius:30px;" />&nbsp;<span style="display:inline-block;margin-left:5px;color:#333333;">MySQL知识库</span></a></div>
+<div id="news_content" style="line-height:1.8em;font-family:Helvetica, Tahoma, Arial, sans-serif;"><span style="font-size:large;"><strong>一 、引子</strong></span>&nbsp;<br />
+笔者刚开始进入公司的时候，主要是忙于分布式MySQL系统----MyShard的构建，公司使用了大量的IDC机房，基于这种网络特点，MyShard设计当初完全是为了是一套支持Multi-Master操作的高可用性的分布式数据库，可以在多个机房中部署的业务上提供快速的写操作，实现了分布式高可用存储能力。&nbsp;<br />
+<br />
+在业务增长期，MyShard解决了公司的很多大型的数据库存储业务，随着公司业务逐渐稳定下来，分布式存储需求越来越少。而公司却有大量的小业务以及不断尝试的各种新业务，需要越来越多的小数据量的数据库存储。<br />
+<br />
+所以这时候发现，之前的工作方向一直集中在公司的10%不到的业务上，而公司的90%以上的存储需求是MySQL的需求，目前有好上千套的MySQL在给不同的业务提供服务。而在当时，不管是MySQL的交付还是管理都比较原始，极端情况下，我们需要业务申请方自己提供服务器来部署MySQL，所以交付的周期也很长。而在高可用方面，都是需要业务方自己去处理主从切换等等问题，出现主数据库故障的时候，往往需要业务方自己去修改配置文件，重启进程，增加了服务的中断时间。&nbsp;<br />
+<br />
+<span style="font-size:large;"><strong>二、为什么没有采用开源的高可用方案</strong></span>&nbsp;<br />
+业界比较流行的MySQL的高可用方案主要有：MMM和MHA两种，对这个方案的分析网上有很多，MHA是优先选取的方案。&nbsp;<br />
+<span style="font-size:medium;"><strong>MHA的工作原理：</strong></span>&nbsp;<br />
+<div style="text-align:center;"><img src="http://dl2.iteye.com/upload/attachment/0124/2553/d9dfed7f-2cf9-3860-b6a2-ae4f147f022a.png" style="border:0px;" /></div>
+<br />
+<div style="text-align:center;">clipboard.png</div>
+<br />
+当master出现故障时，通过对比slave之间I/O线程读取master binlog的位置，选取最接近的slave做为latestslave。其它slave通过与latest slave对比生成差异中继日志。在latest slave上应用从master保存的binlog，同时将latest slave提升为master。最后在其它slave上应用相应的差异中继日志并开始从新的master开始复制。&nbsp;<br />
+<br />
+在MHA实现Master故障切换过程中，MHA Node会试图访问故障的master（通过SSH），如果可以访问（不是硬件故障，比如InnoDB数据文件损坏等），会保存二进制文件，以最大程度保证数据不丢失。MHA和半同步复制一起使用会大大降低数据丢失的危险。&nbsp;<br />
+<br />
+<span style="font-size:medium;"><strong>MHA的优点</strong></span>&nbsp;<br />
+MHA提供了一个通用的框架，我们可以自定义判断和切换操作的步骤；而且，MHA的代码开源，我们甚至可以进行二次开发，这都为高可用系统提供了很好的扩展 能力。&nbsp;<br />
+<br />
+<span style="font-size:medium;"><strong>MHA的缺点</strong></span>&nbsp;<br />
+<ul style="margin:0px 0px 1.5em;padding:0px;"><li style="margin:0px 0px 0.25em 30px;padding:0px;">需要在各个节点间打通ssh信任，这对某些公司安全制度来说是个挑战，因为如果某个节点被黑客攻破的话，其他节点也会跟着遭殃；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">自带提供的脚本还需要进一步补充完善，当然了，一般的使用还是够用的。</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">虽然一个MHA Manger可以管理多个集群，但是没有大规模集群的经验。</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">高可用依赖于vip的方案，譬如采用keepalive来达到vip的切换，但是keepalive会限制切换的主机必须在一个网段，对于跨机房不在一个网段的服务器来说，就无法支持了。在大规模为每个MySQL集群安排一个vip也是难以实现的。keepalive在一个网段内，部署多套也会互相影响。</li>
+</ul>
+<span style="font-size:medium;"><strong>为什么不采用</strong></span>&nbsp;<br />
+我们公司的数据库的特点：&nbsp;<br />
+<ul style="margin:0px 0px 1.5em;padding:0px;"><li style="margin:0px 0px 0.25em 30px;padding:0px;">数据库多机房部署</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">数据库集群规模上千</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">安全性考虑</li>
+</ul>
+<span style="font-size:large;"><strong>三、四层代理----RDS项目</strong></span>&nbsp;<br />
+除了MMM和MHA之外，MySQL还可以采用代理来实现高可用，MySQL代理会比MHA方案更适合大规模的使用。&nbsp;<br />
+<br />
+当时阿里和腾讯分别推出了rds和cdb。我们研究了腾讯的cdb方案，cdb是基于TGW也即是NAT的模式实现了4层代理模型，来达到MySQL的高可用以及负载均衡功能。&nbsp;<br />
+<br />
+但是TGW方案有个比较大的问题就是需要修改MySQL协议，一旦修改MySQL协议，所有的客户端（各种语言的驱动）都需要进行修改，这在推广上是非常难的。&nbsp;<br />
+<br />
+所以我们采用了一种折中的方案，启动了RDS项目，主要用于提供MySQL内部云服务，其中高可用方案如下图所示，采用了iptables的NAT来实现MySQL的代理路由功能。&nbsp;<br />
+<div style="text-align:center;"><img src="http://dl2.iteye.com/upload/attachment/0124/2557/442b8ea1-58b5-306c-b8cd-7bc560ff1f8e.png" title="点击查看原始大小图片" class="magplus" width="650" height="462" style="border:0px;cursor:url(http://www.iteye.com/images/magplus.gif), pointer;" /></div>
+<br />
+<div style="text-align:center;">clipboard.png</div>
+<br />
+<span style="font-size:medium;"><strong>4层代理层基本实现原理</strong></span>&nbsp;<br />
+业务方首先连接到代理服务器上，由于代理服务器上有NAT目标地址转换规则，所以会转到目标MySQL主机上，同时从MySQL主机回包到代理服务器后，由于有NAT源地址转换规则，又会转发回业务方，从而实现了代理功能。&nbsp;<br />
+<br />
+下面举例说明我们如何为一个业务启动RDS四层代理：&nbsp;<br />
+我们先准备好以下几台机器：&nbsp;<br />
+&nbsp; 客户端：172.26.14.16&nbsp;<br />
+&nbsp; 代理 ：172.26.82.45 启动业务代理端口20000&nbsp;<br />
+&nbsp; 目标机器：172.26.82.7 部署MySQL 端口号为3306&nbsp;<br />
+<br />
+在代理机器上设置规则：&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp; 1、打开forward&nbsp;<br />
+&nbsp;&nbsp;&nbsp; echo 1 &gt; /proc/sys/net/ipv4/ip_forward&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp; 2、设置从客户端请求的目标地址和原地址转换规则&nbsp;<br />
+&nbsp;&nbsp;&nbsp; iptables -t nat -A PREROUTING -p tcp -s 172.26.14.16 --dport 3306 -j DNAT --to-destination 172.26.82.7:20000&nbsp;<br />
+&nbsp;&nbsp;&nbsp; iptables -t nat -A POSTROUTING -p tcp -d 172.26.82.7 --dport 20000 -j SNAT --to-source 172.26.82.45&nbsp;<br />
+<br />
+&nbsp;&nbsp;&nbsp; 3、设置好规则之后，就可以通过mysql来连接到代理的20000端口了。&nbsp;<br />
+&nbsp;&nbsp;&nbsp; mysql -utest -ptest -h172.26.82.45 -P20000&nbsp;<br />
+&nbsp;&nbsp;&nbsp; 这时候，实际访问的是172.26.82.7上3306端口的MySQL数据库。&nbsp;<br />
+<br />
+<span style="font-size:large;"><strong>四、数据库配置中心----代理层（7层代理）</strong></span>&nbsp;<br />
+笔者之前一直都在公司云存储中心工作，由于种种原因，2015年年中调到了运维部的数据库团队，在这里才发现，rds项目其实只是在数据库运维平台中走出了很小的一步。为了提供全方位的数据库云服务平台，于是我们开始打造了全新的数据库配置中心，同时提供MySQL、Redis、Mongodb等数据库和缓存内部云服务。&nbsp;<br />
+<br />
+与此同时，之前在rds项目中实现的4层代理的缺点也越来越明显：&nbsp;<br />
+<ul style="margin:0px 0px 1.5em;padding:0px;"><li style="margin:0px 0px 0.25em 30px;padding:0px;">只能使用MySQL主库，M-M-S结构是的MySQL资源极其浪费；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">只能在单机房使用，跨机房访问效率非常低；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">运维功能太少，由于采用iptables，在代理机器上无法看到任何的连接信息，也无法捕获任何业务访问的指标，甚至于连接信息都无法获取；</li>
+</ul>
+基于以上几点原因，笔者决定开发基于7层应用层的MySQL代理层平台，系统的具体架构如下所示：&nbsp;<br />
+<div style="text-align:center;"><img src="http://dl2.iteye.com/upload/attachment/0124/2560/68e9d6de-27fa-395e-94e6-c7f37ed4858a.png" title="点击查看原始大小图片" class="magplus" width="650" height="420" style="border:0px;cursor:url(http://www.iteye.com/images/magplus.gif), pointer;" /></div>
+<br />
+<div style="text-align:center;">clipboard.png</div>
+<br />
+由于代理层是自己实现的应用程序，所以笔者在代码中很容易就实现以下几个核心的功能：&nbsp;<br />
+<ul style="margin:0px 0px 1.5em;padding:0px;"><li style="margin:0px 0px 0.25em 30px;padding:0px;">授权认证模型；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">SQL拦截；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">负载均衡；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">读写分离；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">高可用；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">大SQL隔离；</li>
+</ul>
+除了这些特性以外，基于我们公司的多机房特点，笔者给代理层添加了机房感知能力。在整个数据库配置中心，每个代理层程序、每个MySQL实例都有机房属性。有了机房属性，代理层可以实现自动就近访问MySQL的能力，从而提高了系统性能同时，简化了业务程序的部署。&nbsp;<br />
+<br />
+一个典型的业务部署例子如下：&nbsp;<br />
+<div style="text-align:center;"><img src="http://dl2.iteye.com/upload/attachment/0124/2562/09cd28ca-aeb0-3700-8e3f-dfaaf3514ba5.png" title="点击查看原始大小图片" class="magplus" width="650" height="308" style="border:0px;cursor:url(http://www.iteye.com/images/magplus.gif), pointer;" /></div>
+<br />
+<div style="text-align:center;">clipboard.png</div>
+<br />
+从上图可以看出，应用程序永远也不再需要考虑多机房高可用、负载均衡、读写分离的问题。而且由于代理层实现了高可用功能，一旦发现主写MySQL故障，会自动把主读切换为主写，从而在秒级实现FAILOVER。&nbsp;<br />
+<br />
+<span style="font-size:medium;"><strong>平台级设计</strong></span>&nbsp;<br />
+由于我们的代理层采用了平台级的设计，上图中的代理层可以连接多套业务（MySQL集群），新的业务只需要在zookeeper配置好，代理层就会自动感知，业务方马上能够在代理层上使用，而不需要为每个业务部署自己的独立的代理层，从而极大的减少了运维成本。&nbsp;<br />
+<br />
+除此以外采用代理层还为数据库云服务平台带来不少好处：&nbsp;<br />
+<ul style="margin:0px 0px 1.5em;padding:0px;"><li style="margin:0px 0px 0.25em 30px;padding:0px;">业务方连接代理机器和相应的端口，底层MySQL主从切换可以对业务方透明；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">MySQL实例维护或者迁移可以对业务方透明（一键迁移）；</li>
+<li style="margin:0px 0px 0.25em 30px;padding:0px;">MySQL业务扩容/缩容也对业务透明（一键扩缩容）；</li>
+</ul>
+代理层上线推广到现在，已经有好几百套的MySQL集群跑在上面了，MySQL的高可用平台成功落地。&nbsp;<br />
+<br />
+<span style="font-size:large;"><strong>五、后记</strong></span>&nbsp;<br />
+Mongodb相对于MySQL的一个很大的优势就是高可用性，MySQL的高可用方案很多，但是完美的方式不多，代理层是在我们公司成功实施的一套平台，希望有机会能和业界一起探讨和学习，实现更多完美的解决方案。&nbsp;<br />
+<br />
+代理层虽然已经在公司大规模使用，但是还有很多发展和改善的空间，随着MySQL 5.6和MySQL 5.7的广泛应用，GTID已经非常成熟，由于公司内部使用场景少，代理层的切换还没有实现GTID模式的切换，所以下一阶段，笔者会考虑实现基于GTID的高可用模式。&nbsp;</div></body></html>

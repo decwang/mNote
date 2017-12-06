@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-31T08:31:27Z"/><meta name="updated" content="2017-05-31T08:32:15Z"/><title>抓取军团投票参与人员信息</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>#步骤1,抓取参与军团投票活动的人员信息列表</div>
+<div>SELECT C.MOBILE,A.USER_ID FROM tb_channel_extend_user_join A,tb_channel_extend_info B,USER_INFO C</div>
+<div>WHERE 1=1</div>
+<div>AND A.EXTEND_INFO_ID = B.ID&nbsp;</div>
+<div>AND B.CHANNEL_ID = 16998</div>
+<div>AND A.USER_ID = C.ID</div>
+<div>#LIMIT 10;</div>
+<div><br />
+</div>
+<div>
+
+
+
+
+
+
+
+
+
+<table border="0" cellpadding="0" cellspacing="0" width="1835" style="width:1377pt;">
+<!--StartFragment-->
+ <colgroup><col width="155" style="mso-width-source:userset;mso-width-alt:4949;width:116pt;" />  <col width="140" style="mso-width-source:userset;mso-width-alt:4480;width:105pt;" />  <col width="225" style="mso-width-source:userset;mso-width-alt:7210;width:169pt;" />  <col width="136" span="2" style="mso-width-source:userset;mso-width-alt:4352;width:102pt;" />  <col width="95" style="mso-width-source:userset;mso-width-alt:3029;width:71pt;" />  <col width="105" style="mso-width-source:userset;mso-width-alt:3370;width:79pt;" />  <col width="101" style="mso-width-source:userset;mso-width-alt:3242;width:76pt;" />  <col width="117" style="mso-width-source:userset;mso-width-alt:3754;width:88pt;" />  <col width="123" style="mso-width-source:userset;mso-width-alt:3925;width:92pt;" />  <col width="133" style="mso-width-source:userset;mso-width-alt:4266;width:100pt;" />  <col width="136" style="mso-width-source:userset;mso-width-alt:4352;width:102pt;" />  <col width="121" style="mso-width-source:userset;mso-width-alt:3882;width:91pt;" />  <col width="112" style="mso-width-source:userset;mso-width-alt:3584;width:84pt;" />  </colgroup><tbody><tr height="48" style="mso-height-source:userset;height:36.0pt;">
+  <td height="48" class="xl64" width="155" style="height:36.0pt;width:116pt;">手机</td>
+  <td class="xl64" width="140" style="border-left:none;width:105pt;">注册时间</td>
+  <td class="xl64" width="225" style="border-left:none;width:169pt;">微信昵称</td>
+  <td class="xl64" width="136" style="border-left:none;width:102pt;">天天送昵称</td>
+  <td class="xl64" width="136" style="border-left:none;width:102pt;">用户机型</td>
+  <td class="xl64" width="95" style="border-left:none;width:71pt;">做任务数（权重20）</td>
+  <td class="xl64" width="105" style="border-left:none;width:79pt;">17年活跃数（权重10）</td>
+  <td class="xl64" width="101" style="border-left:none;width:76pt;">近一个月活跃数（权重20）</td>
+  <td class="xl64" width="117" style="border-left:none;width:88pt;">17年徒弟活跃次数（权重5）</td>
+  <td class="xl64" width="123" style="border-left:none;width:92pt;">17年徒弟活跃人数（权重5）</td>
+  <td class="xl64" width="133" style="border-left:none;width:100pt;">近一个月徒弟活跃次数（权重15）</td>
+  <td class="xl64" width="136" style="border-left:none;width:102pt;">近一个月徒弟活跃人数（权重20）</td>
+  <td class="xl64" width="121" style="border-left:none;width:91pt;">17年下线人数（参考）</td>
+  <td class="xl64" width="112" style="border-left:none;width:84pt;">近1个月下线人数（权重5）</td>
+ </tr>
+ <tr height="48" style="mso-height-source:userset;height:36.0pt;">
+  <td height="48" class="xl64" width="155" style="height:36.0pt;width:116pt;">　</td>
+  <td class="xl64" width="140" style="border-left:none;width:105pt;">　</td>
+  <td class="xl64" width="225" style="border-left:none;width:169pt;">　</td>
+  <td class="xl64" width="136" style="border-left:none;width:102pt;">　</td>
+  <td class="xl64" width="136" style="border-left:none;width:102pt;">　</td>
+  <td class="xl64" width="95" style="border-left:none;width:71pt;">所有完成的cpa任务数量</td>
+  <td class="xl64" width="105" style="border-left:none;width:79pt;">统计有启动天天送的天数</td>
+  <td class="xl64" width="101" style="border-left:none;width:76pt;">统计有启动天天送的天数</td>
+  <td class="xl64" width="117" style="border-left:none;width:88pt;">总计次数</td>
+  <td class="xl64" width="123" style="border-left:none;width:92pt;">17年的徒弟登录过天天送的人数</td>
+  <td class="xl64" width="133" style="border-left:none;width:100pt;">近一个月的次数</td>
+  <td class="xl64" width="136" style="border-left:none;width:102pt;">近一个月的人数</td>
+  <td class="xl64" width="121" style="border-left:none;width:91pt;">纯下线数量(领过包就算)</td>
+  <td class="xl64" width="112" style="border-left:none;width:84pt;">　</td>
+ </tr>
+<!--EndFragment--></tbody>
+</table>
+</div>
+<div>#步骤2,抓取上述人员完成CPA任务的次数</div>
+<div><br />
+</div></body></html>

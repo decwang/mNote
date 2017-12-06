@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-04-06T08:59:22Z"/><meta name="updated" content="2017-04-06T08:59:39Z"/><title>Mac下ZooKeeper安装 使用brew</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>安装</div>
+<div>zookeeper支持brew安装</div>
+<div><br />
+</div>
+<div>复制代码</div>
+<div>➜ &nbsp;~ brew info zookeeper</div>
+<div>zookeeper: stable 3.4.8 (bottled), HEAD</div>
+<div>Centralized server for distributed coordination of services</div>
+<div>https://zookeeper.apache.org/</div>
+<div>Not installed</div>
+<div>From: https://mirrors.tuna.tsinghua.edu.cn/git/homebrew-core.git/Formula/zookeeper.rb</div>
+<div>==&gt; Options</div>
+<div>--with-perl</div>
+<div>&nbsp; &nbsp; Build Perl bindings</div>
+<div>--with-python</div>
+<div>&nbsp; &nbsp; Build with python support</div>
+<div>--HEAD</div>
+<div>&nbsp; &nbsp; Install HEAD version</div>
+<div>==&gt; Caveats</div>
+<div>To have launchd start zookeeper now and restart at login:</div>
+<div>&nbsp; brew services start zookeeper</div>
+<div>Or, if you don't want/need a background service you can just run:</div>
+<div>&nbsp; zkServer start</div>
+<div>复制代码</div>
+<div>&nbsp;</div>
+<div><br />
+</div>
+<div>安装</div>
+<div><br />
+</div>
+<div>复制代码</div>
+<div>➜ &nbsp;~ brew install zookeeper</div>
+<div>==&gt; Downloading https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/bottles/zookeeper-3.4.8.el_capitan.bottle.tar.gz</div>
+<div>######################################################################## 100.0%</div>
+<div>==&gt; Pouring zookeeper-3.4.8.el_capitan.bottle.tar.gz</div>
+<div>==&gt; Caveats</div>
+<div>To have launchd start zookeeper now and restart at login:</div>
+<div>&nbsp; brew services start zookeeper</div>
+<div>Or, if you don't want/need a background service you can just run:</div>
+<div>&nbsp; zkServer start</div>
+<div>==&gt; Summary</div>
+<div>🍺 &nbsp;/usr/local/Cellar/zookeeper/3.4.8: 237 files, 17.6M</div>
+<div>复制代码</div>
+<div>安装后，在/usr/local/etc/zookeeper/目录下，已经有了缺省的配置文件。</div>
+<div><br />
+</div>
+<div>➜ &nbsp;~ ls /usr/local/etc/zookeeper</div>
+<div>defaults &nbsp; &nbsp; &nbsp; &nbsp; log4j.properties zoo.cfg &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;zoo_sample.cfg</div>
+<div>&nbsp;</div>
+<div><br />
+</div>
+<div>缺省配置[/usr/local/etc/zookeeper/zoo.cfg] 内容如下</div>
+<div><br />
+</div>
+<div>复制代码</div>
+<div>➜ &nbsp;/ cat /usr/local/etc/zookeeper/zoo.cfg</div>
+<div># The number of milliseconds of each tick</div>
+<div>tickTime=2000</div>
+<div># The number of ticks that the initial</div>
+<div># synchronization phase can take</div>
+<div>initLimit=10</div>
+<div># The number of ticks that can pass between</div>
+<div># sending a request and getting an acknowledgement</div>
+<div>syncLimit=5</div>
+<div># the directory where the snapshot is stored.</div>
+<div># do not use /tmp for storage, /tmp here is just</div>
+<div># example sakes.</div>
+<div>dataDir=/usr/local/var/run/zookeeper/data</div>
+<div># the port at which the clients will connect</div>
+<div>clientPort=2181</div>
+<div># the maximum number of client connections.</div>
+<div># increase this if you need to handle more clients</div>
+<div>#maxClientCnxns=60</div>
+<div>#</div>
+<div># Be sure to read the maintenance section of the</div>
+<div># administrator guide before turning on autopurge.</div>
+<div>#</div>
+<div># http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance</div>
+<div>#</div>
+<div># The number of snapshots to retain in dataDir</div>
+<div>#autopurge.snapRetainCount=3</div>
+<div># Purge task interval in hours</div>
+<div># Set to "0" to disable auto purge feature</div>
+<div>#autopurge.purgeInterval=1</div>
+<div>复制代码</div>
+<div>&nbsp;</div>
+<div><br />
+</div>
+<div>启动服务</div>
+<div>执行zkServer命令</div>
+<div><br />
+</div>
+<div>复制代码</div>
+<div>➜ &nbsp;/ zkServer</div>
+<div>ZooKeeper JMX enabled by default</div>
+<div>Using config: /usr/local/etc/zookeeper/zoo.cfg</div>
+<div>Usage: ./zkServer.sh {start|start-foreground|stop|restart|status|upgrade|print-cmd}</div>
+<div>➜ &nbsp;/ zkServer status</div>
+<div>ZooKeeper JMX enabled by default</div>
+<div>Using config: /usr/local/etc/zookeeper/zoo.cfg</div>
+<div>Error contacting service. It is probably not running.</div>
+<div>➜ &nbsp;/ zkServer start</div>
+<div>ZooKeeper JMX enabled by default</div>
+<div>Using config: /usr/local/etc/zookeeper/zoo.cfg</div>
+<div>Starting zookeeper ... STARTED</div>
+<div>复制代码</div>
+<div>&nbsp;</div>
+<div><br />
+</div>
+<div>查看zookeeper运行及状态</div>
+<div>安装后，可以看到zookeeper提供了zkCli等工具进行.</div>
+<div><br />
+</div>
+<div>复制代码</div>
+<div>➜ &nbsp;/ zkCli</div>
+<div>Connecting to localhost:2181</div>
+<div>Welcome to ZooKeeper!</div>
+<div>JLine support is enabled</div>
+<div>[zk: localhost:2181(CONNECTING) 0]</div>
+<div>WATCHER::</div>
+<div><br />
+</div>
+<div>WatchedEvent state:SyncConnected type:None path:null</div>
+<div><br />
+</div>
+<div>[zk: localhost:2181(CONNECTED) 0] ls</div>
+<div>[zk: localhost:2181(CONNECTED) 1] ls /</div>
+<div>[zookeeper]</div>
+<div>[zk: localhost:2181(CONNECTED) 2] ls /zookeeper</div>
+<div>[quota]</div>
+<div>[zk: localhost:2181(CONNECTED) 3] ls /zookeeper/quota</div>
+<div>[]</div>
+<div>[zk: localhost:2181(CONNECTED) 4]</div>
+<div>复制代码</div></body></html>

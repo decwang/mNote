@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-07-07T12:45:09Z"/><meta name="updated" content="2017-07-07T12:45:11Z"/><title> iOS多线程的初步研究（十）-- dispatch同步  标签： 多线程  2013-10-21 10:52 20004人阅读 评论(1) 收藏 举报   分类： ios多线程（12）    目录</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>&nbsp;iOS多线程的初步研究（十）-- dispatch同步</div>
+<div>标签： 多线程</div>
+<div>2013-10-21 10:52 20004人阅读 评论(1) 收藏 举报</div>
+<div>&nbsp;分类： ios多线程（12） &nbsp;</div>
+<div>目录(?)[+]</div>
+<div>原文地址 &nbsp;http://www.cnblogs.com/sunfrog/p/3243230.html</div>
+<div><br />
+</div>
+<div>GCD提供两种方式支持dispatch队列同步，即dispatch组和信号量。</div>
+<div>一、dispatch组（dispatch group）</div>
+<div><br />
+</div>
+<div>1. 创建dispatch组</div>
+<div><br />
+</div>
+<div>dispatch_group_t group = dispatch_group_create();&nbsp;</div>
+<div><br />
+</div>
+<div>2. 启动dispatch队列中的block关联到group中</div>
+<div><br />
+</div>
+<div>dispatch_group_async(group, queue, ^{&nbsp;</div>
+<div><br />
+</div>
+<div>　　// 。。。&nbsp;</div>
+<div><br />
+</div>
+<div>});&nbsp;</div>
+<div><br />
+</div>
+<div>3. 等待group关联的block执行完毕，也可以设置超时参数</div>
+<div><br />
+</div>
+<div>dispatch_group_wait(group, DISPATCH_TIME_FOREVER);&nbsp;</div>
+<div><br />
+</div>
+<div>4. 为group设置通知一个block，当group关联的block执行完毕后，就调用这个block。类似dispatch_barrier_async。</div>
+<div><br />
+</div>
+<div>dispatch_group_notify(group, queue, ^{</div>
+<div><br />
+</div>
+<div>　　// 。。。&nbsp;</div>
+<div><br />
+</div>
+<div>});&nbsp;</div>
+<div><br />
+</div>
+<div>5. 手动管理group关联的block的运行状态（或计数），进入和退出group次数必须匹配</div>
+<div><br />
+</div>
+<div>dispatch_group_enter(group);</div>
+<div><br />
+</div>
+<div>dispatch_group_leave(group);</div>
+<div><br />
+</div>
+<div>所以下面的两种调用其实是等价的，&nbsp;</div>
+<div><br />
+</div>
+<div>A)</div>
+<div><br />
+</div>
+<div>dispatch_group_async(group, queue, ^{&nbsp;</div>
+<div><br />
+</div>
+<div>　　// 。。。&nbsp;</div>
+<div><br />
+</div>
+<div>});&nbsp;</div>
+<div><br />
+</div>
+<div>B)&nbsp;</div>
+<div><br />
+</div>
+<div>dispatch_group_enter(group);</div>
+<div><br />
+</div>
+<div>dispatch_async(queue, ^{</div>
+<div><br />
+</div>
+<div>　　//。。。</div>
+<div><br />
+</div>
+<div>　　dispatch_group_leave(group);</div>
+<div><br />
+</div>
+<div>});</div>
+<div><br />
+</div>
+<div>所以，可以利用dispatch_group_enter、 dispatch_group_leave和dispatch_group_wait来实现同步，具体例子：http://stackoverflow.com/questions/10643797/wait-until-multiple-operations-executed-including-completion-block-afnetworki/10644282#10644282。</div>
+<div><br />
+</div>
+<div>&nbsp;</div>
+<div><br />
+</div>
+<div>二、dispatch信号量（dispatch semaphore）</div>
+<div><br />
+</div>
+<div>1. 创建信号量，可以设置信号量的资源数。0表示没有资源，调用dispatch_semaphore_wait会立即等待。</div>
+<div><br />
+</div>
+<div>dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);</div>
+<div><br />
+</div>
+<div>2. 等待信号，可以设置超时参数。该函数返回0表示得到通知，非0表示超时。</div>
+<div><br />
+</div>
+<div>dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</div>
+<div><br />
+</div>
+<div>3. 通知信号，如果等待线程被唤醒则返回非0，否则返回0。</div>
+<div><br />
+</div>
+<div>dispatch_semaphore_signal(semaphore);</div>
+<div><br />
+</div>
+<div>最后，还是回到生成消费者的例子，使用dispatch信号量是如何实现同步：</div>
+<div><br />
+</div>
+<div>&nbsp;</div>
+<div><br />
+</div>
+<div>dispatch_semaphore_t sem = dispatch_semaphore_create(0);</div>
+<div><br />
+</div>
+<div>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{ //消费者队列</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; &nbsp; while (condition) {</div>
+<div><br />
+</div>
+<div>　　　　if (dispatch_semaphore_wait(sem, dispatch_time(DISPATCH_TIME_NOW, 10*NSEC_PER_SEC))) //等待10秒</div>
+<div><br />
+</div>
+<div>　　　　　　continue;</div>
+<div><br />
+</div>
+<div>　　　　//得到数据</div>
+<div><br />
+</div>
+<div>　　}</div>
+<div><br />
+</div>
+<div>});</div>
+<div><br />
+</div>
+<div>dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{ //生产者队列</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; &nbsp; while (condition) {</div>
+<div><br />
+</div>
+<div>&nbsp;　　　　if (!dispatch_semaphore_signal(sem))</div>
+<div><br />
+</div>
+<div>　　　　{</div>
+<div><br />
+</div>
+<div>　　　　　　sleep(1); //wait for a while</div>
+<div><br />
+</div>
+<div>　　　　　　continue;</div>
+<div><br />
+</div>
+<div>　　　　}</div>
+<div><br />
+</div>
+<div>　　　　//通知成功</div>
+<div><br />
+</div>
+<div>　　}</div>
+<div><br />
+</div>
+<div>});</div></body></html>

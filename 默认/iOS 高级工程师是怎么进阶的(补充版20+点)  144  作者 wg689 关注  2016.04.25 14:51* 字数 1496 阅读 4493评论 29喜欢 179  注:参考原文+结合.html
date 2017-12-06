@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-07-12T07:02:40Z"/><meta name="updated" content="2017-07-12T07:02:42Z"/><title>iOS 高级工程师是怎么进阶的(补充版20+点)  144  作者 wg689 关注  2016.04.25 14:51* 字数 1496 阅读 4493评论 29喜欢 179  注:参考原文+结合</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>iOS 高级工程师是怎么进阶的(补充版20+点)</div>
+<div>144 &nbsp;作者 wg689 关注</div>
+<div>2016.04.25 14:51* 字数 1496 阅读 4493评论 29喜欢 179</div>
+<div>注:参考原文+结合本人多年开发经验总结</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; 后续的文章会持续覆对本文列出的知识点解释</div>
+<div><br />
+</div>
+<div>请关注和点赞</div>
+<div><br />
+</div>
+<div>原文作者链接：http://www.angelen.me</div>
+<div><br />
+</div>
+<div>原文作者的处女作：http://www.angelen.me/app</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>Q: 我从事 iOS 两年了，感觉只会搭建view，用第三方库，还有些机械代码？真的迷茫了。想进阶，具体从什么大点入手呢？</div>
+<div><br />
+</div>
+<div>A: 说实话，两年时间只会搭建view、使用第三方类库，真的不能称为一个合格的iOS开发工程师！</div>
+<div><br />
+</div>
+<div>1 先说OC部分</div>
+<div><br />
+</div>
+<div>既然做了两年了，对Objective-C足够了解吗？OC是如何基于C来进行的封装？解释一下这两行代码啥意思？</div>
+<div><br />
+</div>
+<div>typedef __attribute__((NSObject)) CGGradientRef GradientObject;</div>
+<div><br />
+</div>
+<div>@property (nonatomic, strong) GradientObject storedGradient;</div>
+<div><br />
+</div>
+<div>protocol、category这样的东西应该要手到擒来才是？多线程部分的知识点掌握是否扎实？runtime这种黑魔法研究过没？代码足够优雅、后续维护容易吗？各种设计模式也得会吧？</div>
+<div><br />
+</div>
+<div>2 再说UI部分</div>
+<div><br />
+</div>
+<div>既然写了两年的view，那么能快速仿造市面上这些主流App的UI吗？使用Reveal分析过微信、豆瓣、网易新闻、知乎、QQ、苏宁、淘宝、支付宝的UI吗？使用Charles去抓过他们的接口吗？</div>
+<div><br />
+</div>
+<div>UI研究稍微深一点，比如侧滑菜单这种要怎么实现？如果你要做实现应该要了解UIView和UIViewController，UIViewController和UINavigationController的关系了吧？我嘞个草，UIView一堆方法，UIViewController一堆方法，到底都是干嘛的啊？你难道不好奇？这块知识点一直是你的盲区，你能忍？我忍不了！</div>
+<div><br />
+</div>
+<div>UIView再往深了看，下面还有CALayer，你研究过没？为什么修改CALayer的某些property默认会有个动画产生呢？</div>
+<div><br />
+</div>
+<div>那么Animation、UIKit Dynamics、Drawing、Graphics这些随便拎出来一个，够你研究一阵了吧？你看看比如网易新闻，在新闻详情页面上拉，回到新闻列表页面的这个动画做的出来吗？你看看QQ在电话通信页面，点击右下角缩放图标，缩放成一个头像的这种动画，你会做不？</div>
+<div><br />
+</div>
+<div>3 还有这些大的功能点</div>
+<div><br />
+</div>
+<div>既然用了两年第三方类库，那么比如图片缓存这类，看过源码实现没？如果自己来实现的话，有哪些Caching Algorithms？该怎么取舍？各种常用的第三方类库你研究过原理没？</div>
+<div><br />
+</div>
+<div>你的App在和服务器交流数据的过程中安全性怎么样？你是不是要研究一下加解密？HTTP理解的够清楚吗？想没想过自己来写接口？或者更甚至一些自己来写个简易的HTTP服务器？接口部分甚至用CGI来实现也可以啊！</div>
+<div><br />
+</div>
+<div>要写服务器，那应该要了解一下网络部分吧？TCP/IP 协议得熟悉吧？然后Wireshark各种抓包得会吧？</div>
+<div><br />
+</div>
+<div>网络这块顺带过来之后，即时聊天类的App采用的什么技术？选 xmpp 还是 mqtt 还是自己写？正好可以顺势了解一下吧！</div>
+<div><br />
+</div>
+<div>iOS SDK里面的各种API你掌握到了什么程度？这些功能模块排除地图、通讯录这种，说些高级的比如CloudKit、Extensions、TextKit、AirDrop、PassKit？觉得这些模块在自家公司的项目中压根没用过？可是看看你手边的App！</div>
+<div><br />
+</div>
+<div>4 其它专业化的方向</div>
+<div><br />
+</div>
+<div>视音频处理做过吗？此类诸如豆瓣FM、虾米音乐、喜马拉雅、QPlayer这类的App你去研究过他们吗？还有VoIP这类的，我实习的时候做过这种╮(╯_╰)╭</div>
+<div><br />
+</div>
+<div>游戏开发方向有没有兴趣？自己有没有去研究过呢？（反正这个我是真没有╮(╯_╰)╭）</div>
+<div><br />
+</div>
+<div>5 项目安全优化等</div>
+<div><br />
+</div>
+<div>项目中写单元测试吗？UI Automation 自动化测试做的怎么样？持续集成平台诸如Jenkins等会用吗？</div>
+<div><br />
+</div>
+<div>App的各种性能优化、Crash的统计分析等等你做了没？</div>
+<div><br />
+</div>
+<div>App本地数据储存够安全吗？你对逆向了解多少？敏感部分是否做了代码混淆？</div>
+<div><br />
+</div>
+<div>6 知识体系要持续更新</div>
+<div><br />
+</div>
+<div>官方的文档、国外的相关书籍采用的语言都是Swift，难道你不准备学学？除了native的，现在的HTML5也很火啊，难道不准备学？</div>
+<div><br />
+</div>
+<div>英文练习的怎么样了？官方所有的开发者文档以及历年的WWDC视频看完了？这么多书，这么多大牛的博客，你难道从中一无所获？</div>
+<div><br />
+</div>
+<div>补充一个非常重要的进阶知识板块：APP架构设计</div>
+<div><br />
+</div>
+<div>MVC 你就耳熟能详了，MVVM 你不打算了解了解吗？</div>
+<div><br />
+</div>
+<div>-----------------上面的是别人,下面的是我的补充------------------------------</div>
+<div><br />
+</div>
+<div>1)CoreData的多线程 了解没? &nbsp;CoreData 的不同版本的数据迁移怎么做?</div>
+<div><br />
+</div>
+<div>2)runtime 如何使用?runtime的原理,用在项目中.</div>
+<div><br />
+</div>
+<div>3)runloop 的理解,项目中如何使用</div>
+<div><br />
+</div>
+<div>4)js与oc 的交互会不会?</div>
+<div><br />
+</div>
+<div>5)GCD ,NSThread ,NSOperation 能不能滔滔不绝的讲出来?</div>
+<div><br />
+</div>
+<div>6)会不会写插件 ?</div>
+<div><br />
+</div>
+<div>7)block 理解是否深入?</div>
+<div><br />
+</div>
+<div>8)动画订单制作是否清楚,并且用在项目中</div>
+<div><br />
+</div>
+<div>9)keyChain 钥匙串存储</div>
+<div><br />
+</div>
+<div>10)apple pay,3Dtouch 是否学习下?</div>
+<div><br />
+</div>
+<div>11)stackView 的使用?</div>
+<div><br />
+</div>
+<div>12)网络加密,</div>
+<div><br />
+</div>
+<div>13)推送的深入理解</div>
+<div><br />
+</div>
+<div>14)pop 动画框架的学习</div>
+<div><br />
+</div>
+<div>15)reactiveCocoa 使用</div>
+<div><br />
+</div>
+<div>16)逆向工程,反编译.</div>
+<div><br />
+</div>
+<div>17)内存管理详细了解</div>
+<div><br />
+</div>
+<div>18)app 瘦身技术</div>
+<div><br />
+</div>
+<div>19)cocoapods 使用</div>
+<div><br />
+</div>
+<div>20 ）github 项目</div>
+<div><br />
+</div>
+<div>21）插件制作</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>22 打包.a &nbsp;和framwork</div></body></html>

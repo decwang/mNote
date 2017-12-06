@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-03-23T10:48:06Z"/><meta name="updated" content="2017-03-23T11:09:43Z"/><title>手把手教你写一个RN小程序!    时间过得真快，眨眼已经快3年了！  1.我的第一个App  还记得我14年初写的第一个iOS小程序，当时是给别人写的一个单机的相册，也是我开发的第一个完整的app</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h1 class="postTitle" style="margin:0px 0px 15px;padding:0px 0px 0px 5px;font-size:15.6px;float:left;line-height:1.5;width:1476.14px;clear:both;color:#464646;font-family:Verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#faf7ef;"><a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/demon404/p/5850206.html" style="margin:0px;padding:0px;color:#6466b3;text-decoration:none;">手把手教你写一个RN小程序!</a></h1>
+<div class="clear" style="margin:0px;padding:0px;clear:both;color:#464646;font-family:Verdana, Arial, Helvetica, sans-serif;font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#faf7ef;"></div>
+<div class="postBody" style="margin:0px;padding:5px 2px 5px 5px;line-height:1.5;color:#393939;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:black;font-family:Verdana, Arial, Helvetica, sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;background-color:#faf7ef;"><div id="cnblogs_post_body" style="margin:0px 0px 20px;padding:0px;word-break:break-word;"><p style="margin:10px auto;padding:0px;">时间过得真快，眨眼已经快3年了！</p>
+<h3 style="margin:10px 0px;padding:0px;font-size:16px;line-height:1.5;"><span style="margin:0px;padding:0px;font-size:1.17em;line-height:1.5;">1.我的第一个App</span></h3>
+<p style="margin:10px auto;padding:0px;">还记得我14年初写的第一个iOS小程序，当时是给别人写的一个单机的相册，也是我开发的第一个完整的app，虽然功能挺少，但是耐不住心中的激动啊，现在我开始学react native，那么现在对于react native也算是有所了解了，就用网上的接口开发一个小程序，现在带大家来写这个程序！接口是用<a href="http://www.kanzhihu.com/api-document" target="_blank" style="margin:0px;padding:0px;color:#6466b3;">看知乎的API</a>，简简单单的只有get，可以从这里入门，也算是带大家入门吧，过后我会把源代码放在我的github上，前期项目肯定特别简陋，后面慢慢来优化，好了，废话不多说，坐稳扶好，咱们开车了！！！！！</p>
+<p style="margin:10px auto;padding:0px;">首先需要一个框架，可以省时省力，不再重复的造轮子。</p>
+<h4 style="margin:10px 0px;padding:0px;color:#333333;">(1)框架</h4>
+<p style="margin:10px auto;padding:0px;">框架咱们就不再搭建了，我前面写了一个特别简单的框架，放在github上了，咱们直接下载下来用就可以了，<a href="https://github.com/Demon404/react-native-navtab" target="_blank" style="margin:0px;padding:0px;color:#6466b3;">下载地址在我的github上</a>,这个框架是基于react-native-tab-navigator的，运行这个程序，咱们做的第一步就是打开终端配置环境</p>
+<div class="cnblogs_code" style="margin:5px 0px;padding:5px;background-color:#f5f5f5;border:1px solid #cccccc;overflow:auto;color:#000000;font-family:&quot;Courier New&quot; !important;font-size:12px !important;"><pre style="margin-top:0px;margin-bottom:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New' !important;">$npm <span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">install</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"> $npm </span><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">install</span> react-native-tab-navigator --save</pre></div>
+<p style="margin:10px auto;padding:0px;">然后我们就可以打开文件运行程序了</p>
+<h4 style="margin:10px 0px;padding:0px;color:#333333;">(2)修改名称</h4>
+<p style="margin:10px auto;padding:0px;">用Xcode打开文件navtabbar.xcodeproj，进入AppDelegate.m文件中把</p>
+<div class="cnblogs_code" style="margin:5px 0px;padding:5px;background-color:#f5f5f5;border:1px solid #cccccc;overflow:auto;color:#000000;font-family:&quot;Courier New&quot; !important;font-size:12px !important;"><pre style="margin-top:0px;margin-bottom:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New' !important;">RCTRootView *rootView =<span style="margin:0px;padding:0px;line-height:1.5 !important;"> [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　moduleName:</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">@"</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">navtabbar</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"> 　　　　　　　　　　　　　　　　　　　　　　　　　　　initialProperties:nil
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 launchOptions:launchOptions];</span></pre></div>
+<p style="margin:10px auto;padding:0px;">&nbsp;</p>
+<p style="margin:10px auto;padding:0px;"><br style="margin:0px;padding:0px;" />
+中的moduleName改为你想要的名字，然后在plist文件中修改Bundle name为你修改过的名字，最后最重要的一步，打开index.ios.js文件修改注册入口,<br style="margin:0px;padding:0px;" />
+AppRegistry.registerComponent('你修改的名字', () =&gt; NavIndex)<br style="margin:0px;padding:0px;" />
+现在iOS的App名称修改完成，可以运行一下看看是不是修改成功！</p>
+<h3 style="margin:10px 0px;padding:0px;font-size:16px;line-height:1.5;">2.首页搭建</h3>
+<h4 style="margin:10px 0px;padding:0px;color:#333333;">(1)首页界面代码修改</h4>
+<p style="margin:10px auto;padding:0px;">进入login.js文件，删除&nbsp;&lt;Text onPress={this._onPage.bind(this)} style={styles.textStyle}&gt;登录&lt;/Text&gt;&nbsp;</p>
+<p style="margin:10px auto;padding:0px;">然后添加Image，咱们待会给首页设置一个背景图,添加</p>
+<p style="margin:10px auto;padding:0px;">TouchableOpacity,<br style="margin:0px;padding:0px;" />
+Dimensions,<br style="margin:0px;padding:0px;" />
+TextInput</p>
+<p style="margin:10px auto;padding:0px;">OK,添加这些组件就够了!</p>
+<h4 style="margin:10px 0px;padding:0px;color:#333333;">(2)界面搭建</h4>
+<p style="margin:10px auto;padding:0px;">首先，我们先在src文件夹中新建一个images的文件夹，用于存放我们的图片</p>
+<p style="margin:10px auto;padding:0px;">现在就可以找一些图片存进去。</p>
+<p style="margin:10px auto;padding:0px;">&lt;Image source={require('./images/background.jpg')} style={styles.backgroundStyle}&gt;</p>
+<p style="margin:10px auto;padding:0px;">然后简单的登录一下，当然只是一个界面而已</p>
+<div class="cnblogs_code" style="margin:5px 0px;padding:5px;background-color:#f5f5f5;border:1px solid #cccccc;overflow:auto;color:#000000;font-family:&quot;Courier New&quot; !important;font-size:12px !important;"><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#6466b3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;max-width:900px;border:none !important;" /></a></span></div>
+<pre style="margin-top:0px;margin-bottom:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New' !important;">&lt;FormText style={{marginTop:60<span style="margin:0px;padding:0px;line-height:1.5 !important;">}}
+                    placeholder</span>='账号'<span style="margin:0px;padding:0px;line-height:1.5 !important;">                     placeholderTextColor</span>='gray'<span style="margin:0px;padding:0px;line-height:1.5 !important;">                     defaultValue</span>='Demon404'
+          /&gt;
+          &lt;FormText style={{marginTop:10<span style="margin:0px;padding:0px;line-height:1.5 !important;">}}
+                    placeholder</span>='请输入密码'<span style="margin:0px;padding:0px;line-height:1.5 !important;">                     placeholderTextColor</span>='orange'<span style="margin:0px;padding:0px;line-height:1.5 !important;">                     defaultValue</span>=''
+          /&gt;
+          &lt;TouchableOpacity onPress={<span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span>._onPage.bind(<span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span>)}&gt;
+            &lt;Button style={{marginTop:20,width:Width/2,height:40,backgroundColor:'blue',borderRadius:10}}
+                    buttonTitle="登录"
+
+            /&gt;
+          &lt;/TouchableOpacity&gt;</pre><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#6466b3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;max-width:900px;border:none !important;" /></a></span></div>
+</div>
+<p style="margin:10px auto;padding:0px;">这里的FormText是我自己写的一个小控件。</p>
+<p style="margin:10px auto;padding:0px;">下面可以看一下界面效果</p>
+<p style="margin:10px auto;padding:0px;"><img src="http://images2015.cnblogs.com/blog/820858/201609/820858-20160914164349102-1724074959.png" alt="" width="196" height="350" style="margin:0px;padding:0px;border:0px;max-width:900px;" /></p>
+<p style="margin:10px auto;padding:0px;">由于没有post请求，所以这个页面大家就简单的乐呵乐呵就好了，反正下个页面跟这个页面没什么太大关系.......</p>
+<h4 style="margin:10px 0px;padding:0px;color:#333333;">(3)主页搭建</h4>
+<p style="margin:10px auto;padding:0px;">主页就是一个Tabbar界面，目前考虑先有三个模块!,日后再考虑删减，嗯，就是这么任性！</p>
+<p style="margin:10px auto;padding:0px;">一个是推送的文章模块，一个是搜索模块，最后的是设置模块。</p>
+<p style="margin:10px auto;padding:0px;">咱们先看文章模块主页面</p>
+<div class="cnblogs_code" style="margin:5px 0px;padding:5px;background-color:#f5f5f5;border:1px solid #cccccc;overflow:auto;color:#000000;font-family:&quot;Courier New&quot; !important;font-size:12px !important;"><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#6466b3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;max-width:900px;border:none !important;" /></a></span></div>
+<pre style="margin-top:0px;margin-bottom:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New' !important;"><span style="margin:0px;padding:0px;line-height:1.5 !important;">cellRow(data) {
+      </span><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">return</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"> (
+          </span>&lt;View style={styles.cellStyle}&gt;
+            &lt;Image style={{width:WIDTH-40, height: 100<span style="margin:0px;padding:0px;line-height:1.5 !important;">}}
+                   source</span>=<span style="margin:0px;padding:0px;line-height:1.5 !important;">{{uri: data.pic}}
+            </span>/&gt;
+            &lt;Text style={styles.title}&gt;{data.excerpt}&lt;/Text&gt;
+          &lt;/View&gt;<span style="margin:0px;padding:0px;line-height:1.5 !important;">      );
+  }
+
+  render() {
+    </span><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">return</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"> (
+      </span>&lt;View style={styles.container}&gt;
+        &lt;NavBar name='看知乎'/&gt;
+        &lt;<span style="margin:0px;padding:0px;line-height:1.5 !important;">ListView
+            initiaListSize</span>={1<span style="margin:0px;padding:0px;line-height:1.5 !important;">}
+            onEndReachedThreshold</span>={10<span style="margin:0px;padding:0px;line-height:1.5 !important;">}
+            dataSource</span>={<span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">.state.dataSource}
+            renderRow</span>={<span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span>.cellRow.bind(<span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">)}
+            style</span>=<span style="margin:0px;padding:0px;line-height:1.5 !important;">{styles.listView}
+        </span>/&gt;
+      &lt;/View&gt;<span style="margin:0px;padding:0px;line-height:1.5 !important;">    );
+  }</span></pre><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#6466b3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;max-width:900px;border:none !important;" /></a></span></div>
+</div>
+<p style="margin:10px auto;padding:0px;">这是我们的ListView页面的代码，只是简单的抓取看知乎的一个接口页面，</p>
+<p style="margin:10px auto;padding:0px;">怎么实现数据同步呢？</p>
+<p style="margin:10px auto;padding:0px;">这就要说到组件的生命周期了：一般来说，一个组件类由&nbsp;<code style="margin:0px;padding:0px;">extends Component</code>&nbsp;创建，并且提供一个&nbsp;<code style="margin:0px;padding:0px;">render</code>&nbsp;方法以及其他可选的生命周期函数、组件相关的事件或方法来定义。</p>
+<p style="margin:10px auto;padding:0px;">咱们这里简单说一下生命周期函数</p>
+<p class="comments-section" style="margin:10px auto;padding:0px;"><code style="margin:0px;padding:0px;">componentWillMount：只会在装载之前调用一次，在&nbsp;<code style="margin:0px;padding:0px;">render</code>&nbsp;之前调用</code></p>
+<p style="margin:10px auto;padding:0px;">componentDidMount：只会在装载完成之后调用一次，在&nbsp;<code style="margin:0px;padding:0px;">render</code>&nbsp;之后调用</p>
+<p style="margin:10px auto;padding:0px;"><code style="margin:0px;padding:0px;">componentWillUnmount： 卸载组件时调用,</code></p>
+<p class="hljs lisp" style="margin:10px auto;padding:0px;"><code class="lisp" style="margin:0px;padding:0px;">constructor<span class="hljs-list" style="margin:0px;padding:0px;">(<span class="hljs-keyword" style="margin:0px;padding:0px;color:#0000ff;">props, context)：构造函数，在创建组件的时候调用一次</span></span></code></p>
+<p class="hljs lisp" style="margin:10px auto;padding:0px;"><span class="hljs-list" style="margin:0px;padding:0px;"><span class="hljs-keyword" style="margin:0px;padding:0px;color:#0000ff;">目前使用的也就这几个，当然声明周期所调用的函数不仅仅这几个，这些咱们日后再讲。</span></span></p>
+<p style="margin:10px auto;padding:0px;">在这里，我们简单的用到了componentDidMount,</p>
+<p style="margin:10px auto;padding:0px;">首先var GET_URL = 'http://api.kanzhihu.com/getposts';</p>
+<p style="margin:10px auto;padding:0px;">然后在listView页面定义数据解析方法</p>
+<p style="margin:10px auto;padding:0px;">componentDidMount(){<br style="margin:0px;padding:0px;" />
+this.fetchData();<br style="margin:0px;padding:0px;" />
+}</p>
+<p style="margin:10px auto;padding:0px;">实现：</p>
+<div class="cnblogs_code" style="margin:5px 0px;padding:5px;background-color:#f5f5f5;border:1px solid #cccccc;overflow:auto;color:#000000;font-family:&quot;Courier New&quot; !important;font-size:12px !important;"><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#6466b3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;max-width:900px;border:none !important;" /></a></span></div>
+<pre style="margin-top:0px;margin-bottom:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New' !important;"><span style="margin:0px;padding:0px;line-height:1.5 !important;">fetchData(){
+fetch(GET_URL)</span><span style="margin:0px;padding:0px;color:#008000;line-height:1.5 !important;">//</span><span style="margin:0px;padding:0px;color:#008000;line-height:1.5 !important;">ES6的写法左边代表输入的参数右边是逻辑处理和返回结果</span> .then((response) =&gt;<span style="margin:0px;padding:0px;line-height:1.5 !important;"> response.json())
+.then((responseData) </span>=&gt;<span style="margin:0px;padding:0px;line-height:1.5 !important;"> {</span><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">.setState({
+dataSource : </span><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">.state.dataSource.cloneWithRows(responseData.posts),
+});
+})
+.done();
+}</span></pre><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#6466b3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;max-width:900px;border:none !important;" /></a></span></div>
+</div>
+<p style="margin:10px auto;padding:0px;">&nbsp;</p>
+<p style="margin:10px auto;padding:0px;">constructor(props) {<br style="margin:0px;padding:0px;" />
+super(props);<br style="margin:0px;padding:0px;" />
+//state内部维护的一个状态，我们刚开始进来的为空，来加载空的view<br style="margin:0px;padding:0px;" />
+this.state = {<br style="margin:0px;padding:0px;" />
+dataSource: new ListView.DataSource({<br style="margin:0px;padding:0px;" />
+rowHasChanged: (row1, row2) =&gt; row1 !== row2,<br style="margin:0px;padding:0px;" />
+}),<br style="margin:0px;padding:0px;" />
+};<br style="margin:0px;padding:0px;" />
+}</p>
+<p style="margin:10px auto;padding:0px;">，然后根据上面的RowData就可以实现下面的页面效果</p>
+<p style="margin:10px auto;padding:0px;">1.<img src="http://images2015.cnblogs.com/blog/820858/201609/820858-20160924140934090-26561628.png" alt="" width="297" height="529" style="margin:0px;padding:0px;border:0px;max-width:900px;" />2.<img src="http://images2015.cnblogs.com/blog/820858/201609/820858-20160924141043184-784606827.png" alt="" width="297" height="528" style="margin:0px;padding:0px;border:0px;max-width:900px;" /></p>
+<p style="margin:10px auto;padding:0px;">图1就是咱们搭建的主页，图2是详细页。</p>
+<p style="margin:10px auto;padding:0px;">图1和图2实现原理是相同的，都是用listView来搭建页面，那么如何来传值呢？</p>
+<p style="margin:10px auto;padding:0px;">Nav 有个属性renderScene 回调方法有两个参数route和navigator。</p>
+<p style="margin:10px auto;padding:0px;">大家还记得{...route.params}吧，</p>
+<p style="margin:10px auto;padding:0px;">咱们需要做的就是在第一个页面push到第二个页面的时候这样写，</p>
+<div class="cnblogs_code" style="margin:5px 0px;padding:5px;background-color:#f5f5f5;border:1px solid #cccccc;overflow:auto;color:#000000;font-family:&quot;Courier New&quot; !important;font-size:12px !important;"><pre style="margin-top:0px;margin-bottom:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New' !important;"><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">.props.navigator.push({
+component:Detail,
+params:{nextdata: rowdata},
+})</span></pre></div>
+<p style="margin:10px auto;padding:0px;">第二个页面直接写this.props.nextdata就可以调用传过去的rowdata了，那么第二个页面实现起来还难吗？这里就不在多说了，</p>
+<p style="margin:10px auto;padding:0px;"><span style="margin:0px;padding:0px;background-color:#ff0000;">ps:大家可以想一下renderRow={this.cellRow.bind(this)}为什么要这么写？当初renderRow={this.cellRow()}不也可以吗？</span></p>
+<h4 style="margin:10px 0px;padding:0px;color:#333333;">(4)搜索页搭建</h4>
+<p style="margin:10px auto;padding:0px;">咱么先来看图吧，这个模块暂时实现了两个页面的功能，以后慢慢添加，不着急....</p>
+<p style="margin:10px auto;padding:0px;"><img src="http://images2015.cnblogs.com/blog/820858/201609/820858-20160924142234949-1773104778.png" alt="" width="146" height="259" style="margin:0px;padding:0px;border:0px;max-width:900px;" /><img src="http://images2015.cnblogs.com/blog/820858/201609/820858-20160924142335090-388082733.png" alt="" width="146" height="259" style="margin:0px;padding:0px;border:0px;max-width:900px;" /></p>
+<p style="margin:10px auto;padding:0px;">这就是那两个页面，也非常简单，我就把思路说一下，大家可以想着做就行了，程序猿嘛，多动脑还是很好的!,一看就知道，搜索页就是几个简单的UI，然后出发几个方法，这里我是在搜索页把接口传到下一页了，这个其实不推荐，主要是我为了省代码，并且搜索名称和排行榜搜索的接口不太一样，大家理解就行，</p>
+<p style="margin:10px auto;padding:0px;">首先，搜索框这里我用了textinput来代替，其实功能也是一样的。点击放大镜，把输入框里的内容拼接到接口上，传到下一页，下一页直接用收到的接口解析就可以了，那么怎么得到textinput里面的值呢？</p>
+<p style="margin:10px auto;padding:0px;">来看代码</p>
+<div class="cnblogs_code" style="margin:5px 0px;padding:5px;background-color:#f5f5f5;border:1px solid #cccccc;overflow:auto;color:#000000;font-family:&quot;Courier New&quot; !important;font-size:12px !important;"><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#6466b3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;max-width:900px;border:none !important;" /></a></span></div>
+<pre style="margin-top:0px;margin-bottom:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New' !important;">&lt;<span style="margin:0px;padding:0px;line-height:1.5 !important;">TextInput
+            style</span>=<span style="margin:0px;padding:0px;line-height:1.5 !important;">{styles.inputStyle}
+            placeholder</span>="请输入搜索条件!"<span style="margin:0px;padding:0px;line-height:1.5 !important;">             onChangeText</span>={(text) =&gt; <span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">.setState({text})}
+  </span>/&gt;<span style="margin:0px;padding:0px;line-height:1.5 !important;"> constructor(props) {
+    super(props);
+    </span><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span>.state = {text: ''<span style="margin:0px;padding:0px;line-height:1.5 !important;">};
+  }
+  searchUser(){
+    console.log(</span><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">this</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">.state.text);</span></pre><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#6466b3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;max-width:900px;border:none !important;" /></a></span></div>
+</div>
+<p style="margin:10px auto;padding:0px;">看过文档的朋友应该都知道onChangeText的作用是干嘛的，我也不多说，那么列表页也如同前几个页面一样，一通则百通。</p>
+<h3 style="margin:10px 0px;padding:0px;font-size:16px;line-height:1.5;">3.最后</h3>
+<p style="margin:10px auto;padding:0px;">把完整的gif图放给大家 😁O(∩_∩)O哈哈O(∩_∩)O哈哈~</p>
+<p style="margin:10px auto;padding:0px;"><img src="http://images2015.cnblogs.com/blog/820858/201609/820858-20160924143501090-932158618.gif" alt="" width="162" height="301" style="margin:0px;padding:0px;border:0px;max-width:900px;" /></p>
+<h3 style="margin:10px 0px;padding:0px;font-size:16px;line-height:1.5;">4.总结</h3>
+<p style="margin:10px auto;padding:0px;">其实这些都非常简单，从头到尾都没用太难的东西，从登录页开始，咱么搭建了账号和密码的输入框，以及头像和登录按钮，这些基础的UI对大家来说肯定不是问题，对新手来说应该问题也不大，使用控件，设置一下属性，控制一下位置，这个页面一点数据都没有用到。接下来进入首页，通过组件生命周期函数，咱么解析下来的数据绑定到ListView上面，然后在把需要的字段传递到下一页，下一页通过拼接的接口解析数据，展现给大家，中间还加了一个WebView，因为具体的接口没有，所以暂时就通过查询到的数据直接把网页展现给大家，item图标暂时也没有换，这个App暂时只有这些，缺失的东西以后慢慢添加，功能模块也慢慢添加，这里大概的框架也给大家分享了，大家可以自由发挥....另外代码有些需要简化修改，这些我会慢慢来，</p>
+<p style="margin:10px auto;padding:0px;">这里我把github上的源码地址给大家分享一下，也欢迎大家指出有错误的地方，共同学习，努力提高！</p>
+<p style="margin:10px auto;padding:0px;">Demon404的github：<a href="https://github.com/Demon404/KZHApp" target="_blank" style="margin:0px;padding:0px;color:#6466b3;">https://github.com/Demon404/KZHApp</a></p>
+<p style="margin:10px auto;padding:0px;">&nbsp;由于引入了react-native-tab-navigator，所以一定要加上去才能运行</p>
+<p style="margin:10px auto;padding:0px;">install react-native-tab-navigator --save,</p>
+</div>
+</div></body></html>

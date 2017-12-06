@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-15T03:19:17Z"/><meta name="updated" content="2017-05-15T03:20:02Z"/><title>Redis与Memcache的区别</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>Redis与Memcache的区别</div>
+<div>数据类型：</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; 　　 redis数据类型丰富，支持set liset等类型</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;　　memcache支持简单数据类型，需要客户端自己处理复杂对象</div>
+<div>持久性：</div>
+<div>　　　　　redis支持数据落地持久化存储</div>
+<div>　　　　 &nbsp; memcache不支持数据持久存储</div>
+<div>分布式存储：</div>
+<div>　　　　 &nbsp; redis支持master-slave复制模式</div>
+<div>　　　　 &nbsp; memcache可以使用一致性hash做分布式</div>
+<div>value大小不同：</div>
+<div>　　　　 &nbsp; memcache是一个内存缓存，key的长度小于250字符，单个item存储要小于1M，<span class="Apple-tab-span" style="white-space:pre;">	</span>不适合虚拟机使用</div>
+<div>数据一致性不同：</div>
+<div>　　　　 &nbsp;redis使用的是单线程模型，保证了数据按顺序提交。</div>
+<div>　　　　　memcache需要使用cas保证数据一致性。CAS（Check and Set）是一个确保并发<span class="Apple-tab-span" style="white-space:pre;">	</span>一致性的机制，属于“乐观锁”范畴；原理很简单：拿版本号，操作，对比版本号，<span class="Apple-tab-span" style="white-space:pre;">	</span>如果一致就操作，不一致就放弃任何操作</div>
+<div>cpu利用：</div>
+<div>　　　　 &nbsp; redis单线程模型只能使用一个cpu，可以开启多个redis进程</div></body></html>

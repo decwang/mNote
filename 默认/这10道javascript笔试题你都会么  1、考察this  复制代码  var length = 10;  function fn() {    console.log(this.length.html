@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-07-13T04:11:44Z"/><meta name="updated" content="2017-07-13T04:11:46Z"/><title>这10道javascript笔试题你都会么  1、考察this  复制代码  var length = 10;  function fn() {    console.log(this.length</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>这10道javascript笔试题你都会么</div>
+<div>1、考察this</div>
+<div>复制代码</div>
+<div>var length = 10;</div>
+<div>function fn() {</div>
+<div>&nbsp; console.log(this.length);</div>
+<div>}</div>
+<div><br />
+</div>
+<div>var obj = {</div>
+<div>&nbsp; length: 5,</div>
+<div>&nbsp; method: function(fn) {</div>
+<div>&nbsp; &nbsp; fn();</div>
+<div>&nbsp; &nbsp; arguments[0]();</div>
+<div>&nbsp; }</div>
+<div>};</div>
+<div><br />
+</div>
+<div>obj.method(fn, 1);&nbsp;</div>
+<div>复制代码</div>
+<div>　　输出：10 2</div>
+<div><br />
+</div>
+<div>　　第一次输出10应该没有问题。我们知道取对象属于除了点操作符还可以用中括号，所以第二次执行时相当于arguments调用方法，this指向arguments，而这里传了两个参数，故输出arguments长度为2。</div>
+<div><br />
+</div>
+<div>2、var和函数的提前声明</div>
+<div>复制代码</div>
+<div>function fn(a) {</div>
+<div>&nbsp; console.log(a);&nbsp;</div>
+<div>&nbsp; var a = 2;</div>
+<div>&nbsp; function a() {}</div>
+<div>&nbsp; console.log(a);&nbsp;</div>
+<div>}</div>
+<div><br />
+</div>
+<div>fn(1);</div>
+<div>复制代码</div>
+<div>　　输出：function &nbsp;a() {} 2</div>
+<div><br />
+</div>
+<div>　　我们知道var和function是会提前声明的，而且function是优先于var声明的（如果同时存在的话），所以提前声明后输出的a是个function，然后代码往下执行a进行重新赋值了，故第二次输出是2。</div>
+<div><br />
+</div>
+<div>3、局部变量和全局变量</div>
+<div>复制代码</div>
+<div>var f = true;</div>
+<div>if (f === true) {</div>
+<div>&nbsp; var a = 10;</div>
+<div>}</div>
+<div><br />
+</div>
+<div>function fn() {</div>
+<div>&nbsp; var b = 20;</div>
+<div>&nbsp; c = 30;</div>
+<div>}</div>
+<div><br />
+</div>
+<div>fn();</div>
+<div>console.log(a);</div>
+<div>console.log(b);</div>
+<div>console.log(c);</div>
+<div>复制代码</div>
+<div>　　输出：10 报错 30　　</div>
+<div><br />
+</div>
+<div>　　这是个我犯了很久的错误，很长一段时间我都以为{...}内的新声明的变量是局部变量，后来我才发现function内的新声明的变量才是局部变量，而没有用var声明的变量在哪里都是全局变量。再次提醒切记只有function(){}内新声明的才能是局部变量，while{...}、if{...}、for(..) 之内的都是全局变量（除非本身包含在function内）。</div>
+<div><br />
+</div>
+<div>4、变量隐式声明</div>
+<div>if('a' in window) {</div>
+<div>&nbsp; var a = 10;</div>
+<div>}</div>
+<div><br />
+</div>
+<div>alert(a);</div>
+<div>　　答案：10</div>
+<div><br />
+</div>
+<div>　　前面我说过function和var会提前声明，而其实{...}内的变量也会提前声明。于是代码还没执行前，a变量已经被声明，于是 'a' in window 返回true，a被赋值。</div>
+<div><br />
+</div>
+<div>5、给基本类型数据添加属性，不报错，但取值时是undefined</div>
+<div>复制代码</div>
+<div>var a = 10;</div>
+<div>a.pro = 10;</div>
+<div>console.log(a.pro + a);</div>
+<div><br />
+</div>
+<div>var s = 'hello';</div>
+<div>s.pro = 'world';</div>
+<div>console.log(s.pro + s);</div>
+<div>复制代码</div>
+<div>　　答案：NaN undefinedhello&nbsp;</div>
+<div><br />
+</div>
+<div>　　给基本类型数据加属性不报错，但是引用的话返回undefined，10+undefined返回NaN，而undefined和string相加时转变成了字符串。</div>
+<div><br />
+</div>
+<div>6、函数声明优于变量声明</div>
+<div>console.log(typeof fn);</div>
+<div>function fn() {};</div>
+<div>var fn;</div>
+<div>　　答案：function</div>
+<div><br />
+</div>
+<div>　　因为函数声明优于变量声明。我们知道在代码逐行执行前，函数声明和变量声明会提前进行，而函数声明又会优于变量声明，这里的优于可以理解为晚于变量声明后，如果函数名和变量名相同，函数声明就能覆盖变量声明。所以以上代码将函数声明和变量声明调换顺序还是一样结果。</div>
+<div><br />
+</div>
+<div>7、判断一个字符串中出现次数最多的字符，并统计次数</div>
+<div>hash table方式：</div>
+<div>复制代码</div>
+<div>var s = 'aaabbbcccaaabbbaaa';</div>
+<div>var obj = {};</div>
+<div>var maxn = -1;</div>
+<div>var letter;</div>
+<div>for(var i = 0; i &lt; s.length; i++) {</div>
+<div>&nbsp; if(obj[s[i]]) {</div>
+<div>&nbsp; &nbsp; obj[s[i]]++;</div>
+<div>&nbsp; &nbsp; if(obj[s[i]] &gt; maxn) {</div>
+<div>&nbsp; &nbsp; &nbsp; maxn = obj[s[i]];</div>
+<div>&nbsp; &nbsp; &nbsp; letter = s[i];</div>
+<div>&nbsp; &nbsp; }</div>
+<div>&nbsp; } else {</div>
+<div>&nbsp; &nbsp; obj[s[i]] = 1;</div>
+<div>&nbsp; &nbsp; if(obj[s[i]] &gt; maxn) {</div>
+<div>&nbsp; &nbsp; &nbsp; maxn = obj[s[i]];</div>
+<div>&nbsp; &nbsp; &nbsp; letter = s[i];</div>
+<div>&nbsp; &nbsp; }</div>
+<div>&nbsp; }</div>
+<div>}</div>
+<div><br />
+</div>
+<div>alert(letter + ': ' + maxn);</div>
+<div>复制代码</div>
+<div>正则方式：</div>
+<div>复制代码</div>
+<div>var s = 'aaabbbcccaaabbbaaabbbbbbbbbb';</div>
+<div>var a = s.split('');</div>
+<div>a.sort();</div>
+<div>s = a.join('');</div>
+<div>var pattern = /(\w)\1*/g;</div>
+<div>var ans = s.match(pattern);</div>
+<div>ans.sort(function(a, b) {</div>
+<div>&nbsp; return a.length &lt; b.length;</div>
+<div>});;</div>
+<div>console.log(ans[0][0] + ': ' + ans[0].length);</div>
+<div>复制代码</div>
+<div>8、经典闭包</div>
+<div>复制代码</div>
+<div>&lt;!-- 实现一段脚本，使得点击对应链接alert出相应的编号 --&gt;</div>
+<div>&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;</div>
+<div>&lt;body&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第一个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第二个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第三个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第四个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&lt;/body&gt;</div>
+<div>复制代码</div>
+<div>dom污染法：</div>
+<div>复制代码</div>
+<div>&lt;!-- 实现一段脚本，使得点击对应链接alert出相应的编号 --&gt;</div>
+<div>&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;</div>
+<div>&lt;body&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第一个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第二个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第三个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第四个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;script type="text/javascript"&gt;</div>
+<div>&nbsp; &nbsp; var lis = document.links;</div>
+<div>&nbsp; &nbsp; for(var i = 0, length = lis.length; i &lt; length; i++) {</div>
+<div>&nbsp; &nbsp; &nbsp; lis[i].index = i;</div>
+<div>&nbsp; &nbsp; &nbsp; lis[i].onclick = function() {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; alert(this.index);</div>
+<div>&nbsp; &nbsp; &nbsp; };</div>
+<div>&nbsp; &nbsp; }</div>
+<div>&nbsp; &lt;/script&gt;</div>
+<div>&lt;/body&gt;</div>
+<div>复制代码</div>
+<div>闭包：</div>
+<div>复制代码</div>
+<div>&lt;!-- 实现一段脚本，使得点击对应链接alert出相应的编号 --&gt;</div>
+<div>&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;</div>
+<div>&lt;body&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第一个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第二个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第三个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;a href='#'&gt; 第四个链接 &lt;/a&gt; &lt;/br&gt;</div>
+<div>&nbsp; &lt;script type="text/javascript"&gt;</div>
+<div>&nbsp; &nbsp; var lis = document.links;</div>
+<div>&nbsp; &nbsp; for(var i = 0, length = lis.length; i &lt; length; i++) {</div>
+<div>&nbsp; &nbsp; &nbsp; (function(i) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; lis[i].onclick = function() {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; alert(i + 1);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; };</div>
+<div>&nbsp; &nbsp; &nbsp; })(i);&nbsp;</div>
+<div>&nbsp; &nbsp; }</div>
+<div>&nbsp; &lt;/script&gt;</div>
+<div>&lt;/body&gt;</div>
+<div>复制代码</div>
+<div>9、this</div>
+<div>复制代码</div>
+<div>function JSClass() {</div>
+<div>&nbsp; this.m_Text = 'division element';</div>
+<div>&nbsp; this.m_Element = document.createElement('div');</div>
+<div>&nbsp; this.m_Element.innerHTML = this.m_Text;</div>
+<div>&nbsp; this.m_Element.addEventListener('click', this.func);</div>
+<div>&nbsp; // this.m_Element.onclick = this.func;</div>
+<div>}</div>
+<div><br />
+</div>
+<div>JSClass.prototype.Render = function() {</div>
+<div>&nbsp; document.body.appendChild(this.m_Element);</div>
+<div>}</div>
+<div><br />
+</div>
+<div>JSClass.prototype.func = function() {</div>
+<div>&nbsp; alert(this.m_Text);</div>
+<div>};</div>
+<div><br />
+</div>
+<div>var jc = new JSClass();</div>
+<div>jc.Render(); &nbsp;// add div</div>
+<div>jc.func(); &nbsp;// 输出 division element</div>
+<div>//click添加的div元素division element会输出underfined，为什么？</div>
+<div>复制代码</div>
+<div>　　答案：division element undefined&nbsp;</div>
+<div><br />
+</div>
+<div>　　第一次输出很好理解，第二次的话仔细看，this其实已经指向了this.m_Element，因为是this.m_Element调用的addEventListener函数，所以内部的this全指向它了。可以试着加上一行代码this.m_Element.m_Text = 'hello world'，就会alert出hello world了。</div>
+<div><br />
+</div>
+<div>10、split</div>
+<div>　　请编写一个JavaScript函数 parseQueryString，它的用途是把URL参数解析为一个对象，如： var url = “http://witmax.cn/index.php?key0=0&amp;key1=1&amp;key2=2″</div>
+<div><br />
+</div>
+<div>复制代码</div>
+<div>function parseQueryString(url) {</div>
+<div>&nbsp; var obj = {};</div>
+<div>&nbsp; var a = url.split('?');</div>
+<div>&nbsp; if(a.length === 1) return obj;</div>
+<div>&nbsp; var b = a[1].split('&amp;');</div>
+<div>&nbsp; for(var i = 0, length = b.length; i &lt; length; i++) {</div>
+<div>&nbsp; &nbsp; var c = b[i].split('=');</div>
+<div>&nbsp; &nbsp; obj[c[0]] = c[1];</div>
+<div>&nbsp; }</div>
+<div>&nbsp; return obj;</div>
+<div>}</div>
+<div>var url = 'http://witmax.cn/index.php?key0=0&amp;key1=1&amp;key2=2';</div>
+<div>var obj = parseQueryString(url);</div>
+<div>console.log(obj.key0, obj.key1, obj.key2); &nbsp;// 0 1 2&nbsp;</div>
+<div>复制代码</div></body></html>

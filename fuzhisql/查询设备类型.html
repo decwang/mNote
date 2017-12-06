@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-31T08:51:44Z"/><meta name="updated" content="2017-05-31T08:51:56Z"/><title>查询设备类型</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>SELECT a.appbuildver,a.appver,FROM_UNIXTIME(a.CREATE_TIME) as create_time,b.uuid,b.os,b.channel,b.device,b.osver,b.brand,FROM_UNIXTIME(b.create_time) FROM device_startup_log a,device_info b where 1=1</div>
+<div>and a.device_id = b.id</div>
+<div>and a.user_id = 128314</div>
+<div>ORDER BY a.ID DESC</div>
+<div>limit 100</div>
+<div>;</div>
+<div>SELECT * FROM device_info LIMIT 10;</div>
+<div><br />
+</div>
+<div>SELECT COUNT(1) FROM DEVICE_INFO WHERE BRAND = 'Xiaomi'</div>
+<div>SELECT A.DEVICE,COUNT(1) CNT FROM device_info A&nbsp;</div>
+<div>WHERE 1=1&nbsp;</div>
+<div>#AND OS = 2</div>
+<div>GROUP BY A.device</div>
+<div>ORDER BY CNT DESC</div>
+<div>#LIMIT 20;</div>
+<div><br />
+</div>
+<div>#SELECT * FROM USER_INFO WHERE MOBILE = '15245873253';</div>
+<div>#SELECT * FROM USER_INFO WHERE MOBILE = '13845897994';</div>
+<div><br />
+</div>
+<div>bfa268a7-efe5-4d89-ac7d-9badade8c235</div></body></html>

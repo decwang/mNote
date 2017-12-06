@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-07-13T04:08:52Z"/><meta name="updated" content="2017-07-13T04:09:01Z"/><title>内存策略：堆内存和栈内存  栈内存：在函数中定义的一些基本类型的变量和对象的引用变量都是在函数的栈内存中分配。当在一段代码块中定义一个变量时，系统就在栈中为这个变量分配内存空间，当超过变量的作用域后</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>内存策略：堆内存和栈内存</div>
+<div>栈内存：在函数中定义的一些基本类型的变量和对象的引用变量都是在函数的栈内存中分配。当在一段代码块中定义一个变量时，系统就在栈中为这个变量分配内存空间，当超过变量的作用域后，系统会自动释放掉为该变量分配的内存空间，该内存空间可以立刻被另作他用。</div>
+<div><br />
+</div>
+<div>堆内存：堆内存用于存放由new创建的对象和数组。在堆中分配的内存，由虚拟机自动垃圾回收器来管理。在堆中产生了一个数组或者对象后，还可以在栈中定义一个特殊的变量，这个变量的取值等于数组或者对象在堆内存中的首地址，在栈中的这个特殊的变量就变成了数组或者对象的引用变量，以后就可以在程序中使用栈内存中的引用变量来访问堆中的数组或者对象，引用变量相当于为数组或者对象起的一个别名，或者代号。</div>
+<div><br />
+</div>
+<div>引用变量是普通变量，定义时在栈中分配内存，引用变量在程序运行到作用域外释放。而数组＆对象本身在堆中分配，即使程序运行到使用new产生数组和对象的语句所在地代码块之外，数组和对象本身占用的堆内存也不会被释放，数组和对象在没有引用变量指向它的时候，才变成垃圾，不能再被使用，但是仍然占着内存，在随后的一个不确定的时间被垃圾回收器释放掉。</div>
+<div><br />
+</div>
+<div>JAVASCRIPT的内存回收机制</div>
+<div><br />
+</div>
+<div>以Google的V8引擎为例，在V8引擎中所有的JAVASCRIPT对象都是通过堆来进行内存分配的。当我们在代码中声明变量并赋值时，V8引擎就会在堆内存中分配一部分给这个变量。如果已申请的内存不足以存储这个变量时，V8引擎就会继续申请内存，直到堆的大小达到了V8引擎的内存上限为止（默认情况下，V8引擎的堆内存的大小上限在64位系统中为1464MB，在32位系统中则为732MB）。</div>
+<div><br />
+</div>
+<div>另外，V8引擎对堆内存中的JAVASCRIPT对象进行分代管理。新生代：新生代即存活周期较短的JAVASCRIPT对象，如临时变量、字符串等；</div>
+<div>老生代：老生代则为经过多次垃圾回收仍然存活，存活周期较长的对象，如主控制器、服务器对象等。</div>
+<div><br />
+</div>
+<div>垃圾回收算法</div>
+<div>垃圾回收算法一直是编程语言的研发中是否重要的一环，而V8引擎所使用的垃圾回收算法主要有以下几种。</div>
+<div>Scavange算法：通过复制的方式进行内存空间管理，主要用于新生代的内存空间；</div>
+<div><br />
+</div>
+<div>Mark-Sweep算法和Mark-Compact算法：通过标记来对堆内存进行整理和回收，主要用于老生代对象的检查和回收。</div>
+<div>对象进行回收。</div>
+<div><br />
+</div>
+<div>引用</div>
+<div><br />
+</div>
+<div>当函数执行完毕时，在函数内部所声明的对象不一定就会被销毁。</div>
+<div>引用(Reference)是JAVASCRIPT编程中十分重要的一个机制。</div>
+<div><br />
+</div>
+<div>是指代码对对象的访问这一抽象关系，它与C/C++的指针有点相似，但并非同物。引用同时也是JAVASCRIPT引擎在进行垃圾回收中最关键的一个机制。</div>
+<div><br />
+</div>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>var val = 'hello world';</div>
+<div>function foo() {</div>
+<div>return function() {</div>
+<div>return val;</div>
+<div>};</div>
+<div>}</div>
+<div>global.bar = foo();</div>
+<div>　　</div>
+<div><br />
+</div>
+<div>当代码执行完毕时，对象val和bar()并没有被回收释放，JAVASCRIPT代码中，每个变量作为单独一行而不做任何操作，JAVASCRIPT引擎都会认为这是对对象的访问行为，存在了对对象的引用。为了保证垃圾回收的行为不影响程序逻辑的运行，JAVASCRIPT引擎不会把正在使用的对象进行回收。所以判断对象是否正在使用中的标准，就是是否仍然存在对该对象的引用。</div>
+<div>JAVASCRIPT的引用是可以进行转移的，那么就有可能出现某些引用被带到了全局作用域，但事实上在业务逻辑里已经不需要对其进行访问了，这个时候就应该被回收，但是JAVASCRIPT引擎仍会认为程序仍然需要它。</div>
+<div><br />
+</div>
+<div>IE下闭包引起跨页面内存泄露</div>
+<div>JAVASCRIPT的内存泄露处理</div>
+<div><br />
+</div>
+<div>1、给DOM对象添加的属性是一个对象的引用。</div>
+<div><br />
+</div>
+<div>1</div>
+<div>2</div>
+<div>var MyObject = {};</div>
+<div>document.getElementByIdx_x('myDiv').myProp = MyObject;</div>
+<div><br />
+</div>
+<div>解决方法：在window.onunload事件中写上:</div>
+<div><br />
+</div>
+<div>1</div>
+<div>document.getElementByIdx_x('myDiv').myProp = null;</div>
+<div>　　</div>
+<div><br />
+</div>
+<div>2、DOM对象与JS对象相互引用。</div>
+<div><br />
+</div>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>function Encapsulator(element) {</div>
+<div>this.elementReference = element;</div>
+<div>element.myProp = this;</div>
+<div>}</div>
+<div>new Encapsulator(document.getElementByIdx_x('myDiv'));</div>
+<div><br />
+</div>
+<div>解决方法：在onunload事件中写上:</div>
+<div><br />
+</div>
+<div>1</div>
+<div>document.getElementByIdx_x('myDiv').myProp = null;</div>
+<div>&nbsp;</div>
+<div><br />
+</div>
+<div>3、给DOM对象用attachEvent绑定事件。</div>
+<div><br />
+</div>
+<div>1</div>
+<div>2</div>
+<div>function doClick() {}</div>
+<div>element.attachEvent("onclick", doClick);</div>
+<div><br />
+</div>
+<div>解决方法：在onunload事件中写上:</div>
+<div><br />
+</div>
+<div>1</div>
+<div>element.detachEvent('onclick', doClick);</div>
+<div>　</div>
+<div><br />
+</div>
+<div>4、从外到内执行appendChild。这时即使调用removeChild也无法释放。</div>
+<div><br />
+</div>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>var parentDiv = document.createElement_x("div");</div>
+<div>var childDiv = document.createElement_x("div");</div>
+<div>document.body.appendChild(parentDiv);</div>
+<div>parentDiv.appendChild(childDiv);</div>
+<div>　　</div>
+<div><br />
+</div>
+<div>解决方法：从内到外执行appendChild:</div>
+<div><br />
+</div>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>var parentDiv = document.createElement_x("div");</div>
+<div>var childDiv = document.createElement_x("div");</div>
+<div>parentDiv.appendChild(childDiv);</div>
+<div>document.body.appendChild(parentDiv);</div>
+<div>　　</div>
+<div><br />
+</div>
+<div>5、反复重写同一个属性会造成内存大量占用(但关闭IE后内存会被释放)。</div>
+<div><br />
+</div>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>for(i = 0; i &lt; 5000; i++) {</div>
+<div>hostElement.text = "asdfasdfasdf";</div>
+<div>}</div>
+<div><br />
+</div>
+<div>这种方式相当于定义了5000个属性，解决方法：无。</div>
+<div><br />
+</div>
+<div>&nbsp;</div>
+<div><br />
+</div>
+<div>内存不是缓存。</div>
+<div>不要轻易将内存当作缓存使用。</div>
+<div><br />
+</div>
+<div>如果是很重要的资源，请不要直接放在内存中，或者制定过期机制，自动销毁过期缓存。</div>
+<div><br />
+</div>
+<div>CollectGarbage。</div>
+<div>CollectGarbage是IE的一个特有属性,用于释放内存的使用方法,将该变量或引用对象设置为null或delete然后在进行释放动作，在做CollectGarbage前,要必需清楚的两个必备条件:（引用）。</div>
+<div>1、一个对象在其生存的上下文环境之外，即会失效。</div>
+<div>2、一个全局的对象在没有被执用(引用)的情况下，即会失效</div></body></html>

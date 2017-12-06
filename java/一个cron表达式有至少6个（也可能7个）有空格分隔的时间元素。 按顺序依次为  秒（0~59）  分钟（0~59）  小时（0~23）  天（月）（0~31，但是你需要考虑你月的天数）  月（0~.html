@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-06-13T07:14:53Z"/><meta name="updated" content="2017-06-13T07:15:03Z"/><title>一个cron表达式有至少6个（也可能7个）有空格分隔的时间元素。 按顺序依次为  秒（0~59）  分钟（0~59）  小时（0~23）  天（月）（0~31，但是你需要考虑你月的天数）  月（0~</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><span style="font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:25.2px;">一个cron表达式有至少6个（也可能7个）有空格分隔的时间元素。</span><br style="font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:25.2px;" />
+<h4 class="TextColor1" style="margin:0px;padding:0px;font-size:1.15em;line-height:1.3em;font-family:Helvetica, Tahoma, Arial, sans-serif;"><a name="t0" target="_blank" style="color:#ca0000;"></a>按顺序依次为</h4>
+<h4 class="TextColor1" style="margin:0px;padding:0px;font-size:1.15em;line-height:1.3em;font-family:Helvetica, Tahoma, Arial, sans-serif;"><a name="t1" target="_blank" style="color:#ca0000;"></a>秒（0~59）</h4>
+<div style="font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:25.2px;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">分钟（0~59）</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">小时（0~23）</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">天（月）（0~31，但是你需要考虑你月的天数）</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">月（0~11）</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">天（星期）（1~7 1=SUN 或 SUN，MON，TUE，WED，THU，FRI，SAT）</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7.年份（1970－2099）<br />
+<br />
+其中每个元素可以是一个值(如6),一个连续区间(9-12),一个间隔时间(8-18/4)(/表示每隔4小时),一个列表(1,3,5),通配符。由于"月份中的日期"和"星期中的日期"这两个元素互斥的,必须要对其中一个设置?.</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">0 0 10,14,16 * * ? 每天上午10点，下午2点，4点<br />
+0 0/30 9-17 * * ?&nbsp;&nbsp; 朝九晚五工作时间内每半小时<br />
+0 0 12 ? * WED 表示每个星期三中午12点&nbsp;<br />
+"0&nbsp;0&nbsp;12&nbsp;*&nbsp;*&nbsp;?"&nbsp;每天中午12点触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;?&nbsp;*&nbsp;*"&nbsp;每天上午10:15触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;*&nbsp;*&nbsp;?"&nbsp;每天上午10:15触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;*&nbsp;*&nbsp;?&nbsp;*"&nbsp;每天上午10:15触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;*&nbsp;*&nbsp;?&nbsp;2005"&nbsp;2005年的每天上午10:15触发&nbsp;<br />
+"0&nbsp;*&nbsp;14&nbsp;*&nbsp;*&nbsp;?"&nbsp;在每天下午2点到下午2:59期间的每1分钟触发&nbsp;<br />
+"0&nbsp;0/5&nbsp;14&nbsp;*&nbsp;*&nbsp;?"&nbsp;在每天下午2点到下午2:55期间的每5分钟触发&nbsp;<br />
+"0&nbsp;0/5&nbsp;14,18&nbsp;*&nbsp;*&nbsp;?"&nbsp;在每天下午2点到2:55期间和下午6点到6:55期间的每5分钟触发&nbsp;<br />
+"0&nbsp;0-5&nbsp;14&nbsp;*&nbsp;*&nbsp;?"&nbsp;在每天下午2点到下午2:05期间的每1分钟触发&nbsp;<br />
+"0&nbsp;10,44&nbsp;14&nbsp;?&nbsp;3&nbsp;WED"&nbsp;每年三月的星期三的下午2:10和2:44触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;?&nbsp;*&nbsp;MON-FRI"&nbsp;周一至周五的上午10:15触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;15&nbsp;*&nbsp;?"&nbsp;每月15日上午10:15触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;L&nbsp;*&nbsp;?"&nbsp;每月最后一日的上午10:15触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;?&nbsp;*&nbsp;6L"&nbsp;每月的最后一个星期五上午10:15触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;?&nbsp;*&nbsp;6L&nbsp;2002-2005"&nbsp;2002年至2005年的每月的最后一个星期五上午10:15触发&nbsp;<br />
+"0&nbsp;15&nbsp;10&nbsp;?&nbsp;*&nbsp;6#3"&nbsp;每月的第三个星期五上午10:15触发&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">有些子表达式能包含一些范围或列表</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">例如：子表达式（<strong>天（星期）</strong>）可以为 “MON-FRI”，“MON，WED，FRI”，“MON-WED,SAT”</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">“*”字符代表所有可能的值</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">因此，“*”在子表达式（<strong>月</strong>）里表示每个月的含义，“*”在子表达式（<strong>天（星期）</strong>）表示星期的每一天</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">“/”字符用来指定数值的增量</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">例如：在子表达式（分钟）里的“0/15”表示从第0分钟开始，每15分钟</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; 在子表达式（分钟）里的“3/20”表示从第3分钟开始，每20分钟（它和“3，23，43”）的含义一样</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><br />
+“？”字符仅被用于天（月）和天（星期）两个子表达式，表示不指定值</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">当2个子表达式其中之一被指定了值以后，为了避免冲突，需要将另一个子表达式的值设为“？”</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">“L” 字符仅被用于天（月）和天（星期）两个子表达式，它是单词“last”的缩写</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">但是它在两个子表达式里的含义是不同的。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">在天（月）子表达式中，“L”表示一个月的最后一天</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">在天（星期）自表达式中，“L”表示一个星期的最后一天，也就是SAT</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">如果在“L”前有具体的内容，它就具有其他的含义了</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">例如：“6L”表示这个月的倒数第６天，“ＦＲＩＬ”表示这个月的最一个星期五</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">注意：在使用“L”参数时，不要指定列表或范围，因为这会导致问题</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+字段 &nbsp; 允许值 &nbsp; 允许的特殊字符<table cellspacing="8"><tbody><tr></tr>
+<tr><td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">秒</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">0-59</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">, - * /</code></td>
+</tr>
+<tr><td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">分</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">0-59</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">, - * /</code></td>
+</tr>
+<tr><td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">小时</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">0-23</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">, - * /</code></td>
+</tr>
+<tr><td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">日期</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">1-31</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">, - * ? / L W C</code></td>
+</tr>
+<tr><td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">月份</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">1-12&nbsp;或者 JAN-DEC</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">, - * /</code></td>
+</tr>
+<tr><td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">星期</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">1-7&nbsp;或者 SUN-SAT</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">, - * ? / L C #</code></td>
+</tr>
+<tr><td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">年（可选）</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">留空, 1970-2099</code></td>
+<td style="font-size:1em;">&nbsp;</td>
+<td style="font-size:1em;"><code style="font-family:'Courier New', Courier, monospace;font-size:1em;white-space:pre;">, - * /</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:25.2px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:25.2px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:25.2px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Helvetica, Tahoma, Arial, sans-serif;line-height:25.2px;">http://biaoming.iteye.com/blog/39532</p></body></html>

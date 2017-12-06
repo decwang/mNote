@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-02-08T10:40:13Z"/><meta name="updated" content="2017-02-08T10:40:15Z"/><title> x-requested-with 请求头 区分ajax请求还是普通请求    2014-03-09 10:12 6347人阅读 评论(0) 收藏 举报    在服务器端判断request来自Aja</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';orphans:2;widows:2;">&nbsp;<h1 style="margin:0px;padding:0px;display:inline;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-weight:normal;font-size:20px;line-height:30px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/zhangdaiscott/article/details/20832747" style="color:#000000;text-decoration:none;">x-requested-with 请求头 区分ajax请求还是普通请求</a></span></h1>
+</div>
+<div class="article_manage clearfix" style="padding:0px 20px 5px;color:#999999;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;margin:0px -20px;overflow:hidden;orphans:2;widows:2;"><div class="article_r"><span class="link_postdate" style="margin:0px 5px 0px 0px;">2014-03-09 10:12</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_view.png&quot;) left center no-repeat;">6347人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background:url(&quot;../../../images/ico_comm.png&quot;) left center no-repeat;"><a href="http://blog.csdn.net/zhangdaiscott/article/details/20832747#comments" style="color:#336699;text-decoration:none;">评论</a>(0)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 5px;"><a title="收藏" target="_blank" style="color:#336699;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/zhangdaiscott/article/details/20832747#report" title="举报" style="color:#336699;text-decoration:none;">举报</a></span></div>
+</div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:26px;font-family:Arial;color:#333333;orphans:2;widows:2;"><p>在服务器端判断request来自Ajax请求(异步)还是传统请求(同步)：</p>
+<p>　　两种请求在请求的Header不同，Ajax 异步请求比传统的同步请求多了一个头参数</p>
+<p>　　1、传统同步请求参数</p>
+<p>　　　 accept&nbsp; text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8<br />
+　　　 accept-charset&nbsp; gb2312,utf-8;q=0.7,*;q=0.7<br />
+　　　 accept-encoding&nbsp; gzip,deflate<br />
+　　　 accept-language&nbsp; zh-cn,zh;q=0.5<br />
+　　　 cache-control&nbsp; max-age=0<br />
+　　　 connection&nbsp; keep-alive<br />
+　　　 cookie&nbsp; JSESSIONID=1A3BED3F593EA9747C9FDA16D309AF6B<br />
+　　　 host&nbsp; 192.168.101.72:8080<br />
+　　　 keep-alive&nbsp; 300<br />
+　　　 referer&nbsp;&nbsp;<a target="_blank" href="http://192.168.101.72:8080/htfsweb/spring_security_login" style="color:#336699;text-decoration:none;">XXX</a></p>
+<p>　　　 user-agent&nbsp; Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.0.15) Gecko/2009101601 Firefox/3.0.15 (.NET CLR 3.5.30729)</p>
+<p>&nbsp;</p>
+<p>　　2、Ajax 异步请求方式</p>
+<p>　　　 accept&nbsp; */*<br />
+　　　 accept-language&nbsp; zh-cn<br />
+　　　 referer&nbsp;&nbsp;<a target="_blank" href="http://192.168.101.72:8080/scm/?token=3b194bff23bf6acecea5661ac8e14c51" style="color:#336699;text-decoration:none;">xxx</a></p>
+<p>　　　&nbsp;<span style="color:#cc0000;">x-requested-with&nbsp; XMLHttpRequest&nbsp; //表明是AJax异步</span><br />
+　　　 content-type&nbsp; application/x-www-form-urlencoded,text/javascript<br />
+　　　 accept-encoding&nbsp; gzip, deflate<br />
+　　　 user-agent&nbsp; Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; QQDownload 598; .NET CLR 2.0.50727; .NET CLR 3.0.04506.648; .NET CLR 3.5.21022; CIBA; .NET CLR 1.1.4322; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; InfoPath.1)<br />
+　　　 host&nbsp; 192.168.101.72:8080<br />
+　　　 content-length&nbsp; 233<br />
+　　　 connection&nbsp; Keep-Alive<br />
+　　　 cache-control&nbsp; no-cache<br />
+　　　 cookie&nbsp; CSS=undefined; JSESSIONID=1B9AC25036290F7FB6823CCE1A24E541</p>
+<p>&nbsp;</p>
+<p>　　可以看到 Ajax 请求多了个 x-requested-with&nbsp;，可以利用它，<span style="color:#990066;">request.getHeader("x-requested-with"); 为 null，则为传统同步请求，为 XMLHttpRequest，则为 Ajax 异步请求。</span></p>
+</div></body></html>

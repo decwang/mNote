@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-10-11T01:41:16Z"/><meta name="updated" content="2016-10-11T01:41:19Z"/><title> iOS应用程序生命周期(前后台切换,应用的各种状态)详解     标签： ios应用程序生命周期详解iphone  2013-10-14 13:41 460人阅读 评论(0) 收藏 举报     </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';">&nbsp;<h1 style="margin:0px;padding:0px;display:inline;font-weight:normal;font-size:20px;line-height:30px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/lianbaixue/article/details/12708133" style="color:#333333;text-decoration:none;">iOS应用程序生命周期(前后台切换,应用的各种状态)详解&nbsp;</a></span></h1>
+</div>
+<div class="article_manage clearfix" style="padding:0px 20px 5px;color:#999999;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#ededed;margin:0px -20px;overflow:hidden;"><div class="article_l" style="width:946px;float:left;"><span class="link_categories" style="margin:0px 5px;float:left;">标签：&nbsp;<a href="http://www.csdn.net/tag/ios" target="_blank" style="color:#ff9900;text-decoration:none;display:inline-block;margin-right:10px;">ios</a><a href="http://www.csdn.net/tag/%e5%ba%94%e7%94%a8%e7%a8%8b%e5%ba%8f" target="_blank" style="color:#ff9900;text-decoration:none;display:inline-block;margin-right:10px;">应用程序</a><a href="http://www.csdn.net/tag/%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f" target="_blank" style="color:#ff9900;text-decoration:none;display:inline-block;margin-right:10px;">生命周期</a><a href="http://www.csdn.net/tag/%e8%af%a6%e8%a7%a3" target="_blank" style="color:#ff9900;text-decoration:none;display:inline-block;margin-right:10px;">详解</a><a href="http://www.csdn.net/tag/iphone" target="_blank" style="color:#ff9900;text-decoration:none;display:inline-block;margin-right:10px;">iphone</a></span></div>
+<div class="article_r"><span class="link_postdate" style="margin:0px 5px 0px 0px;">2013-10-14 13:41</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_view.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;">460人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_comm.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;"><a href="http://blog.csdn.net/lianbaixue/article/details/12708133#comments" style="color:#ff9900;text-decoration:none;">评论</a>(0)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 5px;"><a title="收藏" style="color:#ff9900;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/lianbaixue/article/details/12708133#report" title="举报" style="color:#ff9900;text-decoration:none;">举报</a></span></div>
+</div>
+<div class="category clearfix" style="margin:0px -20px;border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#ededed;padding:5px 20px;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;"><div class="category_l" style="display:inline-block;font-size:14px;color:#333333;width:70px;float:left;line-height:28px;"><img src="http://static.blog.csdn.net/images/category_icon.jpg" style="border:none;vertical-align:middle;" />&nbsp;<span style="display:inline-block;vertical-align:middle;">分类：</span></div>
+<div class="category_r" style="display:inline-block;font-size:14px;color:#df3434;float:left;width:851.390625px;"><label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">ios 开发 学习历程（59）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label></div>
+</div>
+<div style="font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;clear:both;"></div>
+<div style="font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;border:1px solid #cccccc;background-color:#eeeeee;float:left;min-width:200px;padding:4px 10px;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;text-align:right;"><span style="float:left;">目录<a href="http://blog.csdn.net/lianbaixue/article/details/12708133#" title="系统根据文章中H1到H6标签自动生成文章目录" style="color:#ff9900;text-decoration:none;">(?)</a></span><a href="http://blog.csdn.net/lianbaixue/article/details/12708133#" title="展开" style="color:#ff9900;text-decoration:none;">[+]</a></p>
+</div>
+<div style="font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;clear:both;"></div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;line-height:26px;font-family:Arial;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">&nbsp;&nbsp;iOS的应用程序的生命周期，还有程序是运行在前台还是后台，应用程序各个状态的变换，这些对于开发者来说都是很重要的。 iOS系统的资源是有限的，应用程序在前台和在后台的状态是不一样的。在后台时，程序会受到系统的很多限制，这样可以提高电池的使用和用户体验。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">//开发app,我们要遵循apple公司的一些指导原则，原则如下：</p>
+<h2 style="margin:0px;padding:0px;line-height:26px;"><a name="t0" style="color:#ff9900;"></a><a target="_blank" name="t0" style="color:#ff9900;"></a>1、应用程序的状态</h2>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">状态如下：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">Not running &nbsp;未运行 &nbsp;程序没启动</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">Inactive &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;未激活 &nbsp; &nbsp; &nbsp; &nbsp;程序在前台运行，不过没有接收到事件。在没有事件处理情况下程序通常停留在这个状态</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">Active &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 激活 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 程序在前台运行而且接收到了事件。这也是前台的一个正常的模式</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">Backgroud &nbsp; &nbsp; 后台 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 程序在后台而且能执行代码，大多数程序进入这个状态后会在在这个状态上停留一会。时间到之后会进入挂起状态(Suspended)。有的程序经过特殊的请求后可以长期处于Backgroud状态</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">Suspended &nbsp; &nbsp;挂起 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 程序在后台不能执行代码。系统会自动把程序变成这个状态而且不会发出通知。当挂起时，程序还是停留在内存中的，当系统内存低时，系统就把挂起的程序清除掉，为前台程序提供更多的内存。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">下图是程序状态变化图：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"><img src="http://img.my.csdn.net/uploads/201209/28/1348823833_6296.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">各个程序运行状态时代理的回调：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"><span style="color:#ff0000;">- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions<br />
+</span>&nbsp; &nbsp; &nbsp; 告诉代理进程启动但还没进入状态保存<br />
+<span style="color:#ff0000;">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions<br />
+</span>&nbsp; &nbsp; &nbsp;告诉代理启动基本完成程序准备开始运行<br />
+<span style="color:#ff0000;">- (void)applicationWillResignActive:(UIApplication *)application<br />
+</span>&nbsp; &nbsp; 当应用程序将要入非活动状态执行，在此期间，应用程序不接收消息或事件，比如来电话了<br />
+<span style="color:#ff0000;">- (void)applicationDidBecomeActive:(UIApplication *)application&nbsp;<br />
+</span>&nbsp; &nbsp; &nbsp;当应用程序入活动状态执行，这个刚好跟上面那个方法相反<br />
+<span style="color:#ff0000;">- (void)applicationDidEnterBackground:(UIApplication *)application<br />
+</span>&nbsp; &nbsp; 当程序被推送到后台的时候调用。所以要设置后台继续运行，则在这个函数里面设置即可<br />
+<span style="color:#ff0000;">- (void)applicationWillEnterForeground:(UIApplication *)application<br />
+</span>当程序从后台将要重新回到前台时候调用，这个刚好跟上面的那个方法相反。<br />
+<span style="color:#ff0000;">- (void)applicationWillTerminate:(UIApplication *)application<br />
+</span>当程序将要退出是被调用，通常是用来保存数据和一些退出前的清理工作。这个需要要设置UIApplicationExitsOnSuspend的键值。<br />
+<span style="color:#ff0000;">- (void)applicationDidFinishLaunching:(UIApplication*)application<br />
+</span>当程序载入后执行</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">在上面8个方法对应的方法中键入NSLog打印。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">现在启动程序看看执行的顺序：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">启动程序<br />
+lifeCycle[40428:11303] willFinishLaunchingWithOptions<br />
+lifeCycle[40428:11303] didFinishLaunchingWithOptions<br />
+lifeCycle[40428:11303] applicationDidBecomeActive</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">按下home键</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">lifeCycle[40428:11303] applicationWillResignActive<br />
+lifeCycle[40428:11303] applicationDidEnterBackground</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">双击home键，再打开程序</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">lifeCycle[40428:11303] applicationWillEnterForeground<br />
+lifeCycle[40428:11303] applicationDidBecomeActive</p>
+<h2 style="margin:0px;padding:0px;line-height:26px;"><a name="t1" style="color:#ff9900;"></a><a target="_blank" name="t1" style="color:#ff9900;"></a>2、应用程序的生命周期</h2>
+<h3 style="margin:0px;padding:0px;line-height:26px;"><a name="t2" style="color:#ff9900;"></a><a target="_blank" name="t2" style="color:#ff9900;"></a>2.1、加载应用程序进入前台</h3>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"><img src="http://img.my.csdn.net/uploads/201209/29/1348884482_7300.png" alt="" style="border:none;" /></p>
+<h3 style="margin:0px;padding:0px;line-height:26px;"><a name="t3" style="color:#ff9900;"></a><a target="_blank" name="t3" style="color:#ff9900;"></a>2.2、加载应用程序进入后台</h3>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"><img src="http://img.my.csdn.net/uploads/201209/29/1348884525_3194.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"></p>
+<h3 style="margin:0px;padding:0px;line-height:26px;"><a name="t4" style="color:#ff9900;"></a><a target="_blank" name="t4" style="color:#ff9900;"></a>2.3、关于main函数</h3>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">main函数是程序启动的入口，在iOS app中，main函数的功能被最小化，它的主要工作都交给了UIKit framework</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"></p>
+<div class="dp-highlighter bg_cpp" style="font-family:Consolas, 'Courier New', Courier, mono, serif;font-size:12px;background-color:#e7e5dc;width:1090.96875px;overflow:auto;padding-top:1px;position:relative;line-height:26px;margin:18px 0px !important;"><div class="bar" style="padding-left:45px;"><div class="tools" style="padding:3px 8px 10px 10px;font-size:9px;line-height:normal;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;color:silver;background-color:#f8f8f8;border-left-width:3px;border-left-style:solid;border-left-color:#6ce26c;"><strong>[cpp]</strong>&nbsp;<a target="_blank" href="http://blog.csdn.net/totogo2010/article/details/8048652#" class="ViewSource" title="view plain" style="color:#a0a0a0;text-decoration:none;background-image:url(http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/images/default/ico_plain.gif);background-color:inherit;border:none;padding:1px;margin:0px 10px 0px 0px;display:inline-block;width:16px;height:16px;text-indent:-2000px;background-position:0% 0%;background-repeat:no-repeat no-repeat;">view plain</a><a target="_blank" href="http://blog.csdn.net/totogo2010/article/details/8048652#" class="CopyToClipboard" title="copy" style="color:#a0a0a0;text-decoration:none;background-image:url(http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/images/default/ico_copy.gif);background-color:inherit;border:none;padding:1px;margin:0px 10px 0px 0px;display:inline-block;width:16px;height:16px;text-indent:-2000px;background-position:0% 0%;background-repeat:no-repeat no-repeat;">copy</a><div style="position:absolute;left:379px;top:3516px;width:18px;height:18px;z-index:99;"></div>
+<div style="position:absolute;left:404px;top:3509px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_1" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" width="18" height="18" name="ZeroClipboardMovie_1" align="middle" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=18&amp;height=18" wmode="transparent" /></div>
+</div>
+</div>
+<ol start="1" class="dp-cpp" style="padding:0px;border:none;list-style-position:initial;list-style-image:initial;background-color:#ffffff;color:#5c5c5c;margin:0px 0px 1px 45px !important;"><li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:#6ce26c;list-style:decimal-leading-zero outside;color:inherit;line-height:18px;margin:0px !important;padding:0px 3px 0px 10px !important;"><span style="margin:0px;padding:0px;border:none;color:black;background-color:inherit;"><span class="preprocessor" style="margin:0px;padding:0px;border:none;color:gray;background-color:inherit;">#import&nbsp;&lt;UIKit/UIKit.h&gt;</span><span style="margin:0px;padding:0px;border:none;background-color:inherit;">&nbsp;&nbsp;</span></span></li>
+<li style="border-style:none none none solid;border-left-width:3px;border-left-color:#6ce26c;list-style:decimal-leading-zero outside;background-color:#f8f8f8;line-height:18px;margin:0px !important;padding:0px 3px 0px 10px !important;"><span style="margin:0px;padding:0px;border:none;color:black;background-color:inherit;">&nbsp;&nbsp;&nbsp;</span></li>
+<li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:#6ce26c;list-style:decimal-leading-zero outside;color:inherit;line-height:18px;margin:0px !important;padding:0px 3px 0px 10px !important;"><span style="margin:0px;padding:0px;border:none;color:black;background-color:inherit;"><span class="datatypes" style="margin:0px;padding:0px;border:none;color:#2e8b57;background-color:inherit;font-weight:bold;">int</span><span style="margin:0px;padding:0px;border:none;background-color:inherit;">&nbsp;main(</span><span class="datatypes" style="margin:0px;padding:0px;border:none;color:#2e8b57;background-color:inherit;font-weight:bold;">int</span><span style="margin:0px;padding:0px;border:none;background-color:inherit;">&nbsp;argc,&nbsp;</span><span class="datatypes" style="margin:0px;padding:0px;border:none;color:#2e8b57;background-color:inherit;font-weight:bold;">char</span><span style="margin:0px;padding:0px;border:none;background-color:inherit;">&nbsp;*argv[])&nbsp;&nbsp;</span></span></li>
+<li style="border-style:none none none solid;border-left-width:3px;border-left-color:#6ce26c;list-style:decimal-leading-zero outside;background-color:#f8f8f8;line-height:18px;margin:0px !important;padding:0px 3px 0px 10px !important;"><span style="margin:0px;padding:0px;border:none;color:black;background-color:inherit;">{&nbsp;&nbsp;</span></li>
+<li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:#6ce26c;list-style:decimal-leading-zero outside;color:inherit;line-height:18px;margin:0px !important;padding:0px 3px 0px 10px !important;"><span style="margin:0px;padding:0px;border:none;color:black;background-color:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;@autoreleasepool&nbsp;{&nbsp;&nbsp;</span></li>
+<li style="border-style:none none none solid;border-left-width:3px;border-left-color:#6ce26c;list-style:decimal-leading-zero outside;background-color:#f8f8f8;line-height:18px;margin:0px !important;padding:0px 3px 0px 10px !important;"><span style="margin:0px;padding:0px;border:none;color:black;background-color:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword" style="margin:0px;padding:0px;border:none;color:#006699;background-color:inherit;font-weight:bold;">return</span><span style="margin:0px;padding:0px;border:none;background-color:inherit;">&nbsp;UIApplicationMain(argc,&nbsp;argv,&nbsp;nil,&nbsp;NSStringFromClass([MyAppDelegate&nbsp;</span><span class="keyword" style="margin:0px;padding:0px;border:none;color:#006699;background-color:inherit;font-weight:bold;">class</span><span style="margin:0px;padding:0px;border:none;background-color:inherit;">]));&nbsp;&nbsp;</span></span></li>
+<li class="alt" style="border-style:none none none solid;border-left-width:3px;border-left-color:#6ce26c;list-style:decimal-leading-zero outside;color:inherit;line-height:18px;margin:0px !important;padding:0px 3px 0px 10px !important;"><span style="margin:0px;padding:0px;border:none;color:black;background-color:inherit;">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li>
+<li style="border-style:none none none solid;border-left-width:3px;border-left-color:#6ce26c;list-style:decimal-leading-zero outside;background-color:#f8f8f8;line-height:18px;margin:0px !important;padding:0px 3px 0px 10px !important;"><span style="margin:0px;padding:0px;border:none;color:black;background-color:inherit;">}&nbsp;&nbsp;</span></li>
+</ol>
+</div>
+<br style="line-height:26px;" />
+<span style="line-height:26px;">UIApplicationMain函数有四个参数，你不需要改变这些参数值，不过我们也需要理解这些参数和程序是如何开始的</span><p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">argc 和argv参数包含了系统带过来的启动时间。 &nbsp;第三个参数确定了主要应用程序类的名称，这个参数指定为nil，这样UIKit就会使用默认的程序类UIApplication。第四个参数是程序自定义的代理类名，这个类负责系统和代码之间的交互。它一般在Xcode新建项目时会自动生成。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">另外 UIApplicationMain函数加载了程序主界面的文件。虽然这个函数加载了界面文件，但是没有放到应用程序的windows上，你需要在Delegate的&nbsp;application:willFinishLaunchingWithOptions方法中加载它。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">一个应用程序可以有一个主的storyboard文件或者有一个主的nib文件，但不能同时有两个存在。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">如果程序在启动时没有自动加载主要的故事版或nib文件，你可以在application:willFinishLaunchingWithOptions方法里准备windows的展示。</p>
+<h2 style="margin:0px;padding:0px;line-height:26px;"><a name="t5" style="color:#ff9900;"></a><a target="_blank" name="t5" style="color:#ff9900;"></a>3、响应中断</h2>
+<h3 style="margin:0px;padding:0px;line-height:26px;"><a name="t6" style="color:#ff9900;"></a><a target="_blank" name="t6" style="color:#ff9900;"></a>3.1 当一个基于警告式的中断发生时，比如有电话打进来了，这是程序会临时进入inactive状态，这用户可以选择如何处理这个中断，流程如下图：</h3>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"><img src="http://img.my.csdn.net/uploads/201209/29/1348885212_1391.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">在iOS5,通知不会把程序变成为激活状态，通知会显示在状态栏上，如果你；拉下状态栏，程序会变成inactive,把状态栏放回去，程序变回active。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;">按锁屏键也是另外一种程序的中断，当你按下锁屏键，系统屏蔽了所有触摸事件，把app放到了后台，这时app状态是 inactive，并进入后台。</p>
+<h3 style="margin:0px;padding:0px;line-height:26px;"><a name="t7" style="color:#ff9900;"></a><a target="_blank" name="t7" style="color:#ff9900;"></a>3.2 当有这些中断时，我们的app该怎么办呢？我们应该在<a target="_blank" href="http://developer.apple.com/library/ios/documentation/UIKit/Reference/UIApplicationDelegate_Protocol/Reference/Reference.html#//apple_ref/occ/intfm/UIApplicationDelegate/applicationWillResignActive:" style="color:#003366;text-decoration:none;font-family:Courier, Consolas, monospace;font-size:14.44444465637207px;">applicationWillResignActive:</a>方法中：</h3>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;line-height:26px;"></p>
+<ul style="line-height:26px;"><li>停止timer 和其他周期性的任务</li>
+<li>停止任何正在运行的请求</li>
+<li>暂停视频的播放</li>
+<li>如果是游戏那就暂停它</li>
+<li>减少OpenGL ES的帧率</li>
+<li>挂起任何分发的队列和不重要的操作队列（你可以继续处理网络请求或其他时间敏感的后台任务）。</li>
+</ul>
+<div style="line-height:26px;">当程序回到active状态 ， &nbsp;<span style="font-family:'Lucida Grande', Geneva, Helvetica, Arial, sans-serif;font-size:14.44444465637207px;">&nbsp;</span><code style="font-size:14.44444465637207px;font-family:Courier, Consolas, monospace;color:#666666;"><a target="_blank" href="http://developer.apple.com/library/ios/documentation/UIKit/Reference/UIApplicationDelegate_Protocol/Reference/Reference.html#//apple_ref/occ/intfm/UIApplicationDelegate/applicationDidBecomeActive:" style="color:#003366;text-decoration:none;">applicationDidBecomeActive:</a></code><span style="font-family:'Lucida Grande', Geneva, Helvetica, Arial, sans-serif;font-size:14.44444465637207px;">&nbsp;</span>&nbsp; 方法应该上面提到的任务重新开始，比如重新开始timer, 继续分发队列，提高OpenGL ES的帧率。不过游戏要回到暂停状态，不能自动开始。</div>
+<h2 style="margin:0px;padding:0px;line-height:26px;"><a name="t8" style="color:#ff9900;"></a><a target="_blank" name="t8" style="color:#ff9900;"></a>4、转到后台运行</h2>
+<h3 style="margin:0px;padding:0px;line-height:26px;"><a name="t9" style="color:#ff9900;"></a><a target="_blank" name="t9" style="color:#ff9900;"></a>4.1 如图所示：</h3>
+<div style="line-height:26px;"><img src="http://img.my.csdn.net/uploads/201209/29/1348886673_9662.png" alt="" style="border:none;" /><br />
+</div>
+<div style="line-height:26px;">PS:只有在IOS4以上系统或者支持多任务的设备才能后台运行。不然会直接结束状态。</div>
+<h3 style="margin:0px;padding:0px;line-height:26px;"><a name="t10" style="color:#ff9900;"></a><a target="_blank" name="t10" style="color:#ff9900;"></a>4.2 当应用程序进入后台时，我们应该做写什么呢？</h3>
+<div style="line-height:26px;"><ul><li>保存用户数据或状态信息，所有没写到磁盘的文件或信息，在进入后台时，最后都写到磁盘去，因为程序可能在后台被杀死，</li>
+<li>释放尽可能释放的内存</li>
+</ul>
+<div>applicationDidEnterBackgound: 方法有大概5秒的时间让你完成这些任务。如果超过时间还有未完成的任务，你的程序就会被终止而且从内存中清除。如果还需要长时间的运行任务，可以调用 &nbsp;<span style="color:#666666;font-family:Courier, Consolas, monospace;font-size:14.44444465637207px;">beginBackgroundTaskWithExpirationHandler</span>&nbsp; &nbsp; &nbsp; &nbsp;方法去请求后台运行时间和启动线程来运行长时间运行的任务。</div>
+</div>
+<div style="line-height:26px;">4.3 应用程序在后台时的内存使用</div>
+<div style="line-height:26px;">在后台时，每个应用程序都应该释放最大的内存。系统努力的保持更多的应用程序在后台同时 运行。不过当内存不足时，会终止一些挂起的程序来回收内存，那些内存最大的程序首先被终止。</div>
+<div style="line-height:26px;">事实上，应用程序应该的对象如果不再使用了，那就应该尽快的去掉强引用，这样编译器可以回收这些内存。如果你想缓存一些对象提升程序的性能，你可以在进入后台时，把这些对象去掉强引用。</div>
+<div style="line-height:26px;">下面这样的对象应该尽快的去掉强引用：</div>
+<div style="line-height:26px;"><ul><li>图片对象</li>
+<li>你可以重新加载的 大的视频或数据文件</li>
+<li>任何没用而且可以轻易创建的对象</li>
+</ul>
+</div>
+<div style="line-height:26px;">在后台时，为了减少程序占用的内存，系统会自动在回收一些系统帮助你开辟的内存。比如：</div>
+<div style="line-height:26px;">系统回收Core Animation的后备存储。</div>
+<div style="line-height:26px;">去掉任何系统引用的缓存图片</div>
+<div style="line-height:26px;">去掉系统管理数据缓存强引用</div>
+<div style="line-height:26px;"><br />
+</div>
+<h2 style="margin:0px;padding:0px;line-height:26px;"><a name="t11" style="color:#ff9900;"></a><a target="_blank" name="t11" style="color:#ff9900;"></a>5 、返回前台运行</h2>
+<div style="line-height:26px;">流程如图所示：</div>
+<div style="line-height:26px;"><img src="http://img.my.csdn.net/uploads/201209/29/1348889472_5280.png" alt="" style="border:none;" /><br />
+</div>
+<div style="line-height:26px;">当app处于挂起状态时，它是不能执行任何代码的。因此它不能处理在挂起期间发过来的通知，比如方向改变，时间改变，设置的改变还有其他影响程序展现的或状态的通知。在程序返回后台或前台是，程序都要正确的处理这些通知。</div>
+<h2 style="margin:0px;padding:0px;line-height:26px;"><a name="t12" style="color:#ff9900;"></a><a target="_blank" name="t12" style="color:#ff9900;"></a>6、程序的终止</h2>
+<div style="line-height:26px;">程序只要符合以下情况之一，只要进入后台或挂起状态就会终止：</div>
+<div style="line-height:26px;">iOS4.0以前的系统</div>
+<div style="line-height:26px;">app是基于iOS4.0之前系统开发的。</div>
+<div style="line-height:26px;">设备不支持多任务</div>
+<div style="line-height:26px;">在Info.plist文件中，程序包含了&nbsp;<span style="color:#666666;font-family:Courier, Consolas, monospace;font-size:14.44444465637207px;">UIApplicationExitsOnSuspend</span>&nbsp; 键。</div>
+<div style="line-height:26px;">app如果终止了 &nbsp;,系统会调用app的代理的方法&nbsp;<a target="_blank" href="http://developer.apple.com/library/ios/documentation/UIKit/Reference/UIApplicationDelegate_Protocol/Reference/Reference.html#//apple_ref/occ/intfm/UIApplicationDelegate/applicationWillTerminate:" style="color:#003366;text-decoration:none;font-family:Courier, Consolas, monospace;font-size:14.44444465637207px;">applicationWillTerminate:</a>&nbsp; &nbsp;这样可以让你可以做一些清理工作。你可以保存一些数据或app的状态。这个方法也有5秒钟的限制。超时后方法会返回程序从内存中清除。</div>
+<div style="line-height:26px;">注意：用户可以手工关闭应用程序。</div>
+<h2 style="margin:0px;padding:0px;line-height:26px;"><a name="t13" style="color:#ff9900;"></a><a target="_blank" name="t13" style="color:#ff9900;"></a>7、 The Main Run Loop &nbsp;主运行循环</h2>
+<div style="line-height:26px;">Main Run Loop负责处理用户相关的事件。UIApplication对象在程序启动时启动main run Loop，它处理事件和更新视图的界面。看Main Run Loop就知道，它是运行在程序的主线程上的。这样保证了接收到用户相关操作的事件是按顺序处理的。<br />
+</div>
+<div style="line-height:26px;"><br />
+</div>
+<div style="line-height:26px;"><strong>Main Run Loop &nbsp;处理事件的架构图：</strong></div>
+<div style="line-height:26px;"><br />
+</div>
+<div style="line-height:26px;"><img src="http://img.my.csdn.net/uploads/201210/08/1349677876_6777.png" alt="" style="border:none;" /><br />
+</div>
+<div style="line-height:26px;">用户操作设备，相关的操作事件被系统生成并通过UIKit的指定端口分发。事件在内部排成队列，一个个的分发到Main run loop 去做处理。UIApplication对象是第一个接收到时间的对象，它决定事件如何被处理。触摸事件分发到主窗口，窗口再分发到对应出发触摸事件的View。其他的事件通过其他途径分发给其他对象变量做处理。</div>
+<div style="line-height:26px;"><br />
+</div>
+<div style="line-height:26px;">大部分的事件可以在你的应用里分发，类似于触摸事件，远程操控事件（线控耳机等）都是由app的&nbsp;<a target="_blank" href="http://developer.apple.com/library/ios/#documentation/general/conceptual/Devpedia-CocoaApp/Responder.html" style="color:#ff9900;text-decoration:none;">responder objects</a>&nbsp;对象处理的。Responder objects 在你的app里到处都是，比如：UIApplication 对象。view对象，view controller 对象，都是resopnder objects。大部分事件的目标都指定了resopnder object，不过事件也可以传递给其他对象。比如，如果view对象不处理事件，可以传给父类view或者view controller。</div>
+<div style="line-height:26px;"><br />
+</div>
+<div style="line-height:26px;">参考：https://developer.apple.com/library/ios/#documentation/iPhone/Conceptual/iPhoneOSProgrammingGuide/ManagingYourApplicationsFlow/ManagingYourApplicationsFlow.html#//apple_ref/doc/uid/TP40007072-CH4-SW20</div>
+</div></body></html>

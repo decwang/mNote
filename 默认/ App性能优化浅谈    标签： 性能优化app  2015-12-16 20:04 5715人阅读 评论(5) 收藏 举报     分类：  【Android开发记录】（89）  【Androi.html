@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-02-06T05:40:27Z"/><meta name="updated" content="2017-02-06T05:40:29Z"/><title> App性能优化浅谈    标签： 性能优化app  2015-12-16 20:04 5715人阅读 评论(5) 收藏 举报     分类：  【Android开发记录】（89）  【Androi</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin-bottom:21px;font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;">&nbsp;<h1 style="margin:0px;padding:0px;display:inline-block;vertical-align:middle;font-size:18px;"><span class="link_title"><a href="http://blog.csdn.net/wwj_748/article/details/50322581" style="text-decoration:none;color:#000000;">App性能优化浅谈</a></span></h1>
+</div>
+<div class="article_manage clearfix" style="color:#999999;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;margin:0px -20px 10px;padding:0px 20px 5px;overflow:hidden;orphans:2;widows:2;"><div class="article_l" style="width:948px;float:left;"><span class="link_categories" style="margin:0px 0px 0px 5px;float:left;">标签：&nbsp;<a href="http://www.csdn.net/tag/%e6%80%a7%e8%83%bd%e4%bc%98%e5%8c%96" target="_blank" style="text-decoration:none;display:inline-block;margin-right:10px;color:#c88326;">性能优化</a><a href="http://www.csdn.net/tag/app" target="_blank" style="text-decoration:none;display:inline-block;margin-right:10px;color:#c88326;">app</a></span></div>
+<div class="article_r"><span class="link_postdate" style="margin:0px 16px 0px 0px;">2015-12-16 20:04</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 16px 0px 5px;padding:0px 0px 0px 24px;background:url(&quot;../images/skin-type-icon.png&quot;) 0px -25px no-repeat;display:inline-block;">5715人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 16px 0px 5px;padding:0px 0px 0px 17px;background-image:url(&quot;../images/skin-type-icon-yellow.png&quot;) !important;background-position:0px -43px;background-size:initial;background-repeat:no-repeat;background-attachment:initial;background-origin:initial;background-clip:initial;background-color:initial;display:inline-block;"><a href="http://blog.csdn.net/wwj_748/article/details/50322581#comments" style="text-decoration:none;color:#c88326;">评论</a>(5)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 16px 0px 5px;display:inline-block;background-image:url(&quot;../images/skin-type-icon-yellow.png&quot;) !important;background-repeat:no-repeat;background-position:0px -62px;padding-left:17px;"><a title="收藏" target="_blank" style="color:#c88326;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 16px 0px 5px;display:inline-block;background-image:url(&quot;../images/skin-type-icon-yellow.png&quot;) !important;background-repeat:no-repeat;background-position:0px -81px;padding-left:17px;"><a href="http://blog.csdn.net/wwj_748/article/details/50322581#report" title="举报" style="text-decoration:none;color:#c88326;">举报</a></span></div>
+</div>
+<div class="category clearfix" style="margin:0px -20px;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#ededed;padding:5px 20px;font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><div class="category_l" style="display:inline-block;font-size:14px;color:#333333;width:70px;float:left;line-height:28px;"><img src="http://static.blog.csdn.net/images/category_icon.jpg" style="border:none;vertical-align:middle;" />&nbsp;<span style="display:inline-block;vertical-align:middle;">分类：</span></div>
+<div class="category_r" style="display:inline-block;font-size:14px;color:#df3434;float:left;width:853.188px;"><label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">【Android开发记录】（89）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label>&nbsp;<label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">【Android开发学习之路】（117）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label></div>
+</div>
+<div class="bog_copyright" style="padding:20px 0px;font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;"><p class="copyright_p" style="margin-top:0px;margin-bottom:0px;padding:0px 0px 0px 10px;height:14px;line-height:14px;border-left-width:3px;border-left-style:solid;border-left-color:#e41c1e;color:#666666;font-size:14px;">版权声明：本文为博主原创文章，未经博主允许不得转载。</p>
+</div>
+<div style="font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;clear:both;"></div>
+<div style="font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;border:1px solid #cccccc;background-color:#eeeeee;float:left;min-width:200px;padding:4px 10px;background-position:initial initial;background-repeat:initial initial;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;text-align:right;"><span style="float:left;">目录<a href="http://blog.csdn.net/wwj_748/article/details/50322581#" title="系统根据文章中H1到H6标签自动生成文章目录" style="text-decoration:none;">(?)</a></span><a href="http://blog.csdn.net/wwj_748/article/details/50322581#" title="展开" style="text-decoration:none;">[+]</a></p>
+</div>
+<div style="font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;orphans:2;widows:2;clear:both;"></div>
+<div id="article_content" class="article_content" style="margin:35px 0px;font-size:15px;color:#555555;line-height:35px;font-family:'microsoft yahei';font-variant-ligatures:normal;orphans:2;widows:2;"><div class="markdown_views" style="font-size:14px;"><h1 id="前言" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t0" style="box-sizing:border-box;color:#0c89cf;"></a>前言</h1>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">前段时间给公司的小伙伴们进行了关于app性能优化的技术分享，这里我稍微整理一下也给大家分享一下，关于性能优化这个话题很大，涉及面可以很广，也可以很深入，本人能力有限，不会给大家讲特别难懂，特别底层的东西，都是我们开发能着手去做的点，大家都在讲性能优化，但对于项目经验不够丰富的朋友很难有一个概念，做优化的时候也会比较茫然，这里我就给大家指明方向。</p>
+<h1 id="从何讲起" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t1" style="box-sizing:border-box;color:#0c89cf;"></a>从何讲起？</h1>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">笔者在做产品开发的时候，也遇到性能瓶颈，测试工程师反馈了一些比较明显的问题，比如UI界面的过度绘制，列表滑动有明显卡顿，比较耗内存等等，但以往的都没有针对性的去做相应的优化，所以借着保证产品质量的出发点，自己定了相关的性能优化方案，可能不太成熟，不过可以逐步完善，并找到最适合自己产品的优化方案。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">这里我定了四个方向：&nbsp;<br style="box-sizing:border-box;" />
+- 响应时间（Response Time）&nbsp;<br style="box-sizing:border-box;" />
+- 界面卡顿（ANR）&nbsp;<br style="box-sizing:border-box;" />
+- 耗内存（Memory）&nbsp;<br style="box-sizing:border-box;" />
+- 内存泄露（Out of memory)</p>
+<h2 id="响应时间" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t2" style="box-sizing:border-box;color:#0c89cf;"></a>响应时间</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">这里指的是客户端与服务端交互，拿到数据、解析、再到显示到界面整个过程耗费的时间。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">这个部分涉及客户端的优化，也涉及服务端的优化，这里只讨论客户端。</p>
+<h3 id="http请求方式" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t3" style="box-sizing:border-box;color:#0c89cf;"></a>HTTP请求方式</h3>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">我们的app一般离不开网络，请求接口是最平常的操作了，如何请求，请求什么我们在开发初期就要定好，服务端给我的提供的接口，大致可以通过GET、POST、HEAD、PUT、DELETE这几种请求方式，不同的请求方式有不同应用场景，比如GET请求，应当用来请求返回结果，参数是作为url的一部分；POST请求，用于请求会更改服务端数据或状态；HEAD请求跟GET一样，只是服务器不能在响应里返回消息主体；PUT请求，用于将网页放置正确的地方；DELETE请求用于删除服务器指定文档。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">使用优秀的开源Http框架是我们比较好的选择，它的优点是经过市场的验证，很多坑都被填过，缺点也是我们需要去深究它才能对其进行扩展，遇到坑也不一定能填。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">如果自己造轮子的话，还需要我们花时间去验证去适应我们的业务需求，但好处是我们可以自己去扩展可把控，不过这很考量开发者的素质。</p>
+<h3 id="数据解析" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t4" style="box-sizing:border-box;color:#0c89cf;"></a>数据解析</h3>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">实际开发当中服务端的返回数据格式无非就两种：&nbsp;<br style="box-sizing:border-box;" />
+- JSON&nbsp;<br style="box-sizing:border-box;" />
+- XML</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">这两种格式数据格式各有优劣，从可读性来看，xml略微好一点，不过JSON也有规范的标签，从解析难度和速度来看，大家都比较倾向使用JSON，目前JSON也是主流的数据格式。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">在<a href="http://lib.csdn.net/base/15" class="replace_word" title="undefined" target="_blank" style="text-decoration:none;box-sizing:border-box;color:#df3434;font-weight:bold;">Android</a>中均可以使用优秀的解析库来加快我们的解析速度，XML中有dom4j，JSON有Jackson、Gson，我们通过这些库实现我们更快的完成数据解析，提高我们的开发效率。</p>
+<h3 id="数据存储" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t5" style="box-sizing:border-box;color:#0c89cf;"></a>数据存储</h3>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">上一节讲的是数据解析，我们解析完后的数据，可能就需要将数据存储在某个地方，Android的五种存储方式：&nbsp;<br style="box-sizing:border-box;" />
+- Content Provider（主要用来向其他应用程序共享数据）&nbsp;<br style="box-sizing:border-box;" />
+- SQLite（存储数据到数据库中）&nbsp;<br style="box-sizing:border-box;" />
+- File（本地文件保存）&nbsp;<br style="box-sizing:border-box;" />
+- SharedPreference（主要用来保存简单的配置信息）&nbsp;<br style="box-sizing:border-box;" />
+- 网络存储（WebService返回的数据或是解析HTTP协议实现网络数据交互）</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">为了提高应用程序的响应时间，数据缓存是一个比较好的方式，我们可以预处理服务器返回的数据，对数据进行缓存刷新。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">优化点：&nbsp;<br style="box-sizing:border-box;" />
+- 异步请求网络数据&nbsp;<br style="box-sizing:border-box;" />
+- 预处理服务器返回数据&nbsp;<br style="box-sizing:border-box;" />
+- 异步进行数据存储操作&nbsp;<br style="box-sizing:border-box;" />
+- 数据缓存刷新&nbsp;<br style="box-sizing:border-box;" />
+- Timeout超时重试&nbsp;<br style="box-sizing:border-box;" />
+- 在主线程中操作UI</p>
+<h1 id="界面卡顿" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t6" style="box-sizing:border-box;color:#0c89cf;"></a>界面卡顿</h1>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">ANR表示”应用程序无响应”，这个是需要我们避免发生的事情，出现这个异常的原因：&nbsp;<br style="box-sizing:border-box;" />
+- 主线程 (“事件处理线程” / “UI线程”) 在5秒内没有响应输入事件&nbsp;<br style="box-sizing:border-box;" />
+- BroadcastReceiver在10秒内没有执行完毕</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">导致ANR的原因有很多，一般情况就是在UI线程做了耗时的操作，例如”网络请求”、数据库操作。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">那么如何避免？&nbsp;<br style="box-sizing:border-box;" />
+- UI线程只做界面刷新，不做任何耗时操作，耗时操作放在子线程来做&nbsp;<br style="box-sizing:border-box;" />
+- 可以使用Thread+handle或者AsyncTask来进行逻辑处理</p>
+<h1 id="耗内存" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t7" style="box-sizing:border-box;color:#0c89cf;"></a>耗内存</h1>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">每部手机的内存有限，我们这里所说的内存指的是手机的RAM，它是Ramdom Access Memory的缩写，我们应用程序的需要随机读写的数据就存在RAM中，Android手机之所以会比较耗内存，这跟Android后台的处理有关，我们知道Android应用是使用Java开发的，运行Java需要有虚拟机，说明每开启一个应用都会创建一个虚拟机，而这是需要内存的，所以我们开的应用越多，后台进程越多，内存都分配出去了，才导致内存消耗的严重。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">其实这个问题我们是没得破的，只要内存不够，我们的应用还是会卡。我们开发的应用依赖与系统给我们分配的堆内存，一般上限在16M~48M，但我们可以通过在AndroidManifest设置Application属性largeHeap=“true”来申请更多的堆内存。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">通过以下代码获取可用堆内存限制：</p>
+<pre class="prettyprint" name="code" style="white-space:nowrap;word-wrap:break-word;box-sizing:border-box;position:relative;overflow-y:hidden;overflow-x:auto;margin-top:0px;margin-bottom:1.1em;font-family:'Source Code Pro', monospace;padding:5px 5px 5px 60px;line-height:1.45;word-break:break-all;color:#333333;background-color:rgba(128, 128, 128, 0.0470588);border:1px solid rgba(128, 128, 128, 0.0745098);border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-right-radius:0px;border-bottom-left-radius:0px;"><code class="hljs avrasm has-numbering" style="display:block;padding:0px;background:transparent;color:inherit;box-sizing:border-box;font-family:&quot;Source Code Pro&quot;, monospace;font-size:inherit;white-space:pre;border-radius:0px;word-wrap:normal;">mActivityManager = (ActivityManager) this<span class="hljs-preprocessor" style="color:#444444;box-sizing:border-box;">.getSystemService</span>(Context<span class="hljs-preprocessor" style="color:#444444;box-sizing:border-box;">.ACTIVITY</span>_SERVICE)<span class="hljs-comment" style="color:#880000;box-sizing:border-box;">;</span>  mMaxMemory = mActivityManager<span class="hljs-preprocessor" style="color:#444444;box-sizing:border-box;">.getMemoryClass</span>()<span class="hljs-comment" style="color:#880000;box-sizing:border-box;">;</span></code><ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;background-color:#eeeeee;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right:1px solid #dddddd;list-style:none;text-align:right;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+<li style="box-sizing:border-box;padding:0px 5px;">2</li>
+</ul>
+<ul class="pre-numbering" style="box-sizing:border-box;position:absolute;width:50px;background-color:#eeeeee;top:0px;left:0px;margin:0px;padding:6px 0px 40px;border-right:1px solid #dddddd;list-style:none;text-align:right;"><li style="box-sizing:border-box;padding:0px 5px;">1</li>
+<li style="box-sizing:border-box;padding:0px 5px;">2</li>
+</ul>
+</pre><h1 id="内存泄露" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t8" style="box-sizing:border-box;color:#0c89cf;"></a>内存泄露</h1>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">内存泄露这个问题已经被说烂了，大家都知道有内存泄露这个问题存在，但为什么会发生内存泄露？</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">这里的内存泄露并不是真正意思上的泄露，而是因为内存不足不能进行GC操作，从而导致占用内存过大，抛出out of memory异常，而被系统Kill掉。</p>
+<h2 id="jvm回收机制" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t9" style="box-sizing:border-box;color:#0c89cf;"></a>JVM回收机制</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">是时候讲讲JVM的回收机制了，看下图：</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;"><img src="http://img.blog.csdn.net/20151216162807568" alt="JVM分代" title="" style="border:none;box-sizing:border-box;max-width:602px;max-height:100%;height:auto;" /></p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">JVM对Java对象分了三个代进行管理，分别为年轻代、年老代、永久代。&nbsp;<br style="box-sizing:border-box;" />
+年轻代（Young Generation）：绝大多数的Java对象会在年轻代被分配，也会在年轻代被回收。&nbsp;<br style="box-sizing:border-box;" />
+年老代（Old Generation）：在年轻代长期存在没有被回收的Java对象会转移到年老代，这个堆空间通常会被比年轻代的堆空间要大。&nbsp;<br style="box-sizing:border-box;" />
+永久代：存放VM和Java类的元数据，以及interned字符串和类的静态变量。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">这里涉及到JVM的相关知识，这里不继续深入探讨。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">但我们应该可以知道垃圾回收器的作用:&nbsp;<br style="box-sizing:border-box;" />
+- 分配内存&nbsp;<br style="box-sizing:border-box;" />
+- 保证所有正在被引用的对象还存在于内存中&nbsp;<br style="box-sizing:border-box;" />
+- 回收执行代码已经不再引用的对象所占的内存</p>
+<h2 id="对象引用" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t10" style="box-sizing:border-box;color:#0c89cf;"></a>对象引用</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Java的引用类型可以分为以下几种：&nbsp;<br style="box-sizing:border-box;" />
+- 强引用（Strong Ref）：强可达，去掉强可达，才会被回收。&nbsp;<br style="box-sizing:border-box;" />
+- 软引用（Soft Ref）：内存够用，就保持，内存吃紧，则回收，主要用来做缓存。&nbsp;<br style="box-sizing:border-box;" />
+- 弱引用（Weak Ref）：比Soft Ref弱，即使内存不吃紧也会被回收。&nbsp;<br style="box-sizing:border-box;" />
+- 虚引用（Phantom Ref）：不会在内存保持任何对象。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">一图胜千言：</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;"><img src="http://img.blog.csdn.net/20151216170632768" alt="对象引用" title="" style="border:none;box-sizing:border-box;max-width:602px;max-height:100%;height:auto;" /></p>
+<blockquote style="box-sizing:border-box;margin:0px 0px 1.1em;padding:15px 20px;border-left:10px solid rgba(128, 128, 128, 0.0745098);background-color:rgba(128, 128, 128, 0.0470588);border-radius:0px 5px 5px 0px;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;box-sizing:border-box;line-height:1.25;">利用Strong Ref，存储大量数据，直到heap撑破，利用inter strings(或者class loader加载大量的类)把perm gen撑破，然后就是内存泄露了。</p>
+</blockquote>
+<h1 id="如何优化" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t11" style="box-sizing:border-box;color:#0c89cf;"></a>如何优化？</h1>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">前面讲了一些背景知识，对我们理解内存优化有一定的帮助，下面就简单说一下我们优化的方向：&nbsp;<br style="box-sizing:border-box;" />
+- 布局优化&nbsp;<br style="box-sizing:border-box;" />
+- 内存优化</p>
+<h2 id="布局优化" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t12" style="box-sizing:border-box;color:#0c89cf;"></a>布局优化</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">大家可以拿出你们的Android机&nbsp;<br style="box-sizing:border-box;" />
+开发者工具-Profile GPU Rendering-选择在屏幕上显示条形图</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">-蓝色代表测量绘制Display List的时间&nbsp;<br style="box-sizing:border-box;" />
+-红色代表OpenGL渲染Display List所需要的时间&nbsp;<br style="box-sizing:border-box;" />
+-黄色代表CPU等待GPU处理的时间&nbsp;<br style="box-sizing:border-box;" />
+-中间绿色横线代表VSYNC时间16ms，尽量将所有条形图控制在这条绿线下</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">为什么是16ms？</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Android 通知界面渲染和重绘的时间要在16ms内完成，如果超过16ms，就会导致丢帧，也就是我们常说的卡顿。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">优化点：&nbsp;<br style="box-sizing:border-box;" />
+- 避免OverDraw&nbsp;<br style="box-sizing:border-box;" />
+- 优化布局层级&nbsp;<br style="box-sizing:border-box;" />
+- 避免过多无用嵌套&nbsp;<br style="box-sizing:border-box;" />
+- 使用<code style="box-sizing:border-box;font-family:&quot;Source Code Pro&quot;, monospace;padding:2px 4px;font-size:12.6px;color:#3f3f3f;background-color:rgba(128, 128, 128, 0.0745098);white-space:nowrap;border-radius:0px;">&lt;include&gt;</code>标签重用layout&nbsp;<br style="box-sizing:border-box;" />
+- 使用<code style="box-sizing:border-box;font-family:&quot;Source Code Pro&quot;, monospace;padding:2px 4px;font-size:12.6px;color:#3f3f3f;background-color:rgba(128, 128, 128, 0.0745098);white-space:nowrap;border-radius:0px;">&lt;ViewStub&gt;</code>延迟加载&nbsp;<br style="box-sizing:border-box;" />
+- Hierarchy View进行层级分析</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">具体的使用方法，这里不介绍了，不懂就百度。</p>
+<h1 id="内存优化" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t13" style="box-sizing:border-box;color:#0c89cf;"></a>内存优化</h1>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">内存优化的点有很多，这里我主要分为两大块：&nbsp;<br style="box-sizing:border-box;" />
+- Bitmap优化&nbsp;<br style="box-sizing:border-box;" />
+- 代码优化</p>
+<h2 id="bitmap优化" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t14" style="box-sizing:border-box;color:#0c89cf;"></a>Bitmap优化</h2>
+<ol style="box-sizing:border-box;"><li style="box-sizing:border-box;">使用适当分辨率和大小的图片</li>
+<li style="box-sizing:border-box;">及时回收内存（bitmap.recycle()）</li>
+<li style="box-sizing:border-box;">使用图片缓存（LruCache和DiskLruCache）</li>
+</ol>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">第一点，就是按需显示，比如列表中的图片，你可以显示缩略图，详情页，你就可以加载相应的分辨率的图片，这样可以减少内存消耗，一般可以要求服务端提供多种分辨率的图片。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">第二点，Bitmap是很耗内存，尤其是加载比较大的bitmap，可以想到的优化方案就是使用记得回收，对Bitmap进行压缩，使用BitmapFactory.Options设置inSampleSize就可以缩小图片。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">第三点，图像缓存，这个可以利用成熟的图片加载框架，比如Universal-ImageLoader、Fresco、Picasso，这些框架都对图片进行了很好的优化，大家可以对比一下，选择使用即可。</p>
+<h2 id="代码优化" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t15" style="box-sizing:border-box;color:#0c89cf;"></a>代码优化</h2>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">关于代码这个就有的说了，任何能改进我们程序的优化点都能写在这里，这里没办法把所有优化的点列在这里，只提供相关的参考，剩下的就好各位经验总结和积累了。</p>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">优化点：&nbsp;<br style="box-sizing:border-box;" />
+- 对常量使用static修饰符&nbsp;<br style="box-sizing:border-box;" />
+- 使用静态方法&nbsp;<br style="box-sizing:border-box;" />
+- 减少不必要的成员变量&nbsp;<br style="box-sizing:border-box;" />
+- 尽量不要使用枚举，少用迭代器&nbsp;<br style="box-sizing:border-box;" />
+- 对Cursor、Receiver、Sensor、File等对象，要注意它们的创建、回收与注册、反注册&nbsp;<br style="box-sizing:border-box;" />
+- 避免大量使用注解、反射&nbsp;<br style="box-sizing:border-box;" />
+- 使用RenderScript、OpenGL来进行复杂的绘图操作&nbsp;<br style="box-sizing:border-box;" />
+- 使用SurfaceView来替代View进行大量、频繁的绘图操作&nbsp;<br style="box-sizing:border-box;" />
+- 尽量使用视图缓存，而不是每次都执行inflate()方法解析视图</p>
+<blockquote style="box-sizing:border-box;margin:0px 0px 1.1em;padding:15px 20px;border-left:10px solid rgba(128, 128, 128, 0.0745098);background-color:rgba(128, 128, 128, 0.0470588);border-radius:0px 5px 5px 0px;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;box-sizing:border-box;line-height:1.25;">注：这里引用了Android群英传的相关优化点</p>
+</blockquote>
+<ul style="box-sizing:border-box;"><li style="box-sizing:border-box;">创建新的对象都需要额外的内存空间，要尽量减少创建新的对象。</li>
+<li style="box-sizing:border-box;">将类、变量、方法等等的可见性修改为最小。</li>
+<li style="box-sizing:border-box;">针对字符串的拼接，使用StringBuffer替代String。</li>
+<li style="box-sizing:border-box;">不要在循环当中声明临时变量，不要在循环中捕获异常。</li>
+<li style="box-sizing:border-box;">如果对于线程安全没有要求，尽量使用线程不安全的集合对象。</li>
+<li style="box-sizing:border-box;">使用集合对象，如果事先知道其大小，则可以在构造方法中设置初始大小。</li>
+<li style="box-sizing:border-box;">文件读取操作需要使用缓存类，及时关闭文件。</li>
+<li style="box-sizing:border-box;">慎用异常，使用异常会导致性能降低。</li>
+<li style="box-sizing:border-box;">如果程序会频繁创建线程，则可以考虑使用线程池。</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">以上都是些经验总结，大致都相差无几，朋友们在做代码优化的时候，可以根据这些优化点，有针对性去重构代码，其实最重要还是代码的可读性，结构清晰。</p>
+<h1 id="性能优化工具" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t16" style="box-sizing:border-box;color:#0c89cf;"></a>性能优化工具</h1>
+<ul style="box-sizing:border-box;"><li style="box-sizing:border-box;">Memory Monitor - 内存监视工具</li>
+<li style="box-sizing:border-box;">TraceView</li>
+<li style="box-sizing:border-box;">MAT</li>
+</ul>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">Android开发者对与以上几个性能调优的工具一定不陌生，这里我也不再写那么多废话了，关于它们的使用方法，官网还有一些大牛的博客都有介绍。</p>
+<h1 id="最后" style="margin:0.8em 0px;padding:0px;box-sizing:border-box;font-weight:100;"><a name="t17" style="box-sizing:border-box;color:#0c89cf;"></a>最后</h1>
+<p style="margin-top:0px;margin-bottom:1.1em;padding:0px;box-sizing:border-box;">写这篇文章的出发点也是对Android性能优化有个比较清楚的认识，任何事情都不可能一蹴而就，需要循循渐进，对一个初学者你谈优化很不现实，我们先把基本的做好，再去考虑相应的优化，笔者也在不断学习当中，借鉴别人好的优化方案，提高产品的质量，感谢大家对笔者的关注。</p>
+</div>
+</div></body></html>

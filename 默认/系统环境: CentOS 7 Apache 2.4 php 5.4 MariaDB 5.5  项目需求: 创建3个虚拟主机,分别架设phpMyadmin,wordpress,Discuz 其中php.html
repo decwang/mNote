@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-12-08T06:50:19Z"/><meta name="updated" content="2016-12-08T06:50:22Z"/><title>系统环境: CentOS 7 Apache 2.4 php 5.4 MariaDB 5.5  项目需求: 创建3个虚拟主机,分别架设phpMyadmin,wordpress,Discuz 其中php</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>系统环境:</strong><br />
+<a href="http://www.linuxidc.com/topicnews.aspx?tid=14" target="_blank" title="CentOS" style="color:#b32bd5;">CentOS</a>&nbsp;7<br />
+Apache 2.4<br />
+php 5.4<br />
+MariaDB 5.5</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>项目需求:</strong><br />
+创建3个虚拟主机,分别架设phpMyadmin,wordpress,Discuz<br />
+其中phpMyadmin提供https服务.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>一、使用yum安装环境所需组件</strong><br />
+　　httpd,php,php-mysql,mariadb-server</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"># yum install httpd php php-mysql mariadb-server</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>二、关闭SELINUX并配置防火墙</strong></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">1.为了测试方便,先关闭selinux<br />
+　　　　临时关闭:<br />
+　　　　setenforce 0<br />
+<br />
+　　　　永久关闭:<br />
+　　　　vim /etc/sysconfig/selinux<br />
+　　　　SELINUX=disabled</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">2.在CentOS 7自带防火墙中添加80,443,3306端口</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">查看firewall运行状态<br />
+　　　　# firewall-cmd --state<br />
+<br />
+　　　　添加端口<br />
+　　　　# firewall-cmd --add-port=80/tcp --permanent<br />
+　　　　# firewall-cmd --add-port=443/tcp --permanent<br />
+　　　　# firewall-cmd --add-port=3306/tcp --permanent<br />
+<br />
+　　　　重载firewall配置<br />
+　　　　# firewall-cmd --reload<br />
+<br />
+　　　　查看已有规则<br />
+　　　　# iptables -L -n</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>三、测试一下各软件是否正常</strong></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">1.启动httpd并测试访问:</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"># systemctl start httpd<br />
+<br />
+　　　　没什么意外的话,此时浏览器访问测试页应该是成功的.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">2.测试数据库<br />
+　　　　启动MariaDB<br />
+　　　　# systemctl start mariadb<br />
+<br />
+　　　　能进入MariaDB命令行即可<br />
+　　　　# mysql</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/161116211543621.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">3.查看php版本,我的版本是5.4.16<br />
+　　　　# php -v</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/161116211543622.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>四、配置Apache</strong></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">1.新建所需文件夹<br />
+　　　　在/web/vhosts下创建三个虚拟主机分别需要的文件夹 ,pma,wp,dz<br />
+　　　　# mkdir -p /web/vhosts/{pma,wp,dz}</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">2.赋予Apache用户对整个/web目录的访问权:<br />
+　　　　# chown -R apache:apache /web</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">3.创建测试页面<br />
+　　　　# vim /web/vhosts/pma/index.php<br />
+　　　　内容为:<br />
+　　　　&lt;?php<br />
+　　　　echo "this is pma"<br />
+　　　　?&gt;<br />
+<br />
+　　　　# vim /web/vhosts/wp/index.php<br />
+　　　　内容为:<br />
+　　　　&lt;?php<br />
+　　　　echo "this is wp"<br />
+　　　　?&gt;<br />
+<br />
+　　　　# vim /web/vhosts/dz/index.php<br />
+　　　　内容为:<br />
+　　　　&lt;?php<br />
+　　　　echo "this is dz"<br />
+　　　　?&gt;</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">&nbsp;4.取消欢迎页,否则会有干扰<br />
+　　　　# mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.bak</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">5.添加三个虚拟主机</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">创建一个叫vhosts.conf配置文件<br />
+　　　　# vim /etc/httpd/conf.d/vhosts.conf<br />
+<br />
+　　　　内容:<br />
+<br />
+　　　　&lt;VirtualHost *:80&gt;<br />
+　　　　DocumentRoot /web/vhosts/pma<br />
+　　　　ServerName pma.linuxidc.com<br />
+　　　　ErrorLog logs/pma.err<br />
+　　　　CustomLog logs/pma.access combined<br />
+　　　　&lt;/VirtualHost&gt;<br />
+<br />
+　　　　&lt;Directory "/web/vhosts/pma"&gt;<br />
+　　　　Options Indexes FollowSymLinks<br />
+　　　　AllowOverride None<br />
+　　　　Require all granted<br />
+　　　　&lt;/Directory&gt;<br />
+<br />
+　　　　&lt;VirtualHost *:80&gt;<br />
+　　　　DocumentRoot /web/vhosts/wp<br />
+　　　　ServerName wp.linuxidc.com<br />
+　　　　ErrorLog logs/wp.err<br />
+　　　　CustomLog logs/wp.access combined<br />
+　　　　&lt;/VirtualHost&gt;<br />
+<br />
+　　　　&lt;Directory "/web/vhosts/wp"&gt;<br />
+　　　　Options Indexes FollowSymLinks<br />
+　　　　AllowOverride None<br />
+　　　　Require all granted<br />
+　　　　&lt;/Directory&gt;<br />
+<br />
+　　　　&lt;VirtualHost *:80&gt;<br />
+　　　　DocumentRoot /web/vhosts/dz<br />
+　　　　ServerName dz.linuxidc.com<br />
+　　　　ErrorLog logs/dz.err<br />
+　　　　CustomLog logs/dz.access combined<br />
+　　　　&lt;/VirtualHost&gt;<br />
+<br />
+　　　　&lt;Directory "/web/vhosts/dz"&gt;<br />
+　　　　Options Indexes FollowSymLinks<br />
+　　　　AllowOverride None<br />
+　　　　Require all granted<br />
+　　　　&lt;/Directory&gt;</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">6.重新载入httpd配置:<br />
+　　　　# systemctl reload httpd</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">7.测试一下三个虚拟主机:</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/161116211543623.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/161116211543624.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/161116211543625.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">测试成功!</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>五、配置mariaDB</strong></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">1.刚安装完mariaDB后先初始化安全设置</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">运行安全初始化脚本<br />
+　　　　# /usr/bin/mysql_secure_installation<br />
+<br />
+　　　　以下给出我自己的选项作为参考</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/161116211543626.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">1)是否设置root用户密码? (是)</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">2)是否删除匿名用户? (是)<br />
+　　　　3)禁止root用户远程登录吗? (否,但如果生产环境推荐禁止)<br />
+　　　　4)要删除测试数据库吗? (否,如果将来有测试需求就保留)<br />
+　　　　5)重载授权表吗? (是,刚刚的设置立即生效)</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">2.附上root用户改密码命令<br />
+　　　　# mysql<br />
+　　　　SET PASSWORD FOR 'root'@'localhost'=PASSWORD('123456');<br />
+　　　　SET PASSWORD FOR 'root'@'127.0.0.1'=PASSWORD('123456');</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>六.安装程序包</strong><br />
+　　1.安装phpmyadmin,Discuz,wordpress<br />
+　　　　下载安装包到家目录<br />
+　　　　可以用wget或者使用ftp工具,我这里因为用了Xshell连接服务器,所以直接使用了配套的Xftp将控制机中的安装包直接扔进家目录.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/161116211543627.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">2.确保已安装必要的压缩/解压缩工具</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">我这里缺少bzip2,zip和unzip,所以<br />
+　　　　# yum -y install bzip2 zip unzip</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">分别解压缩<br />
+　　　　# unzip Discuz_X3.2_SC_UTF8.zip -d Discuz_X3.2_SC_UTF8<br />
+　　　　# tar -xf wordpress-4.5.3-zh_CN.tar.gz<br />
+　　　　# tar -xf phpMyAdmin-4.4.15.8-all-languages.tar.bz2</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">3.分别复制到定义好的虚拟主机目录下,注意只复制需要的文档</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"># cp -a phpMyAdmin-4.4.15.8-all-languages/* /web/vhosts/pma/<br />
+　　　　# cp -a wordpress/* /web/vhosts/wp/<br />
+　　　　# cp -a Discuz_X3.2_SC_UTF8/upload/* /web/vhosts/dz/</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>七、调试网站</strong><br />
+　　1.配置phpmyadmin<br />
+　　　　#cd /web/vhosts/pma</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">找到默认配置文件并重命名为标准名称<br />
+　　　　# cp config.sample.inc.php config.inc.php</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">编辑配置文件<br />
+　　　　大概17行找到<br />
+　　　　$cfg['blowfish_secret'] = '';</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">这里需要加入一个随机字串,可以在bash下用以下命令生成:<br />
+　　　　# tr -d 'a-zA-Z0-9' &lt; /dev/urandom | head -30 | md5sum</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">比如生成的字串为<br />
+　　　　e2d8e1132dc737b3dc1f05cd44c0cc9e<br />
+　　　　将生成的字串加入到上面的参数的引号中.如图:</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/161116211543628.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">保存退出.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">访问pma.linuxidc.com的时候发现程序报错:</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/161116211543629.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">意思是需要mbstring模块支持,mbstring是一个多语言包.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">所以要安装这个包<br />
+　　　　# yum install php-mbstring<br />
+<br />
+　　　　重载httpd以便配置生效<br />
+　　　　# systemctl reload httpd<br />
+<br />
+　　　　重新访问pma.linuxidc.com,页面成功打开</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/1611162115436210.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">此时可以使用之前配置的mysql的root用户登陆.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">2.创建所需数据库<br />
+　　　　为了安装wordpress和Discuz,可以先使用phpMyadmin来为他们创建数据库.<br />
+　　　　新增-&gt;填写数据库名称-&gt;选择排序编码-&gt;建立</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/1611162115436211.png" alt="" width="705" vspace="5" style="border:0px;cursor:pointer;display:block;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">&nbsp;</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">另外我们希望每个网站可以使用单独的数据库用户进行访问,所以这里为每个数据库创建自己的用户并绑定到对应的数据库.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">回到首页-&gt;用户-&gt;添加用户</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/1611162115436212.png" alt="" width="705" vspace="5" style="border:0px;cursor:pointer;display:block;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">&nbsp;</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">为了方便,我将数据库名与对应的用户名保持一致,可以按下图来创建</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/1611162115436213.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/1611162115436214.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">因为已经提前创建数据库,所以红色下划线的命令会跳过创建数据库的步骤,后面蓝色下划线的命令会把用户绑定给这个数据库.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">3.配置wordpress</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">进入wp目录<br />
+　　　　# cd /web/vhosts/wp<br />
+　　　　复制一个配置文件并重命名为配置文件的标准名称<br />
+　　　　# cp wp-config-sample.php wp-config.php<br />
+　　　　编辑配置文件<br />
+　　　　# vim /web/vhosts/wp/wp-config.php</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/1611162115436215.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">&nbsp;</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">修改对应的值.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">访问wp.linuxidc.com和dz.linuxidc.com,会显示安装界面.分别使用之前设定的参数安装即可.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>八、给pma.linuxidc.com配置https</strong></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">1.确保OpenSSL已安装,因为要使用OpenSSL生成自签名证书<br />
+　　　　# httpd -M | grep ssl<br />
+　　　　如果没有则安装<br />
+　　　　# yum install mod_ssl openssl</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">2.配置CA服务器<br />
+　　　　我的方法是先配置一台CA服务器 (CentOS A),之后再让当前这台服务器(CentOS B)向CentOS A申请认证.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">3.配置CA服务器(CentOS A)</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">3.1 初始化CA服务,创建所需要的文件<br />
+　　　　　　# cd /etc/pki/CA/<br />
+　　　　　　# touch index.txt //创建索引文件<br />
+　　　　　　# echo 01 &gt; serial //创建序列号文件</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">3.2 CA自签证书<br />
+　　　　　　生成私钥<br />
+　　　　　　# (umask 077; openssl genrsa -out /etc/pki/CA/private/cakey.pem 2048)<br />
+　　　　　　使用私钥生成签名证书<br />
+　　　　　　# openssl req -new -x509 -key /etc/pki/CA/private/cakey.pem -days 7300 -out /etc/pki/CA/cacert.pem</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">4.申请证书(CentOS B):<br />
+<br />
+　　　　4.1 创建一个存放证书的目录<br />
+　　　　　　# mkdir /etc/httpd/ssl<br />
+　　　　　　# cd /etc/httpd/ssl<br />
+<br />
+　　　　4.2 生成秘钥<br />
+　　　　　　# (umask 007;openssl genrsa -out httpd.key 1024)<br />
+　　　　4.3 生成请求文件<br />
+　　　　　　# openssl req -new -key httpd.key -out httpd.csr<br />
+<br />
+　　　　4.4 填表,按照自己情况写<br />
+　　　　　　Country Name (2 letter code) [XX]:CN<br />
+　　　　　　State or Province Name (full name) []:Beijing<br />
+　　　　　　Locality Name (eg, city) [Default City]:Beijing<br />
+　　　　　　Organization Name (eg, company) [Default Company Ltd]:Quintin Ltd&nbsp;<br />
+　　　　　　Organizational Unit Name (eg, section) []:Ops<br />
+　　　　　　Common Name (eg, your name or your server's hostname) []:pma.linuxidc.com<br />
+　　　　　　Email Address []:admin@linuxidc.com<br />
+<br />
+<br />
+　　　　4.5 把生成的文件发送到CA服务器 CentOS A,这里我使用scp命令:<br />
+　　　　　　# scp httpd.csr root@192.168.3.67:/tmp/<br />
+<br />
+　　　　4.6 按照提示操作成功之后,httpd.csr 应该已经在CentOS A的/tmp/目录中.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">5.签署证书(CentOS A):</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">5.1 签署,有效期十年<br />
+　　　　　　# openssl ca -in /tmp/httpd.csr -out /etc/pki/CA/certs/pma.linuxidc.com.crt -days 3650<br />
+　　　　5.2 将生成的crt传回CentOS B<br />
+　　　　　　# scp /etc/pki/CA/certs/pma.linuxidc.com.crt root@192.168.3.77:/etc/httpd/ssl/<br />
+　　　　5.3 按照提示操作成功之后,pma.linuxidc.com.crt 应该已经在CentOS B的/etc/httpd/ssl/目录中.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">6.配置ssl(CentOS B):</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">6.1 事先备份<br />
+　　　　　　# cd /etc/httpd/conf.d/<br />
+　　　　　　# cp ssl.conf{,.bak}<br />
+<br />
+　　　　6.2 编辑ssl.conf<br />
+　　　　　　# vim ssl.conf<br />
+<br />
+　　　　　　以下为修改项<br />
+　　　　　　&lt;VirtualHost _default_:443&gt;<br />
+　　　　　　=&gt;<br />
+　　　　　　&lt;VirtualHost *:443&gt;<br />
+<br />
+　　　　　　基本设置<br />
+　　　　　　DocumentRoot "/web/vhosts/pma"<br />
+　　　　　　ServerName pma.linuxidc.com:443<br />
+<br />
+　　　　　　证书位置<br />
+　　　　　　SSLCertificateFile /etc/pki/tls/certs/localhost.crt<br />
+　　　　　　=&gt;<br />
+　　　　　　SSLCertificateFile /etc/httpd/ssl/pma.linuxidc.com.crt<br />
+<br />
+　　　　　　私钥位置<br />
+　　　　　　SSLCertificateKeyFile /etc/pki/tls/private/localhost.key<br />
+　　　　　　=&gt;<br />
+　　　　　　SSLCertificateKeyFile /etc/httpd/ssl/httpd.key<br />
+<br />
+　　　　　　保存退出.<br />
+<br />
+　　　　6.3 检查配置文件语法错误:<br />
+　　　　　　# httpd -t<br />
+<br />
+　　　　6.4 重启httpd:<br />
+　　　　　　# systemctl restart httpd<br />
+<br />
+　　　　6.5 查看443端口是否已开启:<br />
+　　　　　　# ss -tnl</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/1611162115436216.png" alt="" width="705" vspace="5" style="border:0px;cursor:pointer;display:block;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">&nbsp;</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">6.6 去浏览器访问格式:<br />
+　　　　　　https://pma.linuxidc.com<br />
+<br />
+　　　　　　看见https字样就对了.但会提示无效,添加信任即可.</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><img src="http://www.linuxidc.com/upload/2016_11/1611162115436217.png" alt="" style="border:0px;" /></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><strong>下面关于<span style="color:#ff0000;">LAMP相关</span>的内容你可能也喜欢</strong>：</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">LAMP平台安装Xcache和Memcached加速网站运行&nbsp;&nbsp;<a href="http://www.linuxidc.com/Linux/2015-06/118835.htm" style="color:#b32bd5;">http://www.linuxidc.com/Linux/2015-06/118835.htm</a>&nbsp;</p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">CentOS 7下搭建LAMP平台环境&nbsp;&nbsp;<a href="http://www.linuxidc.com/Linux/2015-06/118818.htm" style="color:#b32bd5;">http://www.linuxidc.com/Linux/2015-06/118818.htm</a></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">CentOS 6.5系统安装配置LAMP(Apache+PHP5+MySQL)服务器环境&nbsp;<a href="http://www.linuxidc.com/Linux/2014-12/111030.htm" style="color:#b32bd5;">http://www.linuxidc.com/Linux/2014-12/111030.htm</a></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><a href="http://www.linuxidc.com/topicnews.aspx?tid=2" target="_blank" title="Ubuntu" style="color:#b32bd5;">Ubuntu</a>&nbsp;14.04 配置 LAMP+phpMyAdmin PHP(5.5.9)开发环境&nbsp;&nbsp;<a href="http://www.linuxidc.com/Linux/2014-10/107924.htm" style="color:#b32bd5;">http://www.linuxidc.com/Linux/2014-10/107924.htm</a></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">Ubuntu 14.10 下安装 LAMP 服务图文详解&nbsp;&nbsp;<a href="http://www.linuxidc.com/Linux/2014-12/110082.htm" style="color:#b32bd5;">http://www.linuxidc.com/Linux/2014-12/110082.htm</a></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">LAMP结合NFS构建小型博客站点&nbsp;&nbsp;<a href="http://www.linuxidc.com/Linux/2015-08/121029.htm" style="color:#b32bd5;">http://www.linuxidc.com/Linux/2015-08/121029.htm</a></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">CentOS7下安装部署LAMP环境&nbsp;&nbsp;<a href="http://www.linuxidc.com/Linux/2016-04/130653.htm" style="color:#b32bd5;">http://www.linuxidc.com/Linux/2016-04/130653.htm</a></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;">Ubuntu 16.04搭建LAMP开发环境&nbsp;<a href="http://www.linuxidc.com/Linux/2016-10/136327.htm" style="color:#b32bd5;">http://www.linuxidc.com/Linux/2016-10/136327.htm</a></p>
+<p style="color:#333333;font-family:tahoma, 宋体;font-variant-ligatures:normal;orphans:2;text-align:justify;widows:2;background-color:#fafafc;"><span style="font-size:small;"><strong>本文永久更新链接地址</strong></span>：<a href="http://www.linuxidc.com/Linux/2016-11/137209.htm" style="color:#b32bd5;">http://www.linuxidc.com/Linux/2016-11/137209.htm</a></p></body></html>

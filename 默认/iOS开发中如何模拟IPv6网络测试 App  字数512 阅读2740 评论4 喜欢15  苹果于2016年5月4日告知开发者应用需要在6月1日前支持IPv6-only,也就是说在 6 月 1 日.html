@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-10-08T10:37:59Z"/><meta name="updated" content="2016-10-08T10:38:01Z"/><title>iOS开发中如何模拟IPv6网络测试 App  字数512 阅读2740 评论4 喜欢15  苹果于2016年5月4日告知开发者应用需要在6月1日前支持IPv6-only,也就是说在 6 月 1 日</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h1 class="title" style="margin:10px 0px;font-family:-apple-system, 'Helvetica Neue', Arial, 'PingFang SC', 'lucida grande', 'lucida sans unicode', lucida, helvetica, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;line-height:1.5;color:#555555;text-rendering:optimizelegibility;font-size:32px;word-break:break-all;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;widows:1;">iOS开发中如何模拟IPv6网络测试 App</h1>
+<div class="meta-top" style="font-family:-apple-system, 'Helvetica Neue', Arial, 'PingFang SC', 'lucida grande', 'lucida sans unicode', lucida, helvetica, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;margin:20px 0px;color:#555555;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:20px;widows:1;"><span class="wordage" style="position:relative;top:1px;margin-right:10px;font-size:12px;color:#999999;">字数512</span>&nbsp;<span class="views-count" style="position:relative;top:1px;margin-right:10px;font-size:12px;color:#999999;">阅读2740</span>&nbsp;<span class="comments-count" style="position:relative;top:1px;margin-right:10px;font-size:12px;color:#999999;">评论4</span>&nbsp;<span class="likes-count" style="position:relative;top:1px;margin-right:10px;font-size:12px;color:#999999;">喜欢15</span></div>
+<div class="show-content" style="color:#2f2f2f;font-size:16px;line-height:1.7;font-family:-apple-system, 'Helvetica Neue', Arial, 'PingFang SC', 'lucida grande', 'lucida sans unicode', lucida, helvetica, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;widows:1;"><p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">苹果于2016年5月4日告知开发者应用需要在6月1日前支持IPv6-only,也就是说在 6 月 1 日后发布的新版本是需要支持 IPv6-only.<br />
+原文地址：<a href="https://developer.apple.com/news/?id=05042016a" target="_blank" style="color:#4094c7;text-decoration:none;">https://developer.apple.com/news/?id=05042016a</a><br />
+请看下图:</p>
+<div class="image-package imagebubble" widget="ImageBubble" style="margin:0px auto 20px;text-align:center;"><img src="http://upload-images.jianshu.io/upload_images/617202-421a08b72e5e34b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/617202-421a08b72e5e34b9.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" style="height:auto;vertical-align:middle;border:0px;cursor:-webkit-zoom-in;transition:all 0.25s ease-in-out;-webkit-transition:all 0.25s ease-in-out;" /><br />
+<div class="image-caption" style="min-width:20%;min-height:22px;display:inline-block;padding:10px;margin:0px auto;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#d9d9d9;font-size:13px;color:#999999;font-style:italic;line-height:1.7;">Paste_Image.png</div>
+</div>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">其中蓝色部分的高级API，其实都已经帮我们做好了IPv6的支持，我们使用的大多数第三方网络库也都是基于这些高级API的，所以这里我们不需要做什么改动。 需要注意的是下面的红色部分的底层的socket API需要做出适配支持。</p>
+<hr style="margin:0px 0px 20px;border-right-width:0px;border-left-width:0px;border-top-style:solid;border-top-color:#d9d9d9;border-bottom-style:solid;border-bottom-color:white;" />
+<h4 style="margin:0px;font-family:inherit;line-height:1.8;color:inherit;text-rendering:optimizelegibility;font-size:20px;">适配支持方案</h4>
+<ul style="padding:0px;margin:0px 0px 20px 25px;text-align:justify;word-break:break-word;"><li style="line-height:30px;">不要使用硬编码的IPv4的地址，取而代之应该使用域名;</li>
+<li style="line-height:30px;">搜一下是否有用到下面的这些API，这些API都是只针对IPv4做处理的，删除掉就可以：<ul style="padding:0px;margin:15px 0px 20px 25px;word-break:break-word;"><li style="line-height:30px;">inet_addr()</li>
+<li style="line-height:30px;">inet_aton()</li>
+<li style="line-height:30px;">inet_lnaof()</li>
+<li style="line-height:30px;">inet_makeaddr()</li>
+<li style="line-height:30px;">inet_netof()</li>
+<li style="line-height:30px;">inet_network()</li>
+<li style="line-height:30px;">inet_ntoa()</li>
+<li style="line-height:30px;">inet_ntoa_r()</li>
+<li style="line-height:30px;">bindresvport()</li>
+<li style="line-height:30px;">getipv4sourcefilter()</li>
+<li style="line-height:30px;">setipv4sourcefilter()</li>
+</ul>
+</li>
+<li style="line-height:30px;">如果项目中用到了以下的IPv4的类型，那么也要支持相应的IPv6类型</li>
+</ul>
+<div class="image-package imagebubble" widget="ImageBubble" style="margin:0px auto 20px;text-align:center;"><img src="http://upload-images.jianshu.io/upload_images/617202-e6c4a9e28fe99c56.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/617202-e6c4a9e28fe99c56.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" style="height:auto;vertical-align:middle;border:0px;cursor:-webkit-zoom-in;transition:all 0.25s ease-in-out;-webkit-transition:all 0.25s ease-in-out;" /><br />
+<div class="image-caption" style="min-width:20%;min-height:22px;display:inline-block;padding:10px;margin:0px auto;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#d9d9d9;font-size:13px;color:#999999;font-style:italic;line-height:1.7;">Paste_Image.png</div>
+</div>
+<ul style="padding:0px;margin:0px 0px 20px 25px;text-align:justify;word-break:break-word;"><li style="line-height:30px;">如果强制需要使用IPv4的地址，苹果官方的适配方法给出了解决方式。<a href="https://developer.apple.com/library/ios/documentation/NetworkingInternetWeb/Conceptual/NetworkingOverview/UnderstandingandPreparingfortheIPv6Transition/UnderstandingandPreparingfortheIPv6Transition.html" target="_blank" style="color:#4094c7;text-decoration:none;">Use System APIs to Synthesize IPv6 Addresses</a></li>
+</ul>
+<hr style="margin:0px 0px 20px;border-right-width:0px;border-left-width:0px;border-top-style:solid;border-top-color:#d9d9d9;border-bottom-style:solid;border-bottom-color:white;" />
+<h4 style="margin:0px;font-family:inherit;line-height:1.8;color:inherit;text-rendering:optimizelegibility;font-size:20px;">适配支持验证方法</h4>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">首先通过Mac的共享网络共享一个IPv6的无线网，跟已往创建方式不同的是进入共享时需要按住Option键，不然Create NAT64 Network<br />
+的选项不会出现<br />
+相应步骤如下:</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">第一步:</p>
+<div class="image-package imagebubble" widget="ImageBubble" style="margin:0px auto 20px;text-align:center;"><img src="http://upload-images.jianshu.io/upload_images/617202-cc9c9fcdf8495119.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/617202-cc9c9fcdf8495119.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" style="height:auto;vertical-align:middle;border:0px;cursor:-webkit-zoom-in;transition:all 0.25s ease-in-out;-webkit-transition:all 0.25s ease-in-out;" /><br />
+<div class="image-caption" style="min-width:20%;min-height:22px;display:inline-block;padding:10px;margin:0px auto;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#d9d9d9;font-size:13px;color:#999999;font-style:italic;line-height:1.7;">Paste_Image.png</div>
+</div>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">第二步:</p>
+<div class="image-package imagebubble" widget="ImageBubble" style="margin:0px auto 20px;text-align:center;"><img src="http://upload-images.jianshu.io/upload_images/617202-7362961d1f77cdfe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/617202-7362961d1f77cdfe.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" style="height:auto;vertical-align:middle;border:0px;cursor:-webkit-zoom-in;transition:all 0.25s ease-in-out;-webkit-transition:all 0.25s ease-in-out;" /><br />
+<div class="image-caption" style="min-width:20%;min-height:22px;display:inline-block;padding:10px;margin:0px auto;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#d9d9d9;font-size:13px;color:#999999;font-style:italic;line-height:1.7;">Paste_Image.png</div>
+</div>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">第三步: 需要使你的iPhone连接上分享出来的热点即可 注：需要将iPhone的蜂窝网络数据关掉，以保证只有通过WiFi在连接网络.</p>
+<div class="image-package imagebubble" widget="ImageBubble" style="margin:0px auto 20px;text-align:center;"><img src="http://upload-images.jianshu.io/upload_images/617202-da2c26789eb834d1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/617202-da2c26789eb834d1.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" style="height:auto;vertical-align:middle;border:0px;cursor:-webkit-zoom-in;transition:all 0.25s ease-in-out;-webkit-transition:all 0.25s ease-in-out;" /><br />
+<div class="image-caption" style="min-width:20%;min-height:22px;display:inline-block;padding:10px;margin:0px auto;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#d9d9d9;font-size:13px;color:#999999;font-style:italic;line-height:1.7;">Paste_Image.png</div>
+</div>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">注意: 手机上面的 HTTP代理必须关闭.</p>
+</div></body></html>
