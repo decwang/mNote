@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-09-05T10:02:21Z"/><meta name="updated" content="2013-09-05T10:02:30Z"/><title>Compile ffmpeg for iOS 6, support Simulator & armv7 & armv7s     博客分类： iphone & ipad    iOSffmpeg  </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="blog_title">
+    <h3>
+      <a href="http://witcheryne.iteye.com/blog/1734706">Compile ffmpeg for iOS 6, support Simulator &amp; armv7 &amp; armv7s</a>       <em class="actions">      </em>     </h3>
+    <ul class="blog_categories"><strong>博客分类：</strong> <li><a href="http://witcheryne.iteye.com/category/249787">iphone &amp; ipad</a></li>
+ </ul>
+        <div class="news_tag"><a href="http://www.iteye.com/blogs/tag/iOS">iOS</a><a href="http://www.iteye.com/blogs/tag/ffmpeg">ffmpeg</a>&nbsp;</div>
+  </div>
+  <div id="blog_content" class="blog_content">
+    <div class="iteye-blog-content-contain">
+<p>In the posts, I will show how to use ffmpeg on iOS.</p>
+<p>&nbsp;</p>
+<p><strong>This posts is a document for this project:&nbsp;</strong></p>
+<p><a href="https://github.com/lvjian700/ffmpegc-demo">https://github.com/lvjian700/ffmpegc-demo</a></p>
+<p>&nbsp;</p>
+<p><strong>Now, ffmpec support x264 module. If you use the script before, please check your version first.&nbsp;</strong></p>
+<p>&nbsp;</p>
+<h2>What is <a href="http://ffmpeg.org/">ffmpeg</a> ?</h2>
+<p>FFmpeg is a complete, across-platform solution to record, convert and stream audio and video.&nbsp;</p>
+<h2>Why use ffmpeg?</h2>
+<ul>
+<li>Play h.264 video</li>
+<li>encoding capture video to h.264 video(It need ffmpeg h.264 module.)</li>
+<li>publish a av stream</li>
+<li>subscribe a rtsp av stream</li>
+</ul>
+<h2>Before use ffmpegc-demo, you should download and compile ffmpeg:</h2>
+<div>I made a repository to make the step easy:</div>
+<div>
+<div id="" class="dp-highlighter"><div class="bar"><div class="tools">Shell代码 <embed wmode="transparent" src="http://witcheryne.iteye.com/javascripts/syntaxhighlighter/clipboard_new.swf" flashvars="clipboard=git%20clone%20git%40github.com%3Alvjian700%2Fffmpegc.git%0Acd%20ffmpegc%0A.%2Finstall-ffmpeg.sh" quality="high" allowscriptaccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" height="15" width="14" />&nbsp;<a href="" title="收藏这段代码"><img class="star" src="http://witcheryne.iteye.com/images/icon_star.png" alt="收藏代码" /></a></div>
+</div>
+<ol class="dp-default" start="1"><li>git&nbsp;clone&nbsp;git@github.com:lvjian700/ffmpegc.git&nbsp;&nbsp;</li>
+<li>cd&nbsp;ffmpegc&nbsp;&nbsp;</li>
+<li>./install-ffmpeg.sh&nbsp;&nbsp;</li>
+</ol>
+</div>
+&nbsp;<a href="https://github.com/lvjian700/ffmpegc">https://github.com/lvjian700/ffmpegc</a> </div>
+<h3>If compile complete, you can find universal library in ffmpeg/build folder:</h3>
+<div>1. ffmpeg core library:</div>
+<div>
+<img alt="" src="http://dl2.iteye.com/upload/attachment/0085/0318/11a437db-5e28-3fd5-9ab3-4dd93f4147e5.png" /><br />
+&nbsp;</div>
+<div>2. ffmpeg x264 module. x264 is a H.264/MPEG-4 AVC encoder&nbsp;</div>
+<div>
+<img class="magplus" title="点击查看原始大小图片" alt="" src="http://dl2.iteye.com/upload/attachment/0085/0320/380b5f32-3b5e-3e6c-b4dd-49e74191977e.png" height="213" width="700" /><br />
+&nbsp;</div>
+<h2>Using ffmpeg</h2>
+<h3>1. Clone project first:</h3>
+<div>
+<div id="" class="dp-highlighter"><div class="bar"><div class="tools">Java代码 <embed wmode="transparent" src="http://witcheryne.iteye.com/javascripts/syntaxhighlighter/clipboard_new.swf" flashvars="clipboard=git%40github.com%3Alvjian700%2Fffmpegc-demo.git" quality="high" allowscriptaccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" height="15" width="14" />&nbsp;<a href="" title="收藏这段代码"><img class="star" src="http://witcheryne.iteye.com/images/icon_star.png" alt="收藏代码" /></a></div>
+</div>
+<ol class="dp-j" start="1"><li>git<span class="annotation">@github</span>.com:lvjian700/ffmpegc-demo.git&nbsp;&nbsp;</li>
+</ol>
+</div>
+</div>
+<h3>2.Open in XCode and copy build/*.a and x264/build/*.a to libs/ folder of the&nbsp;project:</h3>
+<p><img class="magplus" title="点击查看原始大小图片" alt="" src="http://dl2.iteye.com/upload/attachment/0085/0325/82f6bf73-e1bd-3703-a6db-83a292bcb9b8.png" height="347" width="700" /><br />
+&nbsp;</p>
+<h3>3. Add them to project link library</h3>
+<div>Project References&nbsp;-&gt; Targets -&gt; Build Phases -&gt; Link Binary With Librarys</div>
+<div>
+<br />
+<img class="magplus" title="点击查看原始大小图片" alt="" src="http://dl.iteye.com/upload/attachment/0077/0400/120bf08f-a399-329b-a977-bc412ab4a7f2.png" height="454" width="700" /><br />
+&nbsp;</div>
+<h3>4. Add dependences library:</h3>
+<div>Project References -&gt; Targets -&gt; Build Phases -&gt; Link Binary With Librarys</div>
+<div>Add two library:</div>
+<div>
+<ul>
+<li>libbz.dylib</li>
+<li>libz.dylib</li>
+<li>libiconv.2.4.0.dylib</li>
+</ul>
+<div>
+<img alt="" src="http://dl.iteye.com/upload/attachment/0077/0405/76568674-6942-3d9c-919b-b7c265fc89a3.png" /><br />
+&nbsp;</div>
+</div>
+<h3>5. Add Header Search Paths:</h3>
+<div>Project References -&gt; Targets -&gt; Build Settings -&gt;&nbsp;<strong>Header Search Paths</strong> </div>
+<div>1. add ffmpeg core header paths:</div>
+<div>
+<img class="magplus" title="点击查看原始大小图片" alt="" src="http://dl.iteye.com/upload/attachment/0077/0407/97b61036-201b-37c9-8355-9500aa0ade29.png" height="467" width="700" /><br />
+&nbsp;</div>
+<div>2. add x264 header paths:</div>
+<div>
+<img alt="" src="http://dl2.iteye.com/upload/attachment/0085/0323/7746423e-3af6-329e-a827-d5c4ee037f6c.png" /><br />
+&nbsp;</div>
+<div>&nbsp;</div>
+<p>&nbsp;</p>
+<h3>6. Now, run project ...</h3>
+<p><img class="magplus" title="点击查看原始大小图片" alt="" src="http://dl.iteye.com/upload/attachment/0077/0409/4ac5fe50-df31-3dee-80ff-936c7605973c.png" height="462" width="700" /></p>
+<p>&nbsp;</p>
+<p>Some useful document:</p>
+<p><a href="http://www.tangentsoftworks.com/blog/2012/11/12/how-to-prepare-your-mac-for-ios-development-with-ffmpeg-libraries/">《How to prepare your mac for ios development with ffmpeg libraries》</a></p>
+<p><a href="http://www.tangentsoftworks.com/blog/wp-content/uploads/2012/11/FFmpeg-Configure-Options.pdf">《ffmpeg configure options》 -pdf</a></p>
+<p>&nbsp;</p>
+</div>
+</div></body></html>

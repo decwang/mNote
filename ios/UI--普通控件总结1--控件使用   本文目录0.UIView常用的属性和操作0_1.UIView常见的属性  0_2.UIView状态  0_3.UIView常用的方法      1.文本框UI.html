@@ -1,0 +1,936 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-01-05T07:20:43Z"/><meta name="updated" content="2016-01-05T07:20:45Z"/><title>UI--普通控件总结1--控件使用   本文目录0.UIView常用的属性和操作0_1.UIView常见的属性  0_2.UIView状态  0_3.UIView常用的方法      1.文本框UI</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><span style="font-family:Tahoma;line-height:24px;widows:1;">UI--普通控件总结1--控件使用</span><br style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;" />
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;"><a name="labelTop" style="margin:0px;padding:0px;color:#173e80;display:inline-block;height:0px;"></a></p>
+<div id="navCategory" style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;"><strong style="margin:0px;padding:0px;">本文目录</strong><ul style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor0_0" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">0.UIView常用的属性和操作</a><ul style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor0_1" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">0_1.UIView常见的属性</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor0_2" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">0_2.UIView状态</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor0_3" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">0_3.UIView常用的方法</a></li>
+</ul>
+</li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor1_0" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">1.文本框UITextField和文本视图UITextView</a><ul style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor1_1" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">1_1.文本框UITextField(几乎包含了iOS控件的所有的通用属性)</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor1_2" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">1_2.文本视图UITextView</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor1_3" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">1_3.键盘输入的处理程序</a></li>
+</ul>
+</li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor2_0" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">2.标签UILabel和按钮UIButton</a><ul style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor2_1" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">2_1.标签UILabel</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor2_2" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">2_2.按钮UIButton</a></li>
+</ul>
+</li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor3_0" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">3.滑块UISlider、步进UIStepper和图像UIImageView</a><ul style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor3_1" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">3_1.滑块UISlider</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor3_2" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">3_2.步进UIStepper</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor3_3" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">3_3.图像UIImageView</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor3_4" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">3_4.图片浏览器</a></li>
+</ul>
+</li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor4_0" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">4.开关控件UISwitch和分段控件UISegmentedControl</a><ul style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor4_1" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">4_1.开关控件UISwitch</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor4_2" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">4_2.分段控件UISegmentedControl</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor4_3" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">4_3.图片排序</a></li>
+</ul>
+</li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor5_0" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">5.工具栏UIToolBar</a><ul style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor5_1" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">5_1.工具栏UIToolBar的使用</a></li>
+<li style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><a href="http://www.data321.com/iphone/1854312.html#anchor5_2" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">5_2.UIBarButtonItem</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">说明：<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#ff6600;">这个专题，是介绍了一些常用的普通空间的属性和使用，包括：UITextField、UITextView、UILabel、UIButton、UISlider、UIStepper、UIImageView、UISwitch、UISegmentedControl、UIToolBar。</span></span></p>
+<div style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;text-align:center;font-size:10pt;"><a name="anchor0_0" style="margin:0px;padding:0px;color:#173e80;display:inline-block;">-0.UIView常用的属性和操作</a></div>
+<div id="0_0" style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;"><h2 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">0.UIView常用的属性和操作</span></h2>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">这是ios-UI继承关系图</span></p>
+<img src="http://www.data321.com/img/2015/03/07/1254361697.png" alt="textRectForBounds" width="720px" style="margin:0px;padding:0px;max-width:635px;height:auto;" /><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">任何控件都继承自UIView，因此UIView里面包装了一些控件的共有属性和通过的方法。</span></p>
+<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor0_1" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">0_1.UIView常见的属性</span></h3>
+<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">1.frame</span><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">frame是一个<code style="margin:0px;padding:0px;">CGRect</code>类型的成员变量，用来设置控件要显示的位置<code style="margin:0px;padding:0px;">frame.origin</code>和尺寸<code style="margin:0px;padding:0px;">frame.size</code>,其中位置是在<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#ff0000;">父控件</span>中的位置,以父控件的左上角为原点。</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">如果要修改一个控件的frame不可以直接修改内部结构体的值，如<code style="margin:0px;padding:0px;">frame.origin.x = 100;</code>是不可以的，应该将其取出，修改之后，再重新赋值，看下面的例子：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">// 1.先取出frame
+CGRect tempFrame = self.btn.frame;
+
+// 2.修改y值
+tempFrame.origin.y -= 50;
+
+// 3.重新赋值按钮的frame
+self.btn.frame = tempFrame;</pre><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:12pt;font-family:Consolas;">2.bounds</span><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">bounds也是一个<code style="margin:0px;padding:0px;">CGRect</code>类型的成员变量，但是<code style="margin:0px;padding:0px;">bounds.origin.x</code>和<code style="margin:0px;padding:0px;">bounds.origin.y</code>始终为0；<code style="margin:0px;padding:0px;">bounds.size.width</code>和<code style="margin:0px;padding:0px;">bounds.size.height</code>的值分别等于<code style="margin:0px;padding:0px;">frame.size.width</code>和<code style="margin:0px;padding:0px;">frame.size.height</code>。</span></p>
+<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:12pt;font-family:Consolas;">3.center</span><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">center是一个<code style="margin:0px;padding:0px;">CGPoint</code>类型的成员变量，表示控件的中点在父控件中的位置，以父控件的左上角为原点。</span></p>
+<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:12pt;font-family:Consolas;">4.tag</span><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">tag是<code style="margin:0px;padding:0px;">NSInteger</code>类型的成员变量，用于标识一个空间，以便操作这个控件，例如：当两个button都设置了同一个方法为点击的处理事件，可以设置两个按钮的tag为1和2，然后在方法中分别处理：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (IBAction)btnClick:(id)sender
+{
+    switch ([sender tag])
+    {
+        case 1:
+            NSLog(@"点击了按钮1--");
+            break;
+        case 2:
+            NSLog(@"点击了按钮2--");
+            break;
+        default:
+            break;
+    }
+}</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">下面是一个让按钮可以向上、向下、向左、向右移动的例子，并为移动过程添加了动画</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void) btnClickWithBlock:(void (^)())block{
+    // 0.动画(头部--开始动画)
+    [UIView beginAnimations:nil context:nil];
+    // 设置动画的执行时间
+    [UIView setAnimationDuration:1.0];
+
+    block();
+
+    // 4.动画(尾部--提交动画--执行动画)
+    [UIView commitAnimations];
+    
+}
+#pragma mark 控制按钮走动(上下左右)
+- (IBAction)run:(id)sender {
+    [self btnClickWithBlock:^{
+        // 1.先取出frame
+        CGRect tempFrame = self.btn.frame;
+        
+        // 2.修改x,y值       
+        switch ([sender tag]) {
+            case 1:
+                tempFrame.origin.y -= kDelta;
+                break;
+            case 2:
+                tempFrame.origin.x += kDelta;
+                break;
+            case 3:
+                tempFrame.origin.y += kDelta;
+                break;
+            case 4:
+                tempFrame.origin.x -= kDelta;
+                break;
+            default:
+                break;
+        }
+        
+        // 3.重新赋值按钮的frame
+        self.btn.frame = tempFrame;
+}</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">如果使用center属性来移动位置，代码又简化了一点,因为center的值是可以直接修改的：(下面仅仅修改移动部分的代码)</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">#pragma mark 控制按钮走动(上下左右)
+- (IBAction)run:(id)sender {
+    [self btnClickWithBlock:^{
+        // 使用center的方案
+        CGPoint tempCenter = self.btn.center;
+        switch ([sender tag]) {
+            case 1:
+                tempCenter.y -= kDelta;
+                break;
+            case 2:
+                tempCenter.x += kDelta;
+                break;
+            case 3:
+                tempCenter.y += kDelta;
+                break;
+            case 4:
+                tempCenter.x -= kDelta;
+                break;
+            default:
+                break;
+        }
+        self.btn.center = tempCenter;
+    }];
+}</pre><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:12pt;font-family:Consolas;">5.superview</span><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">superview是<code style="margin:0px;padding:0px;">UIView *</code>类型的成员变量，它的值为当前控件的父控件</span></p>
+<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:12pt;font-family:Consolas;">6.subviews</span><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">subviews是<code style="margin:0px;padding:0px;">NSArray *</code>类型的成员变量，它的值为当前控件的子控件组成的数组，在数组中的顺序与加入到当前控件的顺序一致。</span></p>
+<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:12pt;font-family:Consolas;">7.transform</span><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">transform是一个<code style="margin:0px;padding:0px;">CGAffineTransform</code>类型的成员变量，它是一个结构体类型，表示形变的参数（设置这个参数后,控件会按照这个参数进行形变，<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#ff0000;">参数指定了变形后的终态</span>），形变的类型有多种，包括旋转、放缩等，默认的值为<code style="margin:0px;padding:0px;">CGAffineTransformIdentity</code>。下面是一些该属性的使用示例，为了使用动画，用到了前面的<code style="margin:0px;padding:0px;">btnClickWithBlock:</code>方法</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (IBAction)leftRotate:(id)sender {
+    // 弧度制 角度 以顺时针为正向，负数为左旋转    
+    [self btnClickWithBlock:^{
+        self.btn.transform = CGAffineTransformRotate(self.btn.transform, -M_PI_4);// 向左旋转45度 这个函数的第一个参数为形变初态，第二个参数指定了终态 注意和下面的区别
+        // self.btn.transform = CGAffineTransformMakeRotation(-M_PI_4);// 控件内部会记录形变初态，若执行一次这句代码会旋转一次，若再次执行不会再旋转，因为旋转一次后已经和指定的终态相同。而上面的代码，会将上次旋转后的状态设置为本次旋转的初态，因而每次执行都会旋转
+    }];
+}
+#pragma mark - 放大
+- (IBAction)big:(id)sender {
+    
+    [self btnClickWithBlock:^{
+        self.btn.transform = CGAffineTransformScale(self.btn.transform, 1.2, 1.2);// 宽和高放大为1.2倍
+    }];
+}
+#pragma mark - 重置为默认的状态
+- (IBAction)reset:(id)sender {
+    [self btnClickWithBlock:^{
+        self.btn.transform = CGAffineTransformIdentity;
+    }];
+}</pre><div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor0_2" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">0_2.UIView状态</span></h3>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIView有不同的状态：以按钮<code style="margin:0px;padding:0px;">UIButton</code>为例就有这样几种状态：默认<code style="margin:0px;padding:0px;">Default</code>，高亮<code style="margin:0px;padding:0px;">Highlighted</code>，选中<code style="margin:0px;padding:0px;">Selected</code>，不可用<code style="margin:0px;padding:0px;">Disabled</code>。不同的状态下有相同的属性，例如上面提到的几种属性，在编码时千万注意不可将不同的状态下的属性混用了。UIView通常包含上面四中状态，很多人对高亮状态和选中状态不易区分：高亮<code style="margin:0px;padding:0px;">Highlighted</code>是正在选择时（触摸到时，或者长按时）的状态，而选中<code style="margin:0px;padding:0px;">Selected</code>则是点选后的状态,官方有下面的解释：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">UIControlStateHighlighted
+Highlighted state of a control. A control enters this state when a touch enters and exits during tracking and when there is a touch up event. You can retrieve and set this value through the highlighted property.
+Available in iOS 2.0 and later.
+Declared in UIControl.h.
+
+
+UIControlStateSelected
+Selected state of a control. For many controls, this state has no effect on behavior or appearance. But other subclasses (for example, the UISegmentedControl class) may have different appearance depending on their selected state. You can retrieve and set this value through the selected property.
+Available in iOS 2.0 and later.
+Declared in UIControl.h.</pre><div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor0_3" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">0_3.UIView常用的方法</span></h3>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">这部分将使用代码创建一些控件的方式展示一些UIView的常用方法。首先要明确一点代码应该添加到什么地方，通常控制器负责界面的初始化，控制器首先会加载storyboard中的界面然后执行<code style="margin:0px;padding:0px;">viewDidLoad</code>方法，因此可以在<code style="margin:0px;padding:0px;">viewDidLoad</code>方法中添加一些其他的控件</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">@implementation ViewController
+
+#pragma mark 控制器的view加载完毕的时候会调用一次
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    // 1. 创建一个按钮
+    // 1.1创建
+    UIButton *btn = [[UIButton alloc] init];
+    // 1.2设置按钮的尺寸和位置
+    btn.frame = CGRectMake(0, 0, 100, 100);
+    // 1.3设置按钮的普通状态下的属性
+    // 1.3.1设置背景图片
+    UIImage *normal = [UIImage imageNamed:@"btn_01.png"];
+    [btn setBackgroundImage:normal forState:UIControlStateNormal];
+    // 1.3.2 设置文字
+    [btn setTitle:@"normal" forState:UIControlStateNormal];
+    // 1.3.3 设置文字颜色
+    [btn setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
+    
+    
+    // 1.4设置按钮的高亮状态下的属性
+    // 1.4.1设置背景图片
+    UIImage *high = [UIImage imageNamed:@"btn_02.png"];
+    [btn setBackgroundImage:high forState:UIControlStateHighlighted];
+    // 1.4.2 设置文字
+    [btn setTitle:@"highlighted" forState:UIControlStateHighlighted];
+    // 1.4.3 设置文字颜色
+    [btn setTitleColor:[UIColor redColor] forState:UIControlStateHighlighted];
+    
+    
+    // 1.5 监听按钮点击
+    
+    [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    // 2.添加按钮到控制器的view中
+    [self.view addSubview:btn];
+    
+    // 3.添加文本输入框
+    UITextField *txtField = [[UITextField alloc] init];
+    txtField.backgroundColor = [UIColor redColor];
+    txtField.frame = CGRectMake(0, 0, 100, 100);
+    txtField.center = CGPointMake(self.view.frame.size.width * 0.5, self.view.frame.size.height * 0.5);
+//    txtField.center  = self.view.center; // 这种方法不行**************为什么
+    // 设置字体
+    txtField.font = [UIFont systemFontOfSize:30];
+    
+    [self.view addSubview:txtField];
+    
+}
+#pragma mark 监听按钮点击
+- (void)btnClick:(id)sender
+{
+    NSLog(@"按钮%p被点击", sender);
+}
+@end</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">在写上面的例子的时候，发现<code style="margin:0px;padding:0px;">txtField.center = self.view.center;</code>这句代码并不能使txtField居中，进行如下的测试</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">NSLog(@"%f,%f", self.view.frame.size.width, self.view.frame.size.height);
+NSLog(@"%f,%f", self.view.center.x, self.view.center.y);</pre>其结果为：<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">2015-02-13 17:44:13.135 02-代码创建按钮[1674:907] 320.000000,460.000000
+2015-02-13 17:44:13.136 02-代码创建按钮[1674:907] 160.000000,250.000000</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">center是代表当前控件的中点在父控件中的位置，仔细思考后推测应该是这个原因:手机屏幕最上方电池电量一栏占用了20高度，而<code style="margin:0px;padding:0px;">self.view</code>的父控件是整个手机屏幕，于是会有上面的输出结果，于是我继续添加一个scrollView到storyboard,调整尺寸为320*460并且刚好占满view，于是再进行测试:</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">NSLog(@"%f,%f", self.view.frame.size.width, self.view.frame.size.height);
+NSLog(@"%f,%f", self.view.center.x, self.view.center.y);
+NSLog(@"%f,%f", self.scroll.center.x, self.scroll.center.y);</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">这次的结果为：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">2015-02-13 18:03:20.151 02-代码创建按钮[1777:907] 320.000000,460.000000
+2015-02-13 18:03:20.152 02-代码创建按钮[1777:907] 160.000000,250.000000
+2015-02-13 18:03:20.152 02-代码创建按钮[1777:907] 160.000000,230.000000</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">但是当我要用<code style="margin:0px;padding:0px;"></code></span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">NSLog(@"%f,%f", self.view.superview.frame.size.width, self.view.superview.frame.size.height);</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><code style="margin:0px;padding:0px;"></code>输出self.view父控件的宽高时，其结果竟然是0和0,虽然无法通过代码得出self.view父控件的宽高,但是已经有了如下的结论:</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">1.self.view父控件的宽高为：320*480, 其center属性为x=160,y=250,占去的高度20为电池电量栏高度</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">2.一定注意center属性是当前控件中心在父控件中的位置</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">回过神来，继续说说UIView的常用方法，在刚才的示例程序中，有几个方法要着重说明一下：</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">1.在设置控件的背景颜色、文字、和文字颜色的时候需要传递控件状态的参数，表示该状态下的背景颜色、文字和文字颜色。</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">2.要为控件添加事件处理的方法<code style="margin:0px;padding:0px;"></code></span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)addTarget:(id)target action:(SEL)action forControlEvents:(UIControlEvents)controlEvents;</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><code style="margin:0px;padding:0px;"></code>action参数是事件的处理方法名；target参数是已经实现了action方法的类的实例；参数forControlEvents为事件名称。</span></p>
+</div>
+<div style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;text-align:center;font-size:10pt;"><a name="anchor1_0" style="margin:0px;padding:0px;color:#173e80;display:inline-block;">-1.文本框UITextField和文本视图UITextView</a></div>
+<div id="1_0" style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;"><h2 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">1.文本框UITextField和文本视图UITextView</span></h2>
+UI控件中最基本的两个用于输入的控件UITextFiled和UITextView,其中UITextField是单行的UITextView是多行的。<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor1_1" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">1_1.文本框UITextField</span></h3>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">  在iOS应用中，文本框UITextField是一种常见的信息输入控件，类似于Web表单中的表单字段。当在文本框中输入数据时，可以使用各种iOS键盘将其输入限制为数字或者文本。和按钮一样，文本框也能相应事件，但是通常将其实现为被动（passive）界面元素，这意味着视图控制器可随时通过text属性读取其内容。</span></p>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextField控件的常用属性(几乎包含了iOS控件的所有的通用属性)如下：</span></h4>
+1.<code style="margin:0px;padding:0px;">borderStyle</code>属性：设置输入框的边框线样式。主要有以下4种取值:<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UITextBorderStyle) {
+    UITextBorderStyleNone,  // 无样式
+    UITextBorderStyleLine, // 直线
+    UITextBorderStyleBezel, // 上边框和左边框加重
+    UITextBorderStyleRoundedRect // 圆角
+};</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">分别使用每个UITextBorderStyle样式创建4个控件：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    UITextField *textField1 = [[UITextField alloc] initWithFrame:CGRectMake(20, 30, 200, 40)];
+    textField1.borderStyle = UITextBorderStyleNone;
+    
+    UITextField *textField2 = [[UITextField alloc] initWithFrame:CGRectMake(20, 80, 200, 40)];
+    textField2.borderStyle = UITextBorderStyleLine;
+    
+    UITextField *textField3 = [[UITextField alloc] initWithFrame:CGRectMake(20, 130, 200, 40)];
+    textField3.borderStyle = UITextBorderStyleBezel;
+    
+    UITextField *textField4 = [[UITextField alloc] initWithFrame:CGRectMake(20, 180, 200, 40)];
+    textField4.borderStyle = UITextBorderStyleRoundedRect;
+    
+    [self.view addSubview:textField1];
+    [self.view addSubview:textField2];
+    [self.view addSubview:textField3];
+    [self.view addSubview:textField4];
+}</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">演示效果如下：</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><img src="http://www.data321.com/img/2015/03/07/1254361698.png" alt="textRectForBounds" width="316" height="497" style="margin:0px;padding:0px;max-width:635px;height:auto;" /></span></p>
+2.<code style="margin:0px;padding:0px;">backgroundColor</code>属性：设置输入框的背景颜色。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">font</code>属性：设置输入字体。<br style="margin:0px;padding:0px;" />
+4.<code style="margin:0px;padding:0px;">textColor</code>属性：设置字体颜色。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">placeholder</code>属性：设置输入框内默认的文字。alpha为0.7<br style="margin:0px;padding:0px;" />
+6.<code style="margin:0px;padding:0px;">textAlignment</code>属性：设置输入框内内容的对齐方式。取值为以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, NSTextAlignment) {
+    NSTextAlignmentLeft      = 0,    // Visually left aligned
+#if TARGET_OS_IPHONE
+    NSTextAlignmentCenter    = 1,    // Visually centered
+    NSTextAlignmentRight     = 2,    // Visually right aligned
+#else /* !TARGET_OS_IPHONE */
+    NSTextAlignmentRight     = 1,    // Visually right aligned
+    NSTextAlignmentCenter    = 2,    // Visually centered
+#endif
+    NSTextAlignmentJustified = 3,    // Fully-justified. The last line in a paragraph is natural-aligned.
+    NSTextAlignmentNatural   = 4,    // Indicates the default alignment for script
+} NS_ENUM_AVAILABLE_IOS(6_0);</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">可以看到这是一个iOS和mac开发的通用属性，枚举字面量相同但是值不同。</span></p>
+7.<code style="margin:0px;padding:0px;">contentVerticalAlignment</code>属性：设置内容的垂直对齐方式。UITextField继承自UIControl,此类中有一个属性contentVerticalAlignment，其取值为以下三种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UIControlContentHorizontalAlignment) {
+    UIControlContentHorizontalAlignmentCenter = 0,
+    UIControlContentHorizontalAlignmentLeft   = 1,
+    UIControlContentHorizontalAlignmentRight  = 2,
+    UIControlContentHorizontalAlignmentFill   = 3,
+};</pre>8.<code style="margin:0px;padding:0px;">background</code>属性：设置一个背景图片。注意：当UITextBorderStyle的值为UITextBorderStyleRoundedRect时，无法设置。<br style="margin:0px;padding:0px;" />
+9.<code style="margin:0px;padding:0px;">disabledBackground</code>属性：设置一个在不可用状态下(textField.enabled = NO;)的背景图片。注意：如果background的值没有设置，则会让这个值失效。<br style="margin:0px;padding:0px;" />
+10.<code style="margin:0px;padding:0px;">clearButtonMode</code>属性：设置一个清空按钮,通过设置clearButtonMode可以指定是否以及何时显示清除按钮。取值主要有如下几种类型：<br style="margin:0px;padding:0px;" />
+<ul style="margin:0px;padding:0px;list-style:none;word-break:normal;word-wrap:break-word;"><li style="margin:0px 0px 0px -20px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">∆&nbsp;<code style="margin:0px;padding:0px;">UITextFieldViewModeAlways</code>:不为空，一直都显示清空按钮；</li>
+<li style="margin:0px 0px 0px -20px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">∆&nbsp;<code style="margin:0px;padding:0px;">UITextFieldViewModeNever</code>:不显示清空按钮；</li>
+<li style="margin:0px 0px 0px -20px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">∆&nbsp;<code style="margin:0px;padding:0px;">UITextFieldViewModeWhileEditing</code>:不为空，且在编辑状态时(即获得焦点)显示清空按钮；</li>
+<li style="margin:0px 0px 0px -20px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">∆&nbsp;<code style="margin:0px;padding:0px;">UITextFieldViewModeUnlessEditing</code>:不为空，不在编辑状态时，显示清空按钮；</li>
+</ul>
+11.<code style="margin:0px;padding:0px;">text</code>属性：设置输入框一开始就有的文字。<br style="margin:0px;padding:0px;" />
+12.<code style="margin:0px;padding:0px;">secureTextEntry</code>属性：每输入一个字符就变成点，用于密码输入。<br style="margin:0px;padding:0px;" />
+13.<code style="margin:0px;padding:0px;">autocorrectionType</code>属性：设置是否纠错。取值有以下几种<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UITextAutocorrectionType) {
+    UITextAutocorrectionTypeDefault,
+    UITextAutocorrectionTypeNo,
+    UITextAutocorrectionTypeYes,
+};</pre>14.<code style="margin:0px;padding:0px;">clearsOnBeginEditing</code>属性：设置再次编辑是否清空。<br style="margin:0px;padding:0px;" />
+15.<code style="margin:0px;padding:0px;">adjustsFontSizeToFitWidth</code>属性：设置为YES时文本会自动缩小以适应文本窗口大小.默认是保持原来大小,而让长文本滚动。<br style="margin:0px;padding:0px;" />
+16.<code style="margin:0px;padding:0px;">minimumFontSize</code>属性：设置自动缩小显示的最小字体大小。<br style="margin:0px;padding:0px;" />
+17.<code style="margin:0px;padding:0px;">keyboardType</code>属性：设置键盘的样式。其取值有以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UIKeyboardType) {
+    UIKeyboardTypeDefault,                // Default type for the current input method.
+    UIKeyboardTypeASCIICapable,           // Displays a keyboard which can enter ASCII characters, non-ASCII keyboards remain active
+    UIKeyboardTypeNumbersAndPunctuation,  // Numbers and assorted punctuation.
+    UIKeyboardTypeURL,                    // A type optimized for URL entry (shows . / .com prominently).
+    UIKeyboardTypeNumberPad,              // A number pad (0-9). Suitable for PIN entry.
+    UIKeyboardTypePhonePad,               // A phone pad (1-9, *, 0, #, with letters under the numbers).
+    UIKeyboardTypeNamePhonePad,           // A type optimized for entering a person's name or phone number.
+    UIKeyboardTypeEmailAddress,           // A type optimized for multiple email address entry (shows space @ . prominently).
+#if __IPHONE_4_1 &lt;= __IPHONE_OS_VERSION_MAX_ALLOWED
+    UIKeyboardTypeDecimalPad,             // A number pad with a decimal point.
+#endif
+#if __IPHONE_5_0 &lt;= __IPHONE_OS_VERSION_MAX_ALLOWED
+    UIKeyboardTypeTwitter,                // A type optimized for twitter text entry (easy access to @ #)
+#endif
+
+    UIKeyboardTypeAlphabet = UIKeyboardTypeASCIICapable, // Deprecated
+
+};</pre>18.<code style="margin:0px;padding:0px;">autocapitalizationType</code>属性：设置首字母大写的类型。取值有以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UITextAutocapitalizationType) {
+    UITextAutocapitalizationTypeNone, // 不大写
+    UITextAutocapitalizationTypeWords, // 单词首字母大写
+    UITextAutocapitalizationTypeSentences, // 句子首字母大写
+    UITextAutocapitalizationTypeAllCharacters, // 所有字母大写
+};</pre>19.<code style="margin:0px;padding:0px;">returnKeyType</code>属性：设置输入完毕,按return键时的操作。<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UIReturnKeyType) {
+    UIReturnKeyDefault, // 默认 灰色按钮，标有Return
+    UIReturnKeyGo,      // 标有Go的蓝色按钮
+    UIReturnKeyGoogle,  // 标有Google的蓝色按钮，用于搜索
+    UIReturnKeyJoin,    // 标有Join的蓝色按钮
+    UIReturnKeyNext,    // 标有Next的蓝色按钮
+    UIReturnKeyRoute,   // 标有Route的蓝色按钮
+    UIReturnKeySearch,  // 标有Search的蓝色按钮
+    UIReturnKeySend,    // 标有Send的蓝色按钮
+    UIReturnKeyYahoo,   // 标有Yahoo的蓝色按钮
+    UIReturnKeyDone,    // 标有Done的蓝色按钮
+    UIReturnKeyEmergencyCall, // 紧急呼叫按钮
+};</pre>这里仅仅演示UIReturnKeyGo样式：<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><img src="http://www.data321.com/img/2015/03/07/1254361699.png" alt="textRectForBounds" width="319" height="499" style="margin:0px;padding:0px;max-width:635px;height:auto;" /></span></p>
+20.<code style="margin:0px;padding:0px;">keyboardAppearance</code>属性：设置键盘外观,取值有以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UIKeyboardAppearance) {
+    UIKeyboardAppearanceDefault, 
+    // Default apperance for the current input method. 默认外观，浅灰色
+    UIKeyboardAppearanceAlert   
+    // Appearance suitable for use in "alert" scenarios. 深灰 石墨色
+};</pre>21.<code style="margin:0px;padding:0px;">delegate</code>属性：设置代理,其值为<code style="margin:0px;padding:0px;">id&lt;UITextViewDelegate&gt;</code>类型,其中包含对UITextField操作的以下方法：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">@protocol UITextViewDelegate &lt;NSObject, UIScrollViewDelegate&gt;
+
+@optional
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView;
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView;
+
+- (void)textViewDidBeginEditing:(UITextView *)textView;
+- (void)textViewDidEndEditing:(UITextView *)textView;
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
+- (void)textViewDidChange:(UITextView *)textView;
+
+- (void)textViewDidChangeSelection:(UITextView *)textView;
+
+@end</pre>22.<code style="margin:0px;padding:0px;">rightView</code>和<code style="margin:0px;padding:0px;">leftView</code>属性：设置最右侧\左侧加图片。<br style="margin:0px;padding:0px;" />
+23.<code style="margin:0px;padding:0px;">rightViewMode</code>和<code style="margin:0px;padding:0px;">leftViewMode</code>属性：设置最右侧\左侧加图片显示类型，这里有个设置右侧图片的例子，左侧的类似：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">UIImageView *image=[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"010.png"]];
+textField.rightView=image;
+textField.rightViewMode = UITextFieldViewModeAlways;
+[self.view addSubview:textField];</pre>24.<code style="margin:0px;padding:0px;">inputView</code>属性：设置一个UIView类型的自定义键盘。<br style="margin:0px;padding:0px;" />
+25.<code style="margin:0px;padding:0px;">inputAccessoryView</code>属性：设置一个键盘的自定义工具条。<br style="margin:0px;padding:0px;" />
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextField控件的常用方法</span></h4>
+这一部分包括UITextField的类\对象方法和委托方法：<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextField的类\对象方法</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">UITextField的常用方法主要是<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;">重写绘制行为</span>的一些方法，除了UITextField对象的风格选项，你还可以定制化UITextField对象，为他添加许多不同的重写方法，来改变文本字段的显示行为。这些方法都会返回一个CGRect结构，制定了文本字段每个部件的边界范围。以下方法都可以重写。</p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">// drawing and positioning overrides
+
+- (CGRect)borderRectForBounds:(CGRect)bounds;   // 重写来重置边缘区域
+- (CGRect)textRectForBounds:(CGRect)bounds;    // 重写来重置文字区域
+- (CGRect)placeholderRectForBounds:(CGRect)bounds;  // 重写来重置占位符区域
+- (CGRect)editingRectForBounds:(CGRect)bounds;    // 重写来重置编辑区域
+- (CGRect)clearButtonRectForBounds:(CGRect)bounds;    // 重写来重置clearButton位置,改变size可能导致button的图片失真
+- (CGRect)leftViewRectForBounds:(CGRect)bounds;
+- (CGRect)rightViewRectForBounds:(CGRect)bounds;
+
+- (void)drawTextInRect:(CGRect)rect;    // 改变绘文字属性.重写时调用super可以按默认图形属性绘制,若自己完全重写绘制函数，就不用调用super了.
+- (void)drawPlaceholderInRect:(CGRect)rect;    // 重写改变绘制占位符属性.重写时调用super可以按默认图形属性绘制,若自己完全重写绘制函数，就不用调用super了.</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextField的委托方法</span></h5>
+UITextField的委托方法主要是用于键盘的输入处理的<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">@protocol UITextFieldDelegate 
+
+@optional
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField;        // return NO to disallow editing.
+- (void)textFieldDidBeginEditing:(UITextField *)textField;           // became first responder
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField;          // return YES to allow editing to stop and to resign first responder status. NO to disallow the editing session to end
+- (void)textFieldDidEndEditing:(UITextField *)textField;             // may be called if forced even if shouldEndEditing returns NO (e.g. view removed from window) or endEditing:YES called
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;   // return NO to not change text
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField;               // called when clear button pressed. return NO to ignore (no notifications)
+- (BOOL)textFieldShouldReturn:(UITextField *)textField;              // called when 'return' key pressed. return NO to ignore.
+
+@end</pre><h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextField支持的事件</span></h4>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextField派生自UIControl，所以UIControl类中的通知系统在文本字段中也可以使用。 除了UIControl类的标准事件，还可以使用下列UITextField类特有的事件</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">UIKIT_EXTERN NSString *const UITextFieldTextDidBeginEditingNotification;
+UIKIT_EXTERN NSString *const UITextFieldTextDidEndEditingNotification;
+UIKIT_EXTERN NSString *const UITextFieldTextDidChangeNotification;</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">当文本字段退出编辑模式时触发。通知的object属性存储了最终文本。 因为文本字段要使用键盘输入文字，所以下面这些事件发生时，也会发送动作通知</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">UIKeyboardWillShowNotification   //键盘显示之前发送
+UIKeyboardDidShowNotification    //键盘显示之后发送
+UIKeyboardWillHideNotification   //键盘隐藏之前发送
+UIKeyboardDidHideNotification    //键盘隐藏之后发送</pre><div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor1_2" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">1_2.文本视图UITextView</span></h3>
+文本视图UITextView与文本框类似，差别在于文本视图可现实一个可滚动的文本块。仅当需要的输入内容很多时，才使用文本视图。<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextView常用的属性</span></h4>
+在刚才使用的大篇幅介绍的UITextField的属性大部分与UITextView是通用的，下面是一些UITextView的特有的属性： 1.<code style="margin:0px;padding:0px;">selectedRange</code>属性：设置被选中的字符的Range，一般在编辑功能代码中使用。<br style="margin:0px;padding:0px;" />
+2.<code style="margin:0px;padding:0px;">editable</code>属性：设置是否可编辑。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">dataDetectorTypes</code>属性：设置数据检测类型。其值为以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_OPTIONS(NSUInteger, UIDataDetectorTypes) {
+    UIDataDetectorTypePhoneNumber   = 1 &lt;&lt; 0,          // Phone number detection
+    UIDataDetectorTypeLink          = 1 &lt;&lt; 1,          // URL detection    
+#if __IPHONE_4_0 &lt;= __IPHONE_OS_VERSION_MAX_ALLOWED
+    UIDataDetectorTypeAddress       = 1 &lt;&lt; 2,          // Street address detection
+    UIDataDetectorTypeCalendarEvent = 1 &lt;&lt; 3,          // Event detection
+#endif    
+
+    UIDataDetectorTypeNone          = 0,               // No detection at all
+    UIDataDetectorTypeAll           = NSUIntegerMax    // All types
+};</pre>4.<code style="margin:0px;padding:0px;">allowsEditingTextAttributes</code>属性：设置。。。？？。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">attributedText</code>属性：设置。。。？？。<br style="margin:0px;padding:0px;" />
+6.<code style="margin:0px;padding:0px;">typingAttributes</code>属性：设置。。。？？。<br style="margin:0px;padding:0px;" />
+7.<code style="margin:0px;padding:0px;">delegate</code>属性：是<code style="margin:0px;padding:0px;">id&lt;UITextViewDelegate&gt;</code>类型。<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextView常用的方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextView的类\对象方法</span></h5>
+UITextView继承了UIScrollView，并且遵守UITextInput协议，因而具有它们中包含的方法，但还有一些特有的方法：<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (BOOL)hasText;
+- (void)scrollRangeToVisible:(NSRange)range;</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextView的委托方法</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextView委托遵守了UITextViewDelegate协议，UITextViewDelegate协议又遵守了UIScrollViewDelegate协议，它具有以下方法：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">@protocol UITextViewDelegate &lt;NSObject, UIScrollViewDelegate&gt;
+
+@optional
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView;
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView;
+
+- (void)textViewDidBeginEditing:(UITextView *)textView;
+- (void)textViewDidEndEditing:(UITextView *)textView;
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
+- (void)textViewDidChange:(UITextView *)textView;
+
+- (void)textViewDidChangeSelection:(UITextView *)textView;
+
+@end</pre><h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UITextView支持的事件</span></h4>
+UITextView支持UIControl中定义的事件。<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor1_3" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">1_3.键盘输入的处理程序</span></h3>
+</div>
+<div style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;text-align:center;font-size:10pt;"><a name="anchor2_0" style="margin:0px;padding:0px;color:#173e80;display:inline-block;">-2.标签UILabel和按钮UIButton</a></div>
+<div id="2_0" style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;"><h2 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">2.标签UILabel和按钮UIButton</span></h2>
+UILabel标签控件常用于标识一些信息，UIButton常用于完成一些动作。<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor2_1" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">2_1.标签UILabel</span></h3>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UILabel常见的属性</span></h4>
+1.<code style="margin:0px;padding:0px;">shadowColor</code>属性：设置阴影颜色 。<br style="margin:0px;padding:0px;" />
+2.<code style="margin:0px;padding:0px;">shadowOffset</code>属性：设置阴影偏移量。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">lineBreakMode</code>属性：设置文字过长时的显示格式。取值有以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, NSLineBreakMode) {       /* What to do with long lines */
+    NSLineBreakByWordWrapping = 0,      /* 单词为显示单位显示，后面部分省略不显示。 */
+    NSLineBreakByCharWrapping,      /* 以字符为显示单位显示，后面部分省略不显示。 */
+    NSLineBreakByClipping,      /* 剪切与文本宽度相同的内容长度，后半部分被删除。*/
+    NSLineBreakByTruncatingHead,    /* 前面部分文字以……方式省略，显示尾部文字内容。 */
+    NSLineBreakByTruncatingTail,    /* 结尾部分的内容以……方式省略，显示头的文字内容。 */
+    NSLineBreakByTruncatingMiddle   /* 中间的内容以……方式省略，显示头尾的文字内容 */
+} NS_ENUM_AVAILABLE_IOS(6_0);</pre>4.<code style="margin:0px;padding:0px;">attributedText</code>属性：设置标签属性文本。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">highlightedTextColor</code>属性：设置高亮显示时的文本颜色。<br style="margin:0px;padding:0px;" />
+6.<code style="margin:0px;padding:0px;">highlighted</code>属性：设置是否高亮显示。<br style="margin:0px;padding:0px;" />
+7.<code style="margin:0px;padding:0px;">userInteractionEnabled</code>属性：设置是否能与用户交互。<br style="margin:0px;padding:0px;" />
+8.<code style="margin:0px;padding:0px;">enabled</code>属性：只是决定了Label的绘制方式，将它设置为NO将会使文本变暗，表示它没有激活，这时向它设置颜色值是无效的。<br style="margin:0px;padding:0px;" />
+9.<code style="margin:0px;padding:0px;">numberOfLines</code>属性：设置文本最多行数，为0时没有最大行数限制。<br style="margin:0px;padding:0px;" />
+10.<code style="margin:0px;padding:0px;">adjustsLetterSpacingToFitWidth</code>属性：设置改变字母之间的间距来适应Label大小。<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">// default is NO, adjust letter spacing to make text fit. Note: setting this property to YES will cause the value of -[NSParagraphStyle tighteningFactorForTruncation] to be disgregarded.</pre>11.<code style="margin:0px;padding:0px;">minimumFontSize</code>属性：设置最小收缩字号，如果Label宽度小于文字长度时，文字字号减小，低于设定字号后，不再减小。6.0以后不再使用了。<br style="margin:0px;padding:0px;" />
+12.<code style="margin:0px;padding:0px;">baselineAdjustment</code>属性：设置文本的基线位置，只有文本行数为1是有效。取值有以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UIBaselineAdjustment) {
+    UIBaselineAdjustmentAlignBaselines = 0, // 默认值文本最上端于label中线对齐
+    UIBaselineAdjustmentAlignCenters,    // 文本中线于label中线对齐
+    UIBaselineAdjustmentNone,    // 文本最低端与label中线对齐
+};</pre>13.<code style="margin:0px;padding:0px;">minimumScaleFactor</code>属性：设置最小收缩比例，如果Label宽度小于文字长度时，文字进行收缩，收缩超过比例后，停止收缩。<br style="margin:0px;padding:0px;" />
+14.<code style="margin:0px;padding:0px;">preferredMaxLayoutWidth</code>属性：设置preferredMaxLayoutWidth,autolayout才会判断到折行的位置。知道一个确切的width当然是最好的，那么直接设置即可，但是如果UILabel的宽度是自适应的，不确定，那么可以使用如下的代码设置<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)layoutSubViews
+{
+    [super layoutSubViews];
+    self.label.preferredMaxLayoutWidth = self.label.bounds.size.width;
+}</pre>15.<code style="margin:0px;padding:0px;">autoShrink</code>属性：设置是否自动收缩。Fixed Font Size 默认,如果Label宽度小于文字长度时时,文字大小不自动缩放minimumScaleFactor 设置最小收缩比例，如果Label宽度小于文字长度时，文字进行收缩，收缩超过比例后，停止收缩。minimumFontSize设置最小收缩字号，如果Label宽度小于文字长度时，文字字号 减小，低于设定字号后，不再减小。6.0以后不再使用了。<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UILabel常用的方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UILabel的类\对象方法</span></h5>
+UILabel继承自UIView并且遵守&lt;NSCoding&gt;协议,包含来自他们的方法，还有一些独有方法：<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (CGRect)textRectForBounds:(CGRect)bounds limitedToNumberOfLines:(NSInteger)numberOfLines; // 计算numberOfLines行后的Label的Frame
+- (void)drawTextInRect:(CGRect)rect; 
+//改变绘文字属性.重写时调用super可以按默认图形属性绘制,若自己完全重写绘制函数，就不用调用super了.</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UILabel的委托方法(不存在delegate属性,无委托方法)</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UILabel不存在delegate属性,无委托方法。</span></p>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UILabel支持的事件</span></h4>
+。。<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UILabel开发中常见的功能</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UILabel 多行文字自动换行 （自动折行）</span></h5>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(10, 100, 300, 180)];   
+UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 100, 300, 150)];   
+label.text = @"where are you? where are you? where are you? where are you? where are you? where are you? where are you? where are you? where are you? where are you?";   
+//清空背景颜色   
+label.backgroundColor = [UIColor clearColor];   
+//设置字体颜色为白色   
+label.textColor = [UIColor whiteColor];   
+//文字居中显示   
+label.textAlignment = UITextAlignmentCenter;   
+//自动折行设置   
+label.lineBreakMode = UILineBreakModeWordWrap;   
+label.numberOfLines = 0;</pre><div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor2_2" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">2_2.按钮UIButton</span></h3>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIButton的常见属性</span></h4>
+1.<code style="margin:0px;padding:0px;">contentEdgeInsets</code>属性：设置调整按钮的边间距---整个内容的边间距。其取值有以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef struct UIEdgeInsets {
+    CGFloat top, left, bottom, right;  // specify amount to inset (positive) for each of the edges. values can be negative to 'outset'
+} UIEdgeInsets;</pre>2.<code style="margin:0px;padding:0px;">titleEdgeInsets</code>属性：设置调整按钮的边间距---标题设置。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">imageEdgeInsets</code>属性：设置调整按钮的边间距---图片设置。<br style="margin:0px;padding:0px;" />
+4.<code style="margin:0px;padding:0px;">reversesTitleShadowWhenHighlighted</code>属性：设置按钮高亮时是否改变阴影.默认时NO,当为YES时,阴影在雕刻与浮雕感之间变化。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">adjustsImageWhenHighlighted</code>属性：设置当按钮高亮时图片是否改变,为真时图片随按钮高亮而高亮。<br style="margin:0px;padding:0px;" />
+6.<code style="margin:0px;padding:0px;">adjustsImageWhenDisabled</code>属性：设置当按钮高亮时图片是否改变,为真时图片随按钮失效而变暗。<br style="margin:0px;padding:0px;" />
+7.<code style="margin:0px;padding:0px;">showsTouchWhenHighlighted</code>属性：设置当按钮按下时是否闪光.默认NO,YES时按下会有白色光点.图片和按钮事件的不会因闪光改变。<br style="margin:0px;padding:0px;" />
+8.<code style="margin:0px;padding:0px;">tintColor</code>属性：非公开的按钮风格,改变按钮颜色。<br style="margin:0px;padding:0px;" />
+9.<code style="margin:0px;padding:0px;">buttonType</code>属性：只读，获得按钮类型。<br style="margin:0px;padding:0px;" />
+10.<code style="margin:0px;padding:0px;">currentTitle</code>属性：只读，获得当前title。<br style="margin:0px;padding:0px;" />
+11.<code style="margin:0px;padding:0px;">currentTitleColor</code>属性：只读，获得当前title的颜色，默认white(1,1)。<br style="margin:0px;padding:0px;" />
+12.<code style="margin:0px;padding:0px;">currentTitleShadowColor</code>属性：只读，获得标题的阴影颜色，默认white(0,0.5)。<br style="margin:0px;padding:0px;" />
+13.<code style="margin:0px;padding:0px;">currentImage</code>属性：只读，获得当前按钮上的图片,可以是nil。<br style="margin:0px;padding:0px;" />
+14.<code style="margin:0px;padding:0px;">currentBackgroundImage</code>属性：只读，当前按钮背景图片，可以是nil。<br style="margin:0px;padding:0px;" />
+15.<code style="margin:0px;padding:0px;">currentAttributedTitle</code>属性：只读，当前属性标题。<br style="margin:0px;padding:0px;" />
+16.<code style="margin:0px;padding:0px;">titleLabel</code>属性：只读，显示按钮当前标题的视图，虽然它是只读的,但是它的属性是可读写的.它的属性在按钮还没有显示之前就有返回值.系统按钮这些值为nil。。<br style="margin:0px;padding:0px;" />
+17.<code style="margin:0px;padding:0px;">imageView</code>属性：只读， 按钮上的图片视图(只读).虽然它是只读的,但是他的属性是可读写的.imageView的属性在按钮还没有显示前就有值了.系统按钮这些值是nil。。<br style="margin:0px;padding:0px;" />
+18.<code style="margin:0px;padding:0px;">lineBreakMode</code>属性：property Deprecated in iOS 3.0。<br style="margin:0px;padding:0px;" />
+19.<code style="margin:0px;padding:0px;">titleShadowOffset</code>属性：property Deprecated in iOS 3.0。<br style="margin:0px;padding:0px;" />
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIButton常用的方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIButton的类\对象方法</span></h5>
+<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">快速创建方法：</span><pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">+ (id)buttonWithType:(UIButtonType)buttonType;</pre>参数buttonType的取值有以下几种:<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UIButtonType) {
+    UIButtonTypeCustom = 0,           // no button type
+    UIButtonTypeRoundedRect,          // rounded rect, flat white button, like in address card
+
+    UIButtonTypeDetailDisclosure,   // 一个详细披露按钮
+    UIButtonTypeInfoLight,  // 浅色背景的信息按钮
+    UIButtonTypeInfoDark,   // 黑暗背景的信息按钮
+    UIButtonTypeContactAdd, // 一个联系人添加“按钮
+};</pre><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">setter:</span><pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)setTitle:(NSString *)title forState:(UIControlState)state; 
+  // default is nil. title is assumed to be single line
+- (void)setTitleColor:(UIColor *)color forState:(UIControlState)state; 
+  // default if nil. use opaque white
+- (void)setTitleShadowColor:(UIColor *)color forState:(UIControlState)state; 
+  // default is nil. use 50% black
+- (void)setImage:(UIImage *)image forState:(UIControlState)state; 
+  // default is nil. should be same size if different for different states
+- (void)setBackgroundImage:(UIImage *)image forState:(UIControlState)state; 
+  // default is nil
+- (void)setAttributedTitle:(NSAttributedString *)title forState:(UIControlState)state NS_AVAILABLE_IOS(6_0); 
+  // default is nil. title is assumed to be single line</pre><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">getter:</span><pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (NSString *)titleForState:(UIControlState)state;          // these getters only take a single state value
+- (UIColor *)titleColorForState:(UIControlState)state;
+- (UIColor *)titleShadowColorForState:(UIControlState)state;
+- (UIImage *)imageForState:(UIControlState)state;
+- (UIImage *)backgroundImageForState:(UIControlState)state;
+- (NSAttributedString *)attributedTitleForState:(UIControlState)state NS_AVAILABLE_IOS(6_0);</pre><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">重写绘制行为:</span><pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (CGRect)backgroundRectForBounds:(CGRect)bounds; // 指定背景边界  
+- (CGRect)contentRectForBounds:(CGRect)bounds; // 指定内容边界
+- (CGRect)titleRectForContentRect:(CGRect)contentRect; // 指定文字标题边界
+- (CGRect)imageRectForContentRect:(CGRect)contentRect; // 指定按钮图像边界</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIButton的委托方法(UIButton没有delegate属性，无委托方法)</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIButton没有delegate属性，无委托方法</span></p>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIButton支持的事件</span></h4>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">除了UIControl中继承的事件，无其他事件。</span></p>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIButton在开发中常见的功能</span></h4>
+。。。。。。。</div>
+<div style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;text-align:center;font-size:10pt;"><a name="anchor3_0" style="margin:0px;padding:0px;color:#173e80;display:inline-block;">-3.滑块UISlider、步进UIStepper和图像UIImageView</a></div>
+<div id="3_0" style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;"><h2 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">3.滑块UISlider、步进UIStepper和图像UIImageView</span></h2>
+。。。。。。。。。。。。。。<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor3_1" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">3_1.滑块UISlider</span></h3>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISlider的常见属性</span></h4>
+1.<code style="margin:0px;padding:0px;">value</code>属性：设置/读取滑块的值。<br style="margin:0px;padding:0px;" />
+2.<code style="margin:0px;padding:0px;">minimumValue</code>属性：设置可变的最小值。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">maximumValue</code>属性：设置可变的最大值。<br style="margin:0px;padding:0px;" />
+4.<code style="margin:0px;padding:0px;">minimumValueImage</code>属性：设置最小值的图片。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">maximumValueImage</code>属性：设置最大值的图片。<br style="margin:0px;padding:0px;" />
+6.<code style="margin:0px;padding:0px;">continuous</code>属性：默认为YES，设置为YES时，只要滑轮滚动机会触发change方法;设置为NO时，只有滑轮停止移动时，才会触发change方法。<br style="margin:0px;padding:0px;" />
+7.<code style="margin:0px;padding:0px;">minimumTrackTintColor</code>属性：设置已经滑过一端滑动条(滑轮左边)颜色。如果设置了，左边的图片就不会显示.&nbsp;<br style="margin:0px;padding:0px;" />
+8.<code style="margin:0px;padding:0px;">maximumTrackTintColor</code>属性：设置未滑过一端滑动条(滑轮右边)颜色。如果设置了，右边的图片就不会显示<br style="margin:0px;padding:0px;" />
+9.<code style="margin:0px;padding:0px;">thumbTintColor</code>属性：设置滑轮的颜色，如果设置了，滑轮的样式图片就不会显示。<br style="margin:0px;padding:0px;" />
+10.<code style="margin:0px;padding:0px;">currentThumbImage</code>属性：只读，获得当前换轮的图片。<br style="margin:0px;padding:0px;" />
+11.<code style="margin:0px;padding:0px;">currentMinimumTrackImage</code>属性：只读，获得当前滑块左边的图片。<br style="margin:0px;padding:0px;" />
+12.<code style="margin:0px;padding:0px;">currentMaximumTrackImage</code>属性：只读，获得当前滑块右边的图片。<br style="margin:0px;padding:0px;" />
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISlider的常用方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISlider的类\对象方法</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">setter:</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)setValue:(float)value animated:(BOOL)animated; // move slider at fixed velocity (i.e. duration depends on distance). does not send action
+
+// set the images for the slider. there are 3, the thumb which is centered by default and the track. You can specify different left and right track
+// e.g blue on the left as you increase and white to the right of the thumb. The track images should be 3 part resizable (via UIImage's resizableImage methods) along the direction that is longer
+
+- (void)setThumbImage:(UIImage *)image forState:(UIControlState)state;
+- (void)setMinimumTrackImage:(UIImage *)image forState:(UIControlState)state;
+- (void)setMaximumTrackImage:(UIImage *)image forState:(UIControlState)state;</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">getter:</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (UIImage *)thumbImageForState:(UIControlState)state;
+- (UIImage *)minimumTrackImageForState:(UIControlState)state;
+- (UIImage *)maximumTrackImageForState:(UIControlState)state;</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">重写绘图行为：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">// lets a subclass lay out the track and thumb as needed
+- (CGRect)minimumValueImageRectForBounds:(CGRect)bounds;
+- (CGRect)maximumValueImageRectForBounds:(CGRect)bounds;
+- (CGRect)trackRectForBounds:(CGRect)bounds;
+- (CGRect)thumbRectForBounds:(CGRect)bounds trackRect:(CGRect)rect value:(float)value;</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISlider的委托方法(UISlider没有delegate属性，无委托方法)</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISlider没有delegate属性，无委托方法</span></p>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISlider支持的事件</span></h4>
+支持的所有事件来自UIControl，常用的有UIControlEventValueChanged事件。<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor3_2" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">3_2.步进UIStepper</span></h3>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIStepper的常见属性</span></h4>
+1.<code style="margin:0px;padding:0px;">continuous</code>属性：设置是否立刻发送ValueChange事件。默认YES，YES时表示当用户交互时会立刻发送ValueChange事件，NO则是只有等用户交互结束时<br style="margin:0px;padding:0px;" />
+2.<code style="margin:0px;padding:0px;">autorepeat</code>属性：默认YES，YES时表示按住加号或减号不松手，数值会持续变化。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">wraps</code>属性：设置值是否在[minimumValue,maximumValue]区间内循环。默认NO，设置YES时，当value加的超过maximumValue，value将变成minimumValue的值<br style="margin:0px;padding:0px;" />
+4.<code style="margin:0px;padding:0px;">value</code>属性：设置当前值，默认是0，上限是maximumValue，下限是minimumValue，当数值改变时，会发送UIControlValueEventChanged给目标。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">minimumValue</code>属性：设置最小值。<br style="margin:0px;padding:0px;" />
+6.<code style="margin:0px;padding:0px;">maximumValue</code>属性：设置最大值。<br style="margin:0px;padding:0px;" />
+7.<code style="margin:0px;padding:0px;">stepValue</code>属性：设置步长。<br style="margin:0px;padding:0px;" />
+8.<code style="margin:0px;padding:0px;">tintColor</code>属性：设置控件颜色，注意tintColor是控件的颜色，而backGroundColor是空间背景(frame)的颜色。<br style="margin:0px;padding:0px;" />
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIStepper的常用方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIStepper的类\对象方法</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">setter and getter:</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">// a background image which will be 3-way stretched over the whole of the control. Each half of the stepper will paint the image appropriate for its state
+- (void)setBackgroundImage:(UIImage*)image forState:(UIControlState)state NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;
+- (UIImage*)backgroundImageForState:(UIControlState)state NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;
+
+// an image which will be painted in between the two stepper segments. The image is selected depending both segments' state
+- (void)setDividerImage:(UIImage*)image forLeftSegmentState:(UIControlState)leftState rightSegmentState:(UIControlState)rightState NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;
+- (UIImage*)dividerImageForLeftSegmentState:(UIControlState)state rightSegmentState:(UIControlState)state NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;
+
+// the glyph image for the plus/increase button
+- (void)setIncrementImage:(UIImage *)image forState:(UIControlState)state NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;
+- (UIImage *)incrementImageForState:(UIControlState)state NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;
+
+// the glyph image for the minus/decrease button
+- (void)setDecrementImage:(UIImage *)image forState:(UIControlState)state NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;
+- (UIImage *)decrementImageForState:(UIControlState)state NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIStepper委托方法(UIStepper没有delegate属性，无委托方法)</span></h5>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIStepper支持的事件</span></h4>
+UIStepper支持的事件来自UIControl,常用的事件是UIControlEventValueChanged。<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor3_3" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">3_3.图像UIImageView</span></h3>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIImageView的常见属性</span></h4>
+1.<code style="margin:0px;padding:0px;">image</code>属性：设置图片，默认显示。<br style="margin:0px;padding:0px;" />
+2.<code style="margin:0px;padding:0px;">highlightedImage</code>属性：设置高亮状态下显示的图片。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">userInteractionEnabled</code>属性：设置是否允许用户交互，默认不允许。<br style="margin:0px;padding:0px;" />
+4.<code style="margin:0px;padding:0px;">highlighted</code>属性：设置是否为高亮状态，默认为普通状态。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">animationImages</code>属性：设置序列帧动画的图片数组NSArray*。<br style="margin:0px;padding:0px;" />
+6.<code style="margin:0px;padding:0px;">highlightedAnimationImages</code>属性：设置高亮状态下序列帧动画的图片数组。<br style="margin:0px;padding:0px;" />
+7.<code style="margin:0px;padding:0px;">animationDuration</code>属性：设置序列帧动画播放的时长。<br style="margin:0px;padding:0px;" />
+8.<code style="margin:0px;padding:0px;">animationRepeatCount</code>属性：设置序列帧动画播放的次数。<br style="margin:0px;padding:0px;" />
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIImageView的常用方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIImageView的类\对象方法</span></h5>
+<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">构造方法：</span><pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (id)initWithImage:(UIImage *)image;
+- (id)initWithImage:(UIImage *)image highlightedImage:(UIImage *)highlightedImage NS_AVAILABLE_IOS(3_0);</pre><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">图片帧动画控制方法：</span><pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)startAnimating;
+- (void)stopAnimating;
+- (BOOL)isAnimating;</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIImageView的委托方法(UIImageView没有delegate属性，无委托方法)</span></h5>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIImageView支持的事件</span></h4>
+<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#ff0000;">UIImageView不支持任何事件</span><h4 style="margin:0px;padding:0px;">UIImageView开发中常用的功能</h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">将图片数组按照顺序播放形成序列帧动画</span></h5>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">NSArray *magesArray = [NSArray arrayWithObjects:
+              [UIImage imageNamed:@"image1.png"],
+              [UIImage imageNamed:@"image2.png"],
+              [UIImage imageNamed:@"image3.png"],
+              [UIImage imageNamed:@"image4.png"],
+              [UIImage imageNamed:@"image5.png"],nil];
+
+UIImageView *animationImageView = [UIImageView alloc]init];
+[animationImageView initWithFrame:CGRectMake(0, 0, 131, 125)];
+animationImageView.animationImages = imagesArray;//将序列帧数组赋给UIImageView的animationImages属性
+animationImageView.animationDuration = 0.25;//设置动画时间
+animationImageView.animationRepeatCount = 0;//设置动画次数 0 表示无限
+[animationImageView startAnimating];//开始播放动画</pre><div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor3_4" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">3_4.图片浏览器</span></h3>
+本例是做一个界面如下的图片浏览器：<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><img src="http://www.data321.com/img/2015/03/07/1254361700.png" alt="textRectForBounds" width="319" height="498" style="margin:0px;padding:0px;max-width:635px;height:auto;" /></span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">当滑动滑动时图片会变化，在图集中的顺序(5/10)也相应的变化.过程如下：</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">首先向storyboard的view中添加一个UIlabel控件、一个UIImageView控件、一个UISlider控件并调整好位置。<br style="margin:0px;padding:0px;" />
+然后将三个空间connect为ViewController的三个属性：lbl、imgView和slider.为UISlider控件connect方法sliderChange</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">在ViewController.h中</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">@interface ViewController : UIViewController
+@property (weak, nonatomic) IBOutlet UILabel *lbl;
+@property (weak, nonatomic) IBOutlet UIImageView *imgView;
+@property (weak, nonatomic) IBOutlet UISlider *slider;
+- (IBAction)sliderChange;
+
+@end</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">在ViewController.m中</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">#import "ViewController.h"
+@implementation ViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    _slider.minimumValue = 1;
+    _slider.maximumValue = 10;
+    
+}
+
+- (IBAction)sliderChange{
+    int curIndex = (int)_slider.value;
+    _lbl.text = [NSString stringWithFormat:@"%d/10", curIndex];
+    _imgView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%02d.png", curIndex]]; // 图片序列为01.png 02.png......10.png
+}
+@end</pre></div>
+<div style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;text-align:center;font-size:10pt;"><a name="anchor4_0" style="margin:0px;padding:0px;color:#173e80;display:inline-block;">-4.开关控件UISwitch和分段控件UISegmentedControl</a></div>
+<div id="4_0" style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;"><h2 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">4.开关控件UISwitch和分段控件UISegmentedControl</span></h2>
+<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor4_1" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">4_1.开关控件UISwitch</span></h3>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">.....</span></p>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISwitch的常见属性</span></h4>
+1.<code style="margin:0px;padding:0px;">onTintColor</code>属性：设置ON一边的背景颜色，默认是绿色。<br style="margin:0px;padding:0px;" />
+2.<code style="margin:0px;padding:0px;">tintColor</code>属性：设置OFF一边的背景颜色，默认是灰色，发现OFF背景颜色其实也是控件”边框“颜色。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">thumbTintColor</code>属性：设置滑块颜色。<br style="margin:0px;padding:0px;" />
+4.<code style="margin:0px;padding:0px;">onImage</code>属性：设置ON的image。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">offImage</code>属性：设置OFF的image。<br style="margin:0px;padding:0px;" />
+6.<code style="margin:0px;padding:0px;">on</code>属性：是否处于ON状态。<br style="margin:0px;padding:0px;" />
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISwitch的常用方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISwitch的类\对象方法</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">构造方法:</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (id)initWithFrame:(CGRect)frame; </pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">其他方法:</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)setOn:(BOOL)on animated:(BOOL)animated; // does not send action 设置ON/OFF状态</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISwitch的委托方法(UISwitch没有delegate属性，无委托方法)</span></h5>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISwitch支持的事件</span></h4>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">事件来自UIControl，常用的事件为UIControlEventValueChanged。</span></p>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISwitch在开发中常用的功能</span></h4>
+<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor4_2" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">4_2.分段控件UISegmentedControl</span></h3>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISegmentedControl常见的属性/span&gt;</span></h4>
+1.<code style="margin:0px;padding:0px;">segmentedControlStyle</code>属性：设置基本的样式。取值有下面几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UISegmentedControlStyle) {
+    UISegmentedControlStylePlain,     // large plain
+    UISegmentedControlStyleBordered,  // large bordered
+    UISegmentedControlStyleBar,       // small button/nav bar style. tintable
+    UISegmentedControlStyleBezeled,   // DEPRECATED. Do not use this style.
+};</pre>演示效果如下：<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><img src="http://www.data321.com/img/2015/03/07/1254361701.png" alt="textRectForBounds" width="319" height="503" style="margin:0px;padding:0px;max-width:635px;height:auto;" /></span></p>
+2.<code style="margin:0px;padding:0px;">momentary</code>属性：设置在点击后是否恢复原样 。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">numberOfSegments</code>属性：只读，获取总选项数。<br style="margin:0px;padding:0px;" />
+4.<code style="margin:0px;padding:0px;">apportionsSegmentWidthsByContent</code>属性：设置是否根据segment的内容改变segment的宽度，默认为NO，宽度相同。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">selectedSegmentIndex</code>属性：设置选中第几个segment,一般用于初始化时选中。<br style="margin:0px;padding:0px;" />
+6.<code style="margin:0px;padding:0px;">tintColor</code>属性：设置控件颜色,当为Bordered和Bar时tintColor才有效。<br style="margin:0px;padding:0px;" />
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISegmentedControl常用的方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISegmentedControl的类\对象方法</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">构造方法：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (id)initWithItems:(NSArray *)items; // items can be NSStrings or UIImages. control is automatically sized to fit content</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">功能方法：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)insertSegmentWithTitle:(NSString *)title atIndex:(NSUInteger)segment animated:(BOOL)animated; // insert before segment number. 0..#segments. value pinned
+- (void)insertSegmentWithImage:(UIImage *)image  atIndex:(NSUInteger)segment animated:(BOOL)animated;
+- (void)removeSegmentAtIndex:(NSUInteger)segment animated:(BOOL)animated;
+- (void)removeAllSegments;</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">setter和getter：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)setTitle:(NSString *)title forSegmentAtIndex:(NSUInteger)segment; // default is nil
+- (NSString *)titleForSegmentAtIndex:(NSUInteger)segment;
+
+- (void)setImage:(UIImage *)image forSegmentAtIndex:(NSUInteger)segment; // default is nil
+- (UIImage *)imageForSegmentAtIndex:(NSUInteger)segment;
+
+- (void)setWidth:(CGFloat)width forSegmentAtIndex:(NSUInteger)segment; // set to 0.0 width to autosize. default is 0.0
+- (CGFloat)widthForSegmentAtIndex:(NSUInteger)segment;
+
+- (void)setContentOffset:(CGSize)offset forSegmentAtIndex:(NSUInteger)segment; // adjust offset of image or text.default is (0,0)
+- (CGSize)contentOffsetForSegmentAtIndex:(NSUInteger)segment;
+
+- (void)setEnabled:(BOOL)enabled forSegmentAtIndex:(NSUInteger)segment; // default is YES
+- (BOOL)isEnabledForSegmentAtIndex:(NSUInteger)segment;
+
+- (void)setBackgroundImage:(UIImage *)backgroundImage forState:(UIControlState)state barMetrics:(UIBarMetrics)barMetrics; 
+- (UIImage *)backgroundImageForState:(UIControlState)state barMetrics:(UIBarMetrics)barMetrics;
+
+- (void)setDividerImage:(UIImage *)dividerImage forLeftSegmentState:(UIControlState)leftState rightSegmentState:(UIControlState)rightState barMetrics:(UIBarMetrics)barMetrics;
+- (UIImage *)dividerImageForLeftSegmentState:(UIControlState)leftState rightSegmentState:(UIControlState)rightState barMetrics:(UIBarMetrics)barMetrics;
+
+- (void)setTitleTextAttributes:(NSDictionary *)attributes forState:(UIControlState)state;
+- (NSDictionary *)titleTextAttributesForState:(UIControlState)state;
+
+- (void)setContentPositionAdjustment:(UIOffset)adjustment forSegmentType:(UISegmentedControlSegment)leftCenterRightOrAlone barMetrics:(UIBarMetrics)barMetrics; 
+- (UIOffset)contentPositionAdjustmentForSegmentType:(UISegmentedControlSegment)leftCenterRightOrAlone barMetrics:(UIBarMetrics)barMetrics;</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISegmentedControl的委托方法(UISegmentControl没有delegate属性，无委托方法)</span></h5>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UISegmentedControl支持的事件</span></h4>
+常用的事件为UIControlEventValueChanged。<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor4_3" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">4_3.图片排序</span></h3>
+有这样的场景，程序运行后的界面如下：<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><img src="http://www.data321.com/img/2015/03/07/1254361702.png" alt="textRectForBounds" width="318" height="499" style="margin:0px;padding:0px;max-width:635px;height:auto;" /></span></p>
+当点击了UISegmentedControl的第二个item(3列)是，图片顺序不变，但是以每行3列排列，如下图：<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><img src="http://www.data321.com/img/2015/03/07/1254361703.png" alt="textRectForBounds" width="318" height="501" style="margin:0px;padding:0px;max-width:635px;height:auto;" /></span></p>
+当点击了4列、5列功能类推。过程如下：<br style="margin:0px;padding:0px;" />
+先搭建界面连接UISegmentedControl的UIControlEventValueChanged事件处理为方法indexChange:(UISegmentedControl *)sender<br style="margin:0px;padding:0px;" />
+ViewController.m中的代码如下：<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">#import "ViewController.h"
+
+#define kImgW 60
+#define kImgH 60
+
+@implementation ViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [self adjustImagePosWithColumns:2 initFlag:YES]; // 界面初始化
+}
+
+#pragma mark Method:点击了segment 更改图片的列数
+- (IBAction)indexChange:(UISegmentedControl *)sender {
+    int columns = sender.selectedSegmentIndex + 2;
+    [UIView beginAnimations:nil context:nil];
+    [self adjustImagePosWithColumns:columns initFlag:NO]; // 调整图片的排列位置
+    [UIView commitAnimations];
+}
+
+#pragma mark Method:调整位置
+- (void) adjustImagePosWithColumns:(int)columns initFlag:(BOOL)initFlag
+{
+    // 1. 定义列数和间距
+    // 每个图片之间的间距 = （控制器view的宽度 - 列数 * 表情的宽度) / (列数 + 1)
+    CGFloat margin = (self.view.frame.size.width - columns * kImgW) / (columns + 1);
+    
+    // 2.定义第一个图片的位置
+    // 第一个图片的Y值
+    CGFloat oneY = 100;
+    // 第一个图片的X值
+    CGFloat oneX = margin;
+    
+    // 3.调整所有的图片
+    for (int i = 0; i &lt; 9; i++)
+    {
+        // 取出i位置的ImageView
+        int row = i / columns;
+        int col = i % columns;
+        
+        CGFloat x = oneX + (kImgH + margin) * col; // 新的x
+        CGFloat y = oneY + (kImgH + margin) * row; // 新的y
+        
+        if (initFlag){ // 如果是initFlag == YES 则进行界面的初始化，将所有的图片添加到view
+            [self addImage:[NSString stringWithFormat:@"01%d.gif", i] x:x y:y];
+        }else{ // initFlag == NO 进行调整位置、重新排列
+            UIView *child = self.view.subviews[i+1]; // i+1 去掉第一个控件UISegmentedControl
+            CGRect tempFrame = child.frame;
+            tempFrame.origin.x = x;
+            tempFrame.origin.y = y;
+            child.frame = tempFrame;
+        }
+    }
+}
+
+#pragma mark Method:添加图片
+- (void)addImage:(NSString *)icon x:(CGFloat)x y:(CGFloat)y{
+    UIImageView *img = [[UIImageView alloc] init];
+    img.image = [UIImage imageNamed:icon];
+    img.frame = CGRectMake(x, y, kImgW, kImgH);
+    [self.view addSubview:img];
+}
+
+@end</pre></div>
+<div style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;text-align:center;font-size:10pt;"><a name="anchor5_0" style="margin:0px;padding:0px;color:#173e80;display:inline-block;">-5.工具栏UIToolBar</a></div>
+<div id="5_0" style="margin:0px;padding:0px;font-family:Tahoma;line-height:24px;widows:1;"><h2 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">5.工具栏UIToolBar</span></h2>
+<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor5_1" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">5_1.工具栏UIToolBar的使用</span></h3>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIToolBar的常见属性</span></h4>
+1.<code style="margin:0px;padding:0px;">barStyle</code>属性:设置toolbar的外观风格。取值有以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UIBarStyle) {
+    UIBarStyleDefault          = 0,
+    UIBarStyleBlack            = 1,
+    
+    UIBarStyleBlackOpaque      = 1, // Deprecated. Use UIBarStyleBlack
+    UIBarStyleBlackTranslucent = 2, // Deprecated. Use UIBarStyleBlack and set the translucent property to YES
+};</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><img src="http://www.data321.com/img/2015/03/07/1254361704.png" alt="textRectForBounds" width="325" height="499" style="margin:0px;padding:0px;max-width:635px;height:auto;" /></span></p>
+2.<code style="margin:0px;padding:0px;">items</code>属性:设置/获取所有的UIBarButtonItem组成的数组。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">translucent</code>属性:设置是否为半透明。默认的值是NO，如果barStyle设置为UIBarStyleBlackTranslucent，其值始终是YES。<br style="margin:0px;padding:0px;" />
+4.<code style="margin:0px;padding:0px;">tintColor</code>属性:设置。。。。默认值为nil。<br style="margin:0px;padding:0px;" />
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIToolBar的常用方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIToolBar的类\对象方法</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">setter和getter</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)setItems:(NSArray *)items animated:(BOOL)animated;
+
+- (void)setBackgroundImage:(UIImage *)backgroundImage forToolbarPosition:(UIToolbarPosition)topOrBottom barMetrics:(UIBarMetrics)barMetrics NS_AVAILABLE_IOS(5_0) UI_APPEARANCE_SELECTOR;
+- (UIImage *)backgroundImageForToolbarPosition:(UIToolbarPosition)topOrBottom barMetrics:(UIBarMetrics)barMetrics NS_AVAILABLE_IOS(5_0) UI_APPEARANCE_SELECTOR;
+
+- (void)setShadowImage:(UIImage *)shadowImage forToolbarPosition:(UIToolbarPosition)topOrBottom NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;
+- (UIImage *)shadowImageForToolbarPosition:(UIToolbarPosition)topOrBottom NS_AVAILABLE_IOS(6_0) UI_APPEARANCE_SELECTOR;</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIToolBar的委托方法(UIToolBar没有delegate属性，无委托方法)</span></h5>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIToolBar支持的事件(UIToolBar事件依赖于它的内部控件BarButtonItem，它自己不支持任何事件)</span></h4>
+<div style="margin:0px;padding:0px;text-align:right;font-size:9pt;"><a name="anchor5_2" href="http://www.data321.com/iphone/1854312.html#labelTop" style="margin:0px;padding:0px;color:#173e80;text-decoration:none;display:inline-block;">回到顶部</a></div>
+<h3 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">5_2.UIBarButtonItem</span></h3>
+UIToolBar内部的控件都被包装成了UIBarButtonItem类型，因此UIBarButtonItem也就具有较多的属性和功能:<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIBarButtonItem的常见属性</span></h4>
+1.<code style="margin:0px;padding:0px;">style</code>属性：设置UIBarButtonItem外观风格。其值有以下几种：<br style="margin:0px;padding:0px;" />
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">typedef NS_ENUM(NSInteger, UIBarButtonItemStyle) {
+    UIBarButtonItemStylePlain,    //  显示为纯文本 但是shows glow when pressed
+    UIBarButtonItemStyleBordered,  // 默认样式
+    UIBarButtonItemStyleDone,  // 深蓝色的选中颜色
+};</pre>2.<code style="margin:0px;padding:0px;">possibleTitles</code>属性：设置（暂时不知它的用法）。<br style="margin:0px;padding:0px;" />
+3.<code style="margin:0px;padding:0px;">customView</code>属性：设置自定义的item视图，一般传递一个UIButton。<br style="margin:0px;padding:0px;" />
+4.<code style="margin:0px;padding:0px;">action</code>属性：设置进行事件处理的方法。<br style="margin:0px;padding:0px;" />
+5.<code style="margin:0px;padding:0px;">target</code>属性：设置进行事件处理的控制器实例。<br style="margin:0px;padding:0px;" />
+在开发中经常会设置UIBarButtonSystemItem,使item有不同的图标它的取值有以下几种：<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;"><img src="http://www.data321.com/img/2015/03/07/1254361705.png" alt="textRectForBounds" width="618" height="682" style="margin:0px;padding:0px;max-width:635px;height:auto;" /></span></p>
+需要注意的是在storyboard中设置了这些图标的item不能再设置文字title，如果设置了将会变成了custom类型，也就是说只有custom类型的item才能用有title；另外，还有两种可以设置的类型。<br style="margin:0px;padding:0px;" />
+1.<code style="margin:0px;padding:0px;">UIBarButtonSystemItemFlexibleSpace</code>:灵活的空间。将toolbar中剩余的空间充满，但是不会有图标，效果为透明色。<br style="margin:0px;padding:0px;" />
+2.<code style="margin:0px;padding:0px;">UIBarButtonSystemItemFixedSpace</code>:填充的空间。通过拉伸该类型的item自由分配toolbar的剩余空间，但是不会有图标，效果为透明色。<br style="margin:0px;padding:0px;" />
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIBarButtonItem的常用方法</span></h4>
+<h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIBarButtonItem的类\对象方法</span></h5>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">构造方法：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (id)initWithImage:(UIImage *)image style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action;
+- (id)initWithImage:(UIImage *)image landscapeImagePhone:(UIImage *)landscapeImagePhone style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action NS_AVAILABLE_IOS(5_0); 
+
+
+- (id)initWithTitle:(NSString *)title style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action;
+- (id)initWithBarButtonSystemItem:(UIBarButtonSystemItem)systemItem target:(id)target action:(SEL)action;
+- (id)initWithCustomView:(UIView *)customView;</pre><p style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#0000ff;font-size:11pt;font-family:'Comic Sans MS';">setter和getter：</span></p>
+<pre class="prettyprint" style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)setBackgroundImage:(UIImage *)backgroundImage forState:(UIControlState)state barMetrics:(UIBarMetrics)barMetrics;
+- (UIImage *)backgroundImageForState:(UIControlState)state barMetrics:(UIBarMetrics)barMetrics;
+
+/* This sets the background image for buttons with a specific style. When calling this on a UIBarButtonItem instance, the style argument must match the button's style; when calling on the UIAppearance proxy, any style may be passed.
+ */
+- (void)setBackgroundImage:(UIImage *)backgroundImage forState:(UIControlState)state style:(UIBarButtonItemStyle)style barMetrics:(UIBarMetrics)barMetrics;
+- (UIImage *)backgroundImageForState:(UIControlState)state style:(UIBarButtonItemStyle)style barMetrics:(UIBarMetrics)barMetrics;
+/* For adjusting the vertical centering of bordered bar buttons within the bar 
+ */
+- (void)setBackgroundVerticalPositionAdjustment:(CGFloat)adjustment forBarMetrics:(UIBarMetrics)barMetrics NS_AVAILABLE_IOS(5_0) UI_APPEARANCE_SELECTOR; 
+- (CGFloat)backgroundVerticalPositionAdjustmentForBarMetrics:(UIBarMetrics)barMetrics NS_AVAILABLE_IOS(5_0) UI_APPEARANCE_SELECTOR;
+
+/* For adjusting the position of a title (if any) within a bordered bar button 
+ */
+- (void)setTitlePositionAdjustment:(UIOffset)adjustment forBarMetrics:(UIBarMetrics)barMetrics; 
+- (UIOffset)titlePositionAdjustmentForBarMetrics:(UIBarMetrics)barMetrics;
+
+/* The remaining appearance modifiers apply solely to UINavigationBar back buttons and are ignored by other buttons.
+ */
+/*
+ backgroundImage must be a resizable image for good results.
+ */
+- (void)setBackButtonBackgroundImage:(UIImage *)backgroundImage forState:(UIControlState)state barMetrics:(UIBarMetrics)barMetrics;
+- (UIImage *)backButtonBackgroundImageForState:(UIControlState)state barMetrics:(UIBarMetrics)barMetrics;
+
+- (void)setBackButtonTitlePositionAdjustment:(UIOffset)adjustment forBarMetrics:(UIBarMetrics)barMetrics;
+- (UIOffset)backButtonTitlePositionAdjustmentForBarMetrics:(UIBarMetrics)barMetrics;
+
+/* For adjusting the vertical centering of bordered bar buttons within the bar 
+ */
+- (void)setBackButtonBackgroundVerticalPositionAdjustment:(CGFloat)adjustment forBarMetrics:(UIBarMetrics)barMetrics; 
+- (CGFloat)backButtonBackgroundVerticalPositionAdjustmentForBarMetrics:(UIBarMetrics)barMetrics;</pre><h5 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIBarButtonItem的委托方法(无)</span></h5>
+<h4 style="margin:0px;padding:0px;"><span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;">UIBarButtonItem支持的事件</span></h4>
+<span style="margin:0px;padding:0px;list-style:none outside none;word-break:normal;word-wrap:break-word;color:#ff0000;">UIBarButtonItem只支持点击事件，而且当为UIBarButtonItem设置target的时候不必指明事件的类型。</span></div></body></html>

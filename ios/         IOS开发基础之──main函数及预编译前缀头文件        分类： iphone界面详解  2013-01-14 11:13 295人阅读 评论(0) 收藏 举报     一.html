@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-04-25T10:47:42Z"/><meta name="updated" content="2014-04-25T10:47:44Z"/><title>         IOS开发基础之──main函数及预编译前缀头文件        分类： iphone界面详解  2013-01-14 11:13 295人阅读 评论(0) 收藏 举报     一</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title">   
+              <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/chengyingzhilian/article/details/8500150">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IOS开发基础之──main函数及预编译前缀头文件
+        </a></span>     </h1>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/chengyingzhilian/article/category/1219168">iphone界面详解</a> 
+        </span>     <span class="link_postdate">2013-01-14 11:13</span>     <span class="link_view" title="阅读次数">295人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/chengyingzhilian/article/details/8500150#comments">评论</a>(0)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/chengyingzhilian/article/details/8500150#report" title="举报">举报</a></span>     </div>
+    <div id="article_content" class="article_content">
+
+<p style="color:#333333;font-family:Arial;line-height:26px;">
+<span style="font-size:18px;">一、main函数介绍</span></p>
+<p style="color:#333333;font-family:Arial;line-height:26px;">
+</p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;">如果你熟悉 C 或类似的编程语言,你可能在“Other Sources”中认出应用程序 的起始程序 main.m。</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;">Main.m&nbsp;</span><span style="font-size:16px;">任何在主函数和HelloWorldAppDelegate类之间做的处理,属于iPhone SDK的后台魔法,你没有控制的权限。因为你几乎不需要改变main.m,所以你可以忽略 它。不过,看一看也无妨。</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;">简单点说,主函数创建了一个NSAutoreleasePool(自动释放池),然后调用 
+UIApplicationMain启动程序,程序使用HelloWorldAppDelegate类来执行 
+UIApplicationDelegate的协议(protocol)。</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:11px;font-family:SimSun;">
+<span style="font-size:16px;">int main(int argc, char *argv[]) {</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:11px;font-family:SimSun;">
+<span style="font-size:16px;">&nbsp;NSAutoreleasePool *pool = [NSAutoreleasePool new];</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:11px;font-family:SimSun;">
+<span style="font-size:16px;">&nbsp;int retVal = UIApplicationMain(argc, argv, nil,&nbsp;@"HelloWorldAppDelegate");</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:11px;font-family:SimSun;">
+<span style="font-size:16px;">&nbsp;[pool release];&nbsp;</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:11px;font-family:SimSun;">
+<span style="font-size:16px;">&nbsp;return retVal;</span><span style="font-size:16px;"><br />
+</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:11px;font-family:SimSun;">
+<span style="font-size:16px;">}</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;">上述代码中使用了一个NSAutoreleasePool来帮助你管理内存。说的简单一点就
+ 是通过使用autorelease(自动释放)信息,你不再需要担心忘记发送释放信息。 Autorelease 
+pool(自动释放池)可以确保内存中的自动释放对象最终会被释 放。</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+</p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:18px;">二、预编译前缀头文件</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;">“HelloWorld_prefix.pch”头文件的作用是给编译过程加速。你应该把不
+常变 化的框架(Frameworks)头文件添加到前缀头文件(prefix header)中。这样 
+的话,在编译的时候,框架的代码会被预先编译,所有的类都将可以使用这些 头文件。不幸的是,这样做也有一个缺点:如果前缀头文件里其中一个头文件 
+发生了变化,你的所有代码将会重新编译。这就是为什么你应该只添加那些极 少或者从来都不变化的头文件到前缀头文件中。</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;"><br />
+</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+</p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;">例如,就像我在列表2-1中所做的那样,cocos2d.h头文件可以被添加到前缀头 文件中,因为它很少改变。不过,只有复杂一些的项目才会感受到编译速度的</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;">变化。不过,即使只为了不再需要在其他源代码里写 #import “cocos2d.h”, 也是值得一开始就在前缀头文件里写进 cocos2d.h 的。</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+</p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:10px;font-family:SimSun;">
+<span style="font-size:16px;"><br />
+</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:10px;font-family:SimSun;">
+<span style="font-size:16px;">列表2-1:把cocos2d.h头文件加到前缀头文件中</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:10px;font-family:SimSun;">
+<span style="font-size:16px;">#ifdef __OBJC__</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:10px;font-family:SimSun;">
+<span style="font-size:16px;">#import &lt;Foundation/Foundation.h&gt; #import &lt;UIKit/UIKit.h&gt; #import "cocos2d.h"</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:10px;font-family:SimSun;">
+<span style="font-size:16px;">#endif</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-size:10px;font-family:SimSun;">
+<span style="font-size:16px;"><br />
+</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;">如果你想了解更多关于如何使用前缀头文件减少编译时间的知识,可以参考苹</span></p>
+<p style="color:#333333;margin-top:0px;margin-bottom:0px;font-family:SimSun;">
+<span style="font-size:16px;">果开发者文档:</span></p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:10px;font-family:SimSun;color:#203af9;">
+<span style="font-size:16px;">http://developer.apple.com/mac/library/documentation/DeveloperTools/Conceptual/XcodeBuildSystem/800-Reducing_Build_Times/bs_speed_up_build.html</span></p>
+</div></body></html>

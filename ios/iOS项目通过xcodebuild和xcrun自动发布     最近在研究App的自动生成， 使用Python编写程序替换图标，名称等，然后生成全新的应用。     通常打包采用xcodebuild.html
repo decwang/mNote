@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-06-12T08:38:47Z"/><meta name="updated" content="2015-07-28T03:05:21Z"/><title>iOS项目通过xcodebuild和xcrun自动发布     最近在研究App的自动生成， 使用Python编写程序替换图标，名称等，然后生成全新的应用。     通常打包采用xcodebuild</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>iOS项目通过xcodebuild和xcrun自动发布</div>
+<div><br />
+</div>
+<div>最近在研究App的自动生成， 使用Python编写程序替换图标，名称等，然后生成全新的应用。</div>
+<div><br />
+</div>
+<div>通常打包采用xcodebuild和xcrun两个命令，xcodebuild负责编译，xcrun负责将app打成ipa。</div>
+<div><br />
+</div>
+<div>常见步骤如下：</div>
+<div><br />
+</div>
+<div>1、清理工程</div>
+<div><br />
+</div>
+<div>/usr/bin/xcodebuild -target targetName clean</div>
+<div><br />
+</div>
+<div>2、编译工程</div>
+<div><br />
+</div>
+<div>/usr/bin/xcodebuild -target targetName</div>
+<div><br />
+</div>
+<div>3、打包</div>
+<div><br />
+</div>
+<div>/usr/bin/xcrun -sdk iphoneos PackageApplication -v path/To/xxx.app -o xxx.ipa</div>
+<div><br />
+</div>
+<div>如果是含签名的包，上面两个命令需要增加一些参数。</div>
+<div><br />
+</div>
+<div>xcodebuild -target targetName CODE_SIGN_IDENTITY="iPhone Distribution:XXXXXX"</div>
+<div><br />
+</div>
+<div>xcrun -sdk iphoneos PackageApplication -v 源app路径 -o 输出的ipa路径 --sign "iPhone Distribution:XXXXXX"</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>自动打包步骤：</div>
+<div><br />
+</div>
+<div>1、先用xocde手动编译好一个App，假设为MyApp.app</div>
+<div><br />
+</div>
+<div>2、导入证书文件到MAC的钥匙链</div>
+<div><br />
+</div>
+<div>//创建钥匙链</div>
+<div><br />
+</div>
+<div>security create-keychain -p myapp myapp.keychain</div>
+<div><br />
+</div>
+<div>//解锁，否则回弹框等待输入密码</div>
+<div><br />
+</div>
+<div>security unlock-keychain -p myapp myapp.keychain</div>
+<div><br />
+</div>
+<div>//导入证书</div>
+<div><br />
+</div>
+<div>security import /opt/myapp.p12 -k myapp.keychain -P mypassword -T /usr/bin/codesign</div>
+<div><br />
+</div>
+<div>3、以MyApp.app为模板，copy一个备份，然后进行各种资源的替换，比如替换了应用的图片文件等</div>
+<div><br />
+</div>
+<div>4、替换对应的*.mobileprovision文件到MyApp.app目录</div>
+<div><br />
+</div>
+<div>5、删除MyApp.app下的签名信息_CodeSignature</div>
+<div><br />
+</div>
+<div>6、修改info.plist Bundle indentifier和*.mobileprovision一致</div>
+<div><br />
+</div>
+<div>7、修改MyApp.xcent中application-identifiervalue值为对应证书名称，可以以一个xcent为模板，注意如果没有aps-environment关键字，打出来的ipa包将没有apns模块，格式如下：</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>application-identifier</div>
+<div><br />
+</div>
+<div>Z4LR7CBRUD.com.yesun.vic</div>
+<div><br />
+</div>
+<div>aps-environment</div>
+<div><br />
+</div>
+<div>production</div>
+<div><br />
+</div>
+<div>get-task-allow</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>8、重签名codesign</div>
+<div><br />
+</div>
+<div>/usr/bin/codesign --force --sign 9c8b212f6a2c2382847b104e387a01b246d4ce42 --resource-rules=MyApp.app/ResourceRules.plist --entitlements MyApp.xcent Mkey3G.app</div>
+<div><br />
+</div>
+<div>9、生成ipa包</div>
+<div><br />
+</div>
+<div>/usr/bin/xcrun -sdk iphoneos PackageApplication -v MyApp.app -o MyApp.ipa --sign 9c8b212f6a2c2382847b104e387a01b246d4ce42 --embed MyApp.app/embed.mobileprovision</div>
+<div><br />
+</div>
+<div>10、删除钥匙链</div>
+<div><br />
+</div>
+<div>security delete-keychain myapp.keychain</div>
+<div><br />
+</div>
+<div>带xcodebuild编译的打包步骤如下：</div>
+<div><br />
+</div>
+<div>导入钥匙链</div>
+<div>对工程clean</div>
+<div>修改info信息</div>
+<div>修改project信息</div>
+<div>xcodebuild</div>
+<div>替换各种资源文件</div>
+<div>修改xcent</div>
+<div>重新签名codesign</div>
+<div>xcrun打ipa</div>
+<div>删除钥匙链</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div></body></html>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-12-17T09:34:31Z"/><meta name="updated" content="2016-10-08T09:09:11Z"/><title>[iOS]如何在ios的xcode工程里面利用一个按钮单独启动unity3d       楼主# Flash  Flash            更多发布于：2014-01-09 16:23    </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="floor_title cc" style="word-break:break-all;word-wrap:break-word;zoom:1;padding:2px 0px 12px;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:#dddddd;margin-bottom:10px;color:#333333;font-family:Tahoma;font-size:12px;line-height:18px;"><h1 id="J_post_title" style="margin:0px;padding:0px;font-size:16px;display:inline;line-height:24px;"><a href="http://game.ceeger.com/forum/index.php?c=thread&amp;fid=27&amp;type=92" style="color:#105cb6;text-decoration:none;">[iOS]</a>如何在ios的xcode工程里面利用一个按钮单独启动unity3d</h1>
+&nbsp;</div>
+<div class="c" style="word-break:break-all;word-wrap:break-word;clear:both;height:0px;font-size:0px;line-height:0;font-family:Arial;overflow:hidden;width:0px;color:#333333;"></div>
+<div class="floor_top_tips cc" style="word-break:break-all;word-wrap:break-word;zoom:1;padding:0px 0px 10px;margin-bottom:5px;color:#666666;font-family:Tahoma;font-size:12px;line-height:18px;"><div style="word-break:break-all;word-wrap:break-word;position:relative;"><span class="lou J_floor_copy" title="复制此楼地址" data-type="main" data-hash="read_0" style="float:right;font-size:24px;color:#bbbbbb;line-height:1.3;cursor:pointer;">楼主<sup style="font-size:12px;">#</sup></span><div style="word-break:break-all;word-wrap:break-word;position:absolute;left:1259px;top:0px;width:57px;height:31px;z-index:9;"><div title="http://game.ceeger.com/forum/res/js/dev/util_libs/textCopy/zeroClipboard/ZeroClipboard10.swf?v=20141128" class="CTPnoimage CTPplaceholder" style="word-break:break-all;word-wrap:break-word;position:relative !important;width:57px !important;height:31px !important;top:auto !important;right:auto !important;bottom:auto !important;left:auto !important;z-index:auto !important;clear:none !important;float:none !important;vertical-align:baseline !important;margin:0px !important;-webkit-margin-before-collapse:collapse !important;-webkit-margin-after-collapse:collapse !important;"><div class="CTPplaceholderContainer" style="word-break:break-all;word-wrap:break-word;opacity:0.5 !important;"><div class="CTPlogoContainer CTPmini" style="word-break:break-all;word-wrap:break-word;"><div class="CTPlogo" style="word-break:break-all;word-wrap:break-word;">Flash</div>
+<div class="CTPlogo CTPinset" style="word-break:break-all;word-wrap:break-word;">Flash</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<a class="more_down" id="J_read_moredown" style="color:#105cb6;background-image:url(http://game.ceeger.com/forum/themes/site/default/images/forum/bg.png);float:right;width:13px;height:13px;overflow:hidden;text-indent:-2000em;margin:3px 20px;background-position:-80px -200px;background-repeat:no-repeat no-repeat;">更多</a><span class="fl" style="display:inline;float:left !important;">发布于：2014-01-09 16:23	</span></div>
+<div id="J_read_main" style="word-break:break-all;word-wrap:break-word;color:#333333;font-family:Tahoma;font-size:12px;line-height:18px;"><div id="J_read_tag_wrap" class="read_tag_list" style="word-break:break-all;word-wrap:break-word;padding:0px 0px 10px;"></div>
+<div class="fr" style="word-break:break-all;word-wrap:break-word;display:inline;float:right !important;"></div>
+<div class="editor_content" style="word-break:break-all;word-wrap:break-word;font-size:14px;line-height:1.8;">首先，我已经建好了我的u3d工程，包括模型，模型的移动、旋转等函数。。&nbsp;<br />
+然后，我导出一个xcode工程（版本：unity4.2.1、xcode5）。。。&nbsp;<br />
+如图：<span id="J_att_14445"><img class="J_post_img" src="http://game.ceeger.com/forum/attachment/1401/thread/27_40746_310ca1bf85e9d4e.png" border="0" title="点击查看原图" style="border:0px;vertical-align:top;max-width:726px;max-height:700px;" /></span>&nbsp;<br />
+这是unity导出来的xcode工程的目录结构。&nbsp;<br />
+接下来：&nbsp;<br />
+第一步：选择UnityAppController.mm这个文件打开。&nbsp;<br />
+并在int OpenEAGL_UnityCallback(UIWindow** window, int* screenWidth, int* screenHeight, &nbsp;int* openglesVersion)&nbsp;<br />
+这个方法里面的&nbsp;<br />
+&nbsp;&nbsp; &nbsp;return true;之前加入&nbsp;<br />
+&nbsp;//创建一个全屏幕的window&nbsp;<br />
+&nbsp;&nbsp; &nbsp;CGRect rect=CGRectMake(0, 0, *screenWidth, *screenHeight);&nbsp;<br />
+&nbsp;&nbsp; &nbsp;*window=[[UIWindow alloc] initWithFrame:rect];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[*window makeKeyAndVisible];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;GLView * view=[[GLView alloc] initWithFrame:rect];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[*window addSubview:view];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[view release];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;MyViewController *myView=[[MyViewController alloc] init];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[*window addSubview:myView.view];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[myView release];&nbsp;<br />
+其中：MyViewController是导出工程后，手动新建的类，目的是，在这个ViewController种控制u3d模型的旋转、移动等动作。&nbsp;<br />
+第二步：创建MyViewController并添加按钮，启动u3d&nbsp;<br />
+- (void)viewDidLoad {&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[super viewDidLoad];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//创建label视图&nbsp;<br />
+&nbsp;&nbsp; &nbsp;UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置显示内容&nbsp;<br />
+&nbsp;&nbsp; &nbsp;label.text = @"雨松MOMO的程序世界";&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置背景颜色&nbsp;<br />
+&nbsp;&nbsp; &nbsp;label.backgroundColor = [UIColor blueColor];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置文字颜色&nbsp;<br />
+&nbsp;&nbsp; &nbsp;label.textColor = [UIColor whiteColor];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置显示位置居中&nbsp;<br />
+&nbsp;&nbsp; &nbsp;label.textAlignment = UITextAlignmentCenter;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置字体大小&nbsp;<br />
+&nbsp;&nbsp; &nbsp;label.font = [UIFont fontWithName:[[UIFont familyNames] objectAtIndex:10] size:20];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//创建按钮&nbsp;<br />
+&nbsp;&nbsp; &nbsp;UIButton *button0 = [UIButton buttonWithType:1];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮范围&nbsp;<br />
+&nbsp;&nbsp; &nbsp;button0.frame = CGRectMake(0, 40, 100, 30);&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮显示内容&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[button0 setTitle:@"矩形左旋转" forState:UIControlStateNormal];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮改变后 绑定响应方法&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[button0 addTarget:self action:@selector(LeftButtonPressed) forControlEvents:UIControlEventTouchUpInside];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//创建按钮&nbsp;<br />
+&nbsp;&nbsp; &nbsp;UIButton *button1 = [UIButton buttonWithType:1];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮范围&nbsp;<br />
+&nbsp;&nbsp; &nbsp;button1.frame = CGRectMake(0, 100, 100, 30);&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮显示内容&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[button1 setTitle:@"矩形右旋转" forState:UIControlStateNormal];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮改变后 绑定响应方法&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[button1 addTarget:self action:@selector(RightButtonPressed) forControlEvents:UIControlEventTouchUpInside];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//创建按钮&nbsp;<br />
+&nbsp;&nbsp; &nbsp;UIButton *button2 = [UIButton buttonWithType:1];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮范围&nbsp;<br />
+&nbsp;&nbsp; &nbsp;button2.frame = CGRectMake(0, 160, 100, 30);&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮显示内容&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[button2 setTitle:@"矩形上旋转" forState:UIControlStateNormal];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮改变后 绑定响应方法&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[button2 addTarget:self action:@selector(UpButtonPressed) forControlEvents:UIControlEventTouchUpInside];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//创建按钮&nbsp;<br />
+&nbsp;&nbsp; &nbsp;UIButton *button3 = [UIButton buttonWithType:1];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮范围&nbsp;<br />
+&nbsp;&nbsp; &nbsp;button3.frame = CGRectMake(0, 220, 100, 30);&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮显示内容&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[button3 setTitle:@"矩形下旋转" forState:UIControlStateNormal];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//设置按钮改变后 绑定响应方法&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[button3 addTarget:self action:@selector(DownButtonPressed) forControlEvents:UIControlEventTouchUpInside];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;//向view添加&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[self.view addSubview:label];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[self.view addSubview:button0];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[self.view addSubview:button1];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[self.view addSubview:button2];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[self.view addSubview:button3];&nbsp;<br />
+}&nbsp;<br />
+<br />
+//向左按钮&nbsp;<br />
+-(void)LeftButtonPressed{&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;UnitySendMessage("Cube","MoveLeft","");&nbsp;<br />
+}&nbsp;<br />
+<br />
+//向右按钮&nbsp;<br />
+-(void)RightButtonPressed{&nbsp;<br />
+&nbsp;&nbsp; &nbsp;UnitySendMessage("Cube","MoveRight","");&nbsp;<br />
+}&nbsp;<br />
+//向上按钮&nbsp;<br />
+-(void)UpButtonPressed{&nbsp;<br />
+&nbsp;&nbsp; &nbsp;UnitySendMessage("Cube","MoveUp","");&nbsp;<br />
+}&nbsp;<br />
+<br />
+//向下按钮&nbsp;<br />
+-(void)DownButtonPressed{&nbsp;<br />
+&nbsp;&nbsp; &nbsp;UnitySendMessage("Cube","MoveDown","");&nbsp;<br />
+}&nbsp;<br />
+<br />
+<br />
+<br />
+- (void)didReceiveMemoryWarning {&nbsp;<br />
+&nbsp;&nbsp; &nbsp;// Releases the view if it doesn't have a superview.&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[super didReceiveMemoryWarning];&nbsp;<br />
+&nbsp;&nbsp; &nbsp;&nbsp;<br />
+&nbsp;&nbsp; &nbsp;// Release any cached data, images, etc. that aren't in use.&nbsp;<br />
+}&nbsp;<br />
+<br />
+- (void)viewDidUnload {&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[super viewDidUnload];&nbsp;<br />
+}&nbsp;<br />
+<br />
+<br />
+- (void)dealloc {&nbsp;<br />
+&nbsp;&nbsp; &nbsp;[super dealloc];&nbsp;<br />
+}&nbsp;<br />
+第三步：修改Bundle Identifier，进行真机测试&nbsp;<br />
+到此，代码部分全部搞定。接下来是真机，等待运行...&nbsp;<br />
+艰难的运行中，大约两分钟...&nbsp;<br />
+u3d的开机画面出来了，刷一下，进入到了你添加的界面，里面有几个按钮，分别是控制模型旋转的。&nbsp;<br />
+此时，看上去一切都很顺路，轻轻的，点一下，其中一个按钮。。。。问题出了。。崩溃。。。&nbsp;<br />
+悲剧的崩溃。。。&nbsp;<br />
+控制台输出了一大堆错误。&nbsp;<br />
+错误如下：&nbsp;<br />
+<br />
+2014-01-09 11:50:55.863 ProductName[3340:907] -&gt; registered mono modules 0xfd4610&nbsp;<br />
+-&gt; applicationDidFinishLaunching()&nbsp;<br />
+-&gt; applicationDidBecomeActive()&nbsp;<br />
+Mono path[0] = '/var/mobile/Applications/AA64800A-19C5-4CC9-8CF9-B00ACD24A100/ProductName.app/Data/Managed'&nbsp;<br />
+Mono config path = '/var/mobile/Applications/AA64800A-19C5-4CC9-8CF9-B00ACD24A100/ProductName.app/Data/Managed'&nbsp;<br />
+2014-01-09 11:50:57.289 ProductName[3340:907] 2&nbsp;<br />
+Renderer: PowerVR SGX 535&nbsp;<br />
+Vendor: &nbsp; Imagination Technologies&nbsp;<br />
+Version: &nbsp;OpenGL ES 2.0 IMGSGX535-73.16.1&nbsp;<br />
+GL_OES_depth_texture GL_OES_depth24 GL_OES_element_index_uint GL_OES_fbo_render_mipmap GL_OES_mapbuffer GL_OES_packed_depth_stencil GL_OES_rgb8_rgba8 GL_OES_standard_derivatives GL_OES_texture_float GL_OES_texture_half_float GL_OES_vertex_array_object GL_EXT_blend_minmax GL_EXT_debug_label GL_EXT_debug_marker GL_EXT_discard_framebuffer GL_EXT_map_buffer_range GL_EXT_read_format_bgra GL_EXT_separate_shader_objects GL_EXT_shader_framebuffer_fetch GL_EXT_shader_texture_lod GL_EXT_texture_filter_anisotropic GL_EXT_texture_storage GL_APPLE_copy_texture_levels GL_APPLE_framebuffer_multisample GL_APPLE_rgb_422 GL_APPLE_sync GL_APPLE_texture_format_BGRA8888 GL_APPLE_texture_max_level GL_IMG_read_format GL_IMG_texture_compression_pvrtc&nbsp;<br />
+Creating OpenGLES2.0 graphics device&nbsp;<br />
+Initialize engine version: 4.2.1f4 (4d30acc925c2)&nbsp;<br />
+Begin MonoManager ReloadAssembly&nbsp;<br />
+Platform assembly: /var/mobile/Applications/AA64800A-19C5-4CC9-8CF9-B00ACD24A100/ProductName.app/Data/Managed/UnityEngine.dll (this message is harmless)&nbsp;<br />
+Loading /var/mobile/Applications/AA64800A-19C5-4CC9-8CF9-B00ACD24A100/ProductName.app/Data/Managed/UnityEngine.dll into Unity Child Domain&nbsp;<br />
+Non platform assembly: /private/var/mobile/Applications/AA64800A-19C5-4CC9-8CF9-B00ACD24A100/ProductName.app/Data/Managed/Mono.Security.dll (this message is harmless)&nbsp;<br />
+Non platform assembly: /private/var/mobile/Applications/AA64800A-19C5-4CC9-8CF9-B00ACD24A100/ProductName.app/Data/Managed/System.dll (this message is harmless)&nbsp;<br />
+Platform assembly: /var/mobile/Applications/AA64800A-19C5-4CC9-8CF9-B00ACD24A100/ProductName.app/Data/Managed/Assembly-UnityScript.dll (this message is harmless)&nbsp;<br />
+Loading /var/mobile/Applications/AA64800A-19C5-4CC9-8CF9-B00ACD24A100/ProductName.app/Data/Managed/Assembly-UnityScript.dll into Unity Child Domain&nbsp;<br />
+- Completed reload, in &nbsp;0.182 seconds&nbsp;<br />
+The referenced script on this Behaviour is missing!&nbsp;<br />
+&nbsp;&nbsp;<br />
+(Filename: &nbsp;Line: 1657)&nbsp;<br />
+<br />
+The referenced script on this Behaviour is missing!&nbsp;<br />
+&nbsp;&nbsp;<br />
+(Filename: &nbsp;Line: 1657)&nbsp;<br />
+最关键的错误：&nbsp;<br />
+The referenced script on this Behaviour is missing!&nbsp;<br />
+看上去，大概意思是找不到执行的脚本。&nbsp;<br />
+求解答：这个错误怎么解决。&nbsp;<br />
+求demo:希望有成功在在ios项目里面单独开启u3d的同学，给我一个demo,万分感谢，新人需要大家的支持。</div>
+</div></body></html>

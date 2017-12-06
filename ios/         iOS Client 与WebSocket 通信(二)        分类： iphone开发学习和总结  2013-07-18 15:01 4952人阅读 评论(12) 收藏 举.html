@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-02-10T09:52:06Z"/><meta name="updated" content="2016-10-08T09:09:10Z"/><title>         iOS Client 与WebSocket 通信(二)        分类： iphone开发学习和总结  2013-07-18 15:01 4952人阅读 评论(12) 收藏 举</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title">
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/justinjing0612/article/details/9367023">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;iOS Client 与WebSocket 通信(二)
+        </a></span>     </h1>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/jinglijun/article/category/925686">iphone开发学习和总结</a> 
+        </span>     <span class="link_postdate">2013-07-18 15:01</span>     <span class="link_view" title="阅读次数">4952人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/justinjing0612/article/details/9367023#comments">评论</a>(12)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/justinjing0612/article/details/9367023#report" title="举报">举报</a></span>     </div>
+  
+    <div id="article_content" class="article_content">
+
+<p>&nbsp;我的地址:&nbsp;http://blog.csdn.net/jinglijun/article/details/9367023 &nbsp; &nbsp;</p>
+<p>&nbsp;上一篇我们了解下有关网络通信的一些基础知识，这篇我们就具体实践下。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; 实践之前我们先搭建一下本次demo的环境。</p>
+<p>&nbsp;&nbsp; 1.首先去<a href="http://nodejs.org/">node js 官网</a>安装node js环境</p>
+<p>&nbsp;&nbsp;&nbsp; 安装完成如下：</p>
+<p><img src="http://img.blog.csdn.net/20130718145350625?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvamluZ2xpanVu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /></p>
+<p>&nbsp; 安装完成 打开终端 输入 ： node&nbsp; -v </p>
+<p>&nbsp;&nbsp; log输出：v0.10.13.&nbsp; </p>
+<p>&nbsp;&nbsp; 这就证明你的node环境好了。</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; 2..在<a href="http://socket.io/">socket io 官网</a>下载下载socket io的例子，直接copy保存为js文件就好，取名为app.js。</p>
+<p><img src="http://img.blog.csdn.net/20130718145458156?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvamluZ2xpanVu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /></p>
+<p>&nbsp;&nbsp;&nbsp; 3. 把你新建的app.js copy到 刚才node js 安装的目录下</p>
+<p>&nbsp;&nbsp;&nbsp; /usr/local/lib目录下，注意这个目录是系统隐藏的目录</p>
+<p>&nbsp;&nbsp; 4.打开终端cd 到这个目录下 输入：node&nbsp; app.js</p>
+<p>&nbsp;&nbsp; 看看会不会报错。正常情况下是</p>
+<p>输出：&nbsp; info &nbsp;-&nbsp; socket. io&nbsp; started</p>
+<p>如果报错那就可能还缺少2个插件，express 和 ejs&nbsp; </p>
+<p><img src="http://img.blog.csdn.net/20130718145819968?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvamluZ2xpanVu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /></p>
+<p>分别输入 ：sudo npm install express</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sudo npm install ejs</p>
+<p><img src="http://img.blog.csdn.net/20130718145830359?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvamluZ2xpanVu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /></p>
+<p>&nbsp;</p>
+<p><img src="http://img.blog.csdn.net/20130718145907765?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvamluZ2xpanVu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /></p>
+<p>然后再次运行node&nbsp; app.js</p>
+<p>就看见输出：&nbsp; info &nbsp;-&nbsp; socket. io&nbsp; started</p>
+<p><img src="http://img.blog.csdn.net/20130718145936203?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvamluZ2xpanVu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /></p>
+<p>&nbsp; 下面这边websocket的环境已经ok了。</p>
+<p>&nbsp;然后就看ios这边的了。 在github 下载我的demo app 然后直接运行就好了，可以看见下面的效果了。</p>
+<p>具体代码重点是初始化一个socketio的对象，然后实现他的delegate：</p>
+<p></p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/justinjing0612/article/details/9367023#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/justinjing0612/article/details/9367023#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:387px;top:3192px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_1" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_1" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt"><span class="attribute">socketIO</span>&nbsp;=&nbsp;[[SocketIO&nbsp;alloc]&nbsp;initWithDelegate:self];&nbsp;&nbsp;</li>
+<li class="">//<span class="attribute">socketIO.useSecure</span>&nbsp;=&nbsp;<span class="attribute-value">YES</span>;&nbsp;&nbsp;</li>
+<li class="alt">[socketIO&nbsp;connectToHost:@"localhost"&nbsp;onPort:8127];&nbsp;&nbsp;&nbsp;&nbsp;</li>
+</ol>
+</div>
+&nbsp;然后在发送就条用这个方法：<p></p>
+<p></p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/justinjing0612/article/details/9367023#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/justinjing0612/article/details/9367023#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:387px;top:3341px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_2" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_2" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=2&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt">-(void)sendMessageToWebSocket:(NSString&nbsp;*)str&nbsp;&nbsp;</li>
+<li class="">{&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;SocketIOCallback&nbsp;<span class="attribute">cb</span>&nbsp;=&nbsp;^(id&nbsp;argsData)&nbsp;{&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSDictionary&nbsp;*<span class="attribute">response</span>&nbsp;=&nbsp;<span class="attribute-value">argsData</span>;&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;do&nbsp;something&nbsp;with&nbsp;response&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"ack&nbsp;arrived:&nbsp;%@",&nbsp;response);&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;};&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;[socketIO&nbsp;sendMessage:str&nbsp;withAcknowledge:cb];&nbsp;&nbsp;</li>
+<li class="alt">}&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+<br />
+<p></p>
+<p>客户端接受到消息</p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/justinjing0612/article/details/9367023#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/justinjing0612/article/details/9367023#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:387px;top:3650px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_3" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_3" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=3&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt">-&nbsp;(void)&nbsp;socketIO:(SocketIO&nbsp;*)socket&nbsp;didReceiveEvent:(SocketIOPacket&nbsp;*)packet&nbsp;&nbsp;</li>
+<li class="">{&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"didReceiveEvent()");&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*<span class="attribute">receiveData</span>=<span class="attribute-value">packet</span>.data;&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;NSData&nbsp;*<span class="attribute">utf8Data</span>&nbsp;=&nbsp;[receiveData&nbsp;dataUsingEncoding:NSUTF8StringEncoding];&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;NSDictionary&nbsp;*<span class="attribute">dictemp</span>=(NSDictionary&nbsp;*)[SocketIOJSONSerialization&nbsp;objectFromJSONData:utf8Data&nbsp;error:nil];&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;NSDictionary&nbsp;*<span class="attribute">aadic</span>=(NSDictionary&nbsp;*)[[dictemp&nbsp;objectForKey:@"args"]&nbsp;objectAtIndex:0];&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*&nbsp;<span class="attribute">temp</span>&nbsp;=&nbsp;[aadic&nbsp;objectForKey:@"text"];&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"<span class="attribute">temp</span>==%@",temp);&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(![temp&nbsp;isEqualToString:@"connectok"])&nbsp;{&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.messages&nbsp;addObject:temp];&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if((self.messages.count&nbsp;-&nbsp;1)&nbsp;%&nbsp;2)&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[MessageSoundEffect&nbsp;playMessageSentSound];&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[MessageSoundEffect&nbsp;playMessageReceivedSound];&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;finishSend];&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li class="">}&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+<br />
+<p></p>
+<p>&nbsp;</p>
+<p>&nbsp;<img src="http://img.blog.csdn.net/20130718145948312?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvamluZ2xpanVu/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" /></p>
+<p>&nbsp;</p>
+<p><a href="https://github.com/justinjing/websokectForiOS">Demo下载地址</a></p>
+</div></body></html>

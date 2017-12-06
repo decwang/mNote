@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-10-30T16:01:40Z"/><meta name="updated" content="2014-10-30T16:01:52Z"/><title>ios6以后无法通过CTMessageCenter来后台发送短信了;  分析CKClientComposeConversation类里的- (void)sendMessage: newComposi</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div align="center"><div class="page" style="width:980px;text-align:left;"><div style="padding:0px 7px 0px 7px;" align="left"><div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">ios6以后无法通过CTMessageCenter来后台发送短信了;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">分析CKClientComposeConversation类里的- (void)sendMessage: newComposition:</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">发现发送短信是通过xpc_connection_sendmessage给另外个程序来发送的,于是无聊也来实现了一下;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">代码很简单:</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; id connection = [CKClientComposeConversation _xpcConnection];</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; NSMutableArray* recipient = [[NSMutableArray alloc] initWithCapacity:0];</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; NSString *tar = [NSString stringWithFormat:@"10086"];</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; [recipient addObject:tar];</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; const char* text = [[NSString stringWithFormat:@"34"] UTF8String];</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; const char* guid = [[self gen_uuid] UTF8String];</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; id dictionary = xpc_dictionary_create(0, 0, 0);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; IMInsertIntsToXPCDictionary(dictionary, "message-type", 0, 0);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; IMInsertArraysToXPCDictionary(dictionary, "recipients", recipient, 0);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; IMInsertStringsToXPCDictionary(dictionary, "markup", text, 0);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; IMInsertStringsToXPCDictionary(dictionary, "guid", guid, 0);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; &nbsp; &nbsp; xpc_connection_send_message(connection, dictionary);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">这样就ok了，这时问题出现了,提示没有足够的权限。于是吧这段代码生成deb安装到root目录下一跑，短信发出去了。可惜了，必须越狱后才可以实现了,不过上面的方法最终还是有系统固件MobileSMS来发送的,所以短信里还是有纪录的..</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">希望有用...</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">[公告]如果你觉得有人语言挑衅，请点每帖右上角的“举报”按钮！</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">回复时引用此帖 返回顶端</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">共 2 位会员</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">感谢 六月 发表的文章： <span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">Johvid (2013-03-13), robots (2013-04-12)</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">六月</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">级别:10 | 在线时长:151小时 | 升级还需:14小时级别:10 | 在线时长:151小时 | 升级还需:14小时级别:10 | 在线时长:151小时 | 升级还需:14小时级别:10 | 在线时长:151小时 | 升级还需:14小时</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">六月 的头像</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">初级会员</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">初级会员</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">资　料:</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">注册日期: Dec 2007</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">帖子: 286 六月 品行端正</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">精华: 0</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">现金: 128 Kx</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">致谢数: 0</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">获感谢文章数：1</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">获会员感谢数：2</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">2 旧 2013-03-04, 22:06:14 默认</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">六月 当前离线</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">忘记需要带的framework了, XPCObjects和IMFoundation这2个framework</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">定义即个c函数</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">extern int xpc_connection_get_pid(id p1);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">extern char* xpc_connection_get_name(id p1);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">extern id xpc_dictionary_create(int p1, int p2, int p3);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">extern id xpc_connection_send_message(id p1, id p2);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">extern bool IMInsertIntsToXPCDictionary(id p1, const char* p2, int p3, int p4);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">extern bool IMInsertArraysToXPCDictionary(id p1, const char* p2, id p3, int p4);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">extern bool IMInsertStringsToXPCDictionary(id p1, const char* p2, const char* p3, int p4);</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">@interface CKClientComposeConversation : NSObject</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">{</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; NSMutableArray *_composeRecipients;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; BOOL _supportsAttachments;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">&nbsp; &nbsp; BOOL _forceMMS;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">}</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">+ (double)maxTrimDurationForVideo;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">+ (double)maxTrimDurationForAudio;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">+ (id)_xpcConnection;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">+ (double)maxTrimDurationForMediaType:(int)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">+ (id)_newMessageWithComposition:(id)arg1 guid:(id)arg2;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">+ (id)_copyEntityForAddressString:(id)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">@property(nonatomic) BOOL forceMMS; // @synthesize forceMMS=_forceMMS;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (void)addRecipientAddress:(id)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)copyEntityForAddressString:(id)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)restrictMediaObjects;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)canSendMessageComposition:(id)arg1 error:(id *)arg2;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)canSendMessageWithParts:(id)arg1 subject:(id)arg2 error:(id *)arg3;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)isValidAddress:(id)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (double)maxTrimDurationForMediaType:(int)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (void)newMessageContentChangedWithComposition:(id)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)shouldShowCharacterCount;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)serviceDisplayName;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (int)buttonColor;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)displayNameForMediaObjects:(id)arg1 subject:(id)arg2;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)groupID;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (void *)abRecord;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)recipient;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)recipients;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)canSendToRecipients:(id)arg1 withAttachments:(id)arg2 alertIfUnable:(BOOL)arg3;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)canAcceptMediaObjectType:(int)arg1 givenMediaObjects:(id)arg2;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)canAcceptMediaObject:(id)arg1 givenMediaObjects:(id)arg2;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (void)loadAllMessages;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (void)addMessage:(id)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)newMessageWithComposition:(id)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)newMessageWithComposition:(id)arg1 addToConversation:(BOOL)arg2;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)newMessageWithComposition:(id)arg1 guid:(id)arg2 addToConversation:(BOOL)arg3;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)preferredServiceWithCanSend:(char *)arg1 error:(int *)arg2;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)_preferredServiceCheckWithServer:(BOOL)arg1 canSend:(char *)arg2 error:(int *)arg3;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)reloadIfStale;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)unsentComposition;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (void)dealloc;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (id)initWithChat:(id)arg1 updatesDisabled:(BOOL)arg2 supportsAttachments:(BOOL)arg3;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (BOOL)canSendMessageWithMediaObjectTypes:(int *)arg1;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (void)sendMessage:(id)arg1 newComposition:(BOOL)arg2;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">- (int)_maxAttachmentCount;</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;"><br />
+</div>
+<div id="edit1147956" style="padding:0px 0px 1px 0px;">@end&nbsp;</div>
+</div>
+</div>
+</div>
+</div></body></html>

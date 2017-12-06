@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-08-13T01:46:22Z"/><meta name="updated" content="2016-10-08T09:09:08Z"/><title>cordova与ios native code交互的原理  标签： cordova ios native | 发表时间：2014-08-06 18:00 | 作者：kyfxbl   分享到：  出处</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h1 style="line-height:36px;font-size:20px;text-shadow:#dddddd 1px 1px 2px;border-bottom-width:2px;border-bottom-style:dotted;border-bottom-color:#cbcbcb;margin-top:0px;margin-bottom:0px;font-family:Arial, Helvetica, San-serif;">cordova与ios native code交互的原理</h1>
+<div class="itemOrigin" title="http://blog.csdn.net/rss/Expert.aspx" style="font-size:10pt;color:gray;font-family:Arial, Helvetica, San-serif;line-height:normal;">标签：&nbsp;<strong>cordova&nbsp;</strong><strong>ios&nbsp;</strong><strong>native&nbsp;</strong>| 发表时间：2014-08-06 18:00 | 作者：kyfxbl&nbsp;</div>
+<div class="itemOrigin" title="http://blog.csdn.net/kyfxbl/article/details/38404471" style="font-size:10pt;color:gray;font-family:Arial, Helvetica, San-serif;line-height:normal;"><div class="bdshare_t bds_tools get-codes-bdshare" id="bdshare" style="z-index:999999;padding-bottom:2px;font-size:12px;float:right;zoom:1;"><span class="bds_more" style="background-image:url(http://bdimg.share.baidu.com/static/images/is.png?cdnversion=20131219) !important;display:block;font-family:宋体, Arial;height:16px;float:left;cursor:pointer;padding-top:6px;padding-bottom:3px;padding-left:22px;background-position:0px 5px !important;background-repeat:no-repeat no-repeat !important;">分享到：</span><a shape="rect" class="bds_qzone" title="分享到QQ空间" href="http://itindex.net/detail/50630-cordova-ios-native#" style="color:#006699;text-decoration:none;display:block;font-family:宋体, Arial;height:16px;float:left;cursor:pointer;padding-top:6px;padding-bottom:3px;padding-left:22px;background-image:url(http://bdimg.share.baidu.com/static/images/is.png?cdnversion=20131219);background-position:0px -75px !important;background-repeat:no-repeat no-repeat;"></a><a shape="rect" class="bds_tsina" title="分享到新浪微博" href="http://itindex.net/detail/50630-cordova-ios-native#" style="color:#006699;text-decoration:none;display:block;font-family:宋体, Arial;height:16px;float:left;cursor:pointer;padding-top:6px;padding-bottom:3px;padding-left:22px;background-image:url(http://bdimg.share.baidu.com/static/images/is.png?cdnversion=20131219);background-position:0px -115px !important;background-repeat:no-repeat no-repeat;"></a><a shape="rect" class="bds_tqq" title="分享到腾讯微博" href="http://itindex.net/detail/50630-cordova-ios-native#" style="color:#006699;text-decoration:none;display:block;font-family:宋体, Arial;height:16px;float:left;cursor:pointer;padding-top:6px;padding-bottom:3px;padding-left:22px;background-image:url(http://bdimg.share.baidu.com/static/images/is.png?cdnversion=20131219);background-position:0px -235px !important;background-repeat:no-repeat no-repeat;"></a><a shape="rect" class="bds_renren" title="分享到人人网" href="http://itindex.net/detail/50630-cordova-ios-native#" style="color:#006699;text-decoration:none;display:block;font-family:宋体, Arial;height:16px;float:left;cursor:pointer;padding-top:6px;padding-bottom:3px;padding-left:22px;background-image:url(http://bdimg.share.baidu.com/static/images/is.png?cdnversion=20131219);background-position:0px -195px !important;background-repeat:no-repeat no-repeat;"></a><a shape="rect" class="bds_t163" title="分享到网易微博" href="http://itindex.net/detail/50630-cordova-ios-native#" style="color:#006699;text-decoration:none;display:block;font-family:宋体, Arial;height:16px;float:left;cursor:pointer;padding-top:6px;padding-bottom:3px;padding-left:22px;background-image:url(http://bdimg.share.baidu.com/static/images/is.png?cdnversion=20131219);background-position:0px -715px !important;background-repeat:no-repeat no-repeat;"></a></div>
+出处：http://blog.csdn.net</div>
+<div style="font-family:Arial, Helvetica, San-serif;line-height:normal;"><div class="cbody" style="margin:15px 15px 50px;word-wrap:break-word;word-break:break-all;"><p>很早以前写了一篇博客，总结cordova插件怎么调用到原生代码：&nbsp;&nbsp;<a href="http://blog.csdn.net/kyfxbl/article/details/21533953" target="_blank" style="color:#006699;text-decoration:none;">cordova调用过程</a>，不过写得太水，基本没有提到原理。最近加深了一点理解，重新补充说明一下</p>
+<h2 style="margin-top:0px;margin-bottom:0px;">js调用native</h2>
+<p>下面是我们产品中的代码片段：</p>
+<p></p>
+<pre>datePicker.show(options, function (date) {
+    var month = date.getMonth() + 1;
+    callback(null, date.getFullYear() + "-" + month + "-" + date.getDate());
+});</pre><br />
+cordova插件最终表现出来的都是js接口，并且调用者完全不需要知道自己在调用一个cordova插件<p></p>
+<p>但是在任何cordova js方法内部，最后一定会调用cordova.exec函数：</p>
+<p></p>
+<pre>cordova.exec(successCallback, errorCallback, "DatePicker", "show", []);</pre><p></p>
+<p>然后就进入了关键的cordova.exec函数，这是cordova框架的js端的最后一环，就是由它完成对ios native的调用</p>
+<p>在exec函数里，首先会判断平台，可能是android，ios或者wp，其他平台本文省略，如果是ios平台，cordova会采用以下2种方式的一种，来与ios native code交互</p>
+<h3 style="margin-top:0px;margin-bottom:0px;border-bottom-width:2px;border-bottom-style:dotted;border-bottom-color:#cbcbcb;">通过iframe</h3>
+<p>cordova.exec往当前的html中插入一个不可见的iframe，从而向UIWebView请求加载一个特殊的URL，这个URL里当然就包含了要调用的native plugin的类名，方法名，参数，回调函数等信息</p>
+<p>接下来，由于被请求加载URL，于是UIWebViewDelegate的这个方法被调用：</p>
+<p></p>
+<pre>- (BOOL)webView:(UIWebView*)theWebView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType</pre><br />
+这里就进入了native侧，从request里就拿到了js端传过来的信息，然后调用到native plugin<p></p>
+<h3 style="margin-top:0px;margin-bottom:0px;border-bottom-width:2px;border-bottom-style:dotted;border-bottom-color:#cbcbcb;">通过XHR</h3>
+<p>另一种方式，cordova.exec里直接发起一个XHR请求，被native侧的NSURLProtocol拦截，于是调用到这个native方法：</p>
+<p></p>
+<pre>+ (BOOL)canInitWithRequest:(NSURLRequest*)theRequest</pre><br />
+也进入了native侧，然后以同样的方式调用到native plugin<p></p>
+<p>在2种方式中，cordova会优先选择XHR方式，只有当XHR方式不可用时，才会使用iframe的方式。不过无论怎么样，这2种方法都为从js到native打开了一条通道，剩下的就是传递参数和路由的问题了</p>
+<h2 style="margin-top:0px;margin-bottom:0px;">native调用js</h2>
+<p>另一条通道就简单的多，因为iOS提供了原生支持，所以不需要想特别的办法。即通过UIWebView的这个方法：</p>
+<p></p>
+<pre>- (NSString *)stringByEvaluatingJavaScriptFromString:(NSString *)script;</pre><br />
+看一下cordova框架native侧的代码，我去掉了注释和无关代码：<p></p>
+<p></p>
+<pre>- (void)evalJsHelper:(NSString*)js
+{
+    if (![NSThread isMainThread] || !_commandQueue.currentlyExecuting) {
+        [self performSelectorOnMainThread:@selector(evalJsHelper2:) withObject:js waitUntilDone:NO];
+    } else {
+        [self evalJsHelper2:js];
+    }
+}</pre><br />
+<pre>- (void)evalJsHelper2:(NSString*)js
+{
+    NSString* commandsJSON = [_viewController.webView stringByEvaluatingJavaScriptFromString:js];
+}</pre><br />
+可以看到，正是通过UIWebView提供的这个方法完成的，但是，一定执行在main thread<p></p>
+<h2 style="margin-top:0px;margin-bottom:0px;">同步和异步的问题</h2>
+<p>从上面的分析可以发现，从js调用native，2种方式都必定是异步的。而从native回到js，却是一个同步的方法，而且是跑在主线程里</p>
+<p>调用cordova插件的代码，对返回值的处理一定要放在回调函数里，因为结果是异步返回的。同时，回调函数的执行时间不能太长，否则会阻塞native主线程</p>
+<h2 style="margin-top:0px;margin-bottom:0px;">参考</h2>
+<p>本文参考了以下2篇文章，都写得很好：</p>
+<p><a href="http://sjpsega.com/blog/2014/06/01/phonegap-ios/" target="_blank" style="color:#006699;text-decoration:none;">iOS版PhoneGap原理分析</a>&nbsp; </p>
+<p><a href="http://zhenby.com/blog/2013/05/16/cordova-for-ios/" target="_blank" style="color:#006699;text-decoration:none;">浅析Cordova for iOS</a>&nbsp;</p>
+</div>
+</div></body></html>

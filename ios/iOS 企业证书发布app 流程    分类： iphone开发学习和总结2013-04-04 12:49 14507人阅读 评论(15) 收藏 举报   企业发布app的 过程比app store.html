@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-12-21T07:14:11Z"/><meta name="updated" content="2015-08-04T01:23:54Z"/><title>iOS 企业证书发布app 流程    分类： iphone开发学习和总结2013-04-04 12:49 14507人阅读 评论(15) 收藏 举报   企业发布app的 过程比app store</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';"><h1 style="margin:0px;padding:0px;display:inline;font-weight:normal;font-size:20px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/justinjing0612/article/details/8758692" style="color:#000000;text-decoration:none;">iOS 企业证书发布app 流程</a></span></h1>
+</div>
+<div class="article_manage" style="padding:5px 0px;color:#999999;font-size:12px;line-height:24px;font-family:Arial;text-align:right;"><span class="link_categories" style="margin:0px 5px;float:left;">分类：&nbsp;<a href="http://blog.csdn.net/jinglijun/article/category/925686" style="color:#ca0000;text-decoration:none;">iphone开发学习和总结</a></span><span class="link_postdate" style="margin:0px 5px 0px 0px;">2013-04-04 12:49</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_view.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;">14507人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_comm.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;"><a href="http://blog.csdn.net/justinjing0612/article/details/8758692#comments" style="color:#ca0000;text-decoration:none;">评论</a>(15)</span>&nbsp;<span class="link_collect" style="margin:0px 5px;"><a title="收藏" style="color:#ca0000;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/justinjing0612/article/details/8758692#report" title="举报" style="color:#ca0000;text-decoration:none;">举报</a></span></div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;line-height:26px;font-family:Arial;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;企业发布app的 过程比app store 发布的简单多了，没那么多的要求，哈</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">但是整个工程的要求还是一样，比如各种像素的icon啊 命名规范啊等等。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">下面是具体的流程</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1、修改你的 bundle identifier 为你的企业的app id ：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050544_7713.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2、修改Edit scheme&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050560_7883.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3、修改为 Release</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050574_8937.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4、修改bulid setting 的code sign：为企业的 mobileprifile</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050587_9255.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">5、然后 Product &nbsp;archive 归档构建你的app</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050622_4093.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">6、选择 distrbution</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050634_1999.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">7、选择 “Save for Enterprise or AD-Hoc Deployment”</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050679_4242.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">8、这个要选择企业的证书</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050696_9720.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">9、这个要选择“Save for Enterprise Distribution”&nbsp;做一些设置&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Application URL 是你的ipa 将来要放到那里，也就是你的ipa包下载连接</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Title ：提示安装时候 alertview 的tittle &nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Subtitle ：提示安装时候 alertview 的subtitle&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Large Image URL ：这个是的ipa 包在下载时你的app 在桌面的icon@2x的(114Pix)</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Small Image URL ：这个是的ipa 包在下载时你的app 在桌面的icon(57Pix)</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050751_2274.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">10、然后在桌面就有了2哥文件一个是 ipa 包 一个 plist&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050767_1127.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">11、&nbsp;打开plist &nbsp;可以看看都是我们刚才在第8步 设置的</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365050830_9914.png" alt="" style="border:none;" />\</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">12、前面的发布已经ok了，接下来就是要下载了</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;拿起你的手机在浏览器 输入 “</p>
+<pre style="white-space:pre-wrap;word-wrap:break-word;margin-top:0px;margin-bottom:0px;padding:0px;border:0px;font-family:inherit;font-size:inherit;font-style:inherit;font-variant:inherit;vertical-align:baseline;line-height:21px;">itms-services:///?action=download-manifest&amp;url=<a target="_blank" href="https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxcheckurl?uin=363338255&amp;sid=XNIc7r9nDxqoFayG&amp;skey=1A59DEC39520ACEA5388E95F4D0A4B98883350E3BEB4947F&amp;deviceid=e775509239373635&amp;opcode=2&amp;requrl=https://ibank.pingan.com.cn/ibank/smartphone/client_mdm/download/meoa.plist&amp;scene=1&amp;username=q328768774" style="color:#ca0000;text-decoration:none;margin:0px;padding:0px;border:0px;font-family:inherit;font-size:inherit;font-style:inherit;font-variant:inherit;line-height:inherit;vertical-align:baseline;outline-style:none;"><span style="color:#ff0000;">https://iwww.app.test/test.plist</span></a></pre>”红色部分就是你将要把你在地第9步生成的那个 plist 发布的连接地址。<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365052464_1411.jpg" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">13、点击go 之后，然后 回去先一个 alertview 提示你是否要安装 ？</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365052695_4169.png" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">14、点击 “安装”&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">（这个地方 正式的环境下 会显示你的 app 的iocn 和那么</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;我这个是 测试 ，所以没有加icon &nbsp;，那么也是随便写的 ）</p>
+<br />
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365052708_2326.jpg" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">15、在桌面就有进度条了，在下载。（这个地方 正式的环境下 会显示你的 app 的iocn 和那么</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;我这个是 测试 ，所以没有加icon &nbsp;，那么也是随便写的 ）</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365052724_2305.jpg" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">16、下载ok了</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365052736_9120.jpg" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">17、点击你的app， 万事ok 了，使用把</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.my.csdn.net/uploads/201304/04/1365052748_2023.jpg" alt="" style="border:none;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;企业证书 发布app 就学会了哈哈！</p>
+</div></body></html>

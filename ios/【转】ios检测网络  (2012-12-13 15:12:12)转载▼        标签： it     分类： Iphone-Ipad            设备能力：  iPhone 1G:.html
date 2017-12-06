@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-08-28T11:08:59Z"/><meta name="updated" content="2014-08-28T11:09:01Z"/><title>【转】ios检测网络  (2012-12-13 15:12:12)转载▼        标签： it     分类： Iphone-Ipad            设备能力：  iPhone 1G:</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="articalTitle"> 
+			
+								<h2 id="t_6f9a971801018g41" class="titName SG_txta">【转】ios检测网络</h2>
+			
+					<span class="time SG_txtc">(2012-12-13 15:12:12)</span><div class="turnBoxzz"><a href="" class="SG_aBtn SG_aBtn_ico SG_turn" action-type="reblog" action-data="{srcBlog:1, blogId:'6f9a971801018g41'}"><cite><img class="SG_icon SG_icon111" src="http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif" align="absmiddle" height="15" width="15" />转载<em class="arrow">▼</em></cite></a></div>
+		</div>
+		<div class="articalTag" id="sina_keyword_ad_area">
+			<table>
+				<tbody><tr>
+					<td class="blog_tag">
+					
+											<span class="SG_txtb">标签：</span> 																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=it&amp;by=tag" target="_blank">it</a></h3>
+																</td>
+					<td class="blog_class">
+											<span class="SG_txtb">分类：</span> 						<a target="_blank" href="http://blog.sina.com.cn/s/articlelist_1872402200_3_1.html">Iphone-Ipad</a> 										</td>
+				</tr>
+			</tbody>
+</table>
+		</div>
+						
+		<div id="sina_keyword_ad_area2" class="articalContent ">
+			设备能力：<br />
+<pre><code>        iPhone 1G:  A-GPS,  accelerometer,  camera      --        --     
+        
+
+iPhone 3G:  A-GPS,  accelerometer,  camera      --        -- 
+
+    
+ iPhone Simulator:  A-GPS,  accelerometer     --        --        -- 
+
+    
+       iPhone 3GS:  A-GPS,  accelerometer,  camera   compass,     --      
+         
+
+iPhone 4:  A-GPS,  accelerometer,  camera,  compass,  gyroscope  
+             
+
+iPad:  A-GPS,  accelerometer     --     compass,     -- 
+
+    
+           iPad 2:  A-GPS,  accelerometer,  camera,  compass,  gyroscope  
+    
+
+iPod Touch 1G:   --     accelerometer     --        --        --     
+    
+
+iPod Touch 2G:   --     accelerometer     --        --        -- 
+
+    
+    iPod Touch 3G:   --     accelerometer     --        --        --     
+    
+
+iPod Touch 4G:   --     accelerometer,  camera,     --     gyroscope<b><span style="color:#22B14C;">注意，使用Reachability的时候，只能放在主线程里使用，否则无效！</span></b> </code> </pre> #import
+&lt;SystemConfiguration/SCNetworkReachability.h&gt;<br />
+#include &lt;netinet/in.h&gt;<br />
+<br />
+<b><span style="color:#0411FC;">//判断网络是否可用</span></b><br />
+- (BOOL) connectedToNetwork<br />
+{<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> // Create
+zero addy<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> struct
+sockaddr_in zeroAddress;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> bzero(&amp;zeroAddress, sizeof(zeroAddress));<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> zeroAddress.sin_len = sizeof(zeroAddress);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> zeroAddress.sin_family = AF_INET;<br />
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> // Recover
+reachability flags<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> SCNetworkReachabilityRef<wbr> defaultRouteReachability<wbr> =
+SCNetworkReachabilityCre<wbr>ateWithAddress(NULL, (struct sockaddr
+*)&amp;zeroAddress);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> SCNetworkReachabilityFla<wbr>gs flags;<br />
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> BOOL
+didRetrieveFlags =
+SCNetworkReachabilityGet<wbr>Flags(defaultRouteReachability<wbr>,
+&amp;flags);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> CFRelease(defaultRouteReachability<wbr>);<br />
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if
+(!didRetrieveFlags)<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSLog(@"Error. Could not recover network reachability
+flags");<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return NO;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }<br />
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> BOOL
+isReachable = flags &amp;
+kSCNetworkFlagsReachable<wbr>;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> BOOL
+needsConnection = flags &amp;
+kSCNetworkFlagsConnectio<wbr>nRequired;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> BOOL nonWiFi
+= flags &amp;
+kSCNetworkReachabilityFl<wbr>agsTransientConnection;<br />
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSURL
+*testURL = [NSURL URLWithString:@"http://www.apple.com/"];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSURLRequest
+*testNetworkRequest = [NSURLRequest
+requestWithURL:testURL&nbsp;<wbr> cachePolicy:NSURLRequestReloadIgnori<wbr>ngLocalCacheData
+timeoutInterval:20.0];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSURLConnection *testNetworkConnection = [[[NSURLConnection alloc]
+initWithRequest:testNetworkRequest delegate:self]
+autorelease];<br />
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return
+((isReachable &amp;&amp; !needsConnection)
+|| nonWiFi) ? (testNetworkConnection ? YES : NO) : NO;<br />
+}<br />
+<br />
+<b><span style="color:#0027FD;">//判断网络类型</span></b><br />
+<b><span style="color:#6772E0;">第一套方案：</span></b><br />
+<p>Using private APIs, you can read this information directly in
+the status bar.</p>
+<p><a href="https://github.com/nst/MobileSignal/blob/master/Classes/UIApplication+MS.m"> https://github.com/nst/MobileSignal/blob/master/Classes/UIApplication+MS.m</a></p>
+<pre><code>@class UIStatusBarForegroundVie<wbr>w;
+
+@class UIStatusBarDataNetworkIt<wbr>emView;
+
+
+
++ (NSNumber *)dataNetworkTypeFromStatu<wbr>sBar {
+
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> UIApplication *app = [UIApplication sharedApplication];
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> UIStatusBar *statusBar = [app valueForKey:@"statusBar"];
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> UIStatusBarForegroundVie<wbr>w *foregroundView = [statusBar valueForKey:@"foregroundView"];
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSArray *subviews = [foregroundView subviews];
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> UIStatusBarDataNetworkIt<wbr>emView *dataNetworkItemView = nil;
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> for (id subview in subviews) {
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if([subview isKindOfClass:[NSClassFromString(@"UIStatusBarDataNetworkIt<wbr>emView") class]]) {
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> dataNetworkItemView = subview;
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> break;
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }
+
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return [dataNetworkItemView valueForKey:@"dataNetworkType"];
+
+}
+
+
+
+//换个写法
+
++ (NSNumber *)dataNetworkTypeFromStatu<wbr>sBar {
+
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> UIApplication *app = [UIApplication sharedApplication];
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> UIStatusBar *statusBar = [app valueForKey:@"statusBar"];
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> id foregroundView = [statusBar valueForKey:@"foregroundView"];
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSArray *subviews = [foregroundView subviews];
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> id dataNetworkItemView = nil;
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> for (id subview in subviews) {
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if([subview isKindOfClass:[NSClassFromString(@"UIStatusBarDataNetworkIt<wbr>emView") class]]) {
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> dataNetworkItemView = subview;
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> break;
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }
+
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }
+
+&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return [dataNetworkItemView valueForKey:@"dataNetworkType"];
+
+}</code> </pre> <p>And the value keys I've found so far:</p>
+<ul>
+<li>0 = No wifi or cellular</li>
+<li>1 = 2G and earlier? (not confirmed)</li>
+<li>2 = 3G? (not yet confirmed)</li>
+<li>3 = 4G</li>
+<li>4 = LTE</li>
+<li>5 = Wifi</li>
+</ul>
+<pre> </pre> <br />
+<b><span style="color:#6772E0;">第二套方案（不准）：</span></b><br />
+<code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> Reachability *reach = [Reachability
+reachabilityWithHostName<wbr>:@</code><code>"www.apple.com"</code><code>];</code> <div>
+<code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr></code><code>NSLog</code><code>(@</code><code>"%d"</code><code>,
+[reach currentReachabilityStatu<wbr>s]);</code></div>
+<div>
+<code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr></code><code>return</code><code>;<br />
+<br />
+</code> 在currentReachabilityStatu<wbr>s函数中，我们注意到这样的输出：<br />
+<br />
+static void
+PrintReachabilityFlags(SCNetworkReachabilityFla<wbr>gs&nbsp;<wbr> &nbsp;<wbr> flags, const char* comment)<br />
+{<br />
+#if kShouldPrintReachability<wbr>Flags<br />
+<br />
+NSLog(@"Reachability Flag Status: %c%c %c%c%c%c%c%c%c %s\n",<br />
+&nbsp;<wbr>&nbsp;<wbr> (flags &amp;
+kSCNetworkReachabilityFl<wbr>agsIsWWAN)&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> ? 'W' : '-',<br />
+&nbsp;<wbr>&nbsp;<wbr> (flags &amp;
+kSCNetworkReachabilityFl<wbr>agsReachable)&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> ? 'R' : '-',<br />
+&nbsp;<wbr>&nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr> (flags &amp;
+kSCNetworkReachabilityFl<wbr>agsTransientConnection)&nbsp;<wbr> ?
+'t' : '-',<br />
+&nbsp;<wbr>&nbsp;<wbr> (flags &amp;
+kSCNetworkReachabilityFl<wbr>agsConnectionRequired) &nbsp;<wbr> ?
+'c' : '-',<br />
+&nbsp;<wbr>&nbsp;<wbr> (flags &amp;
+kSCNetworkReachabilityFl<wbr>agsConnectionOnTraffic)&nbsp;<wbr> ?
+'C' : '-',<br />
+&nbsp;<wbr>&nbsp;<wbr> (flags &amp;
+kSCNetworkReachabilityFl<wbr>agsInterventionRequired) ? 'i' : '-',<br />
+&nbsp;<wbr>&nbsp;<wbr> (flags &amp;
+kSCNetworkReachabilityFl<wbr>agsConnectionOnDemand) &nbsp;<wbr> ?
+'D' : '-',<br />
+&nbsp;<wbr>&nbsp;<wbr> (flags &amp;
+kSCNetworkReachabilityFl<wbr>agsIsLocalAddress) &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> ? 'l' : '-',<br />
+&nbsp;<wbr>&nbsp;<wbr> (flags &amp;
+kSCNetworkReachabilityFl<wbr>agsIsDirect) &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> ? 'd' : '-',<br />
+&nbsp;<wbr>&nbsp;<wbr> comment<br />
+&nbsp;<wbr>&nbsp;<wbr> );<br />
+#endif<br />
+}<br />
+当是wifi的时候输出R<br />
+当是3G的时候输出Rt<br />
+当是联通2G或者是移动的时候输出Rtc<br />
+在头文件定义如下：<br />
+<br />
+<div>
+<div>
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td><br />
+</td>
+<td>
+<div><code>typedef</code> <code>enum</code> <code>{</code> <div>
+<code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr></code><code>NotReachable
+= 0,</code></div>
+<div>
+<code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr></code><code>ReachableViaWiFi,</code></div>
+<div>
+<code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr></code><code>ReachableVia3G,</code></div>
+<div>
+<code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr></code><code>ReachableVia2G,</code><code>//当前无法区分是联通的2G还是移动的2G</code></div>
+<div><code>} NetworkStatus;</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br />
+<br />
+因此我就是以这个为判断条件的，重写Reachability的函数：<br />
+- (NetworkStatus) networkStatusForFlags:
+(SCNetworkReachabilityFla<wbr>gs) flags<br />
+{<br />
+if ((flags &amp; kSCNetworkReachabilityFl<wbr>agsReachable)
+== 0)<br />
+{<br />
+&nbsp;<wbr>&nbsp;<wbr>return NotReachable;<br />
+}<br />
+<br />
+<br />
+BOOL retVal = NotReachable;<br />
+<br />
+if ((flags &amp;
+kSCNetworkReachabilityFl<wbr>agsConnectionRequired) == 0)<br />
+{<br />
+&nbsp;<wbr>&nbsp;<wbr>// if target host is reachable
+and no connection is required<br />
+&nbsp;<wbr>&nbsp;<wbr>//&nbsp;<wbr> then we'll
+assume (for now) that your on Wi-Fi<br />
+&nbsp;<wbr>&nbsp;<wbr>retVal =
+ReachableViaWiFi;<br />
+}<br />
+<br />
+<br />
+if ((((flags &amp;
+kSCNetworkReachabilityFl<wbr>agsConnectionOnDemand ) != 0) ||<br />
+&nbsp;<wbr>&nbsp;<wbr>(flags &amp;
+kSCNetworkReachabilityFl<wbr>agsConnectionOnTraffic) != 0))<br />
+{<br />
+&nbsp;<wbr>&nbsp;<wbr> // ... and the connection is
+on-demand (or on-traffic) if the<br />
+&nbsp;<wbr>&nbsp;<wbr> // &nbsp;<wbr> &nbsp;<wbr> calling application is using the CFSocketStream
+or higher APIs<br />
+&nbsp;<wbr>&nbsp;<wbr> if ((flags &amp;
+kSCNetworkReachabilityFl<wbr>agsInterventionRequired) == 0)<br />
+&nbsp;<wbr>&nbsp;<wbr> {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>//
+... and no [user] intervention is needed<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>retVal
+= ReachableViaWiFi;<br />
+&nbsp;<wbr>&nbsp;<wbr> }<br />
+&nbsp;<wbr>&nbsp;<wbr>}<br />
+<br />
+<div>
+<div>
+<div><br />
+</div>
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td>
+<div><br />
+</div>
+</td>
+<td>
+<div>
+<div><code>if</code> <code>((flags &amp;
+kSCNetworkReachabilityFl<wbr>agsIsWWAN) ==
+kSCNetworkReachabilityFl<wbr>agsIsWWAN)</code></div>
+<div><code>&nbsp;<wbr></code><code>{</code></div>
+<div><code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr></code> <code>retVal =
+ReachableVia3G;</code></div>
+<div>
+<code>&nbsp;<wbr></code><code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if</code><code>((flags &amp;
+kSCNetworkReachabilityFl<wbr>agsReachable) ==
+kSCNetworkReachabilityFl<wbr>agsReachable) {</code></div>
+<div>
+<code>&nbsp;<wbr></code><code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if</code><code>((flags &amp;
+kSCNetworkReachabilityFl<wbr>agsTransientConnection) ==
+kSCNetworkReachabilityFl<wbr>agsTransientConnection) {</code></div>
+<div><code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr></code> <code>retVal = ReachableVia2G;</code></div>
+<div><code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr></code> <code>}</code></div>
+<div><code>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr></code> <code>}</code></div>
+<div><code>&nbsp;<wbr></code><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br />
+return retVal;<br />
+}<br />
+<br />
+<br />
+这样就可以正确的区分是2G，3G，wifi网络，这只支持中国地区，其他地区未考虑。<br />
+作者：Rush.D.Xzj<br />
+<br />
+测试结果：<br />
+联通卡不管是2g还是3g，都是输出WR t，照理应该是3g，但是返回的NETWORKSTATUS却都是2g的！<br />
+我切换2g后，等了十几分钟再跑都一样，擦！</div>
+</div></body></html>

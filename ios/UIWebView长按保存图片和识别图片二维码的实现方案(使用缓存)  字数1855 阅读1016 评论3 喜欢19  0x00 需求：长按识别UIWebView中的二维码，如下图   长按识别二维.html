@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-12-08T04:03:18Z"/><meta name="updated" content="2016-12-08T04:03:21Z"/><title>UIWebView长按保存图片和识别图片二维码的实现方案(使用缓存)  字数1855 阅读1016 评论3 喜欢19  0x00 需求：长按识别UIWebView中的二维码，如下图   长按识别二维</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h1 class="title" style="margin:10px 0px;font-family:-apple-system, 'Helvetica Neue', Arial, 'PingFang SC', 'lucida grande', 'lucida sans unicode', lucida, helvetica, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;line-height:1.5;color:#555555;text-rendering:optimizelegibility;font-size:32px;word-break:break-all;font-variant-ligatures:normal;orphans:2;widows:2;">UIWebView长按保存图片和识别图片二维码的实现方案(使用缓存)</h1>
+<div class="meta-top" style="font-family:-apple-system, 'Helvetica Neue', Arial, 'PingFang SC', 'lucida grande', 'lucida sans unicode', lucida, helvetica, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;margin:20px 0px;color:#555555;font-variant-ligatures:normal;orphans:2;widows:2;"><span class="wordage" style="position:relative;top:1px;margin-right:10px;font-size:12px;color:#999999;">字数1855</span>&nbsp;<span class="views-count" style="position:relative;top:1px;margin-right:10px;font-size:12px;color:#999999;">阅读1016</span>&nbsp;<span class="comments-count" style="position:relative;top:1px;margin-right:10px;font-size:12px;color:#999999;">评论3</span>&nbsp;<span class="likes-count" style="position:relative;top:1px;margin-right:10px;font-size:12px;color:#999999;">喜欢19</span></div>
+<div class="show-content" style="color:#2f2f2f;font-size:16px;line-height:1.7;font-family:-apple-system, 'Helvetica Neue', Arial, 'PingFang SC', 'lucida grande', 'lucida sans unicode', lucida, helvetica, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;font-variant-ligatures:normal;orphans:2;widows:2;"><h3 style="margin:0px;font-family:inherit;line-height:1.8;color:inherit;text-rendering:optimizelegibility;font-size:22px;">0x00 需求：长按识别UIWebView中的二维码，如下图</h3>
+<div class="image-package imagebubble" widget="ImageBubble" style="margin:0px auto 20px;text-align:center;"><img src="http://upload-images.jianshu.io/upload_images/1108154-a3c4a22272d948fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/1108154-a3c4a22272d948fa.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" style="height:auto;vertical-align:middle;border:0px;cursor:-webkit-zoom-in;transition:all 0.25s ease-in-out;-webkit-transition:all 0.25s ease-in-out;" /><br />
+<div class="image-caption" style="min-width:20%;min-height:22px;display:inline-block;padding:10px;margin:0px auto;border-bottom:1px solid #d9d9d9;font-size:13px;color:#999999;font-style:italic;line-height:1.7;">长按识别二维码</div>
+</div>
+<h3 style="margin:0px;font-family:inherit;line-height:1.8;color:inherit;text-rendering:optimizelegibility;font-size:22px;">0x01 方案1：</h3>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">给UIWebView增加一个长按手势，激活长按手势时获取当前UIWebView的截图，分析是否包含二维码。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>核心代码</strong>：略</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>优点</strong>：流程简单，可以快速实现。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>不足</strong>：无法实现保存UIWebView中图片，如果当前WebView二维码显示不全或者多个二维码，使用这种方式实现的二维码识别也会有问题；</p>
+<h3 style="margin:0px;font-family:inherit;line-height:1.8;color:inherit;text-rendering:optimizelegibility;font-size:22px;">0x02 方案2：</h3>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">长按UIWebView时，获取手指单击位置的图片的URL地址。这种方案是通过获取手指点击的位置，然后获取该位置的标签的src属性，进而获取到url。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>核心代码</strong>：</p>
+<pre class="hljs objectivec" style="padding:9.5px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:13px;color:#657b83;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;margin-top:0px;margin-bottom:20px;line-height:20px;word-break:break-all;word-wrap:normal;background-color:#fdf6e3;border:1px solid rgba(0, 0, 0, 0.14902);overflow:auto;background-position:initial initial;background-repeat:initial initial;"><code class="objectivec" style="padding:0px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:12px;border-top-left-radius:3px;border-top-right-radius:3px;border-bottom-right-radius:3px;border-bottom-left-radius:3px;background-color:transparent;border:none;"><span class="hljs-class"><span class="hljs-keyword" style="color:#859900;">@interface</span> <span class="hljs-title" style="color:#b58900;">CVWebViewController</span> ()&lt;<span class="hljs-title" style="color:#b58900;">UIGestureRecognizerDelegate</span>&gt;</span> <span class="hljs-keyword" style="color:#859900;">@property</span> (<span class="hljs-keyword" style="color:#859900;">weak</span>, <span class="hljs-keyword" style="color:#859900;">nonatomic</span>) <span class="hljs-keyword" style="color:#859900;">IBOutlet</span> <span class="hljs-built_in" style="color:#268bd2;">UIWebView</span> *webView;<span class="hljs-keyword" style="color:#859900;">@end</span> <span class="hljs-class"><span class="hljs-keyword" style="color:#859900;">@implementation</span> <span class="hljs-title" style="color:#b58900;">CVWebViewController</span></span> - (<span class="hljs-keyword" style="color:#859900;">void</span>)viewDidLoad
+{
+    [<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.webView</span>  loadRequest:[<span class="hljs-built_in" style="color:#268bd2;">NSURLRequest</span> requestWithURL:[<span class="hljs-built_in" style="color:#268bd2;">NSURL</span> URLWithString:<span class="hljs-string" style="color:#2aa198;">@"http://mp.weixin.qq.com/s?__biz=MzI2ODAzODAzMw==&amp;mid=2650057120&amp;idx=2&amp;sn=c875f7d03ea3823e8dcb3dc4d0cff51d&amp;scene=0#wechat_redirect"</span>]]];
+    <span class="hljs-built_in" style="color:#268bd2;">UILongPressGestureRecognizer</span> *longPressed = [[<span class="hljs-built_in" style="color:#268bd2;">UILongPressGestureRecognizer</span> alloc] initWithTarget:<span class="hljs-keyword" style="color:#859900;">self</span> action:<span class="hljs-keyword" style="color:#859900;">@selector</span>(longPressed:)];
+    longPressed<span class="hljs-variable" style="color:#b58900;">.delegate</span> = <span class="hljs-keyword" style="color:#859900;">self</span>;
+    [<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.webView</span> addGestureRecognizer:longPressed];
+}
+
+- (<span class="hljs-keyword" style="color:#859900;">void</span>)longPressed:(<span class="hljs-built_in" style="color:#268bd2;">UITapGestureRecognizer</span>*)recognizer
+{
+    <span class="hljs-keyword" style="color:#859900;">if</span> (recognizer<span class="hljs-variable" style="color:#b58900;">.state</span> != <span class="hljs-built_in" style="color:#268bd2;">UIGestureRecognizerStateBegan</span>) {
+        <span class="hljs-keyword" style="color:#859900;">return</span>;
+    }
+    <span class="hljs-built_in" style="color:#268bd2;">CGPoint</span> touchPoint = [recognizer locationInView:<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.webView</span>];
+    <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *js = [<span class="hljs-built_in" style="color:#268bd2;">NSString</span> stringWithFormat:<span class="hljs-string" style="color:#2aa198;">@"document.elementFromPoint(%f, %f).src"</span>, touchPoint<span class="hljs-variable" style="color:#b58900;">.x</span>, touchPoint<span class="hljs-variable" style="color:#b58900;">.y</span>];
+    <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *imageUrl = [<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.webView</span> stringByEvaluatingJavaScriptFromString:js];
+    <span class="hljs-keyword" style="color:#859900;">if</span> (imageUrl<span class="hljs-variable" style="color:#b58900;">.length</span> == <span class="hljs-number" style="color:#2aa198;">0</span>) {
+        <span class="hljs-keyword" style="color:#859900;">return</span>;
+    }
+    <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"image url：%@"</span>,imageUrl);
+    <span class="hljs-built_in" style="color:#268bd2;">NSData</span> *data = [<span class="hljs-built_in" style="color:#268bd2;">NSData</span> dataWithContentsOfURL:[<span class="hljs-built_in" style="color:#268bd2;">NSURL</span> URLWithString:imageUrl]];
+
+    <span class="hljs-built_in" style="color:#268bd2;">UIImage</span> *image = [<span class="hljs-built_in" style="color:#268bd2;">UIImage</span> imageWithData:data];
+    <span class="hljs-keyword" style="color:#859900;">if</span> (image) {
+        <span class="hljs-comment" style="color:#93a1a1;">//......</span>         <span class="hljs-comment" style="color:#93a1a1;">//save image or Extract QR code</span>     }
+}
+
+-(<span class="hljs-built_in" style="color:#268bd2;">BOOL</span>)gestureRecognizer:(<span class="hljs-built_in" style="color:#268bd2;">UIGestureRecognizer</span> *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(<span class="hljs-built_in" style="color:#268bd2;">UIGestureRecognizer</span> *)otherGestureRecognizer
+{
+    <span class="hljs-keyword" style="color:#859900;">return</span> <span class="hljs-literal">YES</span>;
+}</code></pre><p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">上述代码实现的核心部分就是</p>
+<pre class="hljs objectivec" style="padding:9.5px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:13px;color:#657b83;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;margin-top:0px;margin-bottom:20px;line-height:20px;word-break:break-all;word-wrap:normal;background-color:#fdf6e3;border:1px solid rgba(0, 0, 0, 0.14902);overflow:auto;background-position:initial initial;background-repeat:initial initial;"><code class="objectivec" style="padding:0px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:12px;border-top-left-radius:3px;border-top-right-radius:3px;border-bottom-right-radius:3px;border-bottom-left-radius:3px;background-color:transparent;border:none;"><span class="hljs-built_in" style="color:#268bd2;">NSString</span> *js = [<span class="hljs-built_in" style="color:#268bd2;">NSString</span> stringWithFormat:<span class="hljs-string" style="color:#2aa198;">@"document.elementFromPoint(%f, %f).src"</span>, touchPoint<span class="hljs-variable" style="color:#b58900;">.x</span>, touchPoint<span class="hljs-variable" style="color:#b58900;">.y</span>];<span class="hljs-built_in" style="color:#268bd2;">NSString</span> *imageUrl = [<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.webView</span> stringByEvaluatingJavaScriptFromString:js];</code></pre><p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">第一行代码是通过js获取点击位置的标签的src属性;</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">第二行代码是接受向webview注入第一行的js代码后返回的src属性。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">如果点击位置是图片，那么久可以通过img.src拿到图片的url地址，如果不是就返回空值。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>效果</strong>：</p>
+<div class="image-package imagebubble" widget="ImageBubble" style="margin:0px auto 20px;text-align:center;"><img src="http://upload-images.jianshu.io/upload_images/1108154-37cb1528d405717d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/1108154-37cb1528d405717d.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" style="height:auto;vertical-align:middle;border:0px;cursor:-webkit-zoom-in;transition:all 0.25s ease-in-out;-webkit-transition:all 0.25s ease-in-out;" /><br />
+<div class="image-caption" style="min-width:20%;min-height:22px;display:inline-block;padding:10px;margin:0px auto;border-bottom:1px solid #d9d9d9;font-size:13px;color:#999999;font-style:italic;line-height:1.7;">image URL</div>
+</div>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><br />
+<strong>注意</strong>：由于UIWebView内部是有一个ScrollView，默认情况下不支持多个手势的，因此需要实现UIGestureRecognizerDelegate中的gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:协议，以支持多个手势（增加长按手势）。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>优点</strong>：通过识别img标签的url属性，既可以实现保存图片的功能，也可以实现识别图片中二维码的功能；该方案不仅仅可以获取img标签的属性，也可以根据需要获取其他标签，例如链接标签a的属性（需调整部分代码，识别tagName）。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>不足</strong>：每次获取图片，都需要根据url获取，相当于从网络获取，万一图片太大或者网络不好，势必会影响用户体验，方案3中会介绍如何从缓存中获取image数据。</p>
+<h3 style="margin:0px;font-family:inherit;line-height:1.8;color:inherit;text-rendering:optimizelegibility;font-size:22px;">0x03 方案3：</h3>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">利用Runtime，动态地为UIWebView注入一段js代码，获取IMG标签的src属性，然后从UIWebView的缓存中获取image数据。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">webview加载完成图片完成之后，图片数据已经缓存在webview里了，只需找到从缓存中获取这些数据的方法。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">方案3使用的从缓存中获取image数据原理是：使用NSURLProtocol,webview在处理请求的过程中会调用</p>
+<pre class="hljs objectivec" style="padding:9.5px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:13px;color:#657b83;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;margin-top:0px;margin-bottom:20px;line-height:20px;word-break:break-all;word-wrap:normal;background-color:#fdf6e3;border:1px solid rgba(0, 0, 0, 0.14902);overflow:auto;background-position:initial initial;background-repeat:initial initial;"><code class="objectivec" style="padding:0px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:12px;border-top-left-radius:3px;border-top-right-radius:3px;border-bottom-right-radius:3px;border-bottom-left-radius:3px;background-color:transparent;border:none;">- (<span class="hljs-built_in" style="color:#268bd2;">NSURLRequest</span> *)connection:(<span class="hljs-built_in" style="color:#268bd2;">NSURLConnection</span> *)connection willSendRequest:(<span class="hljs-built_in" style="color:#268bd2;">NSURLRequest</span> *)request redirectResponse:(<span class="hljs-built_in" style="color:#268bd2;">NSURLResponse</span> *)response</code></pre><p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">NSURLProtocol把webView请求返回来的data用压缩的方式的存储在cache的文件夹下, 发出请求的时候会先去读取缓存。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">在github上找到了一个<a href="https://github.com/rnapier/RNCachingURLProtocol" target="_blank" style="color:#4094c7;text-decoration:none;">RNCachingURLProtocol</a>,可以方便地从缓存中获取数据。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">关于<a href="http://www.jianshu.com/p/7c89b8c5482a" target="_blank" style="color:#4094c7;text-decoration:none;">NSURLProtocol</a>，能够让你去重新定义苹果的URL<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/URLLoadingSystem.html#//apple_ref/doc/uid/10000165-BCICJDHA" target="_blank" style="color:#4094c7;text-decoration:none;">加载系统</a>&nbsp;(URL Loading System)的行为，URL Loading System里有许多类用于处理URL请求，比如NSURL，NSURLRequest，NSURLConnection和NSURLSession等，当URL Loading System使用NSURLRequest去获取资源的时候，它会创建一个NSURLProtocol子类的实例，你不应该直接实例化一个NSURLProtocol，NSURLProtocol看起来像是一个协议，但其实这是一个类，而且必须使用该类的子类，并且需要被注册。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>核心代码</strong>：</p>
+<pre class="hljs objectivec" style="padding:9.5px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:13px;color:#657b83;border-top-left-radius:4px;border-top-right-radius:4px;border-bottom-right-radius:4px;border-bottom-left-radius:4px;margin-top:0px;margin-bottom:20px;line-height:20px;word-break:break-all;word-wrap:normal;background-color:#fdf6e3;border:1px solid rgba(0, 0, 0, 0.14902);overflow:auto;background-position:initial initial;background-repeat:initial initial;"><code class="objectivec" style="padding:0px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;font-size:12px;border-top-left-radius:3px;border-top-right-radius:3px;border-bottom-right-radius:3px;border-bottom-left-radius:3px;background-color:transparent;border:none;"><span class="hljs-keyword" style="color:#859900;">static</span> <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *<span class="hljs-keyword" style="color:#859900;">const</span> kTouchJavaScriptString =
+        <span class="hljs-string" style="color:#2aa198;">@"document.ontouchstart=function(event){\
+            x=event.targetTouches[0].clientX;\
+            y=event.targetTouches[0].clientY;\
+            document.location=\"myweb:touch:start:\"+x+\":\"+y;};\
+        document.ontouchmove=function(event){\
+            x=event.targetTouches[0].clientX;\
+            y=event.targetTouches[0].clientY;\
+            document.location=\"myweb:touch:move:\"+x+\":\"+y;};\
+        document.ontouchcancel=function(event){\
+            document.location=\"myweb:touch:cancel\";};\
+            document.ontouchend=function(event){\
+            document.location=\"myweb:touch:end\";};"</span>;<span class="hljs-keyword" style="color:#859900;">static</span> <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *<span class="hljs-keyword" style="color:#859900;">const</span> kImageJS               = <span class="hljs-string" style="color:#2aa198;">@"keyForImageJS"</span>;<span class="hljs-keyword" style="color:#859900;">static</span> <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *<span class="hljs-keyword" style="color:#859900;">const</span> kImage                 = <span class="hljs-string" style="color:#2aa198;">@"keyForImage"</span>;<span class="hljs-keyword" style="color:#859900;">static</span> <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *<span class="hljs-keyword" style="color:#859900;">const</span> kImageQRString         = <span class="hljs-string" style="color:#2aa198;">@"keyForQR"</span>;<span class="hljs-keyword" style="color:#859900;">static</span> <span class="hljs-keyword" style="color:#859900;">const</span> <span class="hljs-built_in" style="color:#268bd2;">NSTimeInterval</span> KLongGestureInterval = <span class="hljs-number" style="color:#2aa198;">0.8</span>f;
+......
+    SwizzlingMethod([<span class="hljs-keyword" style="color:#859900;">self</span> class], <span class="hljs-keyword" style="color:#859900;">@selector</span>(webViewDidStartLoad:), <span class="hljs-keyword" style="color:#859900;">@selector</span>(sl_webViewDidStartLoad:));
+    SwizzlingMethod([<span class="hljs-keyword" style="color:#859900;">self</span> class], <span class="hljs-keyword" style="color:#859900;">@selector</span>(webView:shouldStartLoadWithRequest:navigationType:), <span class="hljs-keyword" style="color:#859900;">@selector</span>(sl_webView:shouldStartLoadWithRequest:navigationType:));
+    SwizzlingMethod([<span class="hljs-keyword" style="color:#859900;">self</span> class], <span class="hljs-keyword" style="color:#859900;">@selector</span>(webViewDidFinishLoad:), <span class="hljs-keyword" style="color:#859900;">@selector</span>(sl_webViewDidFinishLoad:));
+......
+- (<span class="hljs-keyword" style="color:#859900;">void</span>)sl_webViewDidStartLoad:(<span class="hljs-built_in" style="color:#268bd2;">UIWebView</span> *)webView
+{
+    <span class="hljs-comment" style="color:#93a1a1;">//Add long press gresture for web view</span>     <span class="hljs-built_in" style="color:#268bd2;">UILongPressGestureRecognizer</span> *longPress = [[<span class="hljs-built_in" style="color:#268bd2;">UILongPressGestureRecognizer</span> alloc] initWithTarget:<span class="hljs-keyword" style="color:#859900;">self</span> action:<span class="hljs-keyword" style="color:#859900;">@selector</span>(handleLongPress:)];
+    longPress<span class="hljs-variable" style="color:#b58900;">.minimumPressDuration</span> = KLongGestureInterval;
+    longPress<span class="hljs-variable" style="color:#b58900;">.delegate</span> = <span class="hljs-keyword" style="color:#859900;">self</span>;
+    [<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.webView</span> addGestureRecognizer:longPress];
+
+    [<span class="hljs-keyword" style="color:#859900;">self</span> sl_webViewDidStartLoad:webView];
+}
+
+- (<span class="hljs-built_in" style="color:#268bd2;">BOOL</span>)sl_webView:(<span class="hljs-built_in" style="color:#268bd2;">UIWebView</span> *)webView shouldStartLoadWithRequest:(<span class="hljs-built_in" style="color:#268bd2;">NSURLRequest</span> *)request navigationType:(<span class="hljs-built_in" style="color:#268bd2;">UIWebViewNavigationType</span>)navigationType
+{
+    <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *requestString = [[request URL] absoluteString];
+
+    <span class="hljs-built_in" style="color:#268bd2;">NSArray</span> *components = [requestString componentsSeparatedByString:<span class="hljs-string" style="color:#2aa198;">@":"</span>];
+
+    <span class="hljs-keyword" style="color:#859900;">if</span> ([components count] &gt; <span class="hljs-number" style="color:#2aa198;">1</span> &amp;&amp; [(<span class="hljs-built_in" style="color:#268bd2;">NSString</span> *)[components objectAtIndex:<span class="hljs-number" style="color:#2aa198;">0</span>] isEqualToString:<span class="hljs-string" style="color:#2aa198;">@"myweb"</span>]) {
+
+        <span class="hljs-keyword" style="color:#859900;">if</span>([(<span class="hljs-built_in" style="color:#268bd2;">NSString</span> *)[components objectAtIndex:<span class="hljs-number" style="color:#2aa198;">1</span>] isEqualToString:<span class="hljs-string" style="color:#2aa198;">@"touch"</span>]) {
+
+            <span class="hljs-keyword" style="color:#859900;">if</span> ([(<span class="hljs-built_in" style="color:#268bd2;">NSString</span> *)[components objectAtIndex:<span class="hljs-number" style="color:#2aa198;">2</span>] isEqualToString:<span class="hljs-string" style="color:#2aa198;">@"start"</span>]) {
+
+                <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"touch start!"</span>);
+
+                <span class="hljs-keyword" style="color:#859900;">float</span> pointX = [[components objectAtIndex:<span class="hljs-number" style="color:#2aa198;">3</span>] floatValue];
+                <span class="hljs-keyword" style="color:#859900;">float</span> pointY = [[components objectAtIndex:<span class="hljs-number" style="color:#2aa198;">4</span>] floatValue];
+
+                <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"touch point (%f, %f)"</span>, pointX, pointY);
+
+                <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *js = [<span class="hljs-built_in" style="color:#268bd2;">NSString</span> stringWithFormat:<span class="hljs-string" style="color:#2aa198;">@"document.elementFromPoint(%f, %f).tagName"</span>, pointX, pointY];
+
+                <span class="hljs-built_in" style="color:#268bd2;">NSString</span> * tagName = [<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.webView</span> stringByEvaluatingJavaScriptFromString:js];
+
+                <span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.imageJS</span> = <span class="hljs-literal">nil</span>;
+                <span class="hljs-keyword" style="color:#859900;">if</span> ([tagName isEqualToString:<span class="hljs-string" style="color:#2aa198;">@"IMG"</span>]) {
+
+                    <span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.imageJS</span> = [<span class="hljs-built_in" style="color:#268bd2;">NSString</span> stringWithFormat:<span class="hljs-string" style="color:#2aa198;">@"document.elementFromPoint(%f, %f).src"</span>, pointX, pointY];
+
+                }
+
+            } <span class="hljs-keyword" style="color:#859900;">else</span> {
+
+                <span class="hljs-keyword" style="color:#859900;">if</span> ([(<span class="hljs-built_in" style="color:#268bd2;">NSString</span> *)[components objectAtIndex:<span class="hljs-number" style="color:#2aa198;">2</span>] isEqualToString:<span class="hljs-string" style="color:#2aa198;">@"move"</span>]) {
+                    <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"you are move"</span>);
+                } <span class="hljs-keyword" style="color:#859900;">else</span> {
+                    <span class="hljs-keyword" style="color:#859900;">if</span> ([(<span class="hljs-built_in" style="color:#268bd2;">NSString</span> *)[components objectAtIndex:<span class="hljs-number" style="color:#2aa198;">2</span>] isEqualToString:<span class="hljs-string" style="color:#2aa198;">@"end"</span>]) {
+                        <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"touch end"</span>);
+                    }
+                }
+            }
+        }
+
+        <span class="hljs-keyword" style="color:#859900;">if</span> (<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.imageJS</span>) {
+            <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"touching image"</span>);
+        }
+
+        <span class="hljs-keyword" style="color:#859900;">return</span> <span class="hljs-literal">NO</span>;
+    }
+
+    <span class="hljs-keyword" style="color:#859900;">return</span> [<span class="hljs-keyword" style="color:#859900;">self</span> sl_webView:webView shouldStartLoadWithRequest:request navigationType:navigationType];
+}
+- (<span class="hljs-keyword" style="color:#859900;">void</span>)sl_webViewDidFinishLoad:(<span class="hljs-built_in" style="color:#268bd2;">UIWebView</span> *)webView
+{    
+    <span class="hljs-comment" style="color:#93a1a1;">//inject js</span>     [webView stringByEvaluatingJavaScriptFromString:kTouchJavaScriptString];
+
+    [<span class="hljs-keyword" style="color:#859900;">self</span> sl_webViewDidFinishLoad:webView];
+}
+......
+- (<span class="hljs-keyword" style="color:#859900;">void</span>)handleLongPress:(<span class="hljs-built_in" style="color:#268bd2;">UILongPressGestureRecognizer</span> *)sender
+{
+    <span class="hljs-keyword" style="color:#859900;">if</span> (sender<span class="hljs-variable" style="color:#b58900;">.state</span> != <span class="hljs-built_in" style="color:#268bd2;">UIGestureRecognizerStateBegan</span>) {
+        <span class="hljs-keyword" style="color:#859900;">return</span>;
+    }
+
+    <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *imageUrl = [<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.webView</span> stringByEvaluatingJavaScriptFromString:<span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.imageJS</span>];
+
+    <span class="hljs-keyword" style="color:#859900;">if</span> (imageUrl) {
+
+        <span class="hljs-built_in" style="color:#268bd2;">NSData</span> *data = <span class="hljs-literal">nil</span>;
+        <span class="hljs-built_in" style="color:#268bd2;">NSString</span> *fileName = [RNCachingURLProtocol cachePathForURLString:imageUrl];
+
+        RNCachedData *cache = [<span class="hljs-built_in" style="color:#268bd2;">NSKeyedUnarchiver</span> unarchiveObjectWithFile:fileName];
+
+        <span class="hljs-keyword" style="color:#859900;">if</span> (cache) {
+            <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"read from cache"</span>);
+            data = cache<span class="hljs-variable" style="color:#b58900;">.data</span>;
+        } <span class="hljs-keyword" style="color:#859900;">else</span>{
+            <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"read from url"</span>);
+            data = [<span class="hljs-built_in" style="color:#268bd2;">NSData</span> dataWithContentsOfURL:[<span class="hljs-built_in" style="color:#268bd2;">NSURL</span> URLWithString:imageUrl]];
+        }
+
+        <span class="hljs-built_in" style="color:#268bd2;">UIImage</span> *image = [<span class="hljs-built_in" style="color:#268bd2;">UIImage</span> imageWithData:data];
+        <span class="hljs-keyword" style="color:#859900;">if</span> (!image) {
+            <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"read fail"</span>);
+            <span class="hljs-keyword" style="color:#859900;">return</span>;
+        }
+        <span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.image</span> = image;
+
+        FSActionSheet *actionSheet = <span class="hljs-literal">nil</span>;
+
+        <span class="hljs-keyword" style="color:#859900;">if</span> ([<span class="hljs-keyword" style="color:#859900;">self</span> isAvailableQRcodeIn:image]) {
+
+            actionSheet = [[FSActionSheet alloc] initWithTitle:<span class="hljs-literal">nil</span>                                                       delegate:<span class="hljs-keyword" style="color:#859900;">self</span>                                              cancelButtonTitle:<span class="hljs-string" style="color:#2aa198;">@"Cancel"</span>                                         highlightedButtonTitle:<span class="hljs-literal">nil</span>                                              otherButtonTitles:@[<span class="hljs-string" style="color:#2aa198;">@"Save Image"</span>, <span class="hljs-string" style="color:#2aa198;">@"Extract QR code"</span>]];
+
+        } <span class="hljs-keyword" style="color:#859900;">else</span> {
+
+            actionSheet = [[FSActionSheet alloc] initWithTitle:<span class="hljs-literal">nil</span>                                                       delegate:<span class="hljs-keyword" style="color:#859900;">self</span>                                              cancelButtonTitle:<span class="hljs-string" style="color:#2aa198;">@"Cancel"</span>                                         highlightedButtonTitle:<span class="hljs-literal">nil</span>                                              otherButtonTitles:@[<span class="hljs-string" style="color:#2aa198;">@"Save Image"</span>]];
+        }
+        [actionSheet show];
+
+    }
+}
+......
+- (<span class="hljs-built_in" style="color:#268bd2;">BOOL</span>)isAvailableQRcodeIn:(<span class="hljs-built_in" style="color:#268bd2;">UIImage</span> *)img
+{
+    <span class="hljs-keyword" style="color:#859900;">if</span> (iOS7_OR_EARLY) {
+        <span class="hljs-keyword" style="color:#859900;">return</span> <span class="hljs-literal">NO</span>;
+    }
+
+    <span class="hljs-comment" style="color:#93a1a1;">//Extract QR code by screenshot</span>     <span class="hljs-comment" style="color:#93a1a1;">//UIImage *image = [self snapshot:self.view];</span>     <span class="hljs-comment" style="color:#93a1a1;">// IF image is a full qr code, CIDetector can not detect qr string, I am not sure why.</span>     <span class="hljs-built_in" style="color:#268bd2;">UIImage</span> *image = [<span class="hljs-keyword" style="color:#859900;">self</span> imageByInsetEdge:<span class="hljs-built_in" style="color:#268bd2;">UIEdgeInsetsMake</span>(-<span class="hljs-number" style="color:#2aa198;">20</span>, -<span class="hljs-number" style="color:#2aa198;">20</span>, -<span class="hljs-number" style="color:#2aa198;">20</span>, -<span class="hljs-number" style="color:#2aa198;">20</span>) withColor:[<span class="hljs-built_in" style="color:#268bd2;">UIColor</span> lightGrayColor] withImage:img];
+
+    <span class="hljs-built_in" style="color:#268bd2;">CIDetector</span> *detector = [<span class="hljs-built_in" style="color:#268bd2;">CIDetector</span> detectorOfType:<span class="hljs-built_in" style="color:#268bd2;">CIDetectorTypeQRCode</span> context:<span class="hljs-literal">nil</span> options:@{}];
+
+    <span class="hljs-built_in" style="color:#268bd2;">NSArray</span> *features = [detector featuresInImage:[<span class="hljs-built_in" style="color:#268bd2;">CIImage</span> imageWith<span class="hljs-built_in" style="color:#268bd2;">CGImage</span>:image<span class="hljs-variable" style="color:#b58900;">.CGImage</span>]];
+
+    <span class="hljs-keyword" style="color:#859900;">if</span> (features<span class="hljs-variable" style="color:#b58900;">.count</span> &gt;= <span class="hljs-number" style="color:#2aa198;">1</span>) {
+        <span class="hljs-built_in" style="color:#268bd2;">CIQRCodeFeature</span> *feature = [features objectAtIndex:<span class="hljs-number" style="color:#2aa198;">0</span>];
+
+        <span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.qrCodeString</span> = [feature<span class="hljs-variable" style="color:#b58900;">.messageString</span> <span class="hljs-keyword" style="color:#859900;">copy</span>];
+
+        <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"QR result :%@"</span>, <span class="hljs-keyword" style="color:#859900;">self</span><span class="hljs-variable" style="color:#b58900;">.qrCodeString</span>);
+
+        <span class="hljs-keyword" style="color:#859900;">return</span> <span class="hljs-literal">YES</span>;
+    } <span class="hljs-keyword" style="color:#859900;">else</span> {
+        <span class="hljs-built_in" style="color:#268bd2;">NSLog</span>(<span class="hljs-string" style="color:#2aa198;">@"No QR"</span>);
+        <span class="hljs-keyword" style="color:#859900;">return</span> <span class="hljs-literal">NO</span>;
+    }
+}
+......</code></pre><p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>效果</strong>：</p>
+<div class="image-package imagebubble" widget="ImageBubble" style="margin:0px auto 20px;text-align:center;"><img src="http://upload-images.jianshu.io/upload_images/1108154-5aa2ff1d2a849de5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/1108154-5aa2ff1d2a849de5.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" style="height:auto;vertical-align:middle;border:0px;cursor:-webkit-zoom-in;transition:all 0.25s ease-in-out;-webkit-transition:all 0.25s ease-in-out;" /><br />
+<div class="image-caption" style="min-width:20%;min-height:22px;display:inline-block;padding:10px;margin:0px auto;border-bottom:1px solid #d9d9d9;font-size:13px;color:#999999;font-style:italic;line-height:1.7;">图片中不包含二维码</div>
+</div>
+<div class="image-package imagebubble" widget="ImageBubble" style="margin:0px auto 20px;text-align:center;"><img src="http://upload-images.jianshu.io/upload_images/1108154-a3c4a22272d948fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" data-original-src="http://upload-images.jianshu.io/upload_images/1108154-a3c4a22272d948fa.png?imageMogr2/auto-orient/strip%7CimageView2/2" class="imagebubble-image" style="height:auto;vertical-align:middle;border:0px;cursor:-webkit-zoom-in;transition:all 0.25s ease-in-out;-webkit-transition:all 0.25s ease-in-out;" /><br />
+<div class="image-caption" style="min-width:20%;min-height:22px;display:inline-block;padding:10px;margin:0px auto;border-bottom:1px solid #d9d9d9;font-size:13px;color:#999999;font-style:italic;line-height:1.7;">图片中包含二维码</div>
+</div>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>优点</strong>：充分利用了缓存，提高了用户体验。</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><strong>不足</strong>：实现略复杂。</p>
+<h3 style="margin:0px;font-family:inherit;line-height:1.8;color:inherit;text-rendering:optimizelegibility;font-size:22px;">0x04 思考</h3>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">如果是非IMG标签提供的图片，例如div的background image，该如何获取和保存？</p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;">WKWebView上的实现。</p>
+<h3 style="margin:0px;font-family:inherit;line-height:1.8;color:inherit;text-rendering:optimizelegibility;font-size:22px;">0x05 Demo地址</h3>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><a href="https://github.com/guoxiucai/WebViewLongPress" target="_blank" style="color:#4094c7;text-decoration:none;">https://github.com/guoxiucai/WebViewLongPress</a></p>
+<h3 style="margin:0px;font-family:inherit;line-height:1.8;color:inherit;text-rendering:optimizelegibility;font-size:22px;">0x06 参考和致谢</h3>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><a href="http://www.jianshu.com/p/48e44fe67c1d" target="_blank" style="color:#4094c7;text-decoration:none;">iOS QRcode识别及相册图片二维码读取识别</a></p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><a href="http://www.cocoachina.com/ios/20160616/16660.html" target="_blank" style="color:#4094c7;text-decoration:none;">UIWebView保存图片</a></p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><a href="https://github.com/rnapier/RNCachingURLProtocol" target="_blank" style="color:#4094c7;text-decoration:none;">RNCachingURLProtocol</a></p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><a href="https://github.com/jcs/endless" target="_blank" style="color:#4094c7;text-decoration:none;">EndLess</a></p>
+<p style="margin-top:0px;margin-bottom:25px;text-align:justify;word-break:break-word;"><a href="https://github.com/lifution/FSActionSheet" target="_blank" style="color:#4094c7;text-decoration:none;">FSActionSheet</a></p>
+</div></body></html>

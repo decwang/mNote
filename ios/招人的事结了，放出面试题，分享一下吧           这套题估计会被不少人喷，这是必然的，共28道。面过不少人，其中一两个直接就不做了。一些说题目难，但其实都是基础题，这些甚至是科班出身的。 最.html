@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-04-28T03:21:52Z"/><meta name="updated" content="2017-04-28T03:21:54Z"/><title>招人的事结了，放出面试题，分享一下吧           这套题估计会被不少人喷，这是必然的，共28道。面过不少人，其中一两个直接就不做了。一些说题目难，但其实都是基础题，这些甚至是科班出身的。 最</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h1 id="subject_tpc" style="outline:none;margin:0px 0px 15px 15px;padding:0px;font-size:16px;color:#3366cc;font-weight:normal;line-height:1;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;">招人的事结了，放出面试题，分享一下吧&nbsp;&nbsp;&nbsp;</h1>
+<div class="c" style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;clear:both;font-size:0px;line-height:0px;font-family:Arial;overflow:hidden;height:0px;width:0px;color:#333333;"></div>
+<div class="tpc_content" style="outline:none;margin:0px;padding:0px 15px 20px;word-break:break-all;word-wrap:break-word;line-height:2em;color:#333333;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-size:12px;"><div id="p_tpc" class="c" style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;clear:both;font-size:0px;line-height:0px;font-family:Arial;overflow:hidden;height:0px;width:0px;"></div>
+<div class="f14" id="read_tpc" style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;font-size:14px;clear:both;"><div class="fr" style="outline:none;margin:0px 0px 10px 10px;padding:0px;word-break:break-all;word-wrap:break-word;float:right;clear:right;"></div>
+这套题估计会被不少人喷，这是必然的，共28道。面过不少人，其中一两个直接就不做了。一些说题目难，但其实都是基础题，这些甚至是科班出身的。<br style="outline:none;" />
+最后面的这人硬是给我做了大半，虽然也只是一年经验，iOS方面基础还算薄弱一点，但是非常自信的。基础比大部分所谓三年要好。<br style="outline:none;" />
+一个一年经验的科班生都能答出来大部分的题目，都来看看吧。<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+题目说了不是需要全部都做，能做多少就多少。反正就看看熟识的领域。<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+1，下面代码在按钮点击后，在ARC下会发生什么，MRC下呢？为什么？<br style="outline:none;" />
+<br style="outline:none;" />
+@property(nonatomic, assign) void(^block)();<br style="outline:none;" />
+<br style="outline:none;" />
+- (void)viewDidLoad {<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;[superviewDidLoad];<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;int value = 10;<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;void(^blockC)() = ^{<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"just a block === %d", value);<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;};<br style="outline:none;" />
+<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"%@", blockC);<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;_block = blockC;<br style="outline:none;" />
+<br style="outline:none;" />
+}<br style="outline:none;" />
+<br style="outline:none;" />
+- (IBAction)action:(id)sender {<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"%@", _block);<br style="outline:none;" />
+}<br style="outline:none;" />
+<br style="outline:none;" />
+2，在ARC环境下这段代码为什么不会崩溃？<br style="outline:none;" />
+<br style="outline:none;" />
+@property(nonatomic, weak) void(^block)();<br style="outline:none;" />
+<br style="outline:none;" />
+- (void)viewDidLoad {<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;[super viewDidLoad];<br style="outline:none;" />
+<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;void(^ __weak blockA)() = ^{<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"just a block");<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;};<br style="outline:none;" />
+<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;_block = blockA;<br style="outline:none;" />
+<br style="outline:none;" />
+}<br style="outline:none;" />
+<br style="outline:none;" />
+- (IBAction)action:(id)sender {<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;_block();<br style="outline:none;" />
+}<br style="outline:none;" />
+<br style="outline:none;" />
+3，下面是一个员工表，manager_id表示对应的boss的ID。通过一个SQL找出下表中比boss工资还高的人。。。。<br style="outline:none;" />
+id&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;&nbsp;&nbsp;&nbsp;salary&nbsp;&nbsp;&nbsp;&nbsp;manager_id<br style="outline:none;" />
+1&nbsp;&nbsp;&nbsp;&nbsp;Noah&nbsp;&nbsp;&nbsp;&nbsp;70000&nbsp;&nbsp;&nbsp;&nbsp;NULL<br style="outline:none;" />
+2&nbsp;&nbsp;&nbsp;&nbsp;西兰花&nbsp;&nbsp;&nbsp;&nbsp;80000&nbsp;&nbsp;&nbsp;&nbsp;1<br style="outline:none;" />
+3&nbsp;&nbsp;&nbsp;&nbsp;椰菜花&nbsp;&nbsp;&nbsp;&nbsp;80000&nbsp;&nbsp;&nbsp;&nbsp;NULL<br style="outline:none;" />
+4&nbsp;&nbsp;&nbsp;&nbsp;没钱花&nbsp;&nbsp;&nbsp;&nbsp;80000&nbsp;&nbsp;&nbsp;&nbsp;3<br style="outline:none;" />
+<br style="outline:none;" />
+输出格式为：<br style="outline:none;" />
+<br style="outline:none;" />
+name<br style="outline:none;" />
+西兰花<br style="outline:none;" />
+<br style="outline:none;" />
+4，写一个函数，输入一个数如38，拆分 3 + 8 = 11，1 + 1 = 2，最后2无法拆分就返回（伪代码也行）<br style="outline:none;" />
+<br style="outline:none;" />
+5，通过runtime添加的“关联对象”和类的实例变量有什么区别？使用时要注意什么？<br style="outline:none;" />
+<br style="outline:none;" />
+6，用一个生活中的例子来说说同步和异步。<br style="outline:none;" />
+<br style="outline:none;" />
+7，线程间通信在OC中有几种方式？分别是？常用那种？<br style="outline:none;" />
+<br style="outline:none;" />
+8，使用快速枚举迭代一个可变数组时需要注意什么问题？怎么避免？<br style="outline:none;" />
+<br style="outline:none;" />
+9，什么是面向对象的多态性？<br style="outline:none;" />
+<br style="outline:none;" />
+10，UIViewController的presentViewController和UINavigationController的pushViewController方法分别多用于什么交互场景？<br style="outline:none;" />
+<br style="outline:none;" />
+11，NSOperation和GCD的区别是什么？前者多用于什么场景？<br style="outline:none;" />
+<br style="outline:none;" />
+12，面向接口编程指的是什么？为什么说面向实现编程是一种错误的编程方式？<br style="outline:none;" />
+<br style="outline:none;" />
+13，在iOS开发中遇到那些类族(Class Cluster) ？如NSNumber这种。为什么需要这种设计方式？<br style="outline:none;" />
+<br style="outline:none;" />
+14，javascript的原型链和OC的继承有什么区别？<br style="outline:none;" />
+<br style="outline:none;" />
+15，Hybrid开发的优势在哪里？目前有那些框架可以实现Hybrid开发？<br style="outline:none;" />
+<br style="outline:none;" />
+16，使用了ARC是不是就等于没有内存泄漏了？如果不是的话请举例。<br style="outline:none;" />
+<br style="outline:none;" />
+17，下面代码中为什么可以直接用self？<br style="outline:none;" />
+[UIView animateWithDuration:1 animations:^{<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;self.view.backgroundColor = [UIColor yellowColor];<br style="outline:none;" />
+}];<br style="outline:none;" />
+<br style="outline:none;" />
+下面这段代码可以用self吗？为什么？<br style="outline:none;" />
+- (void)doSomething {<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;[BlockClass doSomethingUseBlock:^{<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"%@", self);<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;}];<br style="outline:none;" />
+}<br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+18，进程的内存布局是怎样的？<br style="outline:none;" />
+<br style="outline:none;" />
+19，在GCD中，那几种场景会出现死锁的现象？怎么避免？<br style="outline:none;" />
+<br style="outline:none;" />
+20，怎么用NSOperation封装一个异步请求？这个Operation需要放到NSOperationQueue里调度的。<br style="outline:none;" />
+<br style="outline:none;" />
+21，CoreFoundation和Foundation有什么区别？<br style="outline:none;" />
+<br style="outline:none;" />
+22，怎么判断两个链表是双交的？<br style="outline:none;" />
+<br style="outline:none;" />
+23，怎么判断一个链表存在环?<br style="outline:none;" />
+<br style="outline:none;" />
+24，当一个View的bounds原点不为0的时候会出现什么情况？<br style="outline:none;" />
+<br style="outline:none;" />
+25，OC的数组是怎么实现的？和C的数组区别在？简单说一下即可。<br style="outline:none;" />
+<br style="outline:none;" />
+26，weak和assign有什么区别？<br style="outline:none;" />
+<br style="outline:none;" />
+27，setNeedLayout的作用是什么？<br style="outline:none;" />
+<br style="outline:none;" />
+28，什么时候用NS_OPTIONS，NS_ENUM?</div>
+</div></body></html>

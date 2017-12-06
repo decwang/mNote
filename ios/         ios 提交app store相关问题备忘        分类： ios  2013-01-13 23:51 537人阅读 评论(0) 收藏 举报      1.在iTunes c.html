@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-05-04T05:43:12Z"/><meta name="updated" content="2014-05-04T05:43:14Z"/><title>         ios 提交app store相关问题备忘        分类： ios  2013-01-13 23:51 537人阅读 评论(0) 收藏 举报      1.在iTunes c</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title">
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/w122079514/article/details/8499222">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ios 提交app store相关问题备忘
+        </a></span>     </h1>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/w122079514/article/category/925499">ios</a> 
+        </span>     <span class="link_postdate">2013-01-13 23:51</span>     <span class="link_view" title="阅读次数">537人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/w122079514/article/details/8499222#comments">评论</a>(0)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/w122079514/article/details/8499222#report" title="举报">举报</a></span>     </div>
+    <div id="article_content" class="article_content">
+
+<div id="xunlei_com_thunder_helper_plugin_d462f475-c18e-46be-bd10-327458d045bd"></div>
+<p>1.在iTunes connect添加应用后，添加完应用信息，有个按钮 ready to upload ,需要点击，再进行后续选择后，在archive后,validate才可以，否则会提示没找到对应的应用信息。</p>
+<p>2.程序图标问题，如果是iphone程序，提交2个尺寸，57x57, 
+114x114就可以，并且两个图不能有透明效果，图标的圆角效果，由苹果系统给生成，不需要自己生成圆角。还有图标顶部的光照效果，需要plist 
+设置UIPrerendered，或者4.5.2在应用图标后有 
+prerendered的多选框，勾选应该就能去掉光照效果，如果不勾选，并且自己的图标带有光照效果，就会重合，</p>
+<p>3.编译过程中，需要Edit Scheme，选择 Archive 选项，选择 Release 还要勾选reveal Archive in Organizer;</p>
+<p>4.选择完发布证书后，清空选项， xCode-&gt;Product-&gt;Archive就可以生成xcarchive文件。</p>
+<p>5.项目的build setting-&gt;Deployment-&gt;skip install 要改成NO， 否则不会显示在Organizer 中</p>
+<p>6.应该在第三方库，生成静态库 static Library时的 skip install设置为YES，否则会有其他问题，validate无效，或version不能显示，或无法生成ipa 等问题（这些问题未验证，通过网络搜索得知）</p>
+<p>7..xcarchive文件生成后，xcode-&gt;Editor中，可有Delete archive, validate 
+archive等菜单项，show in Finder，可以找到具体文体，会保存在默认的xcode 
+的文件夹下，也可以在Xcode-&gt;preference-&gt;Location中自定义的路径中</p>
+<p>8.validate有效后， 可以Distribute。。发布应用程序，弹出页面有三个选项</p>
+<p><img src="http://blog.csdn.net/w122079514/article/details/8499222" alt="" /></p>
+<p>第1个会提交到AppStore， 第2个会生成ipa，上传成功后，会提示你 is being upload, 但是马上去看iTunes connect上，状态可能还没有立刻改变。还有可能是watiing for upload.</p>
+<p>9.生成的xcarchive文件可能没有显示出icon来， 但是检验有效， 具体原因未知，搜索得知，不影响，等后续发展回来再补充。</p>
+<p>10. 通过第2项，会生成ipa，应该可以放到越狱手机上可以，但没有装过验证。ad-hoc也是通过这个发布，ad-hoc需要知道测试机的id</p>
+<p>其他的留待后续补充</p>
+</div></body></html>

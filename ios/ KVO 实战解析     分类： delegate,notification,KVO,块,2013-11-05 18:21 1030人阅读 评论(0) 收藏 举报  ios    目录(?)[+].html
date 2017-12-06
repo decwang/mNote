@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-08-14T04:19:38Z"/><meta name="updated" content="2015-08-14T04:19:40Z"/><title> KVO 实战解析     分类： delegate,notification,KVO,块,2013-11-05 18:21 1030人阅读 评论(0) 收藏 举报  ios    目录(?)[+]</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';">&nbsp;<h1 style="margin:0px;padding:0px;display:inline;font-weight:normal;font-size:20px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/lengshengren/article/details/14170141" style="color:#000000;text-decoration:none;">KVO 实战解析&nbsp;</a></span></h1>
+</div>
+<div class="article_manage" style="padding:5px 0px;color:#999999;font-size:12px;line-height:24px;font-family:Arial;text-align:right;"><span class="link_categories" style="margin:0px 5px;float:left;">分类：&nbsp;<a href="http://blog.csdn.net/lengshengren/article/category/1726893" style="color:#ca0000;text-decoration:none;">delegate,notification,KVO,块,</a></span><span class="link_postdate" style="margin:0px 5px 0px 0px;">2013-11-05 18:21</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_view.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;">1030人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_comm.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;"><a href="http://blog.csdn.net/lengshengren/article/details/14170141#comments" style="color:#ca0000;text-decoration:none;">评论</a>(0)</span>&nbsp;<span class="link_collect" style="margin:0px 5px;"><a title="收藏" style="color:#ca0000;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/lengshengren/article/details/14170141#report" title="举报" style="color:#ca0000;text-decoration:none;">举报</a></span></div>
+<div class="tag2box" style="margin:10px 0px;font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;line-height:normal;"><a href="http://www.csdn.net/tag/ios" target="_blank" style="color:#ca0000;text-decoration:none;display:inline-block;padding:4px 10px;line-height:12px;margin-right:10px;border:1px solid #eeeeee;background-color:#eeeeee;border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-right-radius:10px;border-bottom-left-radius:10px;">ios</a></div>
+<div style="font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;line-height:normal;clear:both;"></div>
+<div style="font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;line-height:normal;border:1px solid #cccccc;background-color:#eeeeee;float:left;min-width:200px;padding:4px 10px;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;text-align:right;"><span style="float:left;">目录<a href="http://blog.csdn.net/lengshengren/article/details/14170141#" title="系统根据文章中H1到H6标签自动生成文章目录" style="color:#ca0000;text-decoration:none;">(?)</a></span><a href="http://blog.csdn.net/lengshengren/article/details/14170141#" title="展开" style="color:#ca0000;text-decoration:none;">[+]</a></p>
+</div>
+<div style="font-family:Arial, Console, Verdana, 'Courier New';font-size:12px;line-height:normal;clear:both;"></div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;line-height:26px;font-family:Arial;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<h3 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t0" style="color:#ca0000;"></a></h3>
+<h3 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t1" style="color:#ca0000;"></a><span style="font-size:14px;">前人已经说的很清楚了！我也没必要在重复了！我也没人家总结的好！</span></h3>
+<h3 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t2" style="color:#ca0000;"></a><span style="font-size:14px;"><br />
+</span></h3>
+<div><span style="color:#ff6666;">通过一个遛狗例子来解析KVO &nbsp;</span></div>
+<div><br />
+</div>
+<h3 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t3" style="color:#ca0000;"></a><span style="font-size:14px;">下面介绍来自&nbsp;</span></h3>
+<h3 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t4" style="color:#ca0000;"></a><span style="font-size:14px;">http://www.cppblog.com/kesalin/archive/2012/11/17/kvo.html &nbsp; 总结的很全面 值得研究</span></h3>
+<h3 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t5" style="color:#ca0000;"></a><span style="font-size:14px;">一，前言</span></h3>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;">Objective-C 中的键(key)-值(value)观察(KVO)并不是什么新鲜事物，它来源于设计模式中的<a target="_blank" href="http://www.cnblogs.com/kesalin/admin/%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F" style="color:navy;text-decoration:none;">观察者模式</a>，其基本思想就是：</p>
+<blockquote style="font-style:italic;line-height:16px;font-family:verdana, Arial, Helvetica, sans-serif;"><p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;">一个目标对象管理所有依赖于它的观察者对象，并在它自身的状态改变时主动通知观察者对象。这个主动通知通常是通过调用各观察者对象所提供的接口方法来实现的。观察者模式较完美地将目标对象与观察者对象解耦。</p>
+</blockquote>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;">在 Objective-C 中有两种使用键值观察的方式：手动或自动，此外还支持注册依赖键（即一个键依赖于其他键，其他键的变化也会作用到该键）。下面将一一讲述这些，并会深入 Objective-C 内部一窥键值观察是如何实现的。</p>
+<br />
+<h3 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t6" style="color:#ca0000;"></a><span style="font-size:14px;">二，运用键值观察</span></h3>
+<h4 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t7" style="color:#ca0000;"></a>1，注册与解除注册</h4>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;">如果我们已经有了包含可供键值观察属性的类，那么就可以通过在该类的对象（被观察对象）上调用名为&nbsp;NSKeyValueObserver<strong>Registration 的&nbsp;</strong>category&nbsp;方法将观察者对象与被观察者对象注册与解除注册：</p>
+<div style="font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;width:683.0499877929688px;margin:5px 0px;"><pre style="white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New';margin:5px 8px;padding:5px;"><div style="background-color:#eeeeee;border:1px solid #cccccc;padding:4px 5px 4px 4px;width:643.890625px;word-break:break-all;">-&nbsp;(<span style="line-height:15px;color:#0000ff;">void</span>)addObserver:(NSObject&nbsp;*)observer&nbsp;forKeyPath:(NSString&nbsp;*)keyPath&nbsp;options:(NSKeyValueObservingOptions)options&nbsp;context:(<span style="line-height:15px;color:#0000ff;">void</span>&nbsp;*)context;
+-&nbsp;(<span style="line-height:15px;color:#0000ff;">void</span>)removeObserver:(NSObject&nbsp;*)observer&nbsp;forKeyPath:(NSString&nbsp;*)keyPath;</div>
+</pre></div>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;">这两个方法的定义在 Foundation/NSKeyValueObserving.h 中，NSObject，NSArray，NSSet均实现了以上方法，因此我们不仅可以观察普通对象，还可以观察数组或结合类对象。在该头文件中，我们还可以看到 NSObject 还实现了&nbsp;NSKeyValueObserver<strong>Notification</strong>&nbsp;的&nbsp;category 方法（更多类似方法，请查看该头文件）：</p>
+<div style="font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;width:683.0499877929688px;margin:5px 0px;"><pre style="white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New';margin:5px 8px;padding:5px;"><div style="background-color:#eeeeee;border:1px solid #cccccc;padding:4px 5px 4px 4px;width:643.890625px;word-break:break-all;">-&nbsp;(<span style="line-height:15px;color:#0000ff;">void</span>)willChangeValueForKey:(NSString&nbsp;*)key;
+-&nbsp;(<span style="line-height:15px;color:#0000ff;">void</span>)didChangeValueForKey:(NSString&nbsp;*)key;</div>
+</pre></div>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;">这两个方法在手动实现键值观察时会用到，暂且不提。</p>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;">值得注意的是：不要忘记解除注册，否则会导致资源泄露。</p>
+<h4 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t8" style="color:#ca0000;"></a>2，设置属性</h4>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;">将观察者与被观察者注册好之后，就可以对观察者对象的属性进行操作，这些变更操作就会被通知给观察者对象。注意，只有遵循 KVO 方式来设置属性，观察者对象才会获取通知，也就是说遵循使用属性的 setter 方法，或通过 key-path 来设置：</p>
+<div style="font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;width:683.0499877929688px;margin:5px 0px;"><pre style="white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New';margin:5px 8px;padding:5px;"><div style="background-color:#eeeeee;border:1px solid #cccccc;padding:4px 5px 4px 4px;width:643.890625px;word-break:break-all;">[target&nbsp;setAge:30];&nbsp;
+[target&nbsp;setValue:[NSNumber&nbsp;numberWithInt:30]&nbsp;forKey:@"age"];</div>
+</pre></div>
+<h4 style="margin:0px;padding:0px;font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;"><a name="t9" style="color:#ca0000;"></a>3，处理变更通知</h4>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;">观察者需要实现名为&nbsp;NSKeyValueObserving 的&nbsp;category 方法来处理收到的变更通知：</p>
+<div style="font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;width:683.0499877929688px;margin:5px 0px;"><pre style="white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New';margin:5px 8px;padding:5px;"><div style="background-color:#eeeeee;border:1px solid #cccccc;padding:4px 5px 4px 4px;width:643.890625px;word-break:break-all;">-&nbsp;(<span style="line-height:15px;color:#0000ff;">void</span>)observeValueForKeyPath:(NSString&nbsp;*)keyPath&nbsp;ofObject:(id)<span style="line-height:15px;color:#0000ff;">object</span>&nbsp;change:(NSDictionary&nbsp;*)change&nbsp;context:(<span style="line-height:15px;color:#0000ff;">void</span>&nbsp;*)context;</div>
+</pre></div>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;">在这里，change 这个字典保存了变更信息，具体是哪些信息取决于注册时的&nbsp;NSKeyValueObservingOptions。</p>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;"></p>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;"><strong>我先创建了一个 dogName 的函数作为被观察的对象</strong></p>
+<p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;"></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>////////////////////dogName.h 文件 邪恶的下划线/////////////////////</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<strong><br />
+</strong><p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s1">#import&nbsp;</span>&lt;Foundation/Foundation.h&gt;</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s2">@interface</span>&nbsp;dogName :<span class="s3">NSObject</span></strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp;&nbsp;<span class="s3">NSString</span>&nbsp;*dongNameString;</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>@property<span class="s4">&nbsp;(</span>strong<span class="s4">,</span>nonatomic<span class="s4">)</span><span class="s3">NSString</span><span class="s4">&nbsp;*dongNameString;</span></strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>@end</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>////////////////////dogName.m 文件 邪恶的下划线/////////////////////</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s1">#import&nbsp;</span>"dogName.h"</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>@implementation<span class="s2">&nbsp;dogName</span></strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s3">@synthesize</span>&nbsp;dongNameString;</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>-(<span class="s3">id</span>)init</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp;&nbsp;<span class="s3">if</span>&nbsp;(<span class="s3">self</span>&nbsp;= [<span class="s3">super</span><span class="s4">init</span>])</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; {</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp;</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; &nbsp; &nbsp;//初始化了一条狗 这条狗看家</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s2">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span>dongNameString<span class="s2">&nbsp;= [</span><span class="s3">self &nbsp;&nbsp;</span>setDogName<span class="s2">:</span><span class="s5">@"</span><span class="s6">大黄</span><span class="s5">"</span><span class="s2">];</span></strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><span class="s2"><strong>&nbsp; &nbsp; &nbsp; &nbsp;//6秒后 名叫小花的狗来接替大黄这条狗看家 &nbsp;</strong></span></p>
+<p class="p6" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s2">&nbsp; &nbsp; &nbsp; &nbsp; [</span>NSTimerscheduledTimerWithTimeInterval<span class="s2">:</span><span class="s7">6</span>target<span class="s2">:</span><span class="s3">self</span>selector<span class="s2">:</span><span class="s3">@selector</span><span class="s2">(changeName)</span>userInfo<span class="s2">:</span><span class="s3">nil</span>repeats<span class="s2">:</span><span class="s3">NO</span><span class="s2">];</span></strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; }</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s2">&nbsp; &nbsp;&nbsp;</span>returnself<span class="s2">;</span></strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>-(<span class="s1">void</span>)changeName</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp;</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s2">&nbsp; [</span><span class="s1">self</span><span class="s3">setValue</span><span class="s2">:[</span><span class="s1">self &nbsp;&nbsp;</span><span class="s4">setDogName</span><span class="s2">:</span><span class="s5">@"</span><span class="s6">大黄走了小花来了</span><span class="s5">"</span><span class="s2">] forKey:</span><span class="s5">@"dongNameString"</span><span class="s2">];</span></strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp;</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<strong><br />
+</strong><p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>-(<span class="s1">NSString</span>&nbsp;*)setDogName:(<span class="s1">NSString</span>&nbsp;*)name</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;display:inline !important;"><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span class="s2">return</span>&nbsp;name;</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<strong><br />
+</strong><p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;"></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s1">//</span>自动通知 &nbsp;大黄走了小花来了一定要告诉主人来 谁在看家&nbsp;</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>+ (<span class="s2">BOOL</span>) automaticallyNotifiesObserversForKey:(<span class="s3">NSString</span>*)key</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>//&nbsp;<span class="s5">对于名为</span>dongNameString<span class="s5">的变更通知，使用自动通知</span></strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s6">&nbsp; &nbsp;&nbsp;</span><span class="s2">if</span><span class="s6">&nbsp;([key &nbsp;&nbsp;</span><span class="s3">isEqualToString</span><span class="s6">:</span><span class="s7">@"dongNameString"</span><span class="s6">])</span></strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; {</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span class="s2">return</span><span class="s2">YES</span>;</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; }</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>//&nbsp;<span class="s5">确保调用了父类的</span>automaticallyNotfiesObserversForKey<span class="s5">方法</span></strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s6">&nbsp; &nbsp;&nbsp;</span><span class="s2">return</span><span class="s6">&nbsp;[</span><span class="s2">super</span>automaticallyNotifiesObserversForKey<span class="s6">:key];</span></strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<strong>&nbsp; /////////////////////////////// &nbsp;在 &nbsp;ViewController.h 里 &nbsp; 主人的家//////////////////////</strong><p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;"></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s1">#import&nbsp;</span>&lt;UIKit/UIKit.h&gt;</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s1">#import&nbsp;</span>"dogName.h"</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s2">@interface</span>&nbsp;ViewController :<span class="s3">UIViewController</span></strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; &nbsp;&nbsp;<span class="s4">dogName</span>&nbsp;*dogname;</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>@property<span class="s5">&nbsp;(</span>weak<span class="s5">,</span>nonatomic<span class="s5">)</span>IBOutlet<span class="s5">&nbsp;</span><span class="s3">UILabel</span><span class="s5">&nbsp;*dogNameLable; &nbsp;//在视图上显示哪个狗在看家</span></strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>@end</strong></p>
+<strong><br />
+</strong><p style="margin-top:14px;margin-bottom:14px;padding:0px;line-height:19px;text-indent:20px;font-family:verdana, Arial, Helvetica, sans-serif;"></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><span class="s1"><span style="font-family:verdana, Arial, Helvetica, sans-serif;line-height:19px;text-indent:20px;"><strong>&nbsp; /////////////////////////////// &nbsp;在 &nbsp;ViewController.m 里 &nbsp; //////////////////////</strong></span><br />
+</span></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s1">#import&nbsp;</span>"ViewController.h"</strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s1">#import&nbsp;</span>"dogName.h"</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s2">@interface</span>ViewController<span class="s3">&nbsp;()</span></strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p4" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>@end</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s2">@implementation</span>&nbsp;ViewController</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s2">@synthesize</span>&nbsp;dogNameLable;</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>- (<span class="s2">void</span>)viewDidLoad</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p6" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s3">&nbsp; &nbsp; [</span><span class="s2">super</span>viewDidLoad<span class="s3">];</span></strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s3">&nbsp; &nbsp;&nbsp;</span>dogname<span class="s3">&nbsp;= [[</span>dogName &nbsp;<span class="s4">alloc</span><span class="s3">]</span><span class="s4">init</span><span class="s3">];</span></strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp;</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;//注册观察者 狗主人</strong></p>
+<p class="p6" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s3">&nbsp; &nbsp; [</span><span class="s5">dogname &nbsp; &nbsp;</span>addObserver<span class="s3">:</span><span class="s2">self</span></strong></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="font-weight:bold;"><span class="s6">&nbsp;</span><span class="s7">forKeyPath</span><span class="s6">:</span>@"dongNameString"</span></p>
+<p class="p6" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s3">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>options<span class="s3">:(</span>NSKeyValueObservingOptionNew<span class="s3">&nbsp;|</span></strong></p>
+<p class="p6" style="margin-top:0px;margin-bottom:0px;padding:0px;"><span style="font-weight:bold;"><span class="s3">&nbsp;</span>NSKeyValueObservingOptionOld<span class="s3">)</span></span></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s4">context</span>:<span class="s2">NULL</span>];</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span style="font-family:verdana, Arial, Helvetica, sans-serif;line-height:19px;text-indent:20px;">//观察者对象的属性进行操作</span>&nbsp; &nbsp; 看看哪条狗在看家</strong></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s3">&nbsp; &nbsp;</span>dogNameLable<span class="s3">.</span><span class="s4">text</span><span class="s3">&nbsp;= [</span>dogname &nbsp;<span class="s4">valueForKey</span><span class="s3">:</span><span class="s8">@"dongNameString"</span><span class="s3">];</span></strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp;</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>//&nbsp;</strong><span style="font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;line-height:16px;">处理变更通知 &nbsp;狗主人的眼睛 能观察到是否有其他的狗来接班</span></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>- (<span class="s2">void</span>)observeValueForKeyPath:(<span class="s4">NSString</span>&nbsp;*)keyPath</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; ofObject:(<span class="s2">id</span>)object</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; change:(<span class="s4">NSDictionary</span>&nbsp;*)change</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context:(<span class="s2">void</span>&nbsp;*)context</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp;</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>NSLog(<span class="s8">@"%@"</span>,keyPath);</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp;&nbsp;<span class="s2">if</span>&nbsp;([keyPath isEqual:<span class="s8">@"dongNameString"</span>])</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; {</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; dogNameLable.text=[change objectForKey:NSKeyValueChangeNewKey];</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; }<span class="s2">else</span></strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; {</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; &nbsp; &nbsp; [<span class="s2">super</span>&nbsp; &nbsp;observeValueForKeyPath:keyPath</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ofObject:object</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; change:change</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context:context];</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; }</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>//搬家了就要 &nbsp; &nbsp; &nbsp; 删除观察者</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>-(<span class="s2">void</span>)dealloc</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp;&nbsp; &nbsp;</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp;[dogname &nbsp; removeObserver:<span class="s2">self &nbsp;</span>&nbsp;forKeyPath:<span class="s8">@"dongNameString"</span>];</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><br />
+</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>- (<span class="s2">void</span>)didReceiveMemoryWarning</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>{</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>&nbsp; &nbsp; [<span class="s2">super</span>&nbsp;didReceiveMemoryWarning];</strong></p>
+<p class="p7" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong><span class="s6">&nbsp; &nbsp;&nbsp;</span>// Dispose of any resources that can be recreated.</strong></p>
+<p class="p5" style="margin-top:0px;margin-bottom:0px;padding:0px;"><strong>}</strong></p>
+<strong><span style="color:#ff0000;">遛狗的demo： &nbsp; http://download.csdn.net/detail/lengshengren/6506879</span></strong></div></body></html>

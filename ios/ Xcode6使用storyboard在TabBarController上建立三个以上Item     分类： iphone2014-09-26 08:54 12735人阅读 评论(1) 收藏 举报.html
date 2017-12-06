@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-10-29T11:02:52Z"/><meta name="updated" content="2015-10-29T11:02:54Z"/><title> Xcode6使用storyboard在TabBarController上建立三个以上Item     分类： iphone2014-09-26 08:54 12735人阅读 评论(1) 收藏 举报</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';">&nbsp;<h1 style="margin:0px;padding:0px;display:inline;font-weight:normal;font-size:20px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/nogodoss/article/details/39575759" style="color:#000000;text-decoration:none;">Xcode6使用storyboard在TabBarController上建立三个以上Item&nbsp;</a></span></h1>
+</div>
+<div class="article_manage" style="padding:5px 0px;color:#999999;font-size:12px;line-height:24px;font-family:Arial;text-align:right;"><span class="link_categories" style="margin:0px 5px;float:left;">分类：&nbsp;<a href="http://blog.csdn.net/nogodoss/article/category/941604" style="color:#336699;text-decoration:none;">iphone</a></span><span class="link_postdate" style="margin:0px 5px 0px 0px;">2014-09-26 08:54</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_view.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;">12735人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_comm.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;"><a href="http://blog.csdn.net/nogodoss/article/details/39575759#comments" style="color:#336699;text-decoration:none;">评论</a>(1)</span>&nbsp;<span class="link_collect" style="margin:0px 5px;"><a title="收藏" style="color:#336699;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/nogodoss/article/details/39575759#report" title="举报" style="color:#336699;text-decoration:none;">举报</a></span></div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;line-height:26px;font-family:Arial;color:#333333;"><p class="p1">&nbsp; &nbsp;在Xcode5上做以上的操作没有问题,这次是要在Xcode6上实现之,特记录以备用.</p>
+<p class="p1">&nbsp; 首先新建一个storyboard文件.取名Custom.storyboard.拖动菜单添加一个TabBarComtroller.由于XCode6使用了Use Size Classes功能.所有拖出来的Controller都是600x800大小.见图</p>
+<p class="p1"><img src="http://img.blog.csdn.net/20140926085132467?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbm9nb2Rvc3M=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;" /></p>
+<p class="p1">恢复到以前的界面(恢复到Xcode6以前的界面,这个是为了习惯之前界面的人士):</p>
+<p class="p1">通过取消Use Size Classes项并选择Disable Size Classes.如下图</p>
+<p class="p1"><img src="http://img.blog.csdn.net/20140926085219720?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbm9nb2Rvc3M=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;" /></p>
+<p class="p1">&nbsp; &nbsp; 然后选择适配ios6.1 and Later.下图:</p>
+<p class="p1"><img src="http://img.blog.csdn.net/20140926085244352?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbm9nb2Rvc3M=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;" /></p>
+<p class="p1">然后结果就是下图,</p>
+<p class="p1"><img src="http://img.blog.csdn.net/20140926085325364?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbm9nb2Rvc3M=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;" /></p>
+<p class="p1">这时候的视图就是iphone5了(尺寸为320x568)</p>
+<p class="p1">继续下面的</p>
+<p class="p1">从菜单项中拖出一个TabBarComtroller,默认情况有两项(Item1和Item2).我们这里修改为Home,List.</p>
+<p class="p1">这里有些技巧(单击storyboard空白的地方可以放大或缩小各个视图,Xcode之前的版本是有放大缩小两按钮的.</p>
+<p class="p1">这里注意缩小视图情况下能做什么事情,放大视图上能做什么事情.)</p>
+<p class="p1">我总结为:</p>
+<p class="p1">&nbsp;缩小视图:</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; a.移动视图位置;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; b.建立segue;</p>
+<p class="p1">&nbsp;&nbsp; &nbsp; c.设置视图的Custom class(右边菜单的第三项),而在放大视图设置不了Class.</p>
+<p class="p1">&nbsp;放大视图:</p>
+<p class="p1">&nbsp;&nbsp; &nbsp; a.向视图中加入Button等子视图(缩小情况是不能做的);</p>
+<p class="p1">&nbsp;&nbsp; &nbsp; b.可以建立属性(IB)关系.</p>
+<p class="p1">继续下面的</p>
+<p class="p1">从菜单中在拖出一个ViewController(当然也可以拖出一个Navigation Controller).缩小情况下调整各个视图的位置,选中Tab bar Controller,按住Ctrl键并拖动鼠标,到新建的ViewController视图上,松开Ctrl键和鼠标,在弹出的菜单中选择RelationsShip Segues中的View Controllers.这样就出现新的Item.就可以重新命名新的项了.如图<img src="http://img.blog.csdn.net/20140926085352197?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbm9nb2Rvc3M=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="" style="border:none;" /></p>
+</div></body></html>

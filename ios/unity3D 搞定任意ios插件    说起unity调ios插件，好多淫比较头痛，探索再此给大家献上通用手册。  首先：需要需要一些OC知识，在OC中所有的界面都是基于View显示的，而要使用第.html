@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-12-16T14:41:02Z"/><meta name="updated" content="2016-10-08T09:09:11Z"/><title>unity3D 搞定任意ios插件    说起unity调ios插件，好多淫比较头痛，探索再此给大家献上通用手册。  首先：需要需要一些OC知识，在OC中所有的界面都是基于View显示的，而要使用第</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h1 class="postTitle" style="margin:0px;padding:0px 0px 0px 5px;float:left;line-height:1.5;width:889.46875px;clear:both;font-size:14px;font-family:Verdana, Arial, Helvetica, sans-serif;"><a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/U-tansuo/archive/2012/11/22/unity_ios-plugin.html" style="margin:0px;padding:0px;color:#075db3;text-decoration:none;">unity3D 搞定任意ios插件</a></h1>
+<div class="clear" style="margin:0px;padding:0px;clear:both;font-family:Verdana, Arial, Helvetica, sans-serif;font-size:12px;line-height:18px;"></div>
+<div class="postBody" style="margin:5px 0px 0px;padding:5px 2px 5px 5px;line-height:1.5;font-size:13px;font-family:Verdana, Arial, Helvetica, sans-serif;"><div id="cnblogs_post_body" style="margin:0px 0px 20px;padding:0px;"><div id="xunlei_com_thunder_helper_plugin_d462f475-c18e-46be-bd10-327458d045bd" style="margin:0px;padding:0px;">说起unity调ios插件，好多淫比较头痛，探索再此给大家献上通用手册。</div>
+<p style="margin:10px auto;padding:0px;line-height:1.5;">首先：需要需要一些OC知识，在OC中所有的界面都是基于View显示的，而要使用第三方提供的ios sdk&nbsp; 仅需简单修改源代码，把相应view添加到unity&nbsp; build出来的xcode工程的根view上即可。也许有人在骂，这不废话，跟没说一样，我坦然接受，因为确实没有干活。</p>
+<p style="margin:10px auto;padding:0px;line-height:1.5;">下面给大家实例分析一下：首先要了解Unity发出来xcode工程的结构。</p>
+<p style="margin:10px auto;padding:0px;line-height:1.5;"><img src="http://pic002.cnblogs.com/images/2012/425841/2012112223051255.png" alt="" style="margin:0px;padding:0px;border:0px;" />&nbsp; 注意红框和绿框，其中红框在此没用，可以忽略。焦点放在绿框上，UIApplicationMain(argc, argv, nil, @"AppController");是程序的入口，一般的xcode工程都是UIApplicationMain(argc, argv, nil, @"XXXAppDelegete");表示要进入XXXAppDelegete里面的某个方法。本文中会进入到AppController.m中的(BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions方法中。为什么会进入此方法，OC规定的（可以自己看看相关文档，我是加断点看出来的）。</p>
+<p style="margin:10px auto;padding:0px;line-height:1.5;">2、(BOOL)application:(UIApplication*)application中会调用&nbsp;[self startUnity:application];进入startUnity方法，这个方法完了后最终会到&nbsp;<span style="margin:0px;padding:0px;line-height:1.5;color:#ff0000;">OpenEAGL_UnityCallback，<span style="margin:0px;padding:0px;line-height:1.5;color:#000000;">这是我们的焦点。以下是此函数中核心代码：</span></span></p>
+<p style="margin:10px auto;padding:0px;line-height:1.5;"><span style="margin:0px;padding:0px;line-height:1.5;color:#ff0000;"><span style="margin:0px;padding:0px;line-height:1.5;color:#000000;">&nbsp;_window = [[UIWindow alloc] initWithFrame:rect];//创建主窗口<br style="margin:0px;padding:0px;" />
+&nbsp; EAGLView* view = [[EAGLView alloc] initWithFrame:rect];//创建根view<br style="margin:0px;padding:0px;" />
+<br style="margin:0px;padding:0px;" />
+#ifdef __IPHONE_6_0<br style="margin:0px;padding:0px;" />
+&nbsp;&nbsp;&nbsp; UnityViewController *controller = _ios60orNewer ? [[UnityViewController_IOS6 alloc] init] : [[UnityViewController_preIOS6 alloc] init];<br style="margin:0px;padding:0px;" />
+#else<br style="margin:0px;padding:0px;" />
+&nbsp;&nbsp;&nbsp; UnityViewController *controller = [[UnityViewController alloc] init];<br style="margin:0px;padding:0px;" />
+#endif<br style="margin:0px;padding:0px;" />
+<br style="margin:0px;padding:0px;" />
+</span></span></p>
+<p style="margin:10px auto;padding:0px;line-height:1.5;"><span style="margin:0px;padding:0px;line-height:1.5;color:#ff0000;"><span style="margin:0px;padding:0px;line-height:1.5;color:#000000;">[_window addSubview:view];//根view 添加到主窗口<br style="margin:0px;padding:0px;" />
+&nbsp;&nbsp;&nbsp; if( [_window respondsToSelector:@selector(rootViewController)] )<br style="margin:0px;padding:0px;" />
+&nbsp;&nbsp;&nbsp; {<br style="margin:0px;padding:0px;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _window.rootViewController =&nbsp;<span style="margin:0px;padding:0px;line-height:1.5;color:#ff0000;"><span style="margin:0px;padding:0px;line-height:1.5;color:#000000;">controller</span></span>;<br style="margin:0px;padding:0px;" />
+&nbsp;&nbsp;&nbsp; }<br style="margin:0px;padding:0px;" />
+<br style="margin:0px;padding:0px;" />
+</span></span></p>
+<p style="margin:10px auto;padding:0px;line-height:1.5;"><span style="margin:0px;padding:0px;line-height:1.5;color:#ff0000;"><span style="margin:0px;padding:0px;line-height:1.5;color:#000000;">因此其他任何第三方sdk，几乎都是要将他的view，添加到根view上，当上面函数被执行完后，根view，主window就存在了 现在大家可以为所欲为了。<br style="margin:0px;padding:0px;" />
+</span></span></p>
+<p style="margin:10px auto;padding:0px;line-height:1.5;"><span style="margin:0px;padding:0px;line-height:1.5;color:#ff0000;"><span style="margin:0px;padding:0px;line-height:1.5;color:#000000;">附带简单demo，希望对大家理解有帮助。<br style="margin:0px;padding:0px;" />
+</span></span></p>
+<div class="cnblogs_code" style="margin:5px 0px;padding:5px;background-color:#f5f5f5;border:1px solid #cccccc;overflow:auto;font-family:'Courier New' !important;font-size:12px !important;"><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#075db3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;border:none !important;" /></a></span></div>
+<pre style="margin-top:0px;margin-bottom:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;font-family:'Courier New' !important;"><span style="margin:0px;padding:0px;line-height:1.5 !important;"><span style="margin:0px;padding:0px;line-height:1.5 !important;">芒果sdK调用
+
+MangGuoController.h
+
+#import </span>&lt;UIKit/UIKit.h&gt;<span style="margin:0px;padding:0px;line-height:1.5 !important;"> #import </span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">AdMoGoDelegateProtocol.h</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"> #import </span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">AdMoGoView.h</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"> #import </span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">AdMoGoWebBrowserControllerUserDelegate.h</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"> @interface MangGuoController:NSObject</span>&lt;AdMoGoDelegate,AdMoGoWebBrowserControllerUserDelegate&gt;<span style="margin:0px;padding:0px;line-height:1.5 !important;">{    
+    AdMoGoView </span>*<span style="margin:0px;padding:0px;line-height:1.5 !important;">largeAd;
+
+}
+@property(nonatomic,retain) UIView </span>*<span style="margin:0px;padding:0px;line-height:1.5 !important;">view;</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"> @end
+
+MangGuoController.m
+
+#import </span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">MangGuoController.h</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"> #import </span>&lt;QuartzCore/QuartzCore.h&gt;<span style="margin:0px;padding:0px;line-height:1.5 !important;"> @implementation MangGuoController
+
+@synthesize view;</span>-<span style="margin:0px;padding:0px;line-height:1.5 !important;">(id)init{
+    self</span>=<span style="margin:0px;padding:0px;line-height:1.5 !important;">[super init];
+    </span><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">if</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">(self)
+    {
+        UIWindow </span>*window=<span style="margin:0px;padding:0px;line-height:1.5 !important;"> [[UIApplication sharedApplication] keyWindow];//获取主窗口
+        
+        self.view</span>=[window.subviews objectAtIndex:<span style="margin:0px;padding:0px;color:#800080;line-height:1.5 !important;">0</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">];获取根view
+
+ largeAd </span>= [[AdMoGoView alloc] initWithAppKey:<span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">@"</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">芒果ID</span><span style="margin:0px;padding:0px;color:#800000;line-height:1.5 !important;">"</span><span style="margin:0px;padding:0px;line-height:1.5 !important;">                                           adType:AdViewTypeNormalBanner
+                                     expressMode:NO
+                              adMoGoViewDelegate:self];
+    largeAd.adWebBrowswerDelegate </span>=<span style="margin:0px;padding:0px;line-height:1.5 !important;"> self;
+    largeAd.frame</span>=<span style="margin:0px;padding:0px;line-height:1.5 !important;">CGRectZero;
+    [ self.view addSubview:largeAd];//将芒果view 添加到根view上。
+    [largeAd release];
+    }
+    </span><span style="margin:0px;padding:0px;color:#0000ff;line-height:1.5 !important;">return</span></span><span style="margin:0px;padding:0px;line-height:1.5 !important;"><span style="margin:0px;padding:0px;line-height:1.5 !important;"> self;
+}</span> <span style="margin:0px;padding:0px;line-height:1.5 !important;">通过<span style="margin:0px;padding:0px;line-height:1.5 !important;">MangGuoController</span>* mg=[[MangGuoController alloc]init];</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"><span style="margin:0px;padding:0px;line-height:1.5 !important;">[<span style="margin:0px;padding:0px;line-height:1.5 !important;">mg</span> release];  即可调用广告。</span><span style="margin:0px;padding:0px;color:#ff0000;line-height:1.5 !important;">特别说明 前面的实例化 最好这样写：</span> </span></span><span style="margin:0px;padding:0px;line-height:1.5 !important;">- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions</span> <span style="margin:0px;padding:0px;line-height:1.5 !important;">{</span> <span style="margin:0px;padding:0px;line-height:1.5 !important;">&nbsp;&nbsp;&nbsp; printf_console("-&gt; applicationDidFinishLaunching()\n");</span> <span style="margin:0px;padding:0px;line-height:1.5 !important;">&nbsp;&nbsp;&nbsp; [self startUnity:application];//执行完后 才会实例化出 根view 和主window</span> <span style="margin:0px;padding:0px;line-height:1.5 !important;">&nbsp; &nbsp;</span> <span style="margin:0px;padding:0px;color:#ff0000;line-height:1.5 !important;">&nbsp;&nbsp;&nbsp;&nbsp; MangGuoController* mg=[[MangGuoController alloc]init];//确保存在了根view和主window
+     [mg release];</span> <span style="margin:0px;padding:0px;line-height:1.5 !important;">&nbsp;&nbsp; &nbsp;</span> <span style="margin:0px;padding:0px;line-height:1.5 !important;">&nbsp;&nbsp;&nbsp; return NO;</span> <span style="margin:0px;padding:0px;line-height:1.5 !important;">}</span><span style="margin:0px;padding:0px;line-height:1.5 !important;"><span style="margin:0px;padding:0px;line-height:1.5 !important;"> </span> </span></pre><div class="cnblogs_code_toolbar" style="margin:5px 0px 0px;padding:0px;"><span class="cnblogs_code_copy" style="margin:0px;padding:0px 5px 0px 0px;line-height:1.5 !important;"><a title="复制代码" style="margin:0px;padding:0px;color:#075db3;text-decoration:underline;border:none !important;"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" style="margin:0px;padding:0px;border:none !important;" /></a></span></div>
+</div>
+<p style="margin:10px auto;padding:0px;line-height:1.5;">我也是半路出家的OC初学者，词里行间不妥之处，还往大家多多指教。</p>
+<p style="margin:10px auto;padding:0px;line-height:1.5;">UIApplication知识点：<a href="http://johnlv.blog.sohu.com/185994960.html" style="margin:0px;padding:0px;color:#075db3;">http://johnlv.blog.sohu.com/185994960.html</a></p>
+</div>
+</div></body></html>

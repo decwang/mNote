@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-11-26T10:40:11Z"/><meta name="updated" content="2015-11-26T10:40:13Z"/><title>这是因为xcode升级造成的定位权限设置问题。 升级xcode6以后打开以前xcode5工程，程序不能定位。工程升级到xcode6编译时需要iOS8 要自己写授权，不然没权限定位。 解决方法： 首先</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><table cellspacing="0" cellpadding="0" width="100%" style="outline:none;width:1284px;color:#333333;font-family:'Helvetica Neue', Helvetica, STheiti, 微软雅黑, 黑体, Arial, Tahoma, sans-serif, serif;font-size:12px;widows:1;table-layout:fixed;"><tbody style="outline:none;"><tr class="r_one" style="outline:none;"><td style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;vertical-align:bottom;"></td>
+</tr>
+<tr style="outline:none;"><td height="100%" valign="top" id="td_1223039" style="outline:none;margin:0px -15px 0px 0px;padding:0px;word-break:break-all;word-wrap:break-word;border:0px;overflow:hidden;width:1098px;"><div class="tpc_content" style="outline:none;margin:0px;padding:0px 15px 20px;word-break:break-all;word-wrap:break-word;line-height:2em;"><div class="f14" id="read_1223039" style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;font-size:14px;clear:both;">这是因为xcode升级造成的定位权限设置问题。<br style="outline:none;" />
+升级xcode6以后打开以前xcode5工程，程序不能定位。工程升级到xcode6编译时需要iOS8 要自己写授权，不然没权限定位。<br style="outline:none;" />
+解决方法：<br style="outline:none;" />
+首先在 info.plist里加入对应的缺省字段 ，值设置为YES（前台定位写上边字段，前后台定位写下边字段）<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLocationWhenInUseUsageDescription&nbsp;&nbsp; //允许在前台获取GPS的描述<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLocationAlwaysUsageDescription&nbsp;&nbsp; //允许在前、后台获取GPS的描述&nbsp;<br style="outline:none;" />
+后方附图<br style="outline:none;" />
+<br style="outline:none;" />
+先上代码：<br style="outline:none;" />
+<pre class="brush:objc; toolbar: true; auto-links: false;" style="outline:none;margin-top:0px;margin-bottom:0px;padding:0px;">#import "ViewController.h"
+#import &lt;CoreLocation/CoreLocation.h&gt;
+@interface ViewController ()&lt;CLLocationManagerDelegate&gt;
+@property (nonatomic, strong) CLLocationManager *locationManager;
+@end
+
+@implementation ViewController
+
+//&nbsp;&nbsp;&nbsp;&nbsp;1. 懒加载初始化：
+- (CLLocationManager *)locationManager{
+&nbsp;&nbsp;&nbsp;&nbsp;if(!_locationManager){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.locationManager = [[CLLocationManager alloc] init];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.locationManager.delegate = self;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;return _locationManager;
+}
+
+- (void)viewDidLoad {
+&nbsp;&nbsp;&nbsp;&nbsp;[super viewDidLoad];
+
+//&nbsp;&nbsp;&nbsp;&nbsp;2. 调用请求：
+&nbsp;&nbsp;&nbsp;&nbsp;if ([[[UIDevice currentDevice] systemVersion] doubleValue] &gt; 8.0)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//设置定位权限 仅ios8有意义
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.locationManager requestWhenInUseAuthorization];// 前台定位
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;[locationManager requestAlwaysAuthorization];// 前后台同时定位
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;[self.locationManager startUpdatingLocation];
+}
+
+// 3.代理方法
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations{
+&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"%ld",locations.count);
+}
+@end</pre><br style="outline:none;" />
+<br style="outline:none;" />
+<br style="outline:none;" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br style="outline:none;" />
+</div>
+<div id="att_84475" style="outline:none;margin:5px 0px;padding:0px;word-break:break-all;word-wrap:break-word;">图片:图.png&nbsp;<br style="outline:none;" />
+<img src="http://cdn.cocimg.com/bbs/attachment/Fid_21/21_317960_37970c464a795a9.png" border="0" style="outline:none;border:none;margin:0px;padding:0px;" /></div>
+</div>
+</td>
+</tr>
+<tr class="r_one" style="outline:none;"><td style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;vertical-align:bottom;"><div id="w_1223039" class="c" style="outline:none;margin:0px;padding:0px;word-break:break-all;word-wrap:break-word;clear:both;font-size:0px;line-height:0px;font-family:Arial;overflow:hidden;height:0px;width:0px;"></div>
+<div class="tipad cc" style="outline:none;margin:20px 0px 10px 15px;padding:0px;word-break:break-all;word-wrap:break-word;border-top-width:1px;border-top-style:solid;border-top-color:#bbbbbb;height:30px;"><div class="fl readbot" style="outline:none;margin:10px 0px 0px;padding:0px;word-break:break-all;word-wrap:break-word;float:left;"></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<br /></body></html>

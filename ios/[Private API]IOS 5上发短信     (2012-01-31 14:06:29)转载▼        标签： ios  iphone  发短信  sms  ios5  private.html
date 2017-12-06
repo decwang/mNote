@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-10-30T16:03:10Z"/><meta name="updated" content="2014-10-30T16:03:12Z"/><title>[Private API]IOS 5上发短信     (2012-01-31 14:06:29)转载▼        标签： ios  iphone  发短信  sms  ios5  private</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="articalTitle"> 
+			
+								<h2 id="t_5d34020101012p1c" class="titName SG_txta">[Private&nbsp;API]IOS&nbsp;5上发短信</h2>
+			
+					<span class="img2"> 				<img title="此博文包含图片" src="http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif" class="SG_icon SG_icon18" align="absmiddle" height="15" width="15" />	
+			</span> 					<span class="time SG_txtc">(2012-01-31 14:06:29)</span><div class="turnBoxzz"><a href="" class="SG_aBtn SG_aBtn_ico SG_turn" action-type="reblog" action-data="{srcBlog:1, blogId:'5d34020101012p1c'}"><cite><img class="SG_icon SG_icon111" src="http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif" align="absmiddle" height="15" width="15" />转载<em class="arrow">▼</em></cite></a></div>
+		</div>
+		<div class="articalTag" id="sina_keyword_ad_area">
+			<table>
+				<tbody><tr>
+					<td class="blog_tag">
+					
+											<span class="SG_txtb">标签：</span> 																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=ios&amp;by=tag" target="_blank">ios</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=iphone&amp;by=tag" target="_blank">iphone</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=%B7%A2%B6%CC%D0%C5&amp;by=tag" target="_blank">发短信</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=sms&amp;by=tag" target="_blank">sms</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=ios5&amp;by=tag" target="_blank">ios5</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=private&amp;by=tag" target="_blank">private</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=api&amp;by=tag" target="_blank">api</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=it&amp;by=tag" target="_blank">it</a></h3>
+																</td>
+					<td class="blog_class">
+											<span class="SG_txtb">分类：</span> 						<a target="_blank" href="http://blog.sina.com.cn/s/articlelist_1563689473_4_1.html">IOS.Iphone。编程。代码</a> 										</td>
+				</tr>
+			</tbody>
+</table>
+		</div>
+						
+		<div id="sina_keyword_ad_area2" class="articalContent ">
+			要说这个其实网上已有人发出老版本的使用方法，可惜，古董了，有了些变动，折腾了段时间，终于搞定。<div><br />
+<div><span style="color:#0067FF;">（Ps：顺带提一下，要是大家看的网上的那个原版教材，里面获取 &nbsp;<wbr>IMEI
+的方式已经失效，高版本的IOS 个人测试 IOS 4.3就已经没得办法获取 IMEI 了，有替代的方法，是获取 MAC
+地址，然后算MD5）</span><br />
+&nbsp;<wbr> <div><br />
+</div>
+<div>
+效果嘛，当然是不会调用系统的sms程序去发送了。也就可以后台发sms，也就没得记录，也是为了一个娱乐项目中需要的一个功能罢了。</div>
+<div>
+<div><br />
+</div>
+<div>首先要在工程中添加 &nbsp;<wbr><span style="color:#666666;font-family:Monaco, Consolas, '&quot;Lucida Console&quot;', '&quot;Courier new&quot;', serif;font-size:12px;line-height:18px;background-color:#f7f7f7;">CoreTelephony.framework&nbsp;<wbr></span>添加这个在其他教程中说是在<span style="color:#666666;font-family:Monaco, Consolas, '&quot;Lucida Console&quot;', '&quot;Courier new&quot;', serif;font-size:12px;line-height:18px;background-color:#f7f7f7;">Private&nbsp;<wbr></span><span style="color:#666666;font-family:Monaco, Consolas, '&quot;Lucida Console&quot;', '&quot;Courier new&quot;', serif;font-size:12px;line-height:18px;background-color:#f7f7f7;">framework</span> 中添加，但是我是 &nbsp;<wbr>Xcode 4.2 &nbsp;<wbr>sdk 是IOS
+5，那么这里就是在&nbsp;<wbr><span style="font-family:Monaco, Consolas, '&quot;Lucida Console&quot;', '&quot;Courier new&quot;', serif;line-height:18px;color:#666666;font-size:12px;background-color:#f7f7f7;">Public&nbsp;<wbr></span><span style="font-family:Monaco, Consolas, '&quot;Lucida Console&quot;', '&quot;Courier new&quot;', serif;line-height:18px;color:#666666;font-size:12px;background-color:#f7f7f7;">framework&nbsp;<wbr></span>中了。</div>
+<div><br />
+</div>
+<div>要想知道路径，就是如下：</div>
+<div><br />
+</div>
+<div><span style="color:#FF0000;">/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System</span></div>
+<div><br />
+</div>
+<div>下面有一个 &nbsp;<wbr>Frameworks &nbsp;<wbr>和
+&nbsp;<wbr>一个 &nbsp;<wbr>PrivateFrameworks
+目录，前者Public &nbsp;<wbr>后者你懂的。</div>
+<div><br />
+</div>
+<div>那么就不需要手动去找路径了，直接在 Xcode 添加</div>
+<div><br />
+</div>
+<div><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=5d34020101012p1c&amp;url=http://s15.sinaimg.cn/orignal/5d340201gb7ccedff018e" target="_blank"><img exify_intitialized="true" action-type="show-slide" action-data="http%3A%2F%2Fs15.sinaimg.cn%2Fmiddle%2F5d340201gb7ccedff018e%26690" src="http://s15.sinaimg.cn/middle/5d340201gb7ccedff018e&amp;690" real_src="http://s15.sinaimg.cn/middle/5d340201gb7ccedff018e&amp;690" name="image_operate_46071327991233295" alt="[Private&nbsp;&lt;wbr&gt;API]IOS&nbsp;&lt;wbr&gt;5上发短信" title="[Private&nbsp;&lt;wbr&gt;API]IOS&nbsp;&lt;wbr&gt;5上发短信" height="455" width="402" /></a></div>
+<div><br />
+</div>
+<div>然后请移步去微盘下载需要的头文件。</div>
+<div><a href="http://vdisk.weibo.com/s/2edEO" target="_blank">Headers</a></div>
+<div><br />
+</div>
+<div>之后只要包含这些文件就好了。</div>
+<div><br />
+</div>
+<div>
+<div>#import
+&lt;Foundation/Foundation.h&gt;</div>
+<div>#import "Headers/CDStructures.h"</div>
+<div>#import "Headers/CTMessageCenter.h"</div>
+<div>#im</div>
+</div>
+</div>
+</div>
+</div>
+</div></body></html>

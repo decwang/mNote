@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-04-08T07:25:35Z"/><meta name="updated" content="2015-04-08T07:25:37Z"/><title>IOS 内存管理  小议iphone内存管理与属性     一、前言        对于大多数从C++或者JAVA转过来学习Object-C（以下简称OC）的人来说，OC这门语言看起来非常奇怪，用起</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="postTitle" style="background-image:url(http://www.cnblogs.com/skins/BlackSun/images/Topic.gif);padding-left:15px;font-size:medium;margin-top:6px;margin-bottom:0px;font-family:Verdana, Arial, Geneva, Helvetica, sans-serif;line-height:normal;background-repeat:no-repeat no-repeat;"><a id="cb_post_title_url" href="http://www.cnblogs.com/Kiros/archive/2012/01/10/2318073.html" style="color:#000000;text-decoration:none;">IOS 内存管理</a></div>
+<div class="postText" style="padding:2px 10px 2px 15px;font-size:13px;font-family:verdana, sans-serif;line-height:1.5;margin-top:0px;"><div id="cnblogs_post_body" style="margin-bottom:20px;word-break:break-word;"><p style="margin:10px auto;">小议iphone内存管理与属性</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">一、前言</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 对于大多数从C++或者JAVA转过来学习Object-C（以下简称OC）的人来说，OC这门语言看起来非常奇怪，用起来也有点麻烦。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OC没有像JAVA一样的垃圾回收机制，也就是说，OC编程需要程序员手动去管理内存。这就是为什么它烦的原因，苹果却一直推崇开发者在有限硬件资源内写出最优化的代码，使用CPU最少，占用内存最小。</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">二、基本原理</p>
+<p style="margin:10px auto;">对象的创建：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OC在创建对象时，不会直接返回该对象，而是返回一个指向对象的指针，因此出来基本类型以外，我们在OC中基本上都在使用指针。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA&nbsp; *a = [[ClassA&nbsp;&nbsp; alloc]&nbsp; init];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在[ClassA&nbsp;&nbsp; alloc]的时候，已经发送消息通知系统给ClassA的对象分配内存空间，并且返回了指向未初始化的对象的一个指针。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 未初始化的ClassA对象接手到init消息，init返回指向已初始化后的ClassA对象的一个指针，然后将其赋值给变量a。</p>
+<p style="margin:10px auto;">在创建并使用完一个对象的时候，用户需要手动地去释放该对象。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [a&nbsp;&nbsp; dealloc];</p>
+<p style="margin:10px auto;">如果指针a和b同时指向堆中同一块内存地址</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA&nbsp; *a = [[ClassA&nbsp;&nbsp; alloc]&nbsp; init];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA&nbsp; *b = a;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [a&nbsp;&nbsp; dealloc];</p>
+<p style="margin:10px auto;">当执行到第三行的时候，指针b就成了无头指针。这是一个在C++中也是常见的错误，我们需要避免这类错误，因为无头指针是危险的。</p>
+<p style="margin:10px auto;">引用计数：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OC在内存管理上采用了引用计数（retain count），在对象内部保存一个数字，用来表示被引用的次数。init、new和copy都会让retain count加1。当销毁对象的时候，系统不会直接调用dealloc方法，而是先调用release，让retain count 减1，当retain count等于0的时候，系统才会调用dealloc方法来销毁对象。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在指针赋值的时候，retain count 是不会自动增加的，为了避免上面所说的错误，我们需要在赋值的时候手动retain一次，让retain count 增加1。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA&nbsp; *a = [[ClassA&nbsp;&nbsp; alloc]&nbsp; init];&nbsp; // retain count = 1</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA&nbsp; *b = a;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [b&nbsp;&nbsp; retain];&nbsp; // retain count = 2</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [a&nbsp;&nbsp; dealloc];</p>
+<p style="margin:10px auto;">这样在执行到第四行的时候，对象的retain count只是减了1，并没有被销毁，指针b仍然有效。</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">内存泄露：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 就如上面列子所示，当生成ClassA对象时，指针a拥有对该对象的访问权。如果失去了对一个对象的访问权，而又没有将retain count减至0，就会造成内存泄露。也就是说，分配出去的内存无法回收。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA&nbsp; *a = [[ClassA&nbsp;&nbsp; alloc]&nbsp; init];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a&nbsp; =&nbsp; nil;</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">三、Autorelease Pool</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 为了方便程序员管理内存，苹果在OC中引入了自动释放池(Autorelease Pool)。在遵守一些规则的情况下，可以自动释放对象。但即使有这么一个工具，OC的内存仍需要程序员时刻关注（这个自动释放池跟JAVA的垃圾回收机制不是一回事，或者说，骑马都追不上JAVA的机制，可能连尘都吃不到）。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA&nbsp; *a = [[[ClassA&nbsp;&nbsp; alloc]&nbsp; init]&nbsp; autorelease];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //retain count = 1，但无需release</p>
+<p style="margin:10px auto;">Autorelease Pool 的原理：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; autorelease pool 全名叫做NSAutoreleasePool，是OC中的一个类。autorelease pool并不是天生就有的，你需要手动的去创建它</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NSAutoreleasePool&nbsp; *pool = [[NSAutoreleasePool&nbsp; alloc]&nbsp; init];</p>
+<p style="margin:10px auto;">一般地，在新建一个iphone 项目的时候，xcode会自动地为你创建一个autorelease pool，这个pool就写在Main函数里面。</p>
+<p align="center" style="margin:10px auto;">在NSAutoreleasePool中包含了一个 可变数组，用来存储被声明为autorelease的对象。当NSAutoreleasePool自身被销毁的时候，它会遍历这个数组，release数组中的每一个成员（注意，这里只是release，并没有直接销毁对象）。若成员的retain count 大于1，那么对象没有被销毁，造成内存泄露。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 默认的NSAutoreleasePool 只有一个，你可以在你的程序中创建NSAutoreleasePool，被标记为autorelease的对象会跟最近的NSAutoreleasePool 匹配。&nbsp;&nbsp;&nbsp;&nbsp; NSAutoreleasePool&nbsp; *pool = [[NSAutoreleasePool&nbsp; alloc]&nbsp; init];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Create some objects</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //do something…</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [pool&nbsp; release];</p>
+<p style="margin:10px auto;">你也可以嵌套使用NSAutoreleasePool&nbsp; ，就像你嵌套使用for一样。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 即使NSAutoreleasePool&nbsp; 看起来没有手动release那么繁琐，但是使用NSAutoreleasePool&nbsp; 来管理内存的方法还是不推荐的。因为在一个NSAutoreleasePool&nbsp; 里面，如果有大量对象被标记为autorelease，在程序运行的时候，内存会剧增，直到NSAutoreleasePool&nbsp;&nbsp; 被销毁的时候才会释放。如果其中的对象足够的多，在运行过程中你可能会收到系统的低内存警告，或者直接crash。</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">Autorelease Pool&nbsp;&nbsp; 扩展：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果你极具好奇心，把Main函数中的NSAutoreleasePool&nbsp; 代码删除掉，然后再自己的代码中把对象声明为autorelease，你会 发现系统并不会给你发出错误信息或者警告。用内存检测工具去检测内存的话，你可能会惊奇的发现你的对象仍然被销毁了。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 其实在新生成一个Run Loop的时候，系统会自动的创建一个NSAutoreleasePool&nbsp; ，这个NSAutoreleasePool 无法被删除。</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在做内存测试的时候，请不要用NSString。OC对字符串作了特殊处理</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NSString&nbsp; *str&nbsp; =[ [NSString alloc]&nbsp; stringWithString:@”123”];</p>
+<p style="margin:10px auto;">在输出str的retain count 的时候，你会发现retain count 大于1。</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">四、手动管理内存</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 使用alloc、new、copy创建一个对象，该对象的retain count 都等于1，需要用release来释放该对象。谁创建，谁去释放。在这3钟方法以外的方法创建的对象，都被系统默认的声明为autorelease。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA&nbsp; *a = [[ClassA&nbsp;&nbsp; alloc]&nbsp; init];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA &nbsp;*b = a;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [b&nbsp;&nbsp; retain];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //do smoething</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [b release];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b&nbsp; =&nbsp; nil;</p>
+<p style="margin:10px auto;">把一个指针赋值给另外一个指针的时候，a 指针所指向的对象的引用次数并没有增加，也就是说，对象的retain count依然等于1。只有在retain了之后，retain count 才会加1。那么，如果这时候执行[a&nbsp; release]，只是a指针放弃了对对象的访问权，对象的retain count 减1，对象没有被销毁。只有当b也执行了release方法之后，才会将对象销毁掉。因此，谁retain了，谁就要release。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在对象被销毁之后，指针依然是存在的。所以在release了之后，最好把指针赋为空，防止无头指针的出现。顺便一说，release一个空指针是合法的，但是不会发生任何事情。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果你在一个函数中创建并返回一个对象，那么你需要把这个对象声明为autorelease</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ClassA&nbsp; *)Function()</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClassA *a = [[[ClassA&nbsp;&nbsp; alloc]&nbsp; init]&nbsp; autorelease];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return a;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:10px auto;">不这样做的话，会造成内存泄露。</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">五、属性与内存管理</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 苹果一直没有强调的一点是，关于属性中的retain。事实上，属性中带有retain的，在赋值的时候可能已经在合成的setter中retain了一次，因此，这里也需要release。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @property实际上是getter和setter，@synthesize是合成这2个方法。为什么在声明了属性之后可以用“.”来直接调用成员变量呢？那是因为声明属性以后系统根据你给的属性合成了一个set方法和一个get方法。使用“.”与属性并没有直接关联，如果你不嫌麻烦，在你的程序里面多写一个set和get方法，你也可以使用“.”来调用变量。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @property()，如果你里面什么都不写，那么系统会默认的把你的属性设置为：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @property(atomic, assign)…..</p>
+<p style="margin:10px auto;">关于nonatomic：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 这个属性没有对应的atomic关键字，即使我上面是这么写，但atomic只是在你没有声明这个特性的时候系统默认，你无法主动去声明这一特性。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 如果你的程序只有一个主线程，或者你确定你的程序不会在2个或者以上线程运作的时候访问同一个变量，那么你可以声明为nonatomic。指定nonatomic特性，编译器合成访问器的时候不会去考虑线程安全问题。如果你的多个线程在同一时间会访问到这个变量的话，可以将特性声明为atomic(通过省略关键字nonatomic)。在这种特性的状态下，编辑器在合成访问器的时候就会在访问器里面加一个锁（@synchronized），在同一时间只能有一个线程访问该变量。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 但是使用锁是需要付出代价的，一个声明为atomic的属性，在设置和获取这个变量的时候都要比声明为nonatomic的慢。所以如果你不打算编写多线程代码，最好把变量的属性特性声明为nonatomic。</p>
+<p style="margin:10px auto;">关于assign、retain和copy：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assign是系统默认的属性特性，它几乎适用于OC的所有变量类型。对于非对象类型的变量，assign是唯一可选的 特性。但是如果你在引用计数下给一个对象类型的变量声明为assign，那么你会在编译的时候收到一条来自编译器的警告。因为assign对于在引用计数下的对象特性，只创建了一个弱引用（也就是平时说的浅复制）。这样使用变量会很危险。当你release了前一个对象的时候，被赋值的对象指针就成了无头指针了。因此在为对象类型的变量声明属性的时候，尽量少（或者不要）使用assign。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 关于assign合成的setter，看起来是这样的：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -(void)setObjA:(ClassA&nbsp; *)a</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objA&nbsp; =&nbsp; a;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 在深入retain之前，先把声明为retain特性的setter写出来：</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -(void)setObjA:(ClassA&nbsp; *)a</p>
+<p style="margin:10px auto;">{</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If(objA != a)</p>
+<p style="margin:10px auto;">{</p>
+<p style="margin:10px auto;">&nbsp;&nbsp; [objA&nbsp; release];</p>
+<p style="margin:10px auto;">&nbsp;&nbsp; objA&nbsp; =&nbsp; a;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp; [objA&nbsp; retain];&nbsp; //对象的retain count 加1</p>
+<p style="margin:10px auto;">}</p>
+<p style="margin:10px auto;">}</p>
+<p style="margin:10px auto;">明显的，在retain的setter中，变量retain了一次，那么，即使你在程序中</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; self.objA&nbsp; =&nbsp; a;</p>
+<p style="margin:10px auto;">只写了这么一句，objA仍然需要release，才能保证对象的retain count 是正确的。但是如果你的代码</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objA&nbsp; =&nbsp; a；</p>
+<p style="margin:10px auto;">只写了这么一句，那么这里只是进行了一次浅复制，对象的retain count 并没有增加，因此这样写的话，你不需要在后面release objA。</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 这2句话的区别是，第一句使用了编译器生成的setter来设置objA的值，而第二句只是一个简单的指针赋值。</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; copy的setter看起来是这样的:</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -(void)setObjA:(ClassA&nbsp; *)a</p>
+<p style="margin:10px auto;">{</p>
+<p style="margin:10px auto;">&nbsp; ClassA&nbsp; * temp&nbsp; =&nbsp; objA;</p>
+<p style="margin:10px auto;">&nbsp; objA&nbsp; =&nbsp; [a&nbsp;&nbsp; copyWithZone:nil];</p>
+<p style="margin:10px auto;">&nbsp; [temp&nbsp; release];</p>
+<p style="margin:10px auto;">}</p>
+<p style="margin:10px auto;">复制必须通过实现copyWithZone：这个方法，因次copy这个特性只适用于拥有这个方法的类型，也就是说，必须这个类支持复制。复制是把原来的对象release掉，然后让指针指向一个新的对象的副本。因此即使在setter里面release了原来的对象，你仍然需要在后面release新指向的对象（副本）。</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">&nbsp;</p>
+<p style="margin:10px auto;">六、尾声</p>
+<p style="margin:10px auto;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IOS开发现在唯一能用的内存管理方式就是引用计数，无论你喜欢还是不喜欢。在一个内存紧缺的机器上，你编写程序的时候也只能步步为营，尽可能的让你的程序腾出内存空间，并保证系统不会给你一个警告。即使苹果在Mac OS X 雪豹(v10.5)系统里面添加了另外一种内存管理方式(垃圾收集)，但目前不适用于IOS。</p>
+</div>
+</div></body></html>

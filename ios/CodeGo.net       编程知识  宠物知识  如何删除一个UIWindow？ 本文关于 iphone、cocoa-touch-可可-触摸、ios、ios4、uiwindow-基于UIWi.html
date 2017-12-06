@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-12-23T01:19:22Z"/><meta name="updated" content="2016-10-08T09:09:10Z"/><title>CodeGo.net       编程知识  宠物知识  如何删除一个UIWindow？ 本文关于 iphone、cocoa-touch-可可-触摸、ios、ios4、uiwindow-基于UIWi</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div><br />
+</div>
+<div>CodeGo.net<span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div><br />
+</div>
+<div>&nbsp;编程知识</div>
+<div>宠物知识</div>
+<div>如何删除一个UIWindow？<span class="Apple-tab-span" style="white-space:pre;">	</span>本文关于 iphone、cocoa-touch-可可-触摸、ios、ios4、uiwindow-基于UIWindow、</div>
+<div>CodeGo.net &gt; 如何删除一个UIWindow？</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>如何删除一个UIWindow？</div>
+<div>iphonecocoa-touch-可可-触摸iosios4uiwindow-基于UIWindow</div>
+<div>我认为这是很容易的[myWindow resignKeyWindow]和[self.window makeKeyAndVisible]但我想不会......请问你们知道该怎么办？ 谢谢:)</div>
+<div>本文地址 ：CodeGo.net/235474/&nbsp;</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>-------------------------------------------------------------------------------------------------------------------------</div>
+<div><br />
+</div>
+<div>1. 不调用-resignKeyWindow直接，它被重写以执行代码时，你UIWindows被删除。为了消除旧的窗口中，您需要创建一个UIWindow的新实例，并使其-makeKeyAndVisible，旧的窗口将辞去其关键在iOS 4的甚至会垃圾回收你的旧UIWindow中，只要你没有给它任何引用。在iOS中3.x中这样做会有效果。警告你。&nbsp;</div>
+<div><br />
+</div>
+<div>2. 隐藏窗口的正确方法是设置hidden属性为YES。从的UIApplication的移除windows属性，您只要松开窗口（ARC您设置为nil的所有引用）。 当然，你会希望在这个拥有另一个窗口到位&nbsp;</div>
+<div><br />
+</div>
+<div>3. 删除它是这样的：</div>
+<div>[myWindow resignKeyWindow];</div>
+<div>[myWindow release];</div>
+<div><br />
+</div>
+<div>释放使得它从窗户的UIApplication阵列得到消除。您可以查看[[的UIApplication sharedApplication]。窗口数]，以验证它是否已正确删除。&nbsp;</div>
+<div><br />
+</div>
+<div>4. 我有这个问题，它可能会有所帮助。 你需要摧毁所有强大的裁判删除之前的dealloc一个窗口，尤其是rootWindowController。我认为下面的代码，就足以删除任何窗口：</div>
+<div>&nbsp;[self.window.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];</div>
+<div>&nbsp;self.window.rootViewController = nil;</div>
+<div>&nbsp;[self.window resignKeyWindow];</div>
+<div>&nbsp;[self.window removeFromSuperview];</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>本文标题 ：如何删除一个UIWindow？</div>
+<div>本文地址 ：CodeGo.net/235474/&nbsp;</div>
+<div>继续浏览 ：PHP日期转换</div>
+<div><br />
+</div>
+<div>您可以会感兴趣的文章：</div>
+<div>1. 自动滚屏并不与VBOX布局工作</div>
+<div>2. Django的认证MongoDB的</div>
+<div>3. 如何Django的模型迁移从MySQL到sqlite的（或任何两个数据库系统之间）？</div>
+<div>4. 查找两个日期之间准确的区别</div>
+<div>5. 我应该在哪里调用free（）函数？</div>
+<div>6. JQGrid的日期排序在客户端具有特定格式</div>
+<div>7. 内存对齐的__attribute__（（对齐（8）））</div>
+<div>8. 如何禁用生成测试报告的Javadoc中的Maven 3的网站插件？</div>
+<div>9. Android的：防止用户从回来在登录后登录页面</div>
+<div>10. 日期格式在c＃</div>
+<div>11. 调用pthread_cond_signal会无锁定互斥锁</div>
+<div>12. 如何让iPhone样式列表在Android？</div>
+<div>13. 如何使用左/右滑动手势显示多个画面</div>
+<div>14. 如何安排一个任务每隔一段时间运行？</div>
+<div>15. 检查是否一个文本框的值是在JavaScript整数</div>
+<div>16. 可视数据在MVC JSON的ActionResult</div>
+<div>17. 为什么我们需要在HTML头部的元内容类型的标签？</div>
+<div>18. 我怎样才能让外部方法可中断？</div>
+<div>19. jQuery的延迟不工作</div>
+<div>20. 什么是最好的初始的事情，我必须知道，以跳转到asp.net开发</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>Copyright © 2014 CodeGo.net 沪ICP备14002912号 联系电邮:codego#163.com (#=@)</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>关闭</div>
+<div><br />
+</div>
+<div>关闭</div>
+<div><br />
+</div>
+<div>为您推荐</div></body></html>

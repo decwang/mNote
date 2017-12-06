@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-09-16T15:00:48Z"/><meta name="updated" content="2013-09-16T15:01:20Z"/><title>xcodebuild -project MyProject.xcodeproj -target MyTarget -configuration Release  XCode 默认编译出来的是appN</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>xcodebuild -project MyProject.xcodeproj -target MyTarget -configuration Release</div>
+<div>XCode 默认编译出来的是appName.app 包，而iphone，ipad的安装文件是ipa文件。</div>
+<div>将.app包打包成ipa最简单的方式是将appName.app 拖放到itunes中，然后在itunes的相关目录中找到appName.ipa，但这样测试的时候没生成一个版本都有重新做一遍。</div>
+<div>使用xcrun命令可以帮我们自动完成打包工作，可以方便的测试，并且可以指定签名，生成不同的版本。</div>
+<div><br />
+</div>
+<div>当然对于提供给越狱用户的应用也很有意义。</div>
+<div><br />
+</div>
+<div>xrun的使用方法如下：</div>
+<div><br />
+</div>
+<div>/usr/bin/xcrun -sdk iphoneos PackageApplication -v "${RELEASE_BUILDDIR}/${APPLICATION_NAME}.app" -o "${BUILD_HISTORY_DIR}/${APPLICATION_NAME}.ipa" --sign "${DEVELOPER_NAME}" --embed "${PROVISONING_PROFILE}”</div>
+<div><br />
+</div>
+<div>当然你可以把上面的命令添加到XCode build Phase中，项目编译完成自动打包。</div>
+<div><br />
+</div>
+<div><div id="header">
+	<div id="navigator">
+		<ul id="navList">
+	<li><a id="MyLinks1_HomeLink" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+	<li><a id="MyLinks1_MyHomeLink" class="menu" href="http://www.cnblogs.com/xiaodao/">首页</a></li>
+	<li><a href="http://news.cnblogs.com/">新闻</a></li>
+	<li><a id="MyLinks1_NewPostLink" class="menu" rel="nofollow" href="http://www.cnblogs.com/xiaodao/admin/EditPosts.aspx?opt=1">新随笔</a></li>
+	<li><a id="MyLinks1_ContactLink" accesskey="9" class="menu" rel="nofollow" href="http://space.cnblogs.com/msg/send/%e6%9c%88%e5%85%89%e7%9a%84%e5%b0%bd%e5%a4%b4">联系</a></li>
+	<li><a id="MyLinks1_Admin" class="menu" rel="nofollow" href="http://www.cnblogs.com/xiaodao/admin/EditPosts.aspx">管理</a></li>
+	<li><a id="MyLinks1_Syndication" class="menu" href="http://www.cnblogs.com/xiaodao/rss">订阅</a> 	<a id="MyLinks1_XMLLink" class="aHeaderXML" href="http://www.cnblogs.com/xiaodao/rss"></a></li>
+</ul>
+		<div class="blogStats">
+			
+			
+
+随笔- 59&nbsp;
+文章- 0&nbsp;
+评论- 8&nbsp;
+
+			
+		</div>
+	</div>
+</div>
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+	<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/xiaodao/archive/2012/03/01/2375609.html">iphone-命令行编译之--xcodebuild</a> 		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><p>1.查看xcode的版本号和build版本</p>
+<div class="cnblogs_code">
+<pre>$ xcodebuild -version</pre> </div>
+<p>显示内容：</p>
+<div class="cnblogs_code">
+<pre>Xcode 4.2
+Build version 4D199</pre> </div>
+<p>&nbsp;</p>
+<p>2.显示当前系统的sdk、及其版本</p>
+<div class="cnblogs_code">
+<pre>$ xcodebuild -showsdks</pre> </div>
+<p>显示内容：</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></span></div>
+<pre>Mac OS X SDKs:
+    Mac OS X 10.6                     -sdk macosx10.6
+    Mac OS X 10.7                     -sdk macosx10.7
+
+iOS SDKs:
+    iOS 5.0                           -sdk iphoneos5.0
+
+iOS Simulator SDKs:
+    Simulator - iOS 5.0               -sdk iphonesimulator5.0</pre> <div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></span></div>
+</div>
+<p>&nbsp;</p>
+<p>3.显示工程项目信息</p>
+<p>先cd到工程目录下（有＊.xcodeproj的目录，比如MakeFileTest.xcodeproj），然后输入命令</p>
+<div class="cnblogs_code">
+<pre>$ xcodebuild -list</pre> </div>
+<p>显示内容</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></span></div>
+<pre>Information about project <span style="color:#800000;">"</span><span style="color:#800000;">MakeFileTest</span><span style="color:#800000;">"</span>:
+    Targets:
+        MakeFileTest
+
+    Build Configurations:
+        Debug
+        Release
+
+    <span style="color:#0000ff;">If</span> no build configuration is specified and -scheme is not passed then <span style="color:#800000;">"</span><span style="color:#800000;">Release</span><span style="color:#800000;">"</span> is used.
+
+    Schemes:
+        MakeFileTest</pre> <div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><img src="http://common.cnblogs.com/images/copycode.gif" alt="复制代码" /></span></div>
+</div>
+<p>如果未指定Configurations，默认为release</p>
+<p>&nbsp;</p>
+<p>4.xcodebuild用法：</p>
+<p>1）用ios5.0模拟器（iphonesimulator5.0）建立工程</p>
+<div class="cnblogs_code">
+<pre>$ xcodebuild -sdk iphonesimulator5.0</pre> </div>
+<p>输出一堆编译过程，最后输出** BUILD SUCCEEDED **表示创建成功；</p>
+<p>若输出** BUILD FAILED **表示创建失败</p>
+<p>成功后会在当前工程目录下创建build目录，结构如下：</p>
+<p><img exify_intitialized="true" src="http://pic002.cnblogs.com/images/2012/373740/2012030118243877.png" alt="" /></p>
+<p>MakeFileTest.app就是编译生成的可执行文件，</p>
+<p>而MakeFileTest.build文件夹下是一些中间文件</p>
+<p><img exify_intitialized="true" src="http://pic002.cnblogs.com/images/2012/373740/2012030118294134.png" alt="" /></p>
+<p>2）默认是Release工程，要设置成Debug模式如下：</p>
+<div class="cnblogs_code">
+<pre>$ xcodebuild -sdk iphonesimulator5.0 -configuration Debug</pre> </div>
+<p>3）clean创建的工程</p>
+<div class="cnblogs_code">
+<pre>$ xcodebuild clean -sdk iphonesimulator5.0 -configuration Debug</pre> </div>
+<p>成功输出<span class="sy0">**</span>CLEAN SUCCEEDED<span class="sy0">**</span></p>
+<p><span class="sy0"><br />
+</span></p>
+<p>5.xcodebuild的编译参数</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></body></html>

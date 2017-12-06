@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-09-21T08:03:11Z"/><meta name="updated" content="2016-10-08T09:05:23Z"/><title> ios8新特性：pushkit实战总结（voip开发者必读）    2015-04-01 16:53 6391人阅读 评论(1) 收藏 举报     分类：  ios新技术研究（5）     版权</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin-bottom:21px;font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:normal;widows:1;">&nbsp;<h1 style="margin:0px;padding:0px;display:inline-block;vertical-align:middle;font-size:18px;"><span class="link_title"><a href="http://blog.csdn.net/openglnewbee/article/details/44807191" style="text-decoration:none;color:#000000;">ios8新特性：pushkit实战总结（voip开发者必读）</a></span></h1>
+</div>
+<div class="article_manage clearfix" style="color:#999999;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;font-size:12px;line-height:22px;font-family:Arial;text-align:right;border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#ededed;margin:0px -20px 10px;padding:0px 20px 5px;overflow:hidden;widows:1;"><div class="article_r"><span class="link_postdate" style="margin:0px 16px 0px 0px;">2015-04-01 16:53</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 16px 0px 5px;padding:0px 0px 0px 24px;display:inline-block;background:url(http://static.blog.csdn.net/skin/skin-white/images/skin-type-icon.png) 0px -25px no-repeat;">6391人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 16px 0px 5px;padding:0px 0px 0px 17px;display:inline-block;background:url(http://static.blog.csdn.net/skin/skin-white/images/skin-type-icon.png) 0px -43px no-repeat;"><a href="http://blog.csdn.net/openglnewbee/article/details/44807191#comments" style="text-decoration:none;color:#33a5ba;">评论</a>(1)</span>&nbsp;<span class="link_collect tracking-ad" data-mod="popu_171" style="margin:0px 16px 0px 5px;display:inline-block;padding-left:17px;background-image:url(http://static.blog.csdn.net/skin/skin-white/images/skin-type-icon.png);background-position:0px -62px;background-repeat:no-repeat;"><a title="收藏" target="_blank" style="color:#33a5ba;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 16px 0px 5px;display:inline-block;padding-left:17px;background-image:url(http://static.blog.csdn.net/skin/skin-white/images/skin-type-icon.png);background-position:0px -81px;background-repeat:no-repeat;"><a href="http://blog.csdn.net/openglnewbee/article/details/44807191#report" title="举报" style="text-decoration:none;color:#33a5ba;">举报</a></span></div>
+</div>
+<div class="category clearfix" style="margin:0px -20px;border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#ededed;padding:5px 20px;font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:normal;widows:1;"><div class="category_l" style="display:inline-block;font-size:14px;color:#333333;width:70px;float:left;line-height:28px;"><img src="http://static.blog.csdn.net/images/category_icon.jpg" style="border:none;vertical-align:middle;" />&nbsp;<span style="display:inline-block;vertical-align:middle;">分类：</span></div>
+<div class="category_r" style="display:inline-block;font-size:14px;color:#df3434;float:left;width:853.188px;"><label style="display:inline-block;margin-left:15px;cursor:pointer;line-height:28px;position:relative;">ios新技术研究（5）&nbsp;<img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle%20_down.jpg" style="border:none;display:inline;" /></label></div>
+</div>
+<div class="bog_copyright" style="padding:20px 0px;font-family:'microsoft yahei';font-size:12px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:normal;widows:1;"><p class="copyright_p" style="margin-top:0px;margin-bottom:0px;padding:0px 0px 0px 10px;height:14px;line-height:14px;border-left-style:solid;border-left-width:3px;border-left-color:#e41c1e;color:#666666;font-size:14px;">版权声明：本文为博主原创文章，如需转载请邮件至openglnewbee@163.com。</p>
+</div>
+<div id="article_content" class="article_content" style="margin:35px 0px;font-size:15px;color:#555555;line-height:35px;font-family:'microsoft yahei';font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;widows:1;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">Question：pushkit是什么？</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Answer:ios8苹果新引入了名为pushkit的框架和一种新的push通知类型，被称作voip push.该push方式旨在提供区别于普通apns push的能力，通过这种push方式可以使app执行制定的代码（在弹出通知给用户之前）；而该通知的默认行为和apns通知有所区别，它的默认行为里面是不会弹出通知的。目前来看push kit的用途还局限于voip push(根据笔者的实战经验来看，其他类型的push暂时不能够起作用，sdk也正处于演进中)。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Question: pushkit能帮我们做什么？</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">Answer:pushkit中的voippush,可以帮助我们提升voip应用的体验，优化voip应用的开发实现，降低voip应用的电量消耗，它需要我们重新规划和设计我们的voip应用,从而得到更好的体验(voip push可以说是准实时的，实侧延时1秒左右)；苹果的目的是提供这样一种能力，可以让我们抛弃后台长连接的方案，也就是说应用程序通常不用维持和voip服务器的连接，在呼叫或者收到呼叫时，完成voip服务器的注册；当程序被杀死或者手机重启动时，都可以收到对方的来电，正常开展voip的业务。也就是说，我们当前可以利用它来优化voip的体验，增加接通率；条件成熟时我们就可以完全放弃后台的长连接，走到苹果为我们规划的道路上。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">对于pushkit，除了苹果framework官方文档：https://developer.apple.com/library/prerelease/ios/documentation/NetworkingInternet/Reference/PushKit_Framework/index.html#protocols 以外，能够找到的帮助理解pushkit的莫过于wwdc的视频：712_sd_writing_energy_efficient_code_part_2。该视频也可以从苹果官网下载。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">pushkit的局限：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">在当前,pushkit仅支持ios8；且该功能正处于演进中，稳定性和在不同ios8小版本设备上的表现也可能有差异，在苹果开发者论坛上也有不少人反馈问题；根据经验，在下个大版本（也就是ios9）上可以期待该功能可以稳定下来。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">如果需要在ios8之前的设备上支持pushkit功能，那么需要开发者付出很多额外的努力，这里不展开，有兴趣的同学可以到苹果论坛的相关板块去了解，有一些开发者在这方面走的比较远:</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">在下面的链接中搜索pushkit关键字，可以查找到相关内容：https://devforums.apple.com/community/ios/connected/push&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;&nbsp;&nbsp; 在简单介绍了pushkit和它能做的事并且了解到它的局限以后，还对pushkit感兴趣的童鞋可以往下继续看了（：）为了避免浪费大家的宝贵时间）。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;pushkit的voip功能的实现：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1.跟apns push类似，pushkit的voippush也需要申请证书（apns证书的申请流程参考：https://www.pushwoosh.com/programming-push-notification/ios/ios-configuration-guide/）;voip push的证书申请步骤截图如下：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.blog.csdn.net/20150401150326387?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvb3BlbmdsbmV3YmVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="border:none;max-width:602px;height:auto;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><img src="http://img.blog.csdn.net/20150401152846497?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvb3BlbmdsbmV3YmVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="border:none;max-width:602px;height:auto;" /><img src="http://img.blog.csdn.net/20150401150350364?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvb3BlbmdsbmV3YmVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="border:none;max-width:602px;height:auto;" /><img src="http://img.blog.csdn.net/20150401150435679?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvb3BlbmdsbmV3YmVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="border:none;max-width:602px;height:auto;" /><img src="http://img.blog.csdn.net/20150401152901239?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvb3BlbmdsbmV3YmVl/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" style="border:none;max-width:602px;height:auto;" /></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2.使用该证书导出并加载到push服务器上，服务器侧无需做改动，仅替换证书相关的东西即可（具体流程和此前apns证书的加载完全类同）；服务器和客户端的交互流程也基本类似。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3.客户端实现：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">step1:在工程中添加pushkit；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">step2:在工程设置里面的backgroundmode里面添加voip、backgroundfetch、remotenotifications的支持。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">step3:保险起见，建议开发者使用最新版本的xcode和最新的sdk；也建议重新申请一个mobile provision文件用于打包。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">step4:类似apns通知的客户端实现流程，voip push客户端相关的流程也类似：注册voip push通知，实现pushkit相关的代理。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">贴出主要代码：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;&nbsp; 在应用启动（appdelegate的didfinishlaunchwithoptions）后或根控制器的初始化等方法内调用如下代码：<br />
+&nbsp;&nbsp;&nbsp; PKPushRegistry *pushRegistry = [[PKPushRegistry alloc] initWithQueue:dispatch_get_main_queue()];<br />
+&nbsp;&nbsp;&nbsp; pushRegistry.delegate = self;<br />
+&nbsp;&nbsp;&nbsp; pushRegistry.desiredPushTypes = [NSSet setWithObject:PKPushTypeVoIP];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp; UIUserNotificationSettings *userNotifySetting = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert categories:nil];<br />
+&nbsp;&nbsp;&nbsp; [[UIApplication sharedApplication] registerUserNotificationSettings:userNotifySetting];<br />
+&nbsp;&nbsp;&nbsp; 上面的代码实现了在应用启动时对voip push的注册；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">在appdelegate或框架viewcontroller类中实现voip push的代理：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">@interface EPTabBarController : UITabBarController&lt;PKPushRegistryDelegate&gt;</p>
+- (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(NSString *)type<br />
+{<br />
+&nbsp;&nbsp;&nbsp; if([credentials.token length] == 0)<br />
+&nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NSLog(@"voip token NULL");<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br />
+&nbsp;&nbsp;&nbsp; }<br />
+&nbsp;&nbsp; &nbsp;<br />
+&nbsp;&nbsp;&nbsp; ZeroPush * push = [[ZeroPush alloc] init];<br />
+&nbsp;&nbsp; &nbsp;<br />
+&nbsp;&nbsp; // push.apiKey = @"iosdev_1Z6JR3PKBWrAWbuHLbLQ";<br />
+&nbsp;&nbsp; &nbsp;<br />
+&nbsp;&nbsp;&nbsp; push.apiKey = @"iosprod_HZDimW5ssYsRQgaSaEoE";<br />
+&nbsp;&nbsp; &nbsp;<br />
+&nbsp;&nbsp;&nbsp; // iosprod_HZDimW5ssYsRQgaSaEoE<br />
+&nbsp;&nbsp; &nbsp;<br />
+&nbsp;&nbsp;&nbsp; [push registerDeviceToken:credentials.token channel:@"me"];<br />
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">}</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">我们这里对接的push服务器是zeropush提供的服务；后面我们会大概介绍下该服务；上面的代理方法是设备从苹果服务器获取到了voip token，然后传递给应用程序；我们需要把这个token传递到push服务器（和apns push类似，我们也是要传递apns token到push服务器，但是这两个token的获取方式不同，分别在不同的代理方法中回调给应用，且这两个token的内容也是不同的）。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">push server在获取到用户的voip token之后，在一切正常的情况下，另外一个回调会在push server下发消息到对应token的设备时被触发。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">- (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(NSString *)type<br />
+{<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp; NSLog(@"didReceiveIncomingPushWithPayload");<br />
+&nbsp;&nbsp;&nbsp; // 此时进行voip注册<br />
+<br />
+&nbsp;&nbsp;&nbsp; // write your voip related codes here<br />
+&nbsp;&nbsp; &nbsp;<br />
+&nbsp;&nbsp;&nbsp; UIUserNotificationType theType = [UIApplication sharedApplication].currentUserNotificationSettings.types;<br />
+&nbsp;&nbsp;&nbsp; if (theType == UIUserNotificationTypeNone)<br />
+&nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIUserNotificationSettings *userNotifySetting = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert categories:nil];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [[UIApplication sharedApplication] registerUserNotificationSettings:userNotifySetting];<br />
+&nbsp;&nbsp;&nbsp; }</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"><br />
+&nbsp;&nbsp;&nbsp; UILocalNotification *backgroudMsg = [[UILocalNotification alloc] init];<br />
+&nbsp;&nbsp;&nbsp; backgroudMsg.alertBody= NSInternationalString(@"You receive a new call",nil);<br />
+&nbsp;&nbsp;&nbsp; [[UIApplication sharedApplication] presentLocalNotificationNow:backgroudMsg];<br />
+<br />
+}</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">上面的回调代码里仅仅打印了日志，触发了一个本地通知；这个代理方法是收到voip push通知时触发的；如果一切正常，该通知在手机重启、应用被系统回收、手动kill程序的情况下，依然能够被触发，且可以有一段时间用来执行自己的代码（比如voip注册等）。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">我们这里简单设计一个业务供大家参考，主要是为了让大家直观的认识到pushkit的能力：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">1.应用的voip长连接不保持，在收到呼叫或者发起呼叫时再连接；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">2.当呼叫发送到voip 服务器时，对端若不在线，通过voip 服务器连接到pushserver向对端发push通知；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">3.应用收到voip push通知时，迅速完成注册；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">4.呼叫方通过延时操作等逻辑（复杂一点对voip服务器进行改造，被叫连接上来以后通知到主叫侧），再次发起呼叫，通话即成功建立。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">zero push的介绍:https://www.zeropush.com/</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">zero push的技术支持邮箱：Support@ZeroPush.com</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">笔者曾就一个证书相关的问题尝试给该邮箱发信，很快得到了满意的答复，非常棒！</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">zero push 提供了一个免费试用的服务，这让我们体验voip push非常方便；</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">按照它的提示，注册账号，然后创建应用，上传voip 证书，从网页上获取到它的apikey（这个key在上传token之前要用到，在上面的代理方法中）。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">下面是它对voip push的介绍文章，最后面是demo工程的github链接：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">https://www.zeropush.com/guide/guide-to-pushkit-and-voip</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">需要注意的是，该工程使用<a href="http://lib.csdn.net/base/1" class="replace_word" title="undefined" target="_blank" style="text-decoration:none;color:#df3434;font-weight:bold;">Swift</a>语言编写，如果你的证书和provision文件等都是之前申请的，只用于oc创建的工程，那么该工程在真机运行时很可能会闪退；解决办法是重新生成你的证书和provision文件，并使用到工程中，然后重新打包，该问题即可得到解决了。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;"></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">最后，欢迎大家任何形式的关于本课题的探讨～我留意到国内关于本课题的中文资料或者实践总结非常少，绝大部分都是英文的，希望和大家一起多多积累，共同进步～</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">我的邮箱： openglnewbee@163.com</p>
+</div></body></html>

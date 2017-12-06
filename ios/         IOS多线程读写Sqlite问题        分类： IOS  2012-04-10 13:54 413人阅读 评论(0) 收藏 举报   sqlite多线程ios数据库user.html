@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-07-30T05:09:07Z"/><meta name="updated" content="2014-07-30T05:09:09Z"/><title>         IOS多线程读写Sqlite问题        分类： IOS  2012-04-10 13:54 413人阅读 评论(0) 收藏 举报   sqlite多线程ios数据库user</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title">
+
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/wangyx810328/article/details/7445132">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IOS多线程读写Sqlite问题
+        </a></span>     </h1>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/wangyx810328/article/category/1076568">IOS</a> 
+        </span>     <span class="link_postdate">2012-04-10 13:54</span>     <span class="link_view" title="阅读次数">413人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/wangyx810328/article/details/7445132#comments">评论</a>(0)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/wangyx810328/article/details/7445132#report" title="举报">举报</a></span>     </div>
+<div class="tag2box"><a href="http://www.csdn.net/tag/sqlite" target="_blank">sqlite</a><a href="http://www.csdn.net/tag/%e5%a4%9a%e7%ba%bf%e7%a8%8b" target="_blank">多线程</a><a href="http://www.csdn.net/tag/ios" target="_blank">ios</a><a href="http://www.csdn.net/tag/%e6%95%b0%e6%8d%ae%e5%ba%93" target="_blank">数据库</a><a href="http://www.csdn.net/tag/user" target="_blank">user</a><a href="http://www.csdn.net/tag/dao" target="_blank">dao</a></div>
+    <div id="article_content" class="article_content">
+
+<p>from：http://www.cnblogs.com/likwo/archive/2012/04/09/2438790.html</p>
+<p></p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+现在ios里使用的数据库一般都是Sqlite，但是使用Sqlite有个不太好的地方就是在多线程的时候，会出现问题，sqlite只能打开一个读或者写连结。这样的话多线程就会碰到资源占用的问题。</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+最开始是使用FMDB，FMDB的早期版本不能解决这个问题，后来FMDB更新了，新版本的FMDB能够很好的解决这个多线程使用Sqlite 。</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+FMDB github网址 &nbsp;https://github.com/ccgus/fmdb 最新版的请到github取下载。</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+本文演示了使用FMDB通过多线程来读和写数据库操作。</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+<span style="line-height:1.5;color:red;"><strong>1.建立数据库表，我采用的是Firefox的Sqlite manager 来建立的。</strong></span></p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp; 建表sql如下</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;<span style="line-height:1.5;color:#0000ff;">CREATE</span>&nbsp;<span style="line-height:1.5;color:#0000ff;">TABLE</span>&nbsp;"tbl_user"&nbsp;("_id"&nbsp;<span style="line-height:1.5;color:#0000ff;">INTEGER</span>&nbsp;<span style="line-height:1.5;color:#0000ff;">PRIMARY</span>&nbsp;<span style="line-height:1.5;color:#0000ff;">KEY</span>&nbsp;&nbsp;AUTOINCREMENT&nbsp;&nbsp;<span style="line-height:1.5;color:#808080;">NOT</span>&nbsp;<span style="line-height:1.5;color:#0000ff;">NULL</span>&nbsp;,&nbsp;"name"&nbsp;<span style="line-height:1.5;color:#0000ff;">VARCHAR</span>(<span style="line-height:1.5;color:#800000;"><strong>30</strong></span>),&nbsp;"password"&nbsp;<span style="line-height:1.5;color:#0000ff;">VARCHAR</span>(<span style="line-height:1.5;color:#800000;"><strong>30</strong></span>))</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+<span style="color:red;">&nbsp;2. 建立数据表的映射实体UserEntity</span></p>
+<div class="cnblogs_code" style="background-color:#f5f5f5;font-family:'Courier New';font-size:12px;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-top-color:#cccccc;border-right-color:#cccccc;border-bottom-color:#cccccc;border-left-color:#cccccc;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;word-break:break-all;overflow-x:auto;overflow-y:auto;margin-top:5px;margin-right:0px;margin-bottom:5px;margin-left:0px;">
+<span style="line-height:1.5;color:#0000ff;">#import</span>&nbsp;&lt;Foundation/Foundation.h&gt;<br />
+<br />
+<span style="line-height:1.5;color:#0000ff;">@interface</span>&nbsp;UserEntity&nbsp;:&nbsp;NSObject<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">int</span>&nbsp;_id;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*name;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*password;<br />
+}<br />
+<br />
+@property&nbsp;(nonatomic,&nbsp;assign)<span style="line-height:1.5;color:#0000ff;">int</span>&nbsp;ID;<br />
+@property&nbsp;(nonatomic,&nbsp;retain)&nbsp;NSString&nbsp;*name;<br />
+@property&nbsp;(nonatomic,&nbsp;retain)&nbsp;NSString&nbsp;*password;</div>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+<span style="line-height:1.5;color:#0000ff;">@end</span>&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+<span style="color:red;">3. 建立操作数据库的dao</span></p>
+<div class="cnblogs_code" style="background-color:#f5f5f5;font-family:'Courier New';font-size:12px;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-top-color:#cccccc;border-right-color:#cccccc;border-bottom-color:#cccccc;border-left-color:#cccccc;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;word-break:break-all;overflow-x:auto;overflow-y:auto;margin-top:5px;margin-right:0px;margin-bottom:5px;margin-left:0px;">
+<span style="line-height:1.5;color:#008000;">//</span><span style="line-height:1.5;color:#008000;"><br />
+</span><span style="line-height:1.5;color:#008000;">//</span><span style="line-height:1.5;color:#008000;">&nbsp;&nbsp;DbDao.m<br />
+</span><span style="line-height:1.5;color:#008000;">//</span><span style="line-height:1.5;color:#008000;">&nbsp;&nbsp;SqliteTest<br />
+</span><span style="line-height:1.5;color:#008000;">//</span><span style="line-height:1.5;color:#008000;"><br />
+</span><span style="line-height:1.5;color:#008000;">//</span><span style="line-height:1.5;color:#008000;">&nbsp;&nbsp;Created&nbsp;by&nbsp;foxwang&nbsp;on&nbsp;12-4-9.<br />
+</span><span style="line-height:1.5;color:#008000;">//</span><span style="line-height:1.5;color:#008000;">&nbsp;&nbsp;Copyright&nbsp;(c)&nbsp;2012年&nbsp;__MyCompanyName__.&nbsp;All&nbsp;rights&nbsp;reserved.<br />
+</span><span style="line-height:1.5;color:#008000;">//<br />
+</span><br />
+<span style="line-height:1.5;color:#0000ff;">#import</span>&nbsp;<span style="line-height:1.5;color:#800000;">"</span><span style="line-height:1.5;color:#800000;">DbDao.h</span><span style="line-height:1.5;color:#800000;">"</span><br />
+<span style="line-height:1.5;color:#0000ff;">#import</span>&nbsp;<span style="line-height:1.5;color:#800000;">"</span><span style="line-height:1.5;color:#800000;">DbFileManager.h</span><span style="line-height:1.5;color:#800000;">"</span><br />
+<br />
+<span style="line-height:1.5;color:#0000ff;">#import</span>&nbsp;<span style="line-height:1.5;color:#800000;">"</span><span style="line-height:1.5;color:#800000;">FMDatabase.h</span><span style="line-height:1.5;color:#800000;">"</span><br />
+<span style="line-height:1.5;color:#0000ff;">#import</span>&nbsp;<span style="line-height:1.5;color:#800000;">"</span><span style="line-height:1.5;color:#800000;">FMDatabaseAdditions.h</span><span style="line-height:1.5;color:#800000;">"</span><br />
+<span style="line-height:1.5;color:#0000ff;">#import</span>&nbsp;<span style="line-height:1.5;color:#800000;">"</span><span style="line-height:1.5;color:#800000;">FMDatabasePool.h</span><span style="line-height:1.5;color:#800000;">"</span><br />
+<span style="line-height:1.5;color:#0000ff;">#import</span>&nbsp;<span style="line-height:1.5;color:#800000;">"</span><span style="line-height:1.5;color:#800000;">FMDatabaseQueue.h</span><span style="line-height:1.5;color:#800000;">"</span><br />
+<span style="line-height:1.5;color:#0000ff;">#import</span>&nbsp;<span style="line-height:1.5;color:#800000;">"</span><span style="line-height:1.5;color:#800000;">UserEntity.h</span><span style="line-height:1.5;color:#800000;">"</span><br />
+<br />
+<span style="line-height:1.5;color:#0000ff;">static</span>&nbsp;DbDao&nbsp;*gSharedInstance&nbsp;=&nbsp;nil;<br />
+<br />
+<span style="line-height:1.5;color:#0000ff;">@implementation</span>&nbsp;DbDao<br />
+<span style="line-height:1.5;color:#0000ff;">@synthesize</span>&nbsp;dbFile;<br />
+<span style="line-height:1.5;color:#0000ff;">@synthesize</span>&nbsp;dbQueue;<br />
+<br />
++(DbDao&nbsp;*)sharedInstance<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;@synchronized(self)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">if</span>&nbsp;(gSharedInstance&nbsp;==&nbsp;nil)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gSharedInstance&nbsp;=&nbsp;[[DbDao&nbsp;alloc]&nbsp;init];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">return</span>&nbsp;gSharedInstance;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+}<br />
+<br />
+-&nbsp;(<span style="line-height:1.5;color:#0000ff;">void</span>)dealloc<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[self.dbFile&nbsp;release];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;self.dbQueue&nbsp;=&nbsp;nil;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;dealloc];<br />
+}<br />
+<br />
+-&nbsp;(<span style="line-height:1.5;color:#0000ff;">id</span>)init<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;self&nbsp;=&nbsp;[super&nbsp;init];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">if</span>&nbsp;(self)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.dbFile&nbsp;=&nbsp;[DbFileManager&nbsp;dbFilePath];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.dbQueue&nbsp;=&nbsp;[FMDatabaseQueue&nbsp;databaseQueueWithPath:self.dbFile];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">return</span>&nbsp;&nbsp;self;<br />
+}<br />
+<br />
+-&nbsp;(UserEntity&nbsp;*)rsToUser:(FMResultSet*)rs<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;UserEntity&nbsp;*user&nbsp;=&nbsp;[[[UserEntity&nbsp;alloc]&nbsp;init]&nbsp;autorelease];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;user.ID&nbsp;=&nbsp;[rs&nbsp;intForColumn:<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">_id</span><span style="line-height:1.5;color:#800000;">"</span>];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;user.name&nbsp;=&nbsp;[rs&nbsp;stringForColumn:<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">name</span><span style="line-height:1.5;color:#800000;">"</span>];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;user.password&nbsp;=&nbsp;[rs&nbsp;&nbsp;stringForColumn:<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">password</span><span style="line-height:1.5;color:#800000;">"</span>];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">return</span>&nbsp;user;<br />
+}<br />
+<br />
+-&nbsp;(<span style="line-height:1.5;color:#0000ff;">void</span>)addUser:(UserEntity&nbsp;*)user<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[self.dbQueue&nbsp;inTransaction:^(FMDatabase&nbsp;*db,&nbsp;BOOL&nbsp;*rollback)&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[db&nbsp;open];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*sql&nbsp;=&nbsp;<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">insert&nbsp;into&nbsp;tbl_user(name,&nbsp;password)&nbsp;values&nbsp;(?,&nbsp;?)</span><span style="line-height:1.5;color:#800000;">"</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[db&nbsp;executeUpdate:sql,user.name,&nbsp;user.password];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[db&nbsp;close];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}];&nbsp;&nbsp;<br />
+}<br />
+<br />
+-&nbsp;(NSArray&nbsp;*)getUsers;<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;__block&nbsp;NSMutableArray&nbsp;*users&nbsp;=&nbsp;[[[NSMutableArray&nbsp;alloc]&nbsp;init]&nbsp;autorelease];&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[self.dbQueue&nbsp;inDatabase:^(FMDatabase&nbsp;*db)&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[db&nbsp;open];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*sql&nbsp;=&nbsp;<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">select&nbsp;*&nbsp;from&nbsp;tbl_user&nbsp;</span><span style="line-height:1.5;color:#800000;">"</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FMResultSet&nbsp;*rs&nbsp;=&nbsp;[db&nbsp;executeQuery:sql];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">while</span>&nbsp;([rs&nbsp;next])<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[users&nbsp;addObject:[self&nbsp;rsToUser&nbsp;:rs]];&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[db&nbsp;close];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">return</span>&nbsp;users;<br />
+}</div>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+<span style="line-height:1.5;color:#0000ff;">@end</span>&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+<span style="color:red;">4. 编写测试方法</span></p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+在didFinishLaunchingWithOptions&nbsp;方法里启动3个线程 ：2个线程写，1个线程读</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;-&nbsp;(BOOL)application:(UIApplication&nbsp;*)application&nbsp;didFinishLaunchingWithOptions:(NSDictionary&nbsp;*)launchOptions</p>
+<div class="cnblogs_code" style="background-color:#f5f5f5;font-family:'Courier New';font-size:12px;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-top-color:#cccccc;border-right-color:#cccccc;border-bottom-color:#cccccc;border-left-color:#cccccc;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;word-break:break-all;overflow-x:auto;overflow-y:auto;margin-top:5px;margin-right:0px;margin-bottom:5px;margin-left:0px;">
+<div>{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;self.window&nbsp;=&nbsp;[[[UIWindow&nbsp;alloc]&nbsp;initWithFrame:[[UIScreen&nbsp;mainScreen]&nbsp;bounds]]&nbsp;autorelease];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#008000;">//</span><span style="line-height:1.5;color:#008000;">&nbsp;Override&nbsp;point&nbsp;for&nbsp;customization&nbsp;after&nbsp;application&nbsp;launch.</span><span style="line-height:1.5;color:#008000;"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;self.viewController&nbsp;=&nbsp;[[[ViewController&nbsp;alloc]&nbsp;initWithNibName:<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">ViewController</span><span style="line-height:1.5;color:#800000;">"</span>&nbsp;bundle:nil]&nbsp;autorelease];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;self.window.rootViewController&nbsp;=&nbsp;self.viewController;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[self.window&nbsp;makeKeyAndVisible];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;detachNewThreadSelector:@selector(writeDbOne)&nbsp;toTarget:self&nbsp;withObject:nil];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;detachNewThreadSelector:@selector(readDb)&nbsp;toTarget:self&nbsp;withObject:nil];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[NSThread&nbsp;detachNewThreadSelector:@selector(writeDbTwo)&nbsp;toTarget:self&nbsp;withObject:nil];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">return</span>&nbsp;YES;<br />
+}</div>
+</div>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;</p>
+<div class="cnblogs_code" style="background-color:#f5f5f5;font-family:'Courier New';font-size:12px;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-top-color:#cccccc;border-right-color:#cccccc;border-bottom-color:#cccccc;border-left-color:#cccccc;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;word-break:break-all;overflow-x:auto;overflow-y:auto;margin-top:5px;margin-right:0px;margin-bottom:5px;margin-left:0px;">
+-&nbsp;(<span style="line-height:1.5;color:#0000ff;">void</span>)writeDbOne<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DbDao&nbsp;*dao&nbsp;=&nbsp;[DbDao&nbsp;&nbsp;sharedInstance];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">for</span>&nbsp;(<span style="line-height:1.5;color:#0000ff;">int</span>&nbsp;i&nbsp;=&nbsp;<span style="line-height:1.5;color:#800080;">0</span>;&nbsp;i&nbsp;&lt;&nbsp;<span style="line-height:1.5;color:#800080;">500</span>;&nbsp;i++)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@autoreleasepool&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UserEntity&nbsp;*user&nbsp;=&nbsp;[[[UserEntity&nbsp;alloc]&nbsp;init]&nbsp;autorelease];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user.name&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">name&nbsp;%d</span><span style="line-height:1.5;color:#800000;">"</span>,&nbsp;i];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user.password&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">password&nbsp;%d</span><span style="line-height:1.5;color:#800000;">"</span>,&nbsp;i];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[dao&nbsp;addUser:user];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">writeDbOne&nbsp;%d&nbsp;</span><span style="line-height:1.5;color:#800000;">"</span>,&nbsp;i);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+}<br />
+<br />
+-&nbsp;(<span style="line-height:1.5;color:#0000ff;">void</span>)writeDbTwo<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;DbDao&nbsp;*dao&nbsp;=&nbsp;[DbDao&nbsp;&nbsp;sharedInstance];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="line-height:1.5;color:#0000ff;">for</span>&nbsp;(<span style="line-height:1.5;color:#0000ff;">int</span>&nbsp;i&nbsp;=&nbsp;<span style="line-height:1.5;color:#800080;">600</span>;&nbsp;i&nbsp;&lt;&nbsp;<span style="line-height:1.5;color:#800080;">1200</span>;&nbsp;i++)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@autoreleasepool&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UserEntity&nbsp;*user&nbsp;=&nbsp;[[[UserEntity&nbsp;alloc]&nbsp;init]&nbsp;autorelease];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user.name&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">name&nbsp;%d</span><span style="line-height:1.5;color:#800000;">"</span>,&nbsp;i];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user.password&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">password&nbsp;%d</span><span style="line-height:1.5;color:#800000;">"</span>,&nbsp;i];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[dao&nbsp;addUser:user];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">writeDbTwo&nbsp;%d&nbsp;</span><span style="line-height:1.5;color:#800000;">"</span>,&nbsp;i);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+}<br />
+<br />
+-&nbsp;(<span style="line-height:1.5;color:#0000ff;">void</span>)readDb<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DbDao&nbsp;*dao&nbsp;=&nbsp;[DbDao&nbsp;&nbsp;sharedInstance];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSArray&nbsp;*users&nbsp;=&nbsp;&nbsp;&nbsp;[dao&nbsp;getUsers];<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(<span style="line-height:1.5;color:#800000;">@"</span><span style="line-height:1.5;color:#800000;">%@</span><span style="line-height:1.5;color:#800000;">"</span>,&nbsp;users);</div>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+}&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+<span style="color:red;">最后查看数据库信息，数据成功插入</span></p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;<img exify_intitialized="true" src="http://images.cnblogs.com/cnblogs_com/likwo/sqlite_pic.png" alt="" style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-style:initial;border-color:initial;" height="565" width="1135" /></p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+&nbsp;</p>
+<p style="font-size:13px;line-height:1.4;margin-right:auto;margin-left:auto;">
+结论 ：使用新的FMDB ，很好的解决了多线程问题。&nbsp;</p>
+</div></body></html>

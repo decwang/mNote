@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-06-13T08:56:14Z"/><meta name="updated" content="2014-06-13T08:56:44Z"/><title>xcode工程依赖关系设置</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p>我使用的Xcode版本：3.2.6。</p>
+<p>通过Xcode设置工程依赖之后，Xcode会先编译<strong>被依赖</strong>工程，最后编译<strong>有依赖</strong>工程。达到控制编译顺序的目的。</p>
+<p>但是设置依赖这种办法，只适用于所有的工程拥有相同的配置（Debug与Release）这种情况下。如果某个被依赖工程有个特殊配置（比如叫Debug-iphonesimulator），那么Xcode在编译时，就无法找到该配置。</p>
+<p>遇到这种情况，可以使用Xcode的Run Script来解决。</p>
+<p><img alt="custom build" src="http://hi.csdn.net/attachment/201111/10/0_13209117353Yt3.gif" /></p>
+<p>看上图。HelloWorld依赖一个DummyLib的库工程。设置对该库的依赖可按下面的步骤：</p>
+<p>1. 把DummyLib工程拉到HelloWorld的工程组列表里。这样的作用只有一个：引用到了什么工程，一目了然。记住，Xcode不会因为这个引用而先编译DummyLib。这只是给人看的。</p>
+<p>2. 把DummyLib的最终产品：libDummyLib.a拉到Link Binary With Libraries组里。这样，编译HelloWorld的最后阶段，会把库链接到HelloWorld上。（设置库依赖）</p>
+<p>3. 新建一个Run Script脚本，并确保其在Compile Sources条目之上。这样，该脚本就先于编译HelloWorld而运行。这个脚本的作用，就是手动编译DummyLib。</p>
+<p>脚本的内容（Demo）只有两行：</p>
+<div class="dp-highlighter bg_plain"><div class="bar"><div class="tools"><b>[plain]</b> <a href="http://blog.csdn.net/ba_jie/article/details/6956533#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/ba_jie/article/details/6956533#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:801px;top:1206px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_1" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_1" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol start="1"><li class="alt">cd&nbsp;${PROJECT_DIR}/../DummyLib&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;</li>
+<li class="alt">xcodebuild&nbsp;-project&nbsp;DummyLib.xcodeproj&nbsp;-sdk&nbsp;${PLATFORM_NAME}&nbsp;-configuration&nbsp;${CONFIGURATION}&nbsp;-target&nbsp;DummyLib&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+<p>作用就是进入DummyLib目录，然后编译出一个指定配置的目标库。</p>
+<p>DummyLib一旦编译成功，Xcode会给它打上Touch标记，以后不会重复编译。这不正是我们想要的吗！</p></body></html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-09-30T11:43:36Z"/><meta name="updated" content="2016-10-08T09:09:04Z"/><title>排序可以算是最基本的，最常用的算法，也是笔试面试中最常被考察到的算法。最基本的冒泡排序，选择排序，插入排序要可以很快的用代码实现，这些主要考察你的实际编码能力。堆排序，归并排序，快排序，这些算法需要</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>排序可以算是最基本的，最常用的算法，也是笔试面试中最常被考察到的算法。最基本的冒泡排序，选择排序，插入排序要可以很快的用代码实现，这些主要考察你的实际编码能力。堆排序，归并排序，快排序，这些算法需要熟悉主要的思想，和需要注意的细节地方。需要熟悉常用排序算法的时间和空间复杂度。</div>
+<div><br />
+</div>
+<div>各种排序算法的使用范围总结：</div>
+<div>（1）当数据规模较小的时候，可以用简单的排序算法如直接插入排序或直接选择排序。</div>
+<div>（2）当文件的初态已经基本有序时，可以用直接插入排序或冒泡排序。</div>
+<div>（3）当数据规模比较大时，应用速度快的排序算法。可以考虑用快速排序。</div>
+<div>当记录随机分布的时候，快排的平均时间最短，但可能出现最坏的情况，</div>
+<div>这时候的时间复杂度是O(n^2)，且递归深度为n,所需的栈空间问O(n)。</div>
+<div>（4）堆排序不会出现快排那样的最坏情况，且堆排序所需的辅助空间比快排要少。</div>
+<div>但这两种算法都不是稳定的，若要求排序时稳定的，可以考虑用归并排序。（</div>
+<div>5）归并排序可以用于内排序，也可以用于外排序。在外排序时，通常采用多路归并，</div>
+<div>并且通过解决长顺串的合并，产生长的初始串，提高主机与外设并行能力等措施，以减少访问外存额次数，提高外排序的效率。</div></body></html>

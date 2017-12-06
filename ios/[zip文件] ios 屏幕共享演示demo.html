@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-04-01T05:12:04Z"/><meta name="updated" content="2014-04-01T05:13:03Z"/><title>[zip文件] ios 屏幕共享演示demo</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p>是研究ios屏幕共享时编制的demo，重点参考了如下两个开源项目：</p>
+<p>1  http://www.gdcl.co.uk/2013/02/20/iOS-Video-Encoding.html （ios 上h.264硬编码，RTSP服务端）</p>
+<p>2  https://github.com/coolstar/RecordMyScreen (私有API截屏，如果要发布到appstore，请修改)</p>
+<p></p>
+<p>存在问题：</p>
+<p>1  屏幕截屏计算截图 时间序列时太耗cpu，需要改进（采用定时器）</p>
+<p>2  视频编码的一些参数在像iphon4及低版本ios上可能需要调整。</p>
+<p></p>
+<p>测试时软硬件情况：</p>
+<p>1  编译器：xcode：4.6,5.0</p>
+<p>2  设备：iphone4（ios 6.1.3），iphone5（ios 7）,ipad2 (ios6.1)</p>
+<p>2  播放器：vlc 播放器</p>
+<p></p>
+<p>希望对初学者及做像会议系统，视频聊天的童鞋有帮助。另外，代码中也包含采集摄像头图像，变为流媒体的功能，详细参见代码。</p></body></html>

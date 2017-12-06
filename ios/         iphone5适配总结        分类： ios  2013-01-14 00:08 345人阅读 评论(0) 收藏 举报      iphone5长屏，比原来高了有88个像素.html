@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-05-04T05:43:28Z"/><meta name="updated" content="2014-05-04T05:43:30Z"/><title>         iphone5适配总结        分类： ios  2013-01-14 00:08 345人阅读 评论(0) 收藏 举报      iphone5长屏，比原来高了有88个像素</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title">
+
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/w122079514/article/details/8499298">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;iphone5适配总结
+        </a></span>     </h1>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/w122079514/article/category/925499">ios</a> 
+        </span>     <span class="link_postdate">2013-01-14 00:08</span>     <span class="link_view" title="阅读次数">345人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/w122079514/article/details/8499298#comments">评论</a>(0)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/w122079514/article/details/8499298#report" title="举报">举报</a></span>     </div>
+    <div id="article_content" class="article_content">
+
+<div id="xunlei_com_thunder_helper_plugin_d462f475-c18e-46be-bd10-327458d045bd"></div>
+<p>iphone5长屏，比原来高了有88个像素，适配前搜索了下其他人的适配经验，好多都是定义iphone5的宏定义判断，看过一篇文章说，不推荐
+如此，适配的是尺寸，不是具体的设备，比较赞同这种看法，想想满项目添加许多判断，看上去是挺不爽快的。因为在Project中，有一个项目共有的方法
+类，用于添加一些，与具体类无关的方法，或者公用的方法，如调用短信，或者电话接口等，在里面实现了三个函数方法 ScreenBound()， 
+ViewFrame(), ContentBounds(),分别表示全屏Window的尺寸，
+ 显示视图的尺寸， ContentBounds是代表 view视图中去掉了自定义导航栏，显示具体内容的区域，是它在view中的相对位置。</p>
+<p>&nbsp; 将.xib文件中的View的<img src="http://blog.csdn.net/w122079514/article/details/8499298" alt="" />,
+选择None. 在各个ViewController中重新设定 self.view.frame = ViewFrame(); self.view 
+中的每个子视图，设置各自的 view.autoSizeMask，可以用.xib文件设置，或者用代码指定， UITableView需要设置成 
+四周边界固定，然后它会随着视图尺寸改变而延展。需要将以前代码中的按照320x480尺寸写死的位置，都要根据屏幕高度调整。</p>
+</div></body></html>

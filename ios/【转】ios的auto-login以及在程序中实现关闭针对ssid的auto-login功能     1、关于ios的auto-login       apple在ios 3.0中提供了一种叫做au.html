@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-12-30T08:40:52Z"/><meta name="updated" content="2013-12-30T08:47:27Z"/><title>【转】ios的auto-login以及在程序中实现关闭针对ssid的auto-login功能     1、关于ios的auto-login       apple在ios 3.0中提供了一种叫做au</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="content-head clearfix"><h2 class="title content-title">http://en.wikipedia.org/wiki/Captive_portal</h2>
+<div>wifi热点的认证页面实现原理</div>
+<h2 class="title content-title"><br />
+</h2>
+<h2 class="title content-title">【转】ios的auto-login以及在程序中实现关闭针对ssid的auto-login功能</h2>
+  </div>
+  <div id="content" class="content mod-cs-content text-content clearfix"> <p>1、关于ios的auto-login</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apple在ios&nbsp;3.0中提供了一种叫做auto-login的功能，并且声称“不用在每次都记住所有Wi-Fi的密码，在一个Wi-Fi热点登录成功后，下一次iphone会自动帮你登陆”。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;这
+项功能的工作流程如下：首先在iphone中打开wifi网络，并且关联到一个无线网络的ssid中，如果这是用户第一次关联那个ssid并且访问网页，
+会弹出一个一次性的对话框请求用户输入无线网络认证界面的用户和密码。在登陆成功后apple会自动记住用户名和密码，在下一次用户关联同一个ssid的
+时候自动帮助用户认证。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;从这项功能的描述看，确实可以大大地提升用户体验。不过这项功能在目前的ios版本中还很不完善，反而给用户带来了很多的不便。</p>
+<p>&nbsp;&nbsp;&nbsp;在弹出的一次性对话框中，有时会出现一片白色，而没有填写用户名和密码的区域。如果用户点击取消，会自动取消对当前ssid网络的关联，并且在后来用户试图关联同一个ssid的时候提示“无法关联ssid”。</p>
+<p>http://www.mactalk.com.au/31/66256-automatic-wi-fi-login-iphone-os-3-0-a.html</p>
+<p>http://www.iphonedevsdk.com/forum/iphone-sdk-development/25401-how-disable-os3-0s-wifi-auto-login-feature.html</p>
+<p>2、在手机上关闭auto-login的一些办法</p>
+<ol><li><p><strong>Define&nbsp;a&nbsp;DNS&nbsp;entry&nbsp;for&nbsp;www.apple.com&nbsp;and&nbsp;set&nbsp;it&nbsp;to&nbsp;0.0.0.0.</strong>For&nbsp;the&nbsp;open&nbsp;SSID,&nbsp;configure&nbsp;the&nbsp;DNS&nbsp;&nbsp;&nbsp;&nbsp;server&nbsp;to&nbsp;return&nbsp;0.0.0.0&nbsp;for&nbsp;queries&nbsp;for&nbsp;www.apple.com.&nbsp;&nbsp;When&nbsp;the&nbsp;DNS&nbsp;for&nbsp;www.apple.com&nbsp;resolves&nbsp;to&nbsp;0.0.0.0,&nbsp;the&nbsp;&nbsp;&nbsp;&nbsp;iPhone&nbsp;appears&nbsp;to&nbsp;stop&nbsp;processing&nbsp;the&nbsp;auto-login&nbsp;logic.&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>Benefits:&nbsp;&nbsp;Simple,&nbsp;network-side&nbsp;change.</p>
+<p>Drawbacks:&nbsp;&nbsp;Prevents&nbsp;users&nbsp;from&nbsp;accessing&nbsp;www.apple.com&nbsp;in&nbsp;the&nbsp;browser.&nbsp;&nbsp;The&nbsp;impact&nbsp;of&nbsp;this&nbsp;can&nbsp;be&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reduced&nbsp;by&nbsp;making&nbsp;sure&nbsp;the&nbsp;DNS&nbsp;entry&nbsp;only&nbsp;applies&nbsp;to&nbsp;the&nbsp;open&nbsp;SSID.</p>
+<p>This&nbsp;is&nbsp;best&nbsp;used&nbsp;when&nbsp;the&nbsp;open&nbsp;SSID&nbsp;has&nbsp;restricted&nbsp;use&nbsp;and&nbsp;would&nbsp;not&nbsp;normally&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;provide&nbsp;access&nbsp;to&nbsp;www.apple.com.</p>
+<p>Credit:&nbsp;&nbsp;This&nbsp;work-around&nbsp;is&nbsp;derived&nbsp;from&nbsp;an&nbsp;iPhone&nbsp;hack&nbsp;of&nbsp;the&nbsp;/etc/hosts&nbsp;file&nbsp;posted&nbsp;on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.macosxhints.com/article.php?story=20090620193818332" target="_blank">MacOSX&nbsp;Hints</a>,&nbsp;applying&nbsp;the&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;concept&nbsp;to&nbsp;the&nbsp;network&nbsp;rather&nbsp;than&nbsp;a&nbsp;single&nbsp;device.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</li>
+</ol>
+<p>&nbsp;</p>
+<ul><li><p><strong>Define&nbsp;a&nbsp;DNS&nbsp;entry&nbsp;for&nbsp;www.apple.com&nbsp;and&nbsp;set&nbsp;it&nbsp;to&nbsp;a&nbsp;local&nbsp;IP&nbsp;address.</strong>For&nbsp;the&nbsp;open&nbsp;SSID,&nbsp;&nbsp;&nbsp;&nbsp;configure&nbsp;the&nbsp;DNS&nbsp;server&nbsp;to&nbsp;return&nbsp;the&nbsp;IP&nbsp;address&nbsp;of&nbsp;a&nbsp;local&nbsp;web&nbsp;server.&nbsp;&nbsp;On&nbsp;this&nbsp;web&nbsp;server,&nbsp;add&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;file&nbsp;which&nbsp;iPhone&nbsp;tries&nbsp;to&nbsp;find.&nbsp;&nbsp;Instructions&nbsp;for&nbsp;this&nbsp;work-around&nbsp;are&nbsp;available&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://listserv.educause.edu/cgi-bin/wa.exe?A2=ind0907&amp;L=WIRELESS-LAN&amp;T=0&amp;F=&amp;S=&amp;P=5155" target="_blank">here</a>.&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>Benefits:&nbsp;&nbsp;A&nbsp;catch-all&nbsp;page&nbsp;can&nbsp;also&nbsp;be&nbsp;configured&nbsp;on&nbsp;the&nbsp;web&nbsp;server&nbsp;to&nbsp;explain&nbsp;to&nbsp;the&nbsp;user&nbsp;that&nbsp;apple.com&nbsp;URLs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;are&nbsp;not&nbsp;available&nbsp;from&nbsp;the&nbsp;open&nbsp;SSID.</p>
+<p>Drawbacks:&nbsp;&nbsp;Requires&nbsp;a&nbsp;few&nbsp;additional&nbsp;steps&nbsp;to&nbsp;configure&nbsp;properly.&nbsp;</p>
+<p>Limitations:&nbsp;&nbsp;If&nbsp;the&nbsp;captive&nbsp;portal&nbsp;mechanism&nbsp;utilizes&nbsp;a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;302&nbsp;HTTP&nbsp;response&nbsp;code&nbsp;(temporarily&nbsp;moved)&nbsp;like&nbsp;the&nbsp;Cisco&nbsp;WLAN&nbsp;controller,&nbsp;iPhone&nbsp;appears&nbsp;to&nbsp;immediately&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;launch&nbsp;the&nbsp;auto-login&nbsp;screens.&nbsp;&nbsp;This&nbsp;behavior&nbsp;prevents&nbsp;this&nbsp;work-around&nbsp;from&nbsp;working&nbsp;in&nbsp;these&nbsp;situations.</p>
+<p>Credit:&nbsp;&nbsp;This&nbsp;work-around&nbsp;was&nbsp;provided&nbsp;by&nbsp;<a href="http://listserv.educause.edu/cgi-bin/wa.exe?A2=ind0907&amp;L=WIRELESS-LAN&amp;T=0&amp;F=&amp;S=&amp;P=5155" target="_blank">James&nbsp;Hooper&nbsp;on&nbsp;the&nbsp;Educause&nbsp;WLAN&nbsp;listserv</a>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</li>
+</ul>
+<p>&nbsp;</p>
+<ul><li><p><strong>Define&nbsp;a&nbsp;DNS&nbsp;entry&nbsp;for&nbsp;www.apple.com&nbsp;and&nbsp;set&nbsp;it&nbsp;to&nbsp;one&nbsp;of&nbsp;Apple's&nbsp;valid&nbsp;IPs.</strong>Ping&nbsp;www.apple.com&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;capture&nbsp;a&nbsp;valid&nbsp;IP&nbsp;address.&nbsp;&nbsp;Then,&nbsp;for&nbsp;the&nbsp;open&nbsp;SSID,&nbsp;configure&nbsp;the&nbsp;DNS&nbsp;server&nbsp;to&nbsp;return&nbsp;this&nbsp;valid&nbsp;IP&nbsp;address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;www.apple.com.&nbsp;&nbsp;On&nbsp;the&nbsp;WLAN&nbsp;controller,&nbsp;add&nbsp;a&nbsp;pre-authentication&nbsp;ACL&nbsp;to&nbsp;allow&nbsp;TCP&nbsp;traffic&nbsp;to&nbsp;and&nbsp;from&nbsp;this&nbsp;&nbsp;&nbsp;&nbsp;single&nbsp;IP&nbsp;address.&nbsp;&nbsp;Once&nbsp;configured,&nbsp;the&nbsp;iPhone&nbsp;will&nbsp;believe&nbsp;it&nbsp;has&nbsp;access&nbsp;to&nbsp;the&nbsp;Internet&nbsp;because&nbsp;it&nbsp;is&nbsp;able&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;access&nbsp;the&nbsp;appropriate&nbsp;information&nbsp;on&nbsp;apple.com,&nbsp;thus&nbsp;preventing&nbsp;it&nbsp;from&nbsp;opening&nbsp;the&nbsp;auto-login&nbsp;screen.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>Benefits:&nbsp;&nbsp;Allows&nbsp;users&nbsp;to&nbsp;continue&nbsp;to&nbsp;use&nbsp;www.apple.com&nbsp;on&nbsp;the&nbsp;open&nbsp;SSID.</p>
+<p>Drawbacks:&nbsp;&nbsp;More&nbsp;complex&nbsp;to&nbsp;configure.&nbsp;&nbsp;Susceptible&nbsp;to&nbsp;IP&nbsp;changes&nbsp;within&nbsp;the&nbsp;Apple&nbsp;domain.</p>
+</li>
+</ul>
+<p>&nbsp;</p>
+<ul><li><p><strong>Install&nbsp;Boingo</strong>Based&nbsp;on&nbsp;numerous&nbsp;reports,&nbsp;installing&nbsp;(and&nbsp;not&nbsp;using)&nbsp;the&nbsp;Boingo&nbsp;iPhone&nbsp;application&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inadvertantly&nbsp;disables&nbsp;the&nbsp;auto-login&nbsp;feature.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>Benefits:&nbsp;&nbsp;Easy&nbsp;for&nbsp;resolving&nbsp;the&nbsp;issue&nbsp;on&nbsp;a&nbsp;single-device&nbsp;basis.</p>
+<p>Drawbacks:&nbsp;&nbsp;Must&nbsp;be&nbsp;installed&nbsp;on&nbsp;every&nbsp;iPhone.&nbsp;&nbsp;Installation&nbsp;affects&nbsp;all&nbsp;open&nbsp;SSIDs,&nbsp;not&nbsp;just&nbsp;yours.</p>
+<p>Credit:&nbsp;&nbsp;We're&nbsp;not&nbsp;sure&nbsp;where&nbsp;this&nbsp;one&nbsp;originated.&nbsp;&nbsp;</p>
+</li>
+</ul>
+<ol><li><p>&nbsp;</p>
+</li>
+</ol>
+<p>http://www.cloudpath.net/workaround_iphone.php</p>
+<p>3、在程序中关闭auto-login</p>
+<p>在ios&nbsp;4.0及以后的版本中提供了一个CaptiveNetwork类</p>
+<p>http://developer.apple.com/library/ios/#documentation/SystemConfiguration/Reference/CaptiveNetworkRef/Reference/reference.html</p>
+<p>，使用这个类中的<a href="http://developer.apple.com/library/ios/documentation/SystemConfiguration/Reference/CaptiveNetworkRef/Reference/reference.html#//apple_ref/c/func/CNSetSupportedSSIDs" target="_blank">CNSetSupportedSSIDs</a>函数可以将指定ssid名称保存到系统特定的存储空间中，系统对那个ssid不执行auto-login功能。</p>
+<div><div>CaptiveNetwork&nbsp;:&nbsp;CNSetSupportedSSIDs&nbsp;usage</div>
+<div>CFStringRef&nbsp;ssids[2]&nbsp;=&nbsp;{&nbsp;CFSTR("Wifi&nbsp;1"),&nbsp;CFSTR("Wifi&nbsp;2")&nbsp;};</div>
+<div>CFArrayRef&nbsp;arr_ssids&nbsp;=&nbsp;CFArrayCreate(NULL,&nbsp;(const&nbsp;void&nbsp;**)ssids,&nbsp;2,&nbsp;&amp;kCFTypeArrayCallBacks);</div>
+<div>&nbsp;</div>
+<div>if(&nbsp;CNSetSupportedSSIDs((CFArrayRef)array))</div>
+<div>{</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"Successfully&nbsp;registered&nbsp;supported&nbsp;network&nbsp;SSIDs");</div>
+<div>}</div>
+<div>else</div>
+<div>{</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"Error:&nbsp;Failed&nbsp;to&nbsp;register&nbsp;supported&nbsp;network&nbsp;SSIDs");</div>
+<div>}</div>
+<div>CFRelease(arr_ssids);</div>
+</div>
+<p>&nbsp;</p>
+<p>具体实现可以参考</p>
+<p>http://stackoverflow.com/questions/9084251/cnsetsupportedssids-returning-false-not-working-correctly</p>
+<p>http://pastebin.com/RkjQpcYm</p>
+<p>http://pastebin.com/jgHYAceM</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div></body></html>

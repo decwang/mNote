@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-01-22T09:55:45Z"/><meta name="updated" content="2014-01-22T13:00:50Z"/><title>pjsip转换成xcode工程</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p>pjlib</p>
+<p><span class="Apple-tab-span" style="white-space:pre;">	</span>activesock&nbsp;</p>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>array&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>config&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>ctype&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>errno&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>except&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>fifobuf&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>guid&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>hash&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>ip_helper_generic&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>list&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>lock&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>log&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>os_time_common&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>os_info&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>pool&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>pool_buf&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>pool_caching&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>pool_dbg&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>rand&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>rbtree&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>sock_common&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>sock_qos_common&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>sock_qos_bsd&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>ssl_sock_common&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>ssl_sock_ossl&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>ssl_sock_dump&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>string&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>timer&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>types</div>
+<div><div>header</div>
+<div><div>$(SRCROOT)/../pjproject-2.1.0/pjlib/include</div>
+</div>
+</div>
+<div><br />
+</div>
+<div>-DPJ_HAS_SOCKLEN_T=1</div>
+<div>-DPJ_DARWINOS</div>
+<div>-DPJ_AUTOCONF=1</div>
+<div>-DPJ_IPHONE_OS_HAS_MULTITASKING_SUPPORT=1</div>
+<div><br />
+</div>
+<div>pjlib-util</div>
+<div><div><span class="Apple-tab-span" style="white-space:pre;">		</span>base64.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>crc32.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>errno.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>dns.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>dns_dump.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>dns_server.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>getopt.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>hmac_md5.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>hmac_sha1.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>http_client.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>md5.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>pcap.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>resolver.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>scanner.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>sha1.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>srv_resolver.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>string.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>stun_simple.o <span class="Apple-tab-span" style="white-space:pre;">		</span></div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>stun_simple_client.o&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>xml.o</div>
+<div>header</div>
+<div><div>$(SRCROOT)/../pjproject-2.1.0/pjlib-util/include</div>
+<div>$(SRCROOT)/../pjproject-2.1.0/pjlib/include</div>
+</div>
+<div><br />
+</div>
+<div>-DPJ_DARWINOS</div>
+<div>-DPJ_AUTOCONF=1</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+</div>
+<div><br />
+</div>
+<div><br />
+</div></body></html>

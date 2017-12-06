@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-02-27T06:12:41Z"/><meta name="updated" content="2016-10-08T09:09:10Z"/><title>Webrtc的ios框架编译，Webrtcios框架编译   1.WebRTC的iOS框架的选择  目前两个比较活跃的开源WebRTC实现.  Google WebRTC:    项目地址是: ht</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h2 style="margin:0px;padding:0px;font-family:simsun;line-height:25px;">Webrtc的ios框架编译，Webrtcios框架编译</h2>
+<br style="font-family:simsun;line-height:25px;" />
+<h2 id="1.webrtc的ios框架的选择" style="margin:0px;padding:0px;font-family:simsun;line-height:25px;">1.WebRTC的iOS框架的选择</h2>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">目前两个比较活跃的开源WebRTC实现.</p>
+<ul style="margin:0px;padding:0px;font-family:simsun;line-height:25px;"><li style="margin:0px;padding:0px;list-style:none;">Google WebRTC:</li>
+</ul>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">项目地址是:&nbsp;https://code.google.com/p/webrtc/</p>
+<ul style="margin:0px;padding:0px;font-family:simsun;line-height:25px;"><li style="margin:0px;padding:0px;list-style:none;">Ericsson Research OpenWebRTC:</li>
+</ul>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">项目地址是:&nbsp;https://github.com/EricssonResearch/openwebrtc</p>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">我们戴维营教育为了给学生实战项目中运用WebRTC视频通话技术，选择Google的WebRTC项目来构建iOS App的开发框架,因为目前Chrome浏览器和FireFox浏览器的WebRTC支持都是采用该项目.那么问题就来了,既然浏览器里都支持了WebRTC,那我们再去移植编译它到iOS平台干嘛呢,直接用webview 不行? 对,还不行! Apple在这方面已经严重拖后腿了.不过他有他牛逼的Facetime技术,可以随时随地的视频通话,但是他不开源,所以我们只能垂涎了. 故还是老老实实的移植WebRTC吧.非常幸运的是,Google 的Chromium项目开发者已经实现了其WebRTC的Objective-C的一套API了.</p>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">不过,丑话还是说在前头好,要从零开始集成WebRTC到我们的App中中, 简直就是噩梦;因为WebRTC项目和Chromium项目有一定的关联依赖关系,而且这些项目都是跨平台的大项目,采用了Google自己的一套编译系统,相对我们日常的IDE来说要复杂的多.如果我们需要得到一个WebRTC的库或者框架,我们就需要忘记Xcode IDE和Interface Builder这些高科技,我们要切换到终端环境下用命令行下的黑科技来征服这一切.</p>
+<h2 id="2.开始webrtc源码下载" style="margin:0px;padding:0px;font-family:simsun;line-height:25px;">2.开始WebRTC源码下载</h2>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">前提条件:</p>
+<ul style="margin:0px;padding:0px;font-family:simsun;line-height:25px;"><li style="margin:0px;padding:0px;list-style:none;">我现在用的Macbook,8G内存,运行OS X 10.9.5.</li>
+<li style="margin:0px;padding:0px;list-style:none;">安装最新的git和subversions并确保其可正常工作.</li>
+<li style="margin:0px;padding:0px;list-style:none;">Xcode 6.1.1 和 Command Line Tools.</li>
+<li style="margin:0px;padding:0px;list-style:none;">中国大陆用户额外要求,快速的VPN,或者快速的shadowsocks服务.(FQ和给git和svn以及curl设置代理等).</li>
+</ul>
+<h3 id="2.1-创建一个编译目录" style="margin:0px;padding:0px;font-family:simsun;line-height:25px;">2.1 创建一个编译目录</h3>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">我们创建一个目录专门来存放项目编译工具和项目代码仓库等.确保该目录所在磁盘可用空间至少有8~10G.打开系统的终端工具进入到Shell:</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;"><code class="language-bash" data-lang="bash">wuqiong:~ apple<span class="nv">$mkdir -p <span class="nv">$HOME/opensource/webrtc_build/</span></span></code></pre><h3 id="2.2-下载chromium的depot工具" style="margin:0px;padding:0px;font-family:simsun;line-height:25px;">2.2 下载Chromium的depot工具</h3>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">在执行下面命令之前,请确保你已经连上快速VPN已经FQ了,或者你已经给git单独配置了有效的socksFQ代理,如果你这些都不是问题,就当我没说.</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;"><code class="language-bash" data-lang="bash">wuqiong:~ apple<span class="nv">$cd <span class="nv">$HOME/opensource/webrtc_build/
+wuqiong:webrtc_build apple<span class="nv">$git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git</span></span></span></code></pre><p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">这是一套Google用来编译Chromium或者WebRTC的构建工具,在我们后续的编译过程中也将使用它.为了命令行使用方便,我们把这些工具的路径加入到系统环境变量PATH中去:</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;"><code class="language-bash" data-lang="bash">wuqiong:webrtc_build apple<span class="nv">$echo <span class="s2">"export PATH=$PWD/depot_tools:$PATH" &gt; <span class="nv">$HOME/.bash_profile</span></span></span></code></pre><p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">然后需要关闭当前终端重新开启一个来上面设置的环境变量生效.或者在现在终端执行入门命令在当前终端里加载生效:</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;"><code class="language-bash" data-lang="bash">wuqiong:webrtc_build apple<span class="nv">$source <span class="nv">$HOME/.bash_profile</span></span></code></pre><h3 id="2.3-下载webrtc的源码" style="margin:0px;padding:0px;font-family:simsun;line-height:25px;">2.3 下载WebRTC的源码</h3>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">在我们的编译工作目录webrtc_build下创建一个webtrtc子目录来存放代码,请执行下面命令:</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;"><code class="language-bash" data-lang="bash">wuqiong:webrtc_build apple<span class="nv">$ mkdir webrtc
+wuqiong:webrtc_build apple<span class="nv">$ <span class="nb">cd webrtc </span></span></span></code></pre><p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">在上面的检查工作没错之后,我们就需要开始把WebRTC项目的代码仓库下载一份到本地来.由于其仓库之大,大约一共需要下载6G+的东西.所以这一步非常需要有耐心.而且需要有稳定无障碍的互联网. 执行如下命令然后吧:</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;"><code class="language-bash" data-lang="bash">wuqiong:webrtc apple<span class="nv">$ gclient config --name src http://webrtc.googlecode.com/svn/trunk
+wuqiong:webrtc apple<span class="nv">$ <span class="nb">echo <span class="s2">"target_os = ['ios']" &gt;&gt; .gclient
+wuqiong:webrtc apple<span class="nv">$ gclient sync --force</span></span></span></span></span></code></pre><p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">FQ快的去喝咖啡,慢的去约妹子吧.办完事情之后回来如果上面的命令都一切顺利,我们就可以往下走去开始编译了. (为了方便大家,我已经把webrtc_build目录打包备份,这样大家可以省去大量的代码下载时间.打包文件有5G,正在寻找网盘存放,随后公布.)</p>
+<h3 id="2.4-编译webrtc.framework" style="margin:0px;padding:0px;font-family:simsun;line-height:25px;">2.4 编译WebRTC.framework</h3>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">到了这一步,源码应该已经下载好了.这些源码可以编译为好几个平台,OS X, Linux, Windows, Android, iOS等.这里我们只需要编译iOS平台的WebRTC,并制作成一个iOS的开发框架.这里我们不能用Xcode工具,因为这些项目压根就不支持XCode.我们需要在终端命令行环境下去搞定这一切!</p>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">首先,为了我们装逼玩黑武器,我们需要在webrtc的项目代码目录下创建一个脚本, 这个脚本就是我为了简化命令的复杂度和提高使用的方便性专门编写的一个一键框架编译脚本,这个脚本就是今天的核心黑科技了.先创建一个空文件,然后赋予执行权限:</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;"><code class="language-bash" data-lang="bash">wuqiong:webrtc apple<span class="nv">$ touch build_webrtc.sh
+wuqiong:webrtc apple<span class="nv">$ chmod +x build_webrtc.sh</span></span></code></pre><p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">然后用编辑器打开编辑刚刚创建的脚本文件,把如下脚本粘贴进去之后保存并关闭:</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;">  1 #!/bin/bash
+  2 # Script to build WebRTC.framework for iOS
+  3 # Copyright (C) 2015 戴维营教育  - All Rights Reserved
+  4 # Last revised 28/1/2015
+  5 #
+  6 
+  7 function build_iossim_ia32() {
+  8     echo "*** building WebRTC for the ia32 iOS simulator";
+  9     export GYP_GENERATORS="ninja";
+ 10     export GYP_DEFINES="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 OS=ios target_arch=ia32";
+ 11     export GYP_GENERATOR_FLAGS="$GYP_GENERATOR_FLAGS output_dir=out_ios_ia32";
+ 12     export GYP_CROSSCOMPILE=1;
+ 13     pushd src;
+ 14     gclient runhooks;
+ 15     ninja -C out_ios_ia32/Release-iphonesimulator iossim AppRTCDemo;
+ 16 
+ 17     echo "*** creating iOS ia32 libraries";
+ 18     pushd out_ios_ia32/Release-iphonesimulator/;
+ 19     rm -f  libapprtc_signaling.a;
+ 20     popd;
+ 21     mkdir -p out_ios_ia32/libs;
+ 22     libtool -static -o out_ios_ia32/libs/libWebRTC-ia32.a out_ios_ia32/Release-iphonesimulator/lib*.a;
+ 23     strip -S -x -o out_ios_ia32/libs/libWebRTC.a -r out_ios_ia32/libs/libWebRTC-ia32.a;
+ 24     rm -f out_ios_ia32/libs/libWebRTC-ia32.a;
+ 25     echo "*** result: $PWD/out_ios_ia32/libs/libWebRTC.a";
+ 26 
+ 27     popd;
+ 28 }
+ 29 
+ 30 function build_iossim_x86_64() {
+ 31     echo "*** building WebRTC for the x86_64 iOS simulator";
+ 32     export GYP_GENERATORS="ninja";
+ 33     export GYP_DEFINES="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 OS=ios target_arch=x64 target_subarch=arm64";
+ 34     export GYP_GENERATOR_FLAGS="$GYP_GENERATOR_FLAGS output_dir=out_ios_x86_64";
+ 35     export GYP_CROSSCOMPILE=1;
+ 36     pushd src;
+ 37     gclient runhooks;
+ 38     ninja -C out_ios_x86_64/Release-iphonesimulator iossim AppRTCDemo;
+ 39 
+ 40     echo "*** creating iOS x86_64 libraries";
+ 41     pushd out_ios_x86_64/Release-iphonesimulator/;
+ 42     rm -f  libapprtc_signaling.a;
+ 43     popd;
+ 44     mkdir -p out_ios_x86_64/libs;
+ 45     libtool -static -o out_ios_x86_64/libs/libWebRTC-x86_64.a out_ios_x86_64/Release-iphonesimulator/lib*.a;
+ 46     strip -S -x -o out_ios_x86_64/libs/libWebRTC.a -r out_ios_x86_64/libs/libWebRTC-x86_64.a;
+ 47     echo "*** result: $PWD/out_ios_x86_64/libs/libWebRTC.a";
+ 48 
+ 49     popd;
+ 50 }
+ 51 
+ 52 function build_iosdevice_armv7() {
+ 53     echo "*** building WebRTC for armv7 iOS devices";
+ 54     export GYP_GENERATORS="ninja";
+ 55     export GYP_DEFINES="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 OS=ios target_arch=armv7";
+ 56     export GYP_GENERATOR_FLAGS="$GYP_GENERATOR_FLAGS output_dir=out_ios_armv7";
+ 57     export GYP_CROSSCOMPILE=1;
+ 58     pushd src;
+ 59     gclient runhooks;
+ 60     ninja -C out_ios_armv7/Release-iphoneos AppRTCDemo;
+ 61 
+ 62     echo "*** creating iOS armv7 libraries";
+ 63     pushd out_ios_armv7/Release-iphoneos/;
+ 64     rm -f  libapprtc_signaling.a;
+ 65     popd;
+ 66     mkdir -p out_ios_armv7/libs;
+ 67     libtool -static -o out_ios_armv7/libs/libWebRTC-armv7.a out_ios_armv7/Release-iphoneos/lib*.a;
+ 68     strip -S -x -o out_ios_armv7/libs/libWebRTC.a -r out_ios_armv7/libs/libWebRTC-armv7.a;
+ 69     echo "*** result: $PWD/out_ios_armv7/libs/libWebRTC.a";
+ 70 
+ 71     popd;
+ 72 }
+ 73 
+ 74 function build_iosdevice_arm64() {
+ 75     echo "*** building WebRTC for arm64 iOS devices";
+ 76     export GYP_GENERATORS="ninja";
+ 77     export GYP_DEFINES="build_with_libjingle=1 build_with_chromium=0 libjingle_objc=1 OS=ios target_arch=arm64 target_subarch=arm64";
+ 78     export GYP_GENERATOR_FLAGS="$GYP_GENERATOR_FLAGS output_dir=out_ios_arm64";
+ 79     export GYP_CROSSCOMPILE=1;
+ 80     pushd src;
+ 81     gclient runhooks;
+ 82     ninja -C out_ios_arm64/Release-iphoneos AppRTCDemo;
+ 83 
+ 84     echo "*** creating iOS arm64 libraries";
+ 85     pushd out_ios_arm64/Release-iphoneos/;
+ 86     rm -f  libapprtc_signaling.a;
+ 87     popd;
+ 88     mkdir -p out_ios_arm64/libs;
+ 89     libtool -static -o out_ios_arm64/libs/libWebRTC-arm64.a out_ios_arm64/Release-iphoneos/lib*.a;
+ 90     strip -S -x -o out_ios_arm64/libs/libWebRTC.a -r out_ios_arm64/libs/libWebRTC-arm64.a;
+ 91     echo "*** result: $PWD/out_ios_arm64/libs/libWebRTC.a";
+ 92 
+ 93     popd;
+ 94 }
+ 95 
+ 96 function combine_libs() 
+ 97 {
+ 98     echo "*** combining libraries";
+ 99     lipo  -create   src/out_ios_ia32/libs/libWebRTC.a \
+100             src/out_ios_x86_64/libs/libWebRTC.a \
+101             src/out_ios_armv7/libs/libWebRTC.a \
+102             src/out_ios_arm64/libs/libWebRTC.a \
+103             -output libWebRTC.a;
+104     echo "The public headers are located in $PWD/src/talk/app/webrtc/objc/public/*.h";
+105 }
+106 
+107 function create_framework() {
+108     echo "*** creating WebRTC.framework";
+109     rm -rf WebRTC.framework;
+110     mkdir -p WebRTC.framework/Versions/A/Headers;
+111     cp ./src/talk/app/webrtc/objc/public/*.h WebRTC.framework/Versions/A/Headers;
+112     cp libWebRTC.a WebRTC.framework/Versions/A/WebRTC;
+113 
+114     pushd WebRTC.framework/Versions;
+115     ln -sfh A Current;
+116     popd;
+117     pushd WebRTC.framework;
+118     ln -sfh Versions/Current/Headers Headers;
+119     ln -sfh Versions/Current/WebRTC WebRTC;
+120     popd;
+121 }
+122 
+123 function clean() 
+124 {
+125     echo "*** cleaning";
+126     pushd src;
+127     rm -rf out_ios_arm64 out_ios_armv7 out_ios_ia32 out_ios_x86_64;
+128     popd;
+129     echo "*** all cleaned";
+130 }
+131 
+132 function update()
+133 {
+134     gclient sync --force
+135     pushd src
+136     svn info | grep Revision &gt; ../svn_rev.txt
+137     popd
+138 }
+139 
+140 function build_all() {
+141     build_iossim_ia32 &amp;&amp; build_iossim_x86_64 &amp;&amp; \
+142     build_iosdevice_armv7 &amp;&amp; build_iosdevice_arm64 &amp;&amp; \
+143     combine_libs &amp;&amp; create_framework;
+144 }
+145 
+146 function run_simulator_ia32() {
+147     echo "*** running webrtc appdemo on ia32 iOS simulator";
+148     src/out_ios_ia32/Release-iphonesimulator/iossim src/out_ios_ia32/Release-iphonesimulator/AppRTCDemo.app;
+149 }
+150 
+151 function run_simulator_x86_64() {
+152     echo "*** running webrtc appdemo on x86_64 iOS simulator";
+153     src/out_ios_x86_64/Release-iphonesimulator/iossim -d 'iPhone 6' -s '8.1'  src/out_ios_x86_64/Release-iphonesimulator/AppRTCDemo.app;
+154 }
+155 
+156 function run_on_device_armv7() {
+157     echo "*** launching on armv7 iOS device";
+158     ideviceinstaller -i src/out_ios_armv7/Release-iphoneos/AppRTCDemo.app;
+159     echo "*** launch complete";
+160 }
+161 
+162 function run_on_device_arm64() {
+163     echo "*** launching on arm64 iOS device";
+164     ideviceinstaller -i src/out_ios_arm64/Release-iphoneos/AppRTCDemo.app;
+165     echo "*** launch complete";
+166 }
+167 
+168 #运行命令行参数中第一个参数所指定的Shell函数
+169 $@</pre><p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">这个编译脚本除了可以编译WebRTC项目自带的AppRTCDemo应用外,还可以编译出WebRTC.framework.</p>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">执行如下命令来编译我们所需要的全部:</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;"><code class="language-bash" data-lang="bash">wuqiong:webrtc apple<span class="nv">$ ./build_webrtc.sh build_all</span></code></pre><p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">等上面命令完成之后,我们所需要的WebRTC框架就在当前目录下了.可以用<code>ls</code>命令查看之:</p>
+<pre class="code" style="margin-top:10px;margin-bottom:10px;padding:8px 10px 8px 12px;word-wrap:break-word;font-family:Menlo, Monaco, Consolas, 'Andale Mono', 'lucida console', 'Courier New', monospace;border-width:1px 1px 1px 5px;border-style:solid;border-color:#dddddd #dddddd #dddddd #6ce26c;border-image-source:none;background-image:none;background-attachment:scroll;background-color:#f1f1f1;font-size:12px;line-height:25px;background-position:0% 0%;background-repeat:repeat repeat;"><code class="language-bash" data-lang="bash">wuqiong:webrtc apple<span class="nv">$ ls 
+WebRTC.framework build_webrtc.sh  libWebRTC.a      src
+wuqiong:webrtc apple<span class="nv">$ </span></span></code></pre><p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">第一个<code>WebRTC.framework</code>就是我们需要的框架了! 到此,我们的编译任务就完成了! 不是吧..就这么简单?不是说起来超级麻烦吗?呵呵,装逼结束. 繁琐的部分已经封装到了shell脚本里头去了.如果有兴趣可以去研究一下这个脚本.</p>
+<h3 id="2.5-webrtc.framework的依赖." style="margin:0px;padding:0px;font-family:simsun;line-height:25px;">2.5 WebRTC.framework的依赖.</h3>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">如果项目使用了该框架,那么编译的时候需要在项目的Build Phases中添加如下库和框架:</p>
+<ul style="margin:0px;padding:0px;font-family:simsun;line-height:25px;"><li style="margin:0px;padding:0px;list-style:none;">libstdc++.6.dylib</li>
+<li style="margin:0px;padding:0px;list-style:none;">libsqlite3.dylib</li>
+<li style="margin:0px;padding:0px;list-style:none;">libc++.dylib</li>
+<li style="margin:0px;padding:0px;list-style:none;">libicucore.dylib</li>
+<li style="margin:0px;padding:0px;list-style:none;">Security.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">CFNetwork.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">GLKit.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">AudioToolbox.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">AVFoundation.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">CoreAudio.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">CoreMedia.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">CoreVideo.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">CoreGraphics.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">OpenGLES.framework</li>
+<li style="margin:0px;padding:0px;list-style:none;">QuartzCore.framework</li>
+</ul>
+<h3 id="重要提示" style="margin:0px;padding:0px;font-family:simsun;line-height:25px;">重要提示</h3>
+<p style="margin-top:8px;margin-bottom:8px;padding:0px;color:#373737;font-family:'Open Sans', sans-serif;line-height:2em;">目前Google官方代码中在ARMv7平台有VP8视频编码的stackoverflow问题，会直接导致程序崩溃，如需了解详情并获取补丁，请联系戴维营教育。</p></body></html>

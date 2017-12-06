@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-05-22T07:52:42Z"/><meta name="updated" content="2014-05-22T07:53:05Z"/><title>UIView 进行各种动画展示及其用法解释</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h2>
+			<a id="cb_post_title_url" href="http://www.cnblogs.com/pengyingh/articles/2381251.html">UIView 进行各种动画展示及其用法解释</a> 		</h2>
+		<div class="postText"><div id="cnblogs_post_body"><p>//第一种动画方式</p>
+<p>- (void) first_animations</p>
+<p>{<br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>beginAnimations:<span style="color:#6d6d6d;">nil&nbsp;</span>context:<span style="color:#6d6d6d;">nil]; &nbsp;//启动动画动作</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView&nbsp;setAnimationRepeatCount:<span style="color:#6d6d6d;">1];//设置是否重复播放</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>setAnimationDuration:<span style="color:#6d6d6d;">1];//设置动画持续时间</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>setAnimationCurve:UIViewAnimationCurveEaseIn<span style="color:#6d6d6d;">];&nbsp;//动画曲线,具体的应用 ,可以经过实验检测</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>setAnimationDelegate:<span style="color:#6d6d6d;">self];//动画块的某个方法(最下方),委托到本类的实例</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>setAnimationDidStopSelector:<span style="color:#6d6d6d;">@selector(</span>resetView<span style="color:#6d6d6d;">)];//动画结束后去执行的方法</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp;&nbsp;</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp;&nbsp;</span>CGAffineTransform<span style="color:#6d6d6d;">&nbsp;oneTransform =&nbsp;</span>CGAffineTransformRotate(<span style="color:#6d6d6d;">self.animatView.transform, degreesToRadian(180)</span>)<span style="color:#6d6d6d;">;//进行 &nbsp;</span>CGAffineTransform 方式的动作(旋转拉伸等等)===&gt;(对于CGAffineTransform &nbsp;可以另外开辟一个关于CGAffineTransform使用详情的文章进行专门介绍&nbsp;)</p>
+<p>&nbsp;</p>
+<p><span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp;&nbsp;</span>CGAffineTransform<span style="color:#6d6d6d;">&nbsp;twoTransform =&nbsp;</span>CGAffineTransformTranslate(<span style="color:#6d6d6d;">self.animatView.transform,0,-100</span>)<span style="color:#6d6d6d;">;</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp;&nbsp;</span>CGAffineTransform<span style="color:#6d6d6d;">&nbsp;newTransform =&nbsp;</span>CGAffineTransformConcat(<span style="color:#6d6d6d;">oneTransform, twoTransform</span>)<span style="color:#6d6d6d;">;</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [self.animatView&nbsp;</span>setTransform:<span style="color:#6d6d6d;">newTransform];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>commitAnimations<span style="color:#6d6d6d;">];//有些网友说,这是动画结束.起始经过本人尝试试验.其实应该是,执行上方定义的动画块内容.</span><br />
+}</p>
+<p>//第二中动画定义方式<br />
+- (void) second_animations<br />
+{<br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp;&nbsp;</span>CABasicAnimation<span style="color:#6d6d6d;">&nbsp;*animation = [</span>CABasicAnimation<span style="color:#6d6d6d;">&nbsp;</span>animationWithKeyPath:<span style="color:#6d6d6d;">@"opacity"];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [animation</span>&nbsp;setDuration:<span style="color:#6d6d6d;">1];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [animation&nbsp;</span>setRepeatCount:<span style="color:#6d6d6d;">0];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [animation&nbsp;</span>setAutoreverses:<span style="color:#6d6d6d;">YES];//自动反向动画</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [animation&nbsp;</span>setFromValue:<span style="color:#6d6d6d;">[</span>NSNumber<span style="color:#6d6d6d;">&nbsp;</span>numberWithFloat:<span style="color:#6d6d6d;">1.0]];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [animation&nbsp;</span>setToValue:<span style="color:#6d6d6d;">[</span>NSNumber<span style="color:#6d6d6d;">&nbsp;</span>numberWithFloat:<span style="color:#6d6d6d;">0]];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [animation&nbsp;</span>setDelegate:<span style="color:#6d6d6d;">self];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [self.animatView.layer&nbsp;</span>addAnimation:<span style="color:#6d6d6d;">animation&nbsp;</span>forKey:<span style="color:#6d6d6d;">@"firstView-Opacity"];</span><br />
+}<br />
+- (void) third_animations<br />
+{<br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>beginAnimations:<span style="color:#6d6d6d;">nil&nbsp;</span>context:<span style="color:#6d6d6d;">nil];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>setAnimationRepeatCount:<span style="color:#6d6d6d;">1];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>setAnimationDuration:<span style="color:#6d6d6d;">1];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView&nbsp;setAnimationCurve:<span style="color:#6d6d6d;">UIViewAnimationCurveEaseIn];&nbsp;</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>setAnimationTransition:UIViewAnimationTransitionFlipFromRight<span style="color:#6d6d6d;">&nbsp;</span>forView:<span style="color:#6d6d6d;">self.containView&nbsp;</span>cache:<span style="color:#6d6d6d;">YES];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>setAnimationDidStopSelector:<span style="color:#6d6d6d;">@selector(</span>animationDidStop:finished:<span style="color:#6d6d6d;">)];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [</span>UIView<span style="color:#6d6d6d;">&nbsp;</span>commitAnimations<span style="color:#6d6d6d;">];</span><br />
+}<br />
+- (void) fourth_animations<br />
+{<br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp;&nbsp;</span>CATransition<span style="color:#6d6d6d;">&nbsp;*transition = [</span>CATransition<span style="color:#6d6d6d;">&nbsp;</span>animation<span style="color:#6d6d6d;">];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; transition.duration = 1.0f;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*&nbsp; 间隔时间*/</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; transition.timingFunction = [</span>CAMediaTimingFunction<span style="color:#6d6d6d;">&nbsp;</span>functionWithName:kCAMediaTimingFunctionEaseInEaseOut<span style="color:#6d6d6d;">];&nbsp; /* 动画的开始与结束的快慢*/</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp;
+ transition.type = @"pageCurl";&nbsp; //@"cube" @"moveIn" @"reveal" 
+@"fade"(default) @"pageCurl" @"pageUnCurl" @"suckEffect" @"rippleEffect"
+ @"oglFlip"</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; transition.subtype =&nbsp;</span>kCATransitionFromRight<span style="color:#6d6d6d;">;</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; transition.removedOnCompletion =&nbsp;</span>YES<span style="color:#6d6d6d;">;</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; transition.fillMode =&nbsp;</span>kCAFillModeBackwards<span style="color:#6d6d6d;">;</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; transition.delegate = self;</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [self.animatView.layer&nbsp;</span>addAnimation:<span style="color:#6d6d6d;">transition&nbsp;</span>forKey:<span style="color:#6d6d6d;">nil];&nbsp;&nbsp;</span><br />
+}<br />
+-(void) resetView<br />
+{<br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; [self.animatView&nbsp;</span>setTransform:CGAffineTransformRotate(<span style="color:#6d6d6d;">self.animatView.transform, degreesToRadian(180)</span>)<span style="color:#6d6d6d;">];</span><br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; self.animatView.frame = CGRectMake(0, 0, 280, 200);</span><br />
+}<br />
+#pragma mark Delegate Methods<br />
+- (void)animationDidStop:(CAAnimation *) theAnimation finished:(BOOL) flag {<br />
+<span style="color:#6d6d6d;">&nbsp;&nbsp;&nbsp; self.animatView.frame = CGRectMake(0, 0, 280, 200);</span><br />
+}</p>
+<p>#define degreesToRadian(x) (M_PI * (x) / 180.0)</p>
+<p><strong>&nbsp;================再次挖井的分割线07.11=============</strong></p>
+</div>
+</div></body></html>

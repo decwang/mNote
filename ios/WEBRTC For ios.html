@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-08-29T08:46:37Z"/><meta name="updated" content="2013-09-05T03:26:14Z"/><title>WEBRTC For ios</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p><span style="font-size:16px;">近期研究WEBRTC语音如何在IOS下运行，发现WEBRTC的voice_engine中已实现相关IOS的类，但在具体应用中却遇到一系列问题，经过连续几天的艰苦奋斗后，终于解决一系列问题，成功在模拟器中实现录音、播放本地回环。</span></p>
+<p><span style="font-size:16px;">在编写测试程序的过程中，打算利用libjingle这个库作为WEBRTC的外层包装库，解决语音的传输控制方面的接口问题，方便以后扩展，最终却发现libjingle似乎未考虑IOS下的应用，于是乎，漫漫征程踏上了第一步。</span></p>
+<p><span style="font-size:16px;">一、分析libjingle，抽取部分类编译出一个for ios版本</span></p>
+<p><span style="font-size:16px;">这部分工作不太难，只是将用到的一些类引用进来，编译成一个静态库，幸好这里没有用到平台相关的代码，解决一大麻烦。但在过程也也遇到的两个问题，其实和语音无关，是视频（voice_engin）方面的，但我又想把视频部分代码先编译进来，便于后期视频方面的工作。</span></p>
+<p><span style="font-size:16px;">第一个就是libjingle没有实现for ios的内部视频捕捉（include_internal_video_capture）与渲染（include_internal_video_render）类，OK，屏蔽它，在gyp的配置文件中去掉</span></p>
+<p><span style="font-size:16px;">第二个yasm这个项目了，这个项目是用来编译汇编的东东，通过gyp生成的项目这个yasm是编译不了的，为什么呢，因为ios不支持编译目标为
+命令行程序的项目。可这个项目是用来编译jpeg和libvpx的呀，缺少了还不行，看来只有绕路了。经过研究，发现用到的libjpeg_turbo在
+网上有现在编译版本（for 
+ios模拟器和设备版），于是乎果断下载，在gyp配置文件中加入ios的OS判断，是ios就去掉原libjpeg_turbo，引用编译好的版本。</span></p>
+<p><span style="font-size:16px;">第三个就是libvpx项目了，这个我现在都没有完全解决，原因在于这个项目也需要用yasm来编译，通过gyp生成的项目编译不了的。经过一翻研
+究，发现gyp生成的mac版的项目中，libvpx编译出来的静态库是面向i386和x86两个架构的。看来这里，不经猜想，这里的i386是乎可以用
+到ios 模拟器下？引用进去，果然编译通过，不过，不知是否可运行 
+，不管了，反正现在我只用到音频，还用不到视频。能否运行和iphone版的静态库后面再研究吧。</span></p>
+<p><span style="font-size:16px;">到这里，测试程序终于写好了，编译通过，开始测试。</span></p>
+<p><span style="font-size:16px;">二、痛苦的测试之路<br />
+</span></p>
+<p><span style="font-size:16px;">怎么就没有声音呢？怎么就能没有声音呢？从头到尾仔细检查，设置编译条件为_DEBUG，设置WEBRTC 
+voice_engine的trace回调，打印所有日志信息，没错呀，所有函数都调用成功，能看到采集的语音数据通过libjingle接口发送，从接
+口接收到的语音数据也正确传入voice_engine，但就是没声音呀！</span></p>
+<p><span style="font-size:16px;">这里好像进入了瓶颈，工作陷入了停滞中。</span></p>
+<p><span style="font-size:16px;">三天后，还是没解决。</span></p>
+<p><span style="font-size:16px;">为什么已有采集的数据了，并且数据已传入引擎了，没声音呢。到底是测试程序、voice_engin、还是libjingle的问题呢。</span></p>
+<p><span style="font-size:16px;">倒推一下，看下最后一步的播放有问题吗？找到测试程序接收到语音数据的代码，打下断点。咦，为什么语音数据一直是0呢，全是0？难道传输有问题？先
+不管，手动把这个数据全设置为随机数。测试，终于有声音了，杂音，全是杂音，但毕竟也是声音呀，热泪.....杂音，你坚定了我继续下去的决心。</span></p>
+<p><span style="font-size:16px;">再打断点到语音数据传输前，还是0，看来是采集有问题了。<br />
+</span></p>
+<p><span style="font-size:16px;">没办法，读与分析代码吧，最原始的方法。找到ios语音采集代码（audio_device_ios.cc），读吧，仔细读吧。</span></p>
+<p><span style="font-size:16px;">从头到尾分析一次，似乎没什么问题呀，可为什么呢，采集到数据全是0。</span></p>
+<p><span style="font-size:16px;">痛苦，真的痛苦，语音的初始化、缓冲区管理、数据采集、发送，都正确的吧，是吧？！从goolge的SVN上checkout的代码应该是经过测试的吧，不会有什么问题吧？本着怀疑一切的精神，开始小心的求证。</span></p>
+<p><span style="font-size:16px;">从apple开发网站上下了一个audiounit的sample（aurioTouch），编译、运行，可以呀，能录音、能播放呀。OK，一行行对比代码，好像初始化、采集、缓冲管理差不多，只是采样率等参数不一样，不过这个不影响吧，事实证明，的确不影响。</span></p>
+<p><span style="font-size:16px;">等等，是乎AudioComponentDescription的componentSubType这个参数有点不一样，sample中是设置的是
+kAudioUnitSubType_RemoteIO，而WEBRTC中用的是
+kAudioUnitSubType_VoiceProcessingIO，这个有问题吗，事实证明，问题就在这里！修改，将WEBRTC的参数值设置了
+kAudioUnitSubType_RemoteIO！啊，终于听到本地回环声音了，幸福！</span></p>
+<p><span style="font-size:16px;">这两个参数有何不同呢？二者分别应该用在什么地方呢？到底是什么原因WEBRTC中要用kAudioUnitSubType_VoiceProcessingIO呢，我不知！</span></p>
+<p><span style="font-size:16px;">有人能解答一下吗？</span></p></body></html>

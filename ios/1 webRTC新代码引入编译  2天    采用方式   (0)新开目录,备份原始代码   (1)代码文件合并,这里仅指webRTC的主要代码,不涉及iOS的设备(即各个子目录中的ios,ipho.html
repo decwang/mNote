@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-11-08T03:29:01Z"/><meta name="updated" content="2016-10-08T09:09:07Z"/><title>1 webRTC新代码引入编译  2天    采用方式   (0)新开目录,备份原始代码   (1)代码文件合并,这里仅指webRTC的主要代码,不涉及iOS的设备(即各个子目录中的ios,ipho</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>1 webRTC新代码引入编译<span class="Apple-tab-span" style="white-space:pre;">	</span> 2天&nbsp;</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>采用方式</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>(0)新开目录,备份原始代码</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>(1)代码文件合并,这里仅指webRTC的主要代码,不涉及iOS的设备(即各个子目录中的ios,iphone目录) ,直接用新代码覆盖旧代码,在原工程中进行.</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>(2)设备层代码合并,保留老代码,但要略读下新代码,看看有什么不理解的地方,记得打标记.</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>(3)编译时,一个一个的来,不要一次全上去替掉,否则出问题的概率比较大.</div>
+<div>2 FrameWork搭建(涉及代码工程-webRTC,sip,hscommonlayer),外界仅使用FrameWork &nbsp;1天</div>
+<div>3 测试,整体更换后需要大量测试音视频呼叫这块 3天</div>
+<div>4 最新源码目录权限已开放</div>
+<div>http://192.168.108.157:18080/svn/xtyfb/commoncode/media-webrtc</div>
+<div>http://192.168.108.157:18080/svn/xtyfb/commoncode/sip-osip</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><div>3 xib替换,今后代码中不再使用xib文件,统一使用代码构建UI,规避目前xcode一升级就导致旧版本xcode编译失败的问题(目前代码中有3个xib,HSCallingViewController.xib HSPawdResetViewController.xib HSCustomKB.xib) 2天 可以考虑使用nib2objc来生成初步的代码,复杂界面仍需人工干预</div>
+<div>4 midtest,测试程序中,可以保留使用lib的方式进行调试测试. 主项目工程中尽量少用lib</div>
+<div>5&nbsp;</div>
+</div></body></html>

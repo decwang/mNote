@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-08-29T08:35:48Z"/><meta name="updated" content="2013-09-05T03:26:14Z"/><title>iOS XCode自动化编译相关  (2012-12-25 11:18:42)转载▼        标签： 自动生成  ios  xcode  编译  it     分类： iOS         </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="articalTitle"> 
+			
+								<h2 id="t_8732f19301017ywl" class="titName SG_txta">iOS&nbsp;XCode自动化编译相关</h2>
+			
+					<span class="time SG_txtc">(2012-12-25 11:18:42)</span><div class="turnBoxzz"><a href="" class="SG_aBtn SG_aBtn_ico SG_turn" action-type="reblog" action-data="{srcBlog:1, blogId:'8732f19301017ywl'}"><cite><img class="SG_icon SG_icon111" src="http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif" height="15" align="absmiddle" width="15" />转载<em class="arrow">▼</em></cite></a></div>
+		</div>
+		<div class="articalTag" id="sina_keyword_ad_area">
+			<table>
+				<tbody><tr>
+					<td class="blog_tag">
+					
+											<span class="SG_txtb">标签：</span> 																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=%D7%D4%B6%AF%C9%FA%B3%C9&amp;by=tag" target="_blank">自动生成</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=ios&amp;by=tag" target="_blank">ios</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=xcode&amp;by=tag" target="_blank">xcode</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=%B1%E0%D2%EB&amp;by=tag" target="_blank">编译</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=it&amp;by=tag" target="_blank">it</a></h3>
+																</td>
+					<td class="blog_class">
+											<span class="SG_txtb">分类：</span> 						<a target="_blank" href="http://blog.sina.com.cn/s/articlelist_2268262803_1_1.html">iOS</a> 										</td>
+				</tr>
+			</tbody>
+</table>
+		</div>
+						
+		<div id="sina_keyword_ad_area2" class="articalContent ">
+			原文：http://blog.cnrainbird.com/index.php/2012/10/25/zui_jin_yan_jiu_xcodebuild_pi_liang_da_bao_de_yi_xie_xin_de/<div><br />
+</div>
+<div>
+<p style="background-color:#fef3dd;border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;color:#292929;font-family:'Helvetica neue', Arial, Helvetica, sans-serif;line-height:17px;">
+以前的时候只知道做安卓开发的兄弟挺辛苦的，不但开发的时候要适配一堆的机型，好不容易开发完了还要打一堆不同的包给不同的市场。没想到现在这些市场都开辟iOS市场，于是需要打一堆的包给不同的市场，面对暂时给的十二个渠道，批量打包迫在眉睫。于是也便有了这篇小结。<br />
+通过一翻搜索和学习，打包这事儿就是让xcrun来干，而xcodebuild只是xrun的一个软链接，但是这一链却有了不同的分工:<br />
+xcodebuild负责将工程源文件编译成xxx.app<br />
+xcrun负责给xxx.app(签名并)打包成xxx.ipa<br />
+先说我是咋干的。<br />
+第一步清理:</p>
+<div style="background-color:#f1f1f1;border:1px solid #9f9f9f;margin:0px 0px 10px;padding:0px;vertical-align:baseline;text-align:left;font-size:13px;line-height:1.4em;font-family:Monaco, 'Lucida Console', monospace;overflow:auto;white-space:nowrap;width:740px;">
+<div style="border:0px;margin:0px;padding:5px;vertical-align:baseline;line-height:1.4em;">
+/usr/bin/xcodebuild -target targetName clean</div>
+</div>
+<p style="background-color:#fef3dd;border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;color:#292929;font-family:'Helvetica neue', Arial, Helvetica, sans-serif;line-height:17px;">
+第二步编译:</p>
+<div style="background-color:#f1f1f1;border:1px solid #9f9f9f;margin:0px 0px 10px;padding:0px;vertical-align:baseline;text-align:left;font-size:13px;line-height:1.4em;font-family:Monaco, 'Lucida Console', monospace;overflow:auto;white-space:nowrap;width:740px;">
+<div style="border:0px;margin:0px;padding:5px;vertical-align:baseline;line-height:1.4em;">
+/usr/bin/xcodebuild -target targetName</div>
+</div>
+<p style="background-color:#fef3dd;border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;color:#292929;font-family:'Helvetica neue', Arial, Helvetica, sans-serif;line-height:17px;">
+第三步打包:</p>
+<div style="background-color:#f1f1f1;border:1px solid #9f9f9f;margin:0px 0px 10px;padding:0px;vertical-align:baseline;text-align:left;font-size:13px;line-height:1.4em;font-family:Monaco, 'Lucida Console', monospace;overflow:auto;white-space:nowrap;width:740px;">
+<div style="border:0px;margin:0px;padding:5px;vertical-align:baseline;line-height:1.4em;">
+/usr/bin/xcrun -sdk iphoneos PackageApplication -v path/To/xxx.app
+-o xxx.ipa</div>
+</div>
+<p style="background-color:#fef3dd;border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;color:#292929;font-family:'Helvetica neue', Arial, Helvetica, sans-serif;line-height:17px;">
+解释一下<br />
+关于xcodebuild，xcodebuild -target target名
+就完成了一次编译工作，因为xcodebuild默认的一个参数就是build，即完整的命令就是:xcodebuild -target
+target build。而打包前清理的话就是xcodebuild -target target
+clean了。为什么打包前要先清理呢？因为清理一下能保证打的包肯定是干净的而且打包过程不会出问题<br />
+关于xcrun，直接打包的参数就是 xcrun -sdk iphoneos PackageApplication -v 源app路径
+-o 输出的ipa路径<br />
+关于xcrun要更新的一个认识就它的打包功能，查资料的时候发现好多牛人都是直接用xcodebuild编译，然后自已手动用zip将编译好的app打包成ipa格式，表示不理解这些牛人们为什么要费力自已实现一遍。<br />
+注意事项:以上两个命令必需在xxx.xcodeproj所在的目录执行<br />
+高级用法:给应用签名。上面两个命令都可以给应用签名的，格式分别是:</p>
+<div style="background-color:#f1f1f1;border:1px solid #9f9f9f;margin:0px 0px 10px;padding:0px;vertical-align:baseline;text-align:left;font-size:13px;line-height:1.4em;font-family:Monaco, 'Lucida Console', monospace;overflow:auto;white-space:nowrap;width:740px;">
+<div style="border:0px;margin:0px;padding:5px;vertical-align:baseline;line-height:1.4em;">
+xcodebuild -target targetName CODE_SIGN_IDENTITY="iPhone
+Distribution:XXXXXX"<br style="line-height:1.4em;" />
+xcrun -sdk iphoneos PackageApplication -v 源app路径 -o 输出的ipa路径 --sign
+"iPhone Distribution:XXXXXX"</div>
+</div>
+<p style="background-color:#fef3dd;border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;color:#292929;font-family:'Helvetica neue', Arial, Helvetica, sans-serif;line-height:17px;">
+基本就这样了，接下来批量工作，至于是用bash脚本还是apple
+script就看个人喜好了，我是不会告诉你我现在喜欢写mac小程序的。</p>
+<p style="background-color:#fef3dd;border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;color:#292929;font-family:'Helvetica neue', Arial, Helvetica, sans-serif;line-height:17px;">
+</p>
+<p style="background-color:#fef3dd;border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;color:#292929;font-family:'Helvetica neue', Arial, Helvetica, sans-serif;line-height:17px;">
+&nbsp;<wbr></p>
+<p style="border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;">
+前有写过《<a href="http://blog.cnrainbird.com/index.php/2012/10/25/zui_jin_yan_jiu_xcodebuild_pi_liang_da_bao_de_yi_xie_xin_de/" target="_blank">最近研究xcodebuild批量打包的一些心得</a>》
+因为当时已经研究过一个工程多target，所以在多target的基础上，很容易按照target名字进行打包，于是建立了一堆的target以后，然
+后写了一个脚本批量打包。然后想着以后打包省事儿，直接脚本一执行，走你。结果今天需要再打一批包，拿到列表以后一看发现：新加了几个渠道，去掉了几个渠
+道。哎呀，妈呀，这个列表咋还是变的呢？这么一来，我可以不用删除多余的target，但是需要新建target呀，细想一下发现：我新建target只
+是为了加一个变量，用来区分这个target，那么我可不可以直接以渠道名为参数传给xcodebuild然后就自动生成不同的target呢？<br />
+说干就干，先前查资料的时候，有看到说可以给xcodebuild传参数的：</p>
+<div style="background-color:#f1f1f1;border:1px solid #9f9f9f;margin:0px 0px 10px;padding:0px;vertical-align:baseline;text-align:left;font-size:13px;line-height:1.4em;font-family:Monaco, 'Lucida Console', monospace;overflow:auto;white-space:nowrap;width:740px;">
+<div style="border:0px;margin:0px;padding:5px;vertical-align:baseline;line-height:1.4em;">
+xcodebuild -sdk xxx -target xxx SYMROOT=xxx API_TYPE=1</div>
+</div>
+<p style="border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;">
+API_TYPE就是要识别的macro喽，果断换成自己的区别标识，一通编译打包以后，发现：不好使！神马情况呢？一通google以后发现有说用GCC_PREPROCESSOR_DEFINITIONS可以。还是用上面的例子：</p>
+<div style="background-color:#f1f1f1;border:1px solid #9f9f9f;margin:0px 0px 10px;padding:0px;vertical-align:baseline;text-align:left;font-size:13px;line-height:1.4em;font-family:Monaco, 'Lucida Console', monospace;overflow:auto;white-space:nowrap;width:740px;">
+<div style="border:0px;margin:0px;padding:5px;vertical-align:baseline;line-height:1.4em;">
+xcodebuild -sdk xxx -target xxx
+GCC_PREPROCESSOR_DEFINITIONS="API_TYPE=1"</div>
+</div>
+<p style="border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;">
+发现这样竟然是好使的，于是又用下面的语法试了试：</p>
+<div style="background-color:#f1f1f1;border:1px solid #9f9f9f;margin:0px 0px 10px;padding:0px;vertical-align:baseline;text-align:left;font-size:13px;line-height:1.4em;font-family:Monaco, 'Lucida Console', monospace;overflow:auto;white-space:nowrap;width:740px;">
+<div style="border:0px;margin:0px;padding:5px;vertical-align:baseline;line-height:1.4em;">
+xcodebuild -sdk xxx -target xxx
+GCC_PREPROCESSOR_DEFINITIONS="API_TYPE=一"<br style="line-height:1.4em;" />
+xcodebuild -sdk xxx -target xxx
+GCC_PREPROCESSOR_DEFINITIONS="API_TYPE=a"</div>
+</div>
+<p style="border:0px;margin-top:0px;margin-bottom:24px;padding:0px;vertical-align:baseline;">
+发现，这个macro只能用数字！也就是说，虽然你传进去一个API_TYPE=1，而编译器也只是在最开始执行编译以前</p>
+</div>
+</div></body></html>

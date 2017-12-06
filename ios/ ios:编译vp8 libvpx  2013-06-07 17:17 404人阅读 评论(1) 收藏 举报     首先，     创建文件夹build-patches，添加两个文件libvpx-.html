@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-04-09T08:17:30Z"/><meta name="updated" content="2016-10-08T09:09:14Z"/><title> ios:编译vp8 libvpx  2013-06-07 17:17 404人阅读 评论(1) 收藏 举报     首先，     创建文件夹build-patches，添加两个文件libvpx-</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>&nbsp;ios:编译vp8 libvpx</div>
+<div>2013-06-07 17:17 404人阅读 评论(1) 收藏 举报</div>
+<div><br />
+</div>
+<div>首先，</div>
+<div><br />
+</div>
+<div>创建文件夹build-patches，添加两个文件libvpx-configure.sh.patch和libvpx-gen_asm_deps.sh.patch，文件内容如下：</div>
+<div><br />
+</div>
+<div>libvpx-configure.sh.patch文件内容</div>
+<div><br />
+</div>
+<div>--- build/src/libvpx-v1.1.0/build/make/configure.sh.orig 2012-05-08 16:14:00.000000000 -0700</div>
+<div>+++ build/src/libvpx-v1.1.0/build/make/configure.sh 2012-10-29 13:40:35.000000000 -0700</div>
+<div>@@ -844,7 +844,7 @@</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;add_ldflags -arch_only ${tgt_isa}</div>
+<div>&nbsp;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if [ -z "${alt_libc}" ]; then</div>
+<div>- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;alt_libc=${SDK_PATH}/SDKs/iPhoneOS5.1.sdk</div>
+<div>+ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;alt_libc=${SDK_PATH}/SDKs/iPhoneOS6.1.sdk</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;fi</div>
+<div>&nbsp;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;add_cflags &nbsp;"-isysroot ${alt_libc}"</div>
+<div><br />
+</div>
+<div>libvpx-gen_asm_deps.sh.patch文件内容</div>
+<div><br />
+</div>
+<div>--- build/src/libvpx-v1.1.0/build/make/gen_asm_deps.sh.orig 2012-05-08 16:14:00.000000000 -0700</div>
+<div>+++ build/src/libvpx-v1.1.0/build/make/gen_asm_deps.sh 2012-10-29 13:25:25.000000000 -0700</div>
+<div>@@ -42,7 +42,7 @@</div>
+<div>&nbsp;</div>
+<div>&nbsp;[ -n "$srcfile" ] || show_help</div>
+<div>&nbsp;sfx=${sfx:-asm}</div>
+<div>-includes=$(LC_ALL=C egrep -i "include +\"?+[a-z0-9_/]+\.${sfx}" $srcfile |</div>
+<div>+includes=$(LC_ALL=C egrep -i "include +\"+[a-z0-9_/]+\.${sfx}" $srcfile |</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; perl -p -e "s;.*?([a-z0-9_/]+.${sfx}).*;\1;")</div>
+<div>&nbsp;#" restore editor state</div>
+<div>&nbsp;for inc in ${includes}; do</div>
+<div><br />
+</div>
+<div>创建脚本build-libvpx.sh，脚本如下：</div>
+<div><br />
+</div>
+<div>#!/bin/bash</div>
+<div># &nbsp;Builds libvpx for iPhone targets: iPhoneSimulator-i386,</div>
+<div># &nbsp;iPhoneOS-armv7.</div>
+<div>#</div>
+<div># &nbsp;Copyright 2012 Mike Tigas &lt;mike@tig.as&gt;</div>
+<div>#</div>
+<div># &nbsp;Based on work by Felix Schulze on 16.12.10.</div>
+<div># &nbsp;Copyright 2010 Felix Schulze. All rights reserved.</div>
+<div>#</div>
+<div># &nbsp;Licensed under the Apache License, Version 2.0 (the "License");</div>
+<div># &nbsp;you may not use this file except in compliance with the License.</div>
+<div># &nbsp;You may obtain a copy of the License at</div>
+<div>#</div>
+<div># &nbsp;http://www.apache.org/licenses/LICENSE-2.0</div>
+<div>#</div>
+<div># &nbsp;Unless required by applicable law or agreed to in writing, software</div>
+<div># &nbsp;distributed under the License is distributed on an "AS IS" BASIS,</div>
+<div># &nbsp;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</div>
+<div># &nbsp;See the License for the specific language governing permissions and</div>
+<div># &nbsp;limitations under the License.</div>
+<div>#</div>
+<div>###########################################################################</div>
+<div># &nbsp;Choose your libvpx version and your currently-installed iOS SDK version:</div>
+<div>#</div>
+<div>VERSION="1.1.0"</div>
+<div>SDKVERSION="6.1"</div>
+<div>#</div>
+<div>#</div>
+<div>###########################################################################</div>
+<div>#</div>
+<div># Don't change anything under this line!</div>
+<div>#</div>
+<div>###########################################################################</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div># No need to change this since xcode build will only compile in the</div>
+<div># necessary bits from the libraries we create</div>
+<div>ARCHS="i386 armv7"</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>DEVELOPER=`xcode-select -print-path`</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>cd "`dirname \"$0\"`"</div>
+<div>REPOROOT=$(pwd)</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div># Where we'll end up storing things in the end</div>
+<div>OUTPUTDIR="${REPOROOT}/dependencies"</div>
+<div>mkdir -p ${OUTPUTDIR}/include</div>
+<div>mkdir -p ${OUTPUTDIR}/lib</div>
+<div>mkdir -p ${OUTPUTDIR}/bin</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>BUILDDIR="${REPOROOT}/build"</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div># where we will keep our sources and build from.</div>
+<div>SRCDIR="${BUILDDIR}/src"</div>
+<div>mkdir -p $SRCDIR</div>
+<div># where we will store intermediary builds</div>
+<div>INTERDIR="${BUILDDIR}/built"</div>
+<div>mkdir -p $INTERDIR</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>########################################</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>cd $SRCDIR</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div># Exit the script if an error happens</div>
+<div>set -e</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>if [ ! -e "${SRCDIR}/libvpx-v${VERSION}.tar.bz2" ]; then</div>
+<div>echo "Downloading libvpx-v${VERSION}.tar.bz2"</div>
+<div>&nbsp; &nbsp; curl -LO http://webm.googlecode.com/files/libvpx-v${VERSION}.tar.bz2</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>else</div>
+<div>echo "Using libvpx-v${VERSION}.tar.bz2"</div>
+<div>fi</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>tar zxf libvpx-v${VERSION}.tar.bz2 -C $SRCDIR</div>
+<div>cd "${SRCDIR}/libvpx-v${VERSION}"</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>patch -p3 &lt; ../../../build-patches/libvpx-configure.sh.patch</div>
+<div>patch -p3 &lt; ../../../build-patches/libvpx-gen_asm_deps.sh.patch</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>set +e # don't bail out of bash script if ccache doesn't exist</div>
+<div>CCACHE=`which ccache`</div>
+<div>if [ $? == "0" ]; then</div>
+<div>&nbsp; &nbsp; echo "Building with ccache: $CCACHE"</div>
+<div>&nbsp; &nbsp; CCACHE="${CCACHE} "</div>
+<div>else</div>
+<div>&nbsp; &nbsp; echo "Building without ccache"</div>
+<div>&nbsp; &nbsp; CCACHE=""</div>
+<div>fi</div>
+<div>set -e # back to regular "bail out on error" mode</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>for ARCH in ${ARCHS}</div>
+<div>do</div>
+<div>if [ "${ARCH}" == "i386" ];</div>
+<div>then</div>
+<div>PLATFORM="iPhoneSimulator"</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; EXTRA_CONFIG="--target=x86-darwin12-gcc"</div>
+<div>else</div>
+<div>PLATFORM="iPhoneOS"</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; EXTRA_CONFIG="--target=armv7-darwin-gcc"</div>
+<div>fi</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>mkdir -p "${INTERDIR}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk"</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>./configure --disable-shared --enable-static --enable-pic ${EXTRA_CONFIG} \</div>
+<div>&nbsp; &nbsp; --prefix="${INTERDIR}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk" \</div>
+<div>&nbsp; &nbsp; --sdk-path="${DEVELOPER}/Platforms/${PLATFORM}.platform/Developer" \</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; # Build the application and install it to the fake SDK intermediary dir</div>
+<div>&nbsp; &nbsp; # we have set up. Make sure to clean up afterward because we will re-use</div>
+<div>&nbsp; &nbsp; # this source tree to cross-compile other targets.</div>
+<div>make -j2</div>
+<div>make install</div>
+<div>make clean</div>
+<div>done</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>########################################</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>echo "Build library..."</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div># These are the libs that comprise libvpx.</div>
+<div>OUTPUT_LIBS="libvpx.a"</div>
+<div>for OUTPUT_LIB in ${OUTPUT_LIBS}; do</div>
+<div>&nbsp; &nbsp; INPUT_LIBS=""</div>
+<div>&nbsp; &nbsp; for ARCH in ${ARCHS}; do</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; if [ "${ARCH}" == "i386" ];</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; then</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PLATFORM="iPhoneSimulator"</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; else</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PLATFORM="iPhoneOS"</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; fi</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; INPUT_ARCH_LIB="${INTERDIR}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk/lib/${OUTPUT_LIB}"</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; if [ -e $INPUT_ARCH_LIB ]; then</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; INPUT_LIBS="${INPUT_LIBS} ${INPUT_ARCH_LIB}"</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; fi</div>
+<div>&nbsp; &nbsp; done</div>
+<div>&nbsp; &nbsp; # Combine the three architectures into a universal library.</div>
+<div>&nbsp; &nbsp; if [ -n "$INPUT_LIBS" &nbsp;]; then</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; lipo -create $INPUT_LIBS \</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; -output "${OUTPUTDIR}/lib/${OUTPUT_LIB}"</div>
+<div>&nbsp; &nbsp; else</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; echo "$OUTPUT_LIB does not exist, skipping (are the dependencies installed?)"</div>
+<div>&nbsp; &nbsp; fi</div>
+<div>done</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>for ARCH in ${ARCHS}; do</div>
+<div>&nbsp; &nbsp; if [ "${ARCH}" == "i386" ];</div>
+<div>&nbsp; &nbsp; then</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; PLATFORM="iPhoneSimulator"</div>
+<div>&nbsp; &nbsp; else</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; PLATFORM="iPhoneOS"</div>
+<div>&nbsp; &nbsp; fi</div>
+<div>&nbsp; &nbsp; cp -R ${INTERDIR}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk/include/* ${OUTPUTDIR}/include/</div>
+<div>&nbsp; &nbsp; if [ $? == "0" ]; then</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; # We only need to copy the headers over once. (So break out of forloop</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; # once we get first success.)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; break</div>
+<div>&nbsp; &nbsp; fi</div>
+<div>done</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>for ARCH in ${ARCHS}; do</div>
+<div>&nbsp; &nbsp; if [ "${ARCH}" == "i386" ];</div>
+<div>&nbsp; &nbsp; then</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; PLATFORM="iPhoneSimulator"</div>
+<div>&nbsp; &nbsp; else</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; PLATFORM="iPhoneOS"</div>
+<div>&nbsp; &nbsp; fi</div>
+<div>&nbsp; &nbsp; cp -R ${INTERDIR}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk/bin/* ${OUTPUTDIR}/bin/</div>
+<div>&nbsp; &nbsp; if [ $? == "0" ]; then</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; # We only need to copy the binaries over once. (So break out of forloop</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; # once we get first success.)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; break</div>
+<div>&nbsp; &nbsp; fi</div>
+<div>done</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>####################</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>echo "Building done."</div>
+<div>echo "Cleaning up..."</div>
+<div>rm -fr ${INTERDIR}</div>
+<div>rm -fr "${SRCDIR}/libvpx-v${VERSION}"</div>
+<div>echo "Done."</div>
+<div><br />
+</div>
+<div>运行脚本即可编译成功，注意libvpx版本和xcodeSDK版本。</div>
+<div><br />
+</div></body></html>

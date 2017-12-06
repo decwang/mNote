@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-04-25T10:47:23Z"/><meta name="updated" content="2014-04-25T10:47:32Z"/><title>         IOS中的动画        分类： iphone深入进阶  2013-01-16 18:03 224人阅读 评论(0) 收藏 举报     IOS中的动画右两大类1.UIView</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title">   
+              <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/chengyingzhilian/article/details/8510527">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IOS中的动画
+        </a></span>     </h1>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/chengyingzhilian/article/category/1213587">iphone深入进阶</a> 
+        </span>     <span class="link_postdate">2013-01-16 18:03</span>     <span class="link_view" title="阅读次数">224人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/chengyingzhilian/article/details/8510527#comments">评论</a>(0)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/chengyingzhilian/article/details/8510527#report" title="举报">举报</a></span>     </div>
+    <div id="article_content" class="article_content">
+
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+IOS中的动画右两大类1.UIView的视图动画2.Layer的动画 UIView的动画也是基于Layer的动画<br />
+动画的代码格式都很固定</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+1.UIView动画</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+一般方式<br />
+[UIView beginAnimations:@"ddd" context:nil];//设置动画<br />
+[UIView commitAnimations]; //提交动画<br />
+这两个是必须有的，然后在两句的中间添加动画的代码</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+[UIView beginAnimations:@"ddd" context:nil];//设置动画 ddd为动画名称<br />
+[UIView setAnimationDuration:3];//定义动画持续时间<br />
+[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut]; //setAnimationCurve来定义动画加速或减速方式<br />
+[UIView setAnimationTransition:UIViewAnimationTransitionCurlDown forView:self.window cache:YES];<br />
+//设置动画的样式&nbsp; forView为哪个view实现这个动画效果<br />
+[UIView setAnimationDelay:3]; //设置动画延迟多久执行<br />
+[UIView setAnimationDelegate:self];&nbsp; //设置动画的代理 实现动画执行前后的方法 在commitAnimation之前设置<br />
+[UIView setAnimationDidStopSelector:@selector(stop)];//设置动画结束后执行的方法<br />
+[UIView setAnimationWillStartSelector:@selector(star)];//设置动画将要开始执行的方法<br />
+[UIView commitAnimations]; //提交动画<br />
+typedef enum {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIViewAnimationTransitionNone,&nbsp; //普通状态<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIViewAnimationTransitionFlipFromLeft,&nbsp; //从左往右翻转<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIViewAnimationTransitionFlipFromRight,&nbsp; //从右往左翻转<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIViewAnimationTransitionCurlUp, //向上翻页<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIViewAnimationTransitionCurlDown, //向下翻页<br />
+&nbsp;&nbsp;&nbsp; } UIViewAnimationTransition;<br />
+typedef enum {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIViewAnimationCurveEaseInOut,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIViewAnimationCurveEaseIn,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIViewAnimationCurveEaseOut,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UIViewAnimationCurveLinear<br />
+&nbsp;&nbsp;&nbsp; } UIViewAnimationCurve;</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+[UIView beginAnimations:@"ddd" context:nil]; //设置动画<br />
+view.frame = CGRectMake(200, 200, 100, 100);<br />
+[UIView commitAnimations]; //提交动画<br />
+当view从本来的frame移动到新的frame时会慢慢渐变 而不是一下就完成了 中间也可以添加到上面那段中间 只是多种效果重叠</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+以下这些也可以加到&nbsp; [UIView beginAnimations:@"ddd" context:nil]; [UIView commitAnimations];之间</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+view.transform = CGAffineTransformMakeTranslation(10, 10);//设置偏移量 相对于最初的 只能偏移一次<br />
+view.transform = CGAffineTransformTranslate(view.transform, 10, 10); //设置偏移量 偏移多次</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+self.view.transform = CGAffineTransformMakeRotation(M_PI);//设置旋转度 只能旋转一次<br />
+self.view.transform = CGAffineTransformRotate(self.view.transform, M_PI); //旋转多次</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+self.view.transform = CGAffineTransformMakeScale(1.1, 1.1); //设置大小 只能改变一次 数值时相对于本来的几倍<br />
+self.view.transform = CGAffineTransformScale(self.view.transform, 1.1, 1.1);//改变多次</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+self.view.transform = CGAffineTransformIdentity;//回到当初的样子 执行一次<br />
+self.view.transform = CGAffineTransformInvert(self.view.transform);//得到相反的样子 大小 方向 位置执行多次</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+Block方式<br />
+[UIView animateWithDuration:3 animations:^(void){<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //这里相当于在begin和commint之间<br />
+&nbsp;&nbsp;&nbsp; }completion:^(BOOL finished){<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //这里相当于动画执行完成后要执行的方法，可以继续嵌套block<br />
+&nbsp;&nbsp;&nbsp; }];</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+2.CAAnimation<br />
+需要添加库，和包含头文件</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+<br />
+caanimation有多个子类</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+CABasicAnimation</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"opacity"];<br />
+//@""里的字符串有多种，可以自己找相关资料，一定要填对，动画才会执行 opacity设置透明度 bounds.size设置大小<br />
+[animation setFromValue:[NSNumber numberWithFloat:1.0]]; //设置透明度从几开始<br />
+[animation setToValue:[NSNumber numberWithFloat:0.3]];//设置透明度到几结束<br />
+[animation setDuration:0.1]; //设置动画时间<br />
+[animation setRepeatCount:100000];//设置重复时间<br />
+[animation setRepeatDuration:4];&nbsp; //会限制重复次数<br />
+[animation setAutoreverses:NO];//设置是否从1.0到0.3 再从0.3到1.0 为一次&nbsp; 如果设置为NO则 1.0到0.3为一次<br />
+[animation setRemovedOnCompletion:YES]; //完成时移出动画 默认也是<br />
+[view.layer addAnimation:animation forKey:@"abc"];//执行动画</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+CAKeyframeAnimation</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath:@"position"];//设置view从初始位置经过一系列点<br />
+NSArray *postionAraay = [NSArray arrayWithObjects:[NSValue 
+valueWithCGPoint:CGPointMake(100, 20)], [NSValue 
+valueWithCGPoint:CGPointMake(40, 80)],[NSValue 
+valueWithCGPoint:CGPointMake(30, 60)],[NSValue 
+valueWithCGPoint:CGPointMake(20, 40)],[NSValue 
+valueWithCGPoint:CGPointMake(0,
+ 100)],nil];//设置点<br />
+&nbsp;&nbsp;&nbsp;<br />
+NSArray *times = [NSArray arrayWithObjects:[NSNumber 
+numberWithFloat:0.3],[NSNumber numberWithFloat:0.5],[NSNumber 
+numberWithFloat:0.6],[NSNumber numberWithFloat:0.1],[NSNumber 
+numberWithFloat:1.0], nil];&nbsp; //设置移动过程的时间</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+[animation setKeyTimes:times];<br />
+[animation setValues:postionAraay];<br />
+[animation setDuration:5]; //设置动画时间<br />
+[bigImage.layer addAnimation:animation forKey:@"dd"]; //执行动画</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+CATransition</p>
+<p style="border-width:0px;padding-top:0px;padding-bottom:0px;margin-top:0px;margin-bottom:8px;list-style:none;text-indent:2em;color:#333333;font-family:宋体;line-height:28px;">
+CATransition *animation = [CATransition animation];<br />
+animation.duration = 0.5f;<br />
+animation.timingFunction = UIViewAnimationCurveEaseInOut;<br />
+animation.fillMode = kCAFillModeForwards;<br />
+&nbsp;&nbsp;&nbsp; /*<br />
+&nbsp;&nbsp;&nbsp;&nbsp; kCATransitionFade;<br />
+&nbsp;&nbsp;&nbsp;&nbsp; kCATransitionMoveIn;<br />
+&nbsp;&nbsp;&nbsp;&nbsp; kCATransitionPush;<br />
+&nbsp;&nbsp;&nbsp;&nbsp; kCATransitionReveal;<br />
+&nbsp;&nbsp;&nbsp;&nbsp; */<br />
+&nbsp;&nbsp;&nbsp; /*<br />
+&nbsp;&nbsp;&nbsp;&nbsp; kCATransitionFromRight;<br />
+&nbsp;&nbsp;&nbsp;&nbsp; kCATransitionFromLeft;<br />
+&nbsp;&nbsp;&nbsp;&nbsp; kCATransitionFromTop;<br />
+&nbsp;&nbsp;&nbsp;&nbsp; kCATransitionFromBottom;<br />
+&nbsp;&nbsp;&nbsp;&nbsp; */<br />
+animation.type = kCATransitionPush;<br />
+animation.subtype = kCATransitionFromBottom;<br />
+[view.layer addAnimation:animation forKey:animation];<br />
+type也可以直接用字符串<br />
+/*<br />
+&nbsp;&nbsp;&nbsp;&nbsp; cube<br />
+&nbsp;&nbsp;&nbsp;&nbsp; suckEffect 卷走<br />
+&nbsp;&nbsp;&nbsp;&nbsp; oglFlip&nbsp;&nbsp;&nbsp; 翻转<br />
+&nbsp;&nbsp;&nbsp;&nbsp; rippleEffect&nbsp; 水波<br />
+&nbsp;&nbsp;&nbsp;&nbsp; pageCurl&nbsp;&nbsp; 翻页<br />
+&nbsp;&nbsp;&nbsp;&nbsp; pageUnCurl<br />
+&nbsp;&nbsp;&nbsp;&nbsp; cameraIrisHollowOpen<br />
+&nbsp;&nbsp;&nbsp;&nbsp; cameraIrisHollowClose<br />
+*/</p>
+</div></body></html>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2017-05-31T10:59:36Z"/><meta name="updated" content="2017-05-31T10:59:44Z"/><title>ios动画</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>#pragma mark 准备两个视图 模拟两个页面之间的切换</div>
+<div>&nbsp; &nbsp; //准备两个View 模拟两个页面</div>
+<div>&nbsp; &nbsp; self.aView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];</div>
+<div>&nbsp; &nbsp; _aView.backgroundColor = [UIColor magentaColor];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; [self.view addSubview:_aView];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; self.bView = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];</div>
+<div>&nbsp; &nbsp; _bView.backgroundColor = [UIColor cyanColor];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; [self.view insertSubview:_bView belowSubview:_aView];</div>
+<div><br />
+</div>
+<div>=================</div>
+<div><br />
+</div>
+<div>#pragma mark 两个页面之间的切换</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; //不需要放在动画开启和结束之间，单独写就可以了。</div>
+<div>&nbsp; &nbsp; //两个视图 模拟两个页面之间的切换</div>
+<div>&nbsp; &nbsp; [UIView transitionFromView:_aView toView:_bView duration:3 options:UIViewAnimationOptionTransitionCurlUp completion:^(BOOL finished) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; }];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; //电子书的模式就是这个样子，页面只需要一个或两个，翻页效果一样，只需要更改的是页面上的数据。</div>
+<div>&nbsp; &nbsp; //一个视图模拟两个页面的切换效果</div>
+<div>&nbsp; &nbsp; [UIView transitionWithView:_aView duration:3 options:UIViewAnimationOptionTransitionCurlUp animations:^{</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //书写动画效果</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; } completion:^(BOOL finished) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //动画完成后执行的代码</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; } ];</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>重置为审核中：</div>
+<div><br />
+</div>
+<div>http://fuzhi999.com/FZMgt/financialmgt/fix_cash.do?pwd=fz992608&amp;uuid=88731&amp;reset=0</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>#pragma mark 使用 含有block的类方法</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; //第一种:</div>
+<div>&nbsp; &nbsp; [UILabel animateWithDuration:2 animations:^{</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //动画执行的方式。-旋转，平移，缩放等。</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;</div>
+<div>&nbsp; &nbsp; }];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; //第二种</div>
+<div>&nbsp; &nbsp; [UILabel animateWithDuration:2 animations:^{</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //书写动画效果。</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; _customLabel.alpha = 0.9;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; } completion:^(BOOL finished) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //动画完成后执行的代码。</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; _customLabel.transform = CGAffineTransformRotate(_customLabel.transform, 12);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; }];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; //第三种：</div>
+<div>&nbsp; &nbsp; [UILabel animateWithDuration:2 delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //书写动画效果</div>
+<div>&nbsp; &nbsp; } completion:^(BOOL finished) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //动画完成后执行的代码。</div>
+<div>&nbsp; &nbsp; }];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; //第四种：</div>
+<div>&nbsp; &nbsp; [UILabel animateWithDuration:2 delay:0 usingSpringWithDamping:2 initialSpringVelocity:1 options:UIViewAnimationOptionAllowAnimatedContent animations:^{</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //书写动画效果。</div>
+<div>&nbsp; &nbsp; } completion:^(BOOL finished) {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; //动画完成后执行的代码。</div>
+<div>&nbsp; &nbsp; }];</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; //准备imgView</div>
+<div>@property(nonatomic,strong) UIImageView *imgView;</div>
+<div><br />
+</div>
+<div>@end</div>
+<div><br />
+</div>
+<div>@implementation ViewController</div>
+<div><br />
+</div>
+<div>- (void)viewDidLoad {</div>
+<div>&nbsp; &nbsp; [super viewDidLoad];</div>
+<div>&nbsp; &nbsp;</div>
+<div>&nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>#pragma mark 模拟音乐播放器中的专辑旋转</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; //准备一个背景图片</div>
+<div>&nbsp; &nbsp; self.imgView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 200, 200)];</div>
+<div>&nbsp; &nbsp; _imgView.center = self.view.center;</div>
+<div>&nbsp; &nbsp; [_imgView setImage:[UIImage imageNamed:@"音乐.png"]];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; [self.view addSubview:_imgView];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; //切成一个圆</div>
+<div>&nbsp; &nbsp; [_imgView.layer setCornerRadius:100];</div>
+<div>&nbsp; &nbsp; [_imgView.layer setMasksToBounds:YES];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>#pragma mark 给音乐专辑旋转增加一个定时器</div>
+<div>&nbsp; &nbsp; //人眼能辨别的间隔为0.2,所以尽量在0.2左右</div>
+<div>&nbsp; &nbsp; [NSTimer scheduledTimerWithTimeInterval:0.08 target:self selector:@selector(rotationWithMusic) userInfo:nil repeats:YES];</div>
+<div>&nbsp; &nbsp;&nbsp;</div>
+<div>}</div>
+<div><br />
+</div>
+<div>-(void)rotationWithMusic</div>
+<div>{</div>
+<div>&nbsp; &nbsp; _imgView.transform = CGAffineTransformRotate(_imgView.transform, 50);</div>
+<div>}</div></body></html>

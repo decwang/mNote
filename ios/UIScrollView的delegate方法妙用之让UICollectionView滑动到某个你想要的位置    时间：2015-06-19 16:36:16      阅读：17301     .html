@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2016-10-18T07:57:04Z"/><meta name="updated" content="2016-10-18T07:57:07Z"/><title>UIScrollView的delegate方法妙用之让UICollectionView滑动到某个你想要的位置    时间：2015-06-19 16:36:16      阅读：17301     </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="detailtitle divtextaligncenter divborderbottomdotted" style="font-family:Arial, Helvetica, sans-serif;padding:15px 0px;font-size:16px;color:#023e9a;text-align:center;border-bottom-width:1px;border-bottom-color:#dadada;border-bottom-style:dotted;font-weight:bold;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:normal;widows:1;"><h1 id="Htitle" class="detailtitle" style="padding:15px 0px;font-size:16px;">UIScrollView的delegate方法妙用之让UICollectionView滑动到某个你想要的位置</h1>
+</div>
+<div class="detail1 divtextaligncenter" style="font-family:Arial, Helvetica, sans-serif;padding:0px;font-size:12px;color:#3f3f3f;text-align:center;margin:20px 0px;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;line-height:normal;widows:1;">时间：<span id="Label2" class="colorlv" style="padding:0px;">2015-06-19 16:36:16</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 阅读：<span id="Label1" class="colorCheng" style="padding:0px;">17301</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 评论：<span id="lblcommentcount" class="colorCheng" style="padding:0px;">0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 收藏：<span id="lblfavorite" class="colorCheng" style="padding:0px;">0</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="infofavorite" class="acursorpointer" style="padding:0px;color:#333333;cursor:pointer;">[点我收藏+]</a></div>
+<div class="detailcontennt" style="font-family:Arial, Helvetica, sans-serif;padding:0px;font-size:12px;color:#3f3f3f;margin:20px 0px;line-height:30px;word-wrap:break-word;font-variant-ligatures:normal;font-variant-position:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-variant-east-asian:normal;widows:1;"><span id="Label3" style="padding:0px;"><p style="padding:0px;font-size:14px;line-height:30px;">标签：</p>
+<p style="padding:0px;font-size:14px;line-height:30px;"></p>
+<div style="padding:0px;font-size:14px;line-height:30px;">一个UICollectionView有好多个cell，滑动一下，谁也不知道会停留在哪个cell，滑的快一点，就会多滑一段距离，反之则会滑的比较近，这正是UIScrollview用户体验好的地方。</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">如果想要UICollectionView停留到某个cell的位置，可以用</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">- (void)scrollToItemAtIndexPath:(NSIndexPath *)indexPath atScrollPosition:(UICollectionViewScrollPosition)scrollPosition animated:(BOOL)animated;</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">这个方法，还能用scrollPosition这个参数控制cell具体停留在上下左右中到底哪个位置。</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">那么问题来了：如果我只是随便滑了一下，我也不知道它会停在位于哪个indexPath的cell上，但不管它停在哪个cell上，我都希望这个cell刚好在屏幕中间，应该怎么办呢？（这个场景在coverFlow的效果里比较常见）</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">&nbsp;</div>
+<div style="padding:0px;font-size:14px;line-height:30px;"><span style="font-family:Menlo;padding:0px;">之前知道的做法是：</span></div>
+<div style="padding:0px;font-size:14px;line-height:30px;"><span style="font-family:Menlo;padding:0px;">在</span>scrollViewDidEndDecelerating或其他delegate方法里，通过当前 contentOffset 计算最近的整数页及其对应的 contentOffset，然后通过动画移动到这个位置。</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">但是这个做法有问题，就是动画不连贯，完全没有“刚好停到那里”的感觉。</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">&nbsp;</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">今天在想有没有其他更好的办法时，突然发现一个之前从来没用功的方法：</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset NS_AVAILABLE_IOS(5_0);</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">一看这参数名，再看看这文档，真是让人喜不自禁呐！这不就是让scrollView“刚好停到某个位置”的方法嘛！！！（系统5.0就提供了，现在才看到。。。。。。）</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">targetContentOffset 是个指针，可以修改这个参数的值，让scrollView最终停止在目标位置。</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">注意：scrollView的pagingEnable属性必须为NO时这个方法才会被调用。</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">&nbsp;</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">例：<div style="padding:0px;line-height:30px;">- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {</div>
+</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">&nbsp;&nbsp;&nbsp; CGPoint orifinalTargetContentOffset = CGPointMake(targetContentOffset-&gt;x, targetContentOffset-&gt;y);</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">&nbsp;&nbsp;&nbsp; *targetContentOffset = [self&nbsp; itemCenterOffsetWithOriginalTargetContentOffset:orifinalTargetContentOffset];//计算出想要其停止的位置&nbsp;&nbsp;</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">}</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">这样scrollView就会逐渐减速，最终停止在itemCenterOffsetWithOriginalTargetContentOffset方法算出来的位置上了，效果杠杠的~</div>
+<div style="padding:0px;font-size:14px;line-height:30px;"><img alt="技术分享" src="http://images0.cnblogs.com/blog2015/720810/201506/172327324209002.gif" style="padding:0px;max-width:680px;overflow:hidden;" /></div>
+<div style="padding:0px;font-size:14px;line-height:30px;">&nbsp;</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">本来以为这个方法没多少人知道，结果百度一搜，发现原来已经有大神写过详细的文章了（<a href="http://tech.glowing.com/cn/practice-in-uiscrollview/" style="padding:0px;color:#333333;text-decoration:none;">http://tech.glowing.com/cn/practice-in-uiscrollview/</a>），这个就当记录一下吧</div>
+<div style="padding:0px;font-size:14px;line-height:30px;">&nbsp;</div>
+<div style="padding:0px;font-size:14px;line-height:30px;"><div style="padding:0px;line-height:30px;">另外发现一个直接用NSObject就实现类似效果的库：<a href="https://github.com/nicklockwood/iCarousel" style="padding:0px;color:#333333;text-decoration:none;">https://github.com/nicklockwood/iCarousel</a>&nbsp;&nbsp; 乍看之下没看懂。。。等有空再仔细研究</div>
+<div style="padding:0px;line-height:30px;">&nbsp;</div>
+<div style="padding:0px;line-height:30px;">更新(2015-06-19)</div>
+<div style="padding:0px;line-height:30px;">原来UICollectionViewLayout已经提供了两个方法可以实现这个功能：</div>
+<div style="padding:0px;line-height:30px;">- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity;</div>
+<div style="padding:0px;line-height:30px;">- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset NS_AVAILABLE_IOS(7_0);</div>
+<div style="padding:0px;line-height:30px;">效果与上面的delegate方法完全一样，不过这个是UICollectionViewLayout的方法，需要在自己的layout子类里重载。</div>
+<div style="padding:0px;line-height:30px;">好处是：这样就不用再在viewController里写scrollView的delegate方法了，viewController更加简洁；跟布局相关的代码都转移到了layout的类中&nbsp;</div>
+<div><br />
+</div>
+</div>
+</span></div></body></html>

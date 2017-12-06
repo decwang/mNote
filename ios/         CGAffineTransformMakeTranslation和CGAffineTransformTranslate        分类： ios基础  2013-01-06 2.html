@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-05-22T08:08:38Z"/><meta name="updated" content="2014-05-22T09:18:32Z"/><title>         CGAffineTransformMakeTranslation和CGAffineTransformTranslate        分类： ios基础  2013-01-06 2</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title"><h1>
+        <span class="link_title"><a href="http://blog.csdn.net/lamp_zy/article/details/8474818">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CGAffineTransformMakeTranslation和CGAffineTransformTranslate
+        </a></span>     </h1>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/LAMP_zy/article/category/1270883">ios基础</a> 
+        </span>     <span class="link_postdate">2013-01-06 22:05</span>     <span class="link_view" title="阅读次数">5436人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/lamp_zy/article/details/8474818#comments">评论</a>(0)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/lamp_zy/article/details/8474818#report" title="举报">举报</a></span>     </div>
+    <div id="article_content" class="article_content">
+
+<p>1.CGAffineTransformMakeTranslation每次都是以最初位置的中心点为起始参照</p>
+<p>&nbsp; &nbsp;CGAffineTransformTranslate每次都是以传入的transform为起始参照</p>
+<p>&nbsp; &nbsp;CGAffineTransformIdentity为最初状态，即最初位置的中心点</p>
+<p>2.3个按钮，bt1，bt2，bt3，bt1和bt2控制bt3的移动</p>
+<p></p>
+<p class="p1">- (<span class="s1">IBAction</span>)bt1clicked:(<span class="s1">id</span>)sender {</p>
+<p class="p2"><span class="s2">&nbsp; &nbsp; </span><span class="s1">self</span><span class="s2">.</span><span class="s3">bt3</span><span class="s2">.</span><span class="s4">transform</span><span class="s2"> =</span>CGAffineTransformMakeTranslation<span class="s2">(</span><span class="s5">10</span><span class="s2">,</span><span class="s5">0</span><span class="s2">);</span></p>
+<p class="p1">}</p>
+<p class="p1">- (<span class="s1">IBAction</span>)bt2clicked:(<span class="s1">id</span>)sender {</p>
+<p class="p3"><span class="s2">&nbsp; &nbsp; ／／</span><span class="s1">self</span><span class="s2">.</span><span class="s3">bt3</span><span class="s2">.</span>transform<span class="s2"> =</span><span class="s6">CGAffineTransformTranslate</span><span class="s2">(</span>CGAffineTransformIdentity<span class="s2">,</span><span class="s5">10</span><span class="s2">, </span><span class="s5">0</span><span class="s2">);</span></p>
+<p class="p2"><span class="s2">&nbsp; &nbsp; </span><span class="s1">self</span><span class="s2">.</span><span class="s3">bt3</span><span class="s2">.</span><span class="s4">transform</span><span class="s2"> =</span>CGAffineTransformTranslate<span class="s2">(</span><span class="s1">self</span><span class="s2">.</span><span class="s3">bt3</span><span class="s2">.</span><span class="s4">transform</span><span class="s2">,</span><span class="s5">10</span><span class="s2">, </span><span class="s5">0</span><span class="s2">);</span></p>
+<p class="p1">}</p>
+<p class="p1">点击bt1，第一次移动10个像素，以后都是以最初位置的中心点为起始参照，所以后续bt1无论点击多少次，按钮都在初始位置偏移10个像素的位置不动</p>
+<p class="p1">点击bt1一次，再点击bt2一次，偏移20像素，点击bt2时，上一次按钮点击的偏移作为这次的参照</p>
+<p class="p1">只点击bt2一次，偏移10个像素</p>
+<p class="p1">不断点击bt2，bt3不断偏移10个像素</p>
+<p class="p1"></p>
+<p class="p1">bt2clicked的第一句不注释：</p>
+<p class="p1">第一次点击bt2，bt3偏移20，后续再点击，永远再第一次点击后的位置，再点击bt1，回到初始偏移10的位置（往回走了10）</p>
+<p class="p1">点击bt1，偏移10，再点击bt2，在bt1点击基础上再偏移10，后续再点击不动（<span class="s2">&nbsp;</span><span class="s6">CGAffineTransformTranslate</span><span class="s2">(</span>CGAffineTransformIdentity<span class="s2">,&nbsp;</span><span class="s5">10</span><span class="s2">,&nbsp;</span><span class="s5">0</span><span class="s2">);每次都是从最初位置开始偏移</span>）</p>
+<p class="p1"></p>
+<p class="p1"></p>
+<p class="p1"><div class="articalTitle"> 
+			
+								<h2 id="t_9bf272cf01015i9b" class="titName SG_txta">UIView大小缩放的动画效果函数。</h2>
+			
+					<span class="time SG_txtc">(2012-06-26 17:20:23)</span><div class="turnBoxzz"><a href="" class="SG_aBtn SG_aBtn_ico SG_turn" action-type="reblog" action-data="{srcBlog:1, blogId:'9bf272cf01015i9b'}"><cite><img class="SG_icon SG_icon111" src="http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif" align="absmiddle" height="15" width="15" />转载<em class="arrow">▼</em></cite></a></div>
+		</div>
+		<div class="articalTag" id="sina_keyword_ad_area">
+			<table>
+				<tbody><tr>
+					<td class="blog_tag">
+					
+											<span class="SG_txtb">标签：</span> 																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=%D4%D3%CC%B8&amp;by=tag" target="_blank">杂谈</a></h3>
+																</td>
+					<td class="blog_class">
+										</td>
+				</tr>
+			</tbody>
+</table>
+		</div>
+						
+		<div id="sina_keyword_ad_area2" class="articalContent ">
+			<p>&nbsp;<wbr></p>
+<p>&nbsp;<wbr>UIView *singleMapView = [[UIView alloc]</p>
+<p>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> initWithFrame:CGRectMake(10, 150, 300, 250)];</p>
+<p>&nbsp;<wbr> &nbsp;<wbr> singleMapView.backgroundColor =
+[UIColor blackColor];</p>
+<p>&nbsp;<wbr> &nbsp;<wbr> [self.view addSubview:singleMapView];</p>
+<p>&nbsp;<wbr> &nbsp;<wbr> singleMapView.transform =
+CGAffineTransformMakeSca<wbr>le(0.05, 0.05);</p>
+<p>[UIView animateWithDuration:3</p>
+<p>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> animations:^{</p>
+<p>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> singleMapView.transform = CGAffineTransformMakeSca<wbr>le(1.2,
+1.2); &nbsp;<wbr></p>
+<p>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> }completion:^(BOOL
+finish){</p>
+<p>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> [UIView animateWithDuration:3</p>
+<p>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> animations:^{</p>
+<p>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> singleMapView.transform = CGAffineTransformMakeSca<wbr>le(0.9,
+0.9); &nbsp;<wbr></p>
+<p>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> }completion:^(BOOL finish){</p>
+<p>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> [UIView animateWithDuration:3</p>
+<p>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> animations:^{</p>
+<p>&nbsp;<wbr>&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> singleMapView.transform = CGAffineTransformMakeSca<wbr>le(1,
+1); &nbsp;<wbr></p>
+</div>
+</p>
+</div></body></html>

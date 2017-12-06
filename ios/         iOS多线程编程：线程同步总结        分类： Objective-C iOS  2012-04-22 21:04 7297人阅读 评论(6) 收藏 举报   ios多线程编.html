@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-01-14T10:25:23Z"/><meta name="updated" content="2014-01-14T10:25:28Z"/><title>         iOS多线程编程：线程同步总结        分类： Objective-C iOS  2012-04-22 21:04 7297人阅读 评论(6) 收藏 举报   ios多线程编</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title">
+         <h3>
+        <span class="link_title"><a href="http://blog.csdn.net/lifengzhong/article/details/7487505">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;iOS多线程编程：线程同步总结
+        </a></span>     </h3>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/lifengzhong/article/category/1122282">Objective-C</a> 
+            <a href="http://blog.csdn.net/lifengzhong/article/category/1122283">iOS</a> 
+        </span>     <span class="link_postdate">2012-04-22 21:04</span>     <span class="link_view" title="阅读次数">7297人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/lifengzhong/article/details/7487505#comments">评论</a>(6)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/lifengzhong/article/details/7487505#report" title="举报">举报</a></span>     </div>
+<div class="tag2box"><a href="http://www.csdn.net/tag/ios" target="_blank">ios</a><a href="http://www.csdn.net/tag/%e5%a4%9a%e7%ba%bf%e7%a8%8b" target="_blank">多线程</a><a href="http://www.csdn.net/tag/%e7%bc%96%e7%a8%8b" target="_blank">编程</a><a href="http://www.csdn.net/tag/signal" target="_blank">signal</a><a href="http://www.csdn.net/tag/windows" target="_blank">windows</a><a href="http://www.csdn.net/tag/%e5%b9%b3%e5%8f%b0" target="_blank">平台</a></div>
+    <div style="clear:both;"></div>
+<div style="border:solid 1px #ccc;background:#eee;float:left;min-width:200px;padding:4px 10px;"><p style="text-align:right;margin-top:0px;margin-bottom:0px;"><span style="float:left;">目录<a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" title="系统根据文章中H1到H6标签自动生成文章目录">(?)</a></span><a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" title="展开">[+]</a></p>
+</div>
+<div style="clear:both;"></div>
+<div id="article_content" class="article_content">
+
+<h6><a name="t0"></a><span style="font-size:18px;">1：原子操作 - OSAtomic系列函数</span></h6>
+<p><span style="font-size:16px;">iOS平台下的原子操作函数都以OSAtomic开头，使用时需要包含头文件<span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;">&lt;libkern/OSBase.h&gt;。
+不同线程如果通过原子操作函数对同一变量进行操作，可以保证一个线程的操作不会影响到其他线程内对此变量的操作，因为这些操作都是原子式的。因为原子操作
+只能对内置类型进行操作，所以原子操作能够同步的线程只能位于同一个进程的地址空间内。</span></span></p>
+<h2><a name="t1"></a><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:18px;">2：锁 - NSLock系列对象</span></span></h2>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;">iOS
+平台下的锁对象为NSLock对象，进入锁通过调用lock函数，解锁调用unlock函数（因为iOS中大部分的线程同步类都继承自NSLocking
+协议，所以其加锁/解锁的操作基本都为lock/unlock函数），同一个NSLock对象成功调用lock函数后，在其显式unlock之前任何线程
+都不能再对此NSLock对象加锁，以达到互斥访问的目的。除了lock函数，对NSLock加锁的函数还包括tryLock以及
+lockBeforeDate函数，lock函数在成功加锁之间会一直阻塞，而tryLock会尝试加锁，如果不成功，不会阻塞，而是直接返回
+NO，lockBeforeDate则是阻塞到传入的NSDate日期为止。</span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;">除
+了NSLock，iOS还提供了NSRecursive、NSConditionLock类型的锁类型。NSRecursive与NSLock最大的区别
+就是NSRecursive是可重入的，也就是说一个线程可以对一个NSRecursive对象多次调用lock，只要解锁时调用相同次数的unlock
+函数便可。NSConditionLock是一种带有条件的锁对象，除了基本的lock与unlock函数，还提供了lockWithCondition
+以及unlockWithCondition，这两个函数接收整型类型的数据作为参数，只有当一个unlockWithCondition对象被调用时，
+对应的lockWithCondition才会正常返回。这种机制在需几多个线程顺序化的完成某个任务时比较有用，例程如下：</span></span></p>
+<p></p>
+<div class="dp-highlighter bg_plain"><div class="bar"><div class="tools"><b>[plain]</b> <a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:376px;top:853px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_1" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_1" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=18&amp;height=18" wmode="transparent" height="18" align="middle" width="18" /></div>
+</div>
+</div>
+<ol start="1"><li class="alt">//线程A&nbsp;&nbsp;</li>
+<li class="">id&nbsp;condLock&nbsp;=&nbsp;[[NSConditionLock&nbsp;alloc]&nbsp;initWithCondition:NO_DATA];&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;</li>
+<li class="">while(true)&nbsp;&nbsp;</li>
+<li class="alt">{&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;[condLock&nbsp;lock];&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;/*&nbsp;Add&nbsp;data&nbsp;to&nbsp;the&nbsp;queue.&nbsp;*/&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;[condLock&nbsp;unlockWithCondition:HAS_DATA];&nbsp;&nbsp;</li>
+<li class="alt">}&nbsp;&nbsp;</li>
+</ol>
+</div>
+<p></p>
+<div class="dp-highlighter bg_plain"><div class="bar"><div class="tools"><b>[plain]</b> <a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:376px;top:1066px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_2" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_2" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=2&amp;width=18&amp;height=18" wmode="transparent" height="18" align="middle" width="18" /></div>
+</div>
+</div>
+<ol start="1"><li class="alt">//线程B&nbsp;&nbsp;</li>
+<li class="">while&nbsp;(true)&nbsp;&nbsp;</li>
+<li class="alt">{&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;[condLock&nbsp;lockWhenCondition:HAS_DATA];&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;/*&nbsp;Remove&nbsp;data&nbsp;from&nbsp;the&nbsp;queue.&nbsp;*/&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;[condLock&nbsp;unlockWithCondition:(isEmpty&nbsp;?&nbsp;NO_DATA&nbsp;:&nbsp;HAS_DATA)];&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Process&nbsp;the&nbsp;data&nbsp;locally.&nbsp;&nbsp;</li>
+<li class="alt">}&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+<p></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;">除了显示的生成NSLock系列对象，还可以通过将代码放到@synchronized内来达到同步的目的，一段放入其内的代码，不同的线程是不能重入的例如：</span></span></p>
+<p></p>
+<div class="dp-highlighter bg_plain"><div class="bar"><div class="tools"><b>[plain]</b> <a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:376px;top:1349px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_3" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_3" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=3&amp;width=18&amp;height=18" wmode="transparent" height="18" align="middle" width="18" /></div>
+</div>
+</div>
+<ol start="1"><li class="alt">-&nbsp;(void)myMethod:(id)anObj&nbsp;&nbsp;</li>
+<li class="">{&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;@synchronized(anObj)&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//此处代码在同一时刻只能有一个线程执行.&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</li>
+<li class="alt">}&nbsp;&nbsp;</li>
+</ol>
+</div>
+<span style="font-size:16px;"><br />
+<span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;">NSLock系列对象都是可以具名的，也就是说，这些对象可以用于不同进程内部的线程的同步。</span></span><br />
+<h6><a name="t2"></a><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:18px;">3：事件 - NSCondtion</span></span></h6>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;">NSConditon
+类型提供了wait与signal函数，分别代表了等待事件的操作以及触发事件的操作。除了wait函数，NSCondition还提供了
+waitUntilDate函数，其功能与NSLock中的lockBeforeDate大致相同，简要来说就是提供了一个带超时的wait函数。</span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;">虽然NSCondition与Windows环境下Event类型所完成的功能大致类似，但对一个熟悉Event类型的开发人员来说，NSConditon的行为会有点奇怪：</span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;"><strong>第一点</strong>：
+因为遵循NSLocking协议，所以NSCondition在触发与等待过程的前后要分别调用lock与unlock函数，前面提到过，当一个遵循
+NSLocking协议的对象调用lock后，其他的对此对象的lock调用都会阻塞。那么，如果两个线程A和B，A要触发事件，B接收事件，B线程在调
+用lock后，通过调用wait函数进入等待事件触发的状态，那么，A线程岂不是再也没有机会对这个事件进行触发了（因为此对象已经被B线程lock）？
+秘密就在于wait函数的调用，其实，在wait函数内部悄悄的调用了unlock函数，也就是说在调用wati函数后，这个NSCondition对象
+就处于了无锁的状态，这样A线程就可以对此对象加锁并触发该NSCondition对象。当一个事件被其他线程触发时，在wait函数内部得到此事件被触
+发的通知，然后对此事件重新调用lock函数，然后函数返回，而在函数外部，看起来好像接收事件的线程从来没有放开NSCondition对象的所有
+权，B线程直接由阻塞状态进入了触发状态。</span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;"><strong>第二点</strong>：
+当有多个线程进入阻塞状态，等待同一个AutoReset的Event对象被触发时，在Windows环境下唤醒哪一个线程是没有固定的顺序的，也就是说
+操作系统对唤醒哪一个线程不会提供任何的保证。而在iOS平台上，经过笔者测试，其被触发的顺序与，并且只与调用wait函数的顺序相关，与其他（比如线
+程优先级）条件没有关系。这一点在开发时需要进行额外的考虑。</span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;"><strong>第三点</strong>：wait函数并不是完全可信的。这一点比较让人蛋疼，也就是说wait返回后，并不代表对应的事件一定被触发了，因此，为了保证线程之间的同步关系，使用NSCondtion时往往需要加入一个额外的变量来对非正常的wait返回进行规避。具体示例代码如下：</span></span></p>
+<p></p>
+<div class="dp-highlighter bg_plain"><div class="bar"><div class="tools"><b>[plain]</b> <a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/lifengzhong/article/details/7487505#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:376px;top:2030px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_4" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_4" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=4&amp;width=18&amp;height=18" wmode="transparent" height="18" align="middle" width="18" /></div>
+</div>
+</div>
+<ol start="1"><li class="alt">//等待事件触发的线程&nbsp;&nbsp;</li>
+<li class="">[cocoaCondition&nbsp;lock];&nbsp;&nbsp;</li>
+<li class="alt">while&nbsp;(timeToDoWork&nbsp;&lt;=&nbsp;0)&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;&nbsp;&nbsp;[cocoaCondition&nbsp;wait];&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;</li>
+<li class="">timeToDoWork--;&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;</li>
+<li class="">//&nbsp;Do&nbsp;real&nbsp;work&nbsp;here.&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;&nbsp;</li>
+<li class="">[cocoaCondition&nbsp;unlock];&nbsp;&nbsp;</li>
+<li class="alt">&nbsp;&nbsp;</li>
+<li class="">//出发事件的线程&nbsp;&nbsp;</li>
+<li class="alt">[cocoaCondition&nbsp;lock];&nbsp;&nbsp;</li>
+<li class="">timeToDoWork++;&nbsp;&nbsp;</li>
+<li class="alt">[cocoaCondition&nbsp;signal];&nbsp;&nbsp;</li>
+<li class="">[cocoaCondition&nbsp;unlock];&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+<br />
+<p></p>
+<p><span style="font-size:16px;"><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;">这</span><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;">个timeToDoWork就是那个额外需要的变量，在NSCondition的使用中，这个变量是必不可少的。</span></span></p>
+<p></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;">NSConditon对象也是具名的，也就是说，其可于不同进程内部的线程同步。</span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;"><br />
+</span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;"><br />
+</span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;">相较于Windows平台下提供的丰富的线程同步机制，iOS下的线程同步机制稍显单薄，但也正是这种简洁简化了其使用。</span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;font-size:12px;"><br />
+</span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;"><strong>参考：<a href="https://developer.apple.com/library/ios/navigation/">iOS Developer Liabray</a></strong></span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;"><strong><br />
+</strong></span></span></p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;"><span style="font-size:16px;"><strong>示例代码来源：<a href="https://developer.apple.com/library/ios/#documentation/Cocoa/Conceptual/Multithreading/Introduction/Introduction.html#//apple_ref/doc/uid/10000057i">Thread
+ Programming Guide</a></strong></span></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:'lucida grande',geneva,helvetica,arial,sans-serif;font-size:12px;"><span style="color:#ff0000;">注：文中所指的线程同步泛指多线程环境下的同步与互斥。</span></span></p>
+</div></body></html>

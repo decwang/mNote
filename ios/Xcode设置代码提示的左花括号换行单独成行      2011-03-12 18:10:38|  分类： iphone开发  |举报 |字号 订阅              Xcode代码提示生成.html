@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-05-05T10:39:29Z"/><meta name="updated" content="2014-05-16T12:39:47Z"/><title>Xcode设置代码提示的左花括号换行单独成行      2011-03-12 18:10:38|  分类： iphone开发  |举报 |字号 订阅              Xcode代码提示生成</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="multicntwrap">
+	      <div class="multicnt">
+	      	<div>
+		      <h3 class="title pre fs1"><span class="tcnt">Xcode设置代码提示的左花括号换行单独成行</span>&nbsp;&nbsp;</h3>
+		      <p class="tdep clearfix nbw-act fc06" style="line-height:20px;">
+		        <span class="pleft"> 		          
+		          <span class="blogsep">2011-03-12 18:10:38</span><span class="blogsep">|&nbsp;&nbsp;分类：</span> 		          <a class="fc03 m2a" href="http://gaohaijun.blog.163.com/blog/#m=0&amp;t=1&amp;c=fks_084066083080081066084084083095085081087069093094084068085" title="iphone开发">iphone开发</a> 		          
+		        </span> 		        <span class="pright fc07 ztag"><span class="blogsep">|</span><span id="$_spanReport" class="fc03 m2a">举报</span></span> 		        <span class="pright fc07 ztag"><span class="blogsep">|</span><span class="zihao fc03" id="$_fontswitch">字号</span></span><span class="pright pnt fc03" id="$_blog_subscribe"><span class="iblock icn0 icn0-919">&nbsp;</span><a class="m2a">订阅</a></span> 		      </p>
+		    </div>
+	      </div>
+        </div>
+        <div>
+        
+        </div>
+        <div class="nbw-blog-start"></div>
+        <div class="bct fc05 fc11 nbw-blog ztag"><p style="text-indent:2em;">Xcode代码提示生成源代码程序块默认格式如下，注意左花括号的位置：</p>
+  <p style="text-indent:2em;"></p>
+<br />
+if&nbsp;(&nbsp;condition&nbsp;)&nbsp;{ &nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;do&nbsp;... &nbsp;&nbsp;<br />
+}&nbsp;&nbsp;<br />
+<pre title="Xcode设置代码提示的左花括号换行单独成行" pre_index="0" source_url="http://xyyk.javaeye.com/blog/697216" codeable_type="Post" codeable_id="1549995" name="code">if ( condition ) {      do ...  }</pre>  <p style="text-indent:2em;">因为以前的使用习惯，我想让自动生成的左右花括号都单独成行，变成下面的样子：</p>
+  <p style="text-indent:2em;"></p>
+<br />
+if&nbsp;(&nbsp;condition&nbsp;) &nbsp;&nbsp;<br />
+{ &nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;do&nbsp;... &nbsp;&nbsp;<br />
+}&nbsp;&nbsp;<br />
+<pre title="Xcode设置代码提示的左花括号换行单独成行" pre_index="1" source_url="http://xyyk.javaeye.com/blog/697216" codeable_type="Post" codeable_id="1549995" name="code">if ( condition )  {      do ...  }</pre>  <p style="text-indent:2em;">&nbsp;</p>
+  <p style="text-indent:2em;">在Terminal里面，运行下面命令，然后重启Xcode：</p>
+  <p style="text-indent:2em;"></p>
+<br />
+Shell代码 <br />
+defaults&nbsp;write&nbsp;com.apple.Xcode&nbsp;XCCodeSenseFormattingOptions&nbsp;-dict&nbsp;BlockSeparator&nbsp;"\n"&nbsp;&nbsp;<br />
+<pre title="Xcode设置代码提示的左花括号换行单独成行" pre_index="2" source_url="http://xyyk.javaeye.com/blog/697216" codeable_type="Post" codeable_id="1549995" name="code">defaults write com.apple.Xcode XCCodeSenseFormattingOptions -dict BlockSeparator "\n"</pre>这个命令修改了~/Library/Preferences/com.apple.Xcode.plist，这是Xcode的配置文件</div></body></html>

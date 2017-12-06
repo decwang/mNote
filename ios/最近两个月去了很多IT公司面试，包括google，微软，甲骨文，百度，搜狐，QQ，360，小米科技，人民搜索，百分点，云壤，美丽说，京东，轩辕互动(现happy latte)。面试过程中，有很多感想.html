@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-03-18T03:28:46Z"/><meta name="updated" content="2016-10-08T09:09:04Z"/><title>最近两个月去了很多IT公司面试，包括google，微软，甲骨文，百度，搜狐，QQ，360，小米科技，人民搜索，百分点，云壤，美丽说，京东，轩辕互动(现happy latte)。面试过程中，有很多感想</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>最近两个月去了很多IT公司面试，包括google，微软，甲骨文，百度，搜狐，QQ，360，小米科技，人民搜索，百分点，云壤，美丽说，京东，轩辕互动(现happy latte)。面试过程中，有很多感想，这里把一些经典的面试题与大家分享下。面试岗位：C++开发工程师。</div>
+<div><br />
+</div>
+<div>语言部分：</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; 虚函数，多态。这个概念几乎是必问。</div>
+<div>&nbsp; &nbsp; STL的使用和背后数据结构，vector string map set 和hash_map，hash_set</div>
+<div>&nbsp; &nbsp; 实现一个栈类，类似STL中的栈。这个题目初看非常简单，当时我还有点不屑，怎么出这么简单的题。但写过c++和没有写过c++的人写出的代码是一眼就能看出差别的。譬如三大函数有没有写，引用的使用，都非常的关键。如果这方面没有经验，建议阅读下http://book.douban.com/subject/1971825/ 这本书中简单数据结构的实现，细节很关键</div>
+<div>&nbsp; &nbsp; c部分：函数指针的声明</div>
+<div>&nbsp; &nbsp; c++中的多线程</div>
+<div><br />
+</div>
+<div>算法部分：</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; 判断一个单链表是否存在循环（快慢指针的方法）</div>
+<div>&nbsp; &nbsp; 如何判断一副麻将牌胡了（回朔法）</div>
+<div>&nbsp; &nbsp; 二叉搜索树，节点上已经标有数字，如何找两个节点的最小公共节点（查找第一个在两个节点值中间的节点，如两个节点分别是3,8，查找在3,8之间的值的节点，如没找到，则3,8其中一个是另一个父节点）</div>
+<div>&nbsp; &nbsp; 二叉树，如何找两个节点的最小公共节点（比较笨的方法是，找到从root到两个节点的路径，然后两条路径的从root开始的最后一个相同节点就是所求节点。精妙点的参考lca算法）</div>
+<div>&nbsp; &nbsp; 最短摘要生成，有一个数组，还有一个集合，在数组中寻找包含集合中全部元素的最短子串。详细可以参见编程之美3.5</div>
+<div>&nbsp; &nbsp; 寻找最大的K个数，编程之美2.5</div>
+<div>&nbsp; &nbsp; 如何判断两个网页的相关性（如果说面试搜索相关的只是，看下吴军的数学之美大有裨益，其中的向量空间模型非常优美，TF和IDF这些术语也必须知道）</div>
+<div>&nbsp; &nbsp; Hash的平均查找长度和装填因子的关系（好好回味下数据结构书吧）</div>
+<div>&nbsp; &nbsp; 一致性hash原理</div>
+<div>&nbsp; &nbsp; rehash的时候可能导致插入的元素响应时间特别长，有无更好的方法？可以参考redis的rehash实现，当到了rehash的时候，不是一次性把所有的数据迁移到另一个更大的hash表中，而是每次迁移一个bucket，这样可以平摊时间</div>
+<div>&nbsp; &nbsp; 如何对全是01的文件进行压缩，一直没有好的答案。</div>
+<div><br />
+</div>
+<div>系统设计部分：</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; 当系统的处理请求时间一定的时候，如何可以加快响应速度。（cache的使用），当时很傻，竟然没想到这个，我给的答案是增加系统规模，这样只能减少请求等待时间。有时候面试人就会短路，google的题，想了半天才想出来</div>
+<div>&nbsp; &nbsp; 两块虚拟网卡进行通讯，但是需要数据加密，如何实现数据加密。感觉跟ssl很像</div>
+<div><br />
+</div>
+<div>编程部分：</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; 二分查找（频率超高）</div>
+<div>&nbsp; &nbsp; 建堆，顺便说下建堆的时间复杂度是O(n)，不是log，证明可以看算法导论</div>
+<div>&nbsp; &nbsp; 写一个函数，将字符串反转，反转方式如下：“I am a student”反转成“student a am I”，不借助任何库函数 （频率超高的一题，先反转整个字符串，然后反转每个词）</div>
+<div><br />
+</div>
+<div>项目部分：</div>
+<div><br />
+</div>
+<div>&nbsp; &nbsp; 因人而异</div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>笔试题考核内容（考核计分，100分，达到75分以上者进行面试） --面向2~4年工作经验者。</div>
+<div>面试成绩35分以上者通过。</div>
+<div><br />
+</div>
+<div>1 语言（20）</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>C++ 虚函数，多态，STL使用问题。</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>C 内存分布，数据类型大小计算，大小端判断</div>
+<div>2 算法（20）</div>
+&nbsp; &nbsp; 冒泡排序，二分查找，用链表写一个栈<div>3 平台（20）</div>
+<div><div>有一个程序的源码结构如下</div>
+<div>main.c //程序入口文件</div>
+<div>yuvdecode //目录</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>yuvdecode.h //yuv解码头文件</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>yuvdecode.c //yuv解码实现</div>
+<div>3rd<span class="Apple-tab-span" style="white-space:pre;">	</span>//目录</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>inc//目录</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>libyuvencode.h</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span>lib</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">		</span>libyuvencode.a</div>
+<div>Linux下用GCC编译以上源码为一个Release版本可执行文件,(5分)</div>
+<div><br />
+</div>
+<div>Linux 下编写一个Makefile以编译以上源码为一个Release版本可执行文件(10分)</div>
+<div><br />
+</div>
+</div>
+<div><br />
+</div>
+<div>4 广度知识（20）</div>
+<div><br />
+</div>
+<p>5 技术<span style="line-height:1.2;">英语</span><span style="line-height:1.2;">文档（10）</span></p>
+<p><span style="line-height:1.2;"><br />
+</span></p>
+<p><span style="line-height:1.2;">6 设计实现（10）</span></p>
+<p><span style="line-height:1.2;"><br />
+</span></p>
+<p>7 面谈 （50）</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div><br />
+</div>
+<div><br />
+</div>
+<div><span class="Apple-tab-span" style="white-space:pre;">	</span></div>
+<div><br />
+</div>
+<div><br />
+</div>
+<div>笔试题考核内容（考核计分，100分，达到75分以上者进行面试） --面向4年以上工作经验者。</div></body></html>

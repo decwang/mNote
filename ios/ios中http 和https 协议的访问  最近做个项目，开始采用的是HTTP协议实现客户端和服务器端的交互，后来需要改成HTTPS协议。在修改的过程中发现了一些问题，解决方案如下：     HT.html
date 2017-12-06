@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-11-04T08:35:49Z"/><meta name="updated" content="2016-10-08T09:09:15Z"/><title>ios中http 和https 协议的访问  最近做个项目，开始采用的是HTTP协议实现客户端和服务器端的交互，后来需要改成HTTPS协议。在修改的过程中发现了一些问题，解决方案如下：     HT</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h1 class="postTitle"><a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/stan0714/archive/2012/03/21/2409872.html">ios中http 和https 协议的访问</a></h1>
+	<div id="cnblogs_post_body"><p>最近做个项目，开始采用的是HTTP协议实现客户端和服务器端的交互，后来需要改成HTTPS协议。在修改的过程中发现了一些问题，解决方案如下：</p>
+<p>&nbsp;</p>
+<p><strong style="font-size:14pt;">HTTP：</strong></p>
+<p>&nbsp; &nbsp; NSString *urlString =[NSString stringWithFormat:@"https://127.0.0.1/default.aspx?USER=%@",@"111"];</p>
+ <p>&nbsp;&nbsp; &nbsp;</p>
+ <p>&nbsp; &nbsp; NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];</p>
+ <p>&nbsp; &nbsp; [request setURL:[NSURL URLWithString:urlString]];</p>
+ <p>&nbsp; &nbsp; [request setHTTPMethod:@"GET"];</p>
+ <p>&nbsp;&nbsp; &nbsp;</p>
+ <p>&nbsp; &nbsp; NSHTTPURLResponse* urlResponse = nil;</p>
+ <p>&nbsp; &nbsp; NSError *error = [[NSError alloc] init];</p>
+ <p>&nbsp; &nbsp; NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&amp;urlResponse error:&amp;error];</p>
+ <p>&nbsp; &nbsp; NSMutableString *result = [[NSMutableString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];</p>
+ <p>&nbsp;&nbsp; &nbsp;</p>
+ <p>&nbsp; &nbsp; NSLog(@"The result string is :%@",result); &nbsp;&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;<strong style="font-size:14pt;">HTTPS</strong></p>
+<p>事件触发&nbsp;</p>
+<p>{&nbsp;</p>
+<p>&nbsp; &nbsp; NSString *urlString =[NSString stringWithFormat:@"https://127.0.0.1/default.aspx?USER=%@",@"111"];</p>
+<p>&nbsp;
+ &nbsp;&nbsp;NSMutableURLRequest *request = [[NSMutableURLRequest alloc] 
+initWithURL:[NSURL URLWithString:urlString] &nbsp; &nbsp; &nbsp; 
+&nbsp;cachePolicy:NSURLRequestReloadIgnoringLocalCacheData 
+timeoutInterval:5];</p>
+ <p>&nbsp; &nbsp; //设置请求方式为get</p>
+ <p>&nbsp; &nbsp; [request setHTTPMethod:@"GET"];</p>
+ <p>&nbsp; &nbsp; //添加用户会话id</p>
+ <p>&nbsp; &nbsp; [request addValue:@"text/html" forHTTPHeaderField:@"Content-Type"];</p>
+ <p>&nbsp; &nbsp; //连接发送请求</p>
+ <p>&nbsp; &nbsp; finished = false;</p>
+ <p>&nbsp; &nbsp; NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];</p>
+ <p>	<span class="Apple-tab-span" style="white-space:pre;">	</span>//堵塞线程，等待结束</p>
+<p><span class="Apple-tab-span" style="white-space:pre;">	</span>while(!finished) {</p>
+ <p><span class="Apple-tab-span" style="white-space:pre;">		</span>[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];</p>
+ <p><span class="Apple-tab-span" style="white-space:pre;">	</span>}</p>
+<p>}&nbsp;</p>
+<p>&nbsp;</p>
+<p>- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse*)response&nbsp;</p>
+ <p>{}</p>
+<p>&nbsp;</p>
+<p>- (void)connectionDidFinishLoading:(NSURLConnection *)connection&nbsp;</p>
+ <p>{</p>
+ <p>&nbsp; &nbsp; //[_waitingDialog dismissWithClickedButtonIndex:0 animated:NO];</p>
+ <p>&nbsp; &nbsp; [connection release];</p>
+ <p>}</p>
+ <p>-(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error</p>
+ <p>{&nbsp;</p>
+<p>}</p>
+<p>- (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection *)connection{</p>
+ <p>&nbsp; &nbsp; return NO;</p>
+ <p>}</p>
+ <p>//下面两段是重点，要服务器端单项HTTPS 验证，iOS 客户端忽略证书验证。</p>
+ <p>- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {</p>
+ <p>&nbsp; &nbsp; return [protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust];</p>
+ <p>}&nbsp;</p>
+<p>-
+ (void)connection:(NSURLConnection *)connection 
+didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge 
+*)challenge { &nbsp; &nbsp;</p>
+ <p>&nbsp; &nbsp; NSLog(@"didReceiveAuthenticationChallenge 
+%@ %zd", [[challenge protectionSpace] authenticationMethod], (ssize_t) 
+[challenge previousFailureCount]);</p>
+ <p>&nbsp;&nbsp; &nbsp;</p>
+ <p>&nbsp; &nbsp; if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]){</p>
+ <p>&nbsp;
+ &nbsp; &nbsp; &nbsp; [[challenge sender]&nbsp; useCredential:[NSURLCredential 
+credentialForTrust:challenge.protectionSpace.serverTrust] 
+forAuthenticationChallenge:challenge];</p>
+ <p>&nbsp; &nbsp; &nbsp; &nbsp; [[challenge sender]&nbsp; continueWithoutCredentialForAuthenticationChallenge: challenge];</p>
+ <p>&nbsp; &nbsp; }</p>
+ <p>}&nbsp;</p>
+ <p>&nbsp; &nbsp; NSLog(@"get the whole response");</p>
+ <p>&nbsp; &nbsp; //[receivedData setLength:0];</p>
+ <p>}</p>
+<p>//处理数据&nbsp;</p>
+ <p>- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data</p>
+ <p>{&nbsp;</p>
+<p>}&nbsp;</p>
+<p>&nbsp;</p>
+<p>大家也可以参考下面一篇文章</p>
+<h1><span style="font-weight:normal;font-size:12pt;"><a href="http://www.cocoachina.com/bbs/simple/?t55317.html" title="关于在UIwebView中访问HTTPS站点的几种方法">关于在UIwebView中访问HTTPS站点的几种方法</a></span></h1>
+</div></body></html>

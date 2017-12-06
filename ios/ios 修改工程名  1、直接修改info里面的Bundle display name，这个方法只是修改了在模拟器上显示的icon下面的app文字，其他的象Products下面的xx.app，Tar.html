@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-12-03T01:23:04Z"/><meta name="updated" content="2013-12-03T01:23:16Z"/><title>ios 修改工程名  1、直接修改info里面的Bundle display name，这个方法只是修改了在模拟器上显示的icon下面的app文字，其他的象Products下面的xx.app，Tar</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>ios 修改工程名</div>
+<div>1、直接修改info里面的Bundle display name，这个方法只是修改了在模拟器上显示的icon下面的app文字，其他的象Products下面的xx.app，Targets下面的xx，Executables下面的xx等都没有修改。</div>
+<div>2、如果要修改products下面的xx.app的名字，就需要修改Project-&gt;Edit active target-&gt;Build-&gt;Product Name。</div>
+<div>3、如果要修改targets、executables下面的名字，就修改Project-&gt;Edit active target-&gt;General和Properties。</div>
+<div>以上都只是修改了产生的product、target、executable等，其实工程文件及程序中的都没修改，还是原来的名字。</div>
+<div>如果要修改所有的名字，使用下面的方法：</div>
+<div>程序员经常以一个名字开始编写一个应用;但在发布之前,常常需要为应用更名.或者想从一个现成程序开始,修改成一个新的应用,而不需要copy\paste.但苹果公司没有提供一个简单的实现方法.本文讲述的方法可以让你随心所欲修改应用输出的名称.</div>
+<div>1. &nbsp; 复制现有文件夹,将拷贝更名为你所想要的名字.</div>
+<div>2. &nbsp; 打开新文件夹,将.xcodeproj更名</div>
+<div>3. &nbsp;右键点击.xcodeproj并选择Show package contents,弹出一个对话框包含了几个文件.(事实上.xcodeproj是 这几个文件打成的包)</div>
+<div>4. &nbsp; 用textEdit打开 project.pbxproj文件,将所有旧名字替换成为新的.</div>
+<div>5. &nbsp; 删除build文件夹</div>
+<div>6. &nbsp; 用XCode载入该工程,点击 Build/Clean all targets</div>
+<div>然后重新编译工程 — 应当能看到输出的应用有了新名字吧!有的文章说需要修改.pch文件名,但那样更复杂了,所以这里不做介绍.</div>
+<div><br />
+</div>
+<div>编译：ios 批改工程名</div>
+<div><br />
+</div>
+<div>地址：http://www.07net01.com/zhishi/364180.html</div>
+<div><br />
+</div></body></html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-08-27T05:24:47Z"/><meta name="updated" content="2014-08-27T05:24:49Z"/><title>UIToolBar 中各种UIBarButtonItem 和 控件嵌套  (2011-12-13 11:12:15)转载▼        标签： 杂谈     分类： iOS            </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="articalTitle"> 
+			
+								<h2 id="t_65a8ab5d01011imb" class="titName SG_txta">UIToolBar&nbsp;中各种UIBarButtonItem&nbsp;和&nbsp;控件嵌套</h2>
+			
+					<span class="time SG_txtc">(2011-12-13 11:12:15)</span><div class="turnBoxzz"><a href="" class="SG_aBtn SG_aBtn_ico SG_turn" action-type="reblog" action-data="{srcBlog:1, blogId:'65a8ab5d01011imb'}"><cite><img class="SG_icon SG_icon111" src="http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif" align="absmiddle" height="15" width="15" />转载<em class="arrow">▼</em></cite></a></div>
+		</div>
+		<div class="articalTag" id="sina_keyword_ad_area">
+			<table>
+				<tbody><tr>
+					<td class="blog_tag">
+					
+											<span class="SG_txtb">标签：</span> 																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=%D4%D3%CC%B8&amp;by=tag" target="_blank">杂谈</a></h3>
+																</td>
+					<td class="blog_class">
+											<span class="SG_txtb">分类：</span> 						<a target="_blank" href="http://blog.sina.com.cn/s/articlelist_1705552733_1_1.html">iOS</a> 										</td>
+				</tr>
+			</tbody>
+</table>
+		</div>
+						
+		<div id="sina_keyword_ad_area2" class="articalContent ">
+			在做Stanford的map但location那节课联系时，发现Stanford很依仗IB，鉴于之前用IB有过阴影，就是更改连接后，各种不好使，所以我决心坚定不移的使用代码生成连接。<div><br />
+</div>
+<div>在生成Toolbar时，我使用[UIScreen
+mainscreen].bounds来这是frame，Toolbar有个实例方法是</div>
+<div>toolbar.items = [NSArray
+arraywithObjects:,,.......,nil];来添加ITem，特别需要注意的是，像Switch和SegmentControl都需要嵌入到UIBarButtonItem里面才能在toobar显示。</div>
+<div>
+关于Texfield嵌入到UIBarButtonItem中，一开始无法显示出白底的输入画面。我查找了半天没有相关API设置，最后做完作业再来解决这个问题，发现是textfield中borderstyle
+默认是done，所以设置成UITextBorderStyleRoundRe<wbr>ct即可。出现白底画面。</div>
+<div>
+还有就是放置多个UIBarButtonItem时，需要设置排列间隔，使画面更加美观，这个地方我使用的是UIBarButtonItem
+初始化为fixedSpace，但是一开始没有反应，最后查官方文档，发现fiedSpace只有一个属性可以更改就是width，所以只要修改width就可以设置间隔。</div>
+<div><br />
+</div>
+<div>下面是一些具体代码：</div>
+<div>#warning textfield 怎么显示不出来&nbsp;<wbr></div>
+<div>addressField = [[UITextField alloc]
+initWithFrame:CGRectMake(52, 7, 172, 31)]; addressField.delegate =
+self;&nbsp;<wbr></div>
+<div>addressField.borderStyle =
+UITextBorderStyleRounded<wbr>Rect;&nbsp;<wbr></div>
+<div>UIBarButtonItem *searchText = [[UIBarButtonItem alloc]
+initWithCustomView:addressField];</div>
+<div><b><u>searchText.style =
+UIBarButtonItemStylePlai<wbr>n;&nbsp;<wbr></u></b></div>
+<div>UIBarButtonItem *refresh = [[UIBarButtonItem alloc]
+initWithBarButtonSystemI<wbr>tem:UIBarButtonSystemItemRef<wbr>resh&nbsp;<wbr></div>
+<div>target:self.webView action:@selector(reload)];</div>
+<div>&nbsp;<wbr>UIBarButtonItem *gofoward =
+[[UIBarButtonItem alloc]
+initWithBarButtonSystemI<wbr>tem:UIBarButtonSystemItemFas<wbr>tForward&nbsp;<wbr></div>
+<div>target:self.webView action:@selector(goForward)];</div>
+<div>&nbsp;<wbr>UIBarButtonItem *stop = [[UIBarButtonItem
+alloc]
+initWithBarButtonSystemI<wbr>tem:UIBarButtonSystemItemSto<wbr>p&nbsp;<wbr></div>
+<div>target:self.webView
+action:@selector(stopLoading)];&nbsp;<wbr></div>
+<div>searchToolBar.items = [NSArray
+arrayWithObjects:rewind,searchText,refresh,gofoward,stop,nil];</div>
+<div><br />
+</div>
+<div>UIBarButtonItem *addBtn = [[UIBarButtonItem alloc]
+initWithTitle:@"add" style:UIBarButtonItemStyleBord<wbr>ered target:self
+action:@selector(addAnnotations)];&nbsp;<wbr></div>
+<div>UIBarButtonItem *leftFlexible = [[UIBarButtonItem alloc]</div>
+<div>
+&nbsp;<wbr>initWithBarButtonSystemI<wbr>tem:UIBarButtonSystemItemFix<wbr>edSpace
+target:self action:nil]; leftFlexible.width =
+20;&nbsp;<wbr></div>
+<div>UISegmentedControl *segControl = [[UISegmentedControl
+alloc]&nbsp;<wbr></div>
+<div>initWithItems:[NSArray arrayWithObjects:@"Map",@"Satellite",
+nil]];</div>
+<div>&nbsp;<wbr>segControl.frame = CGRectMake(0, 0, 121,
+29);&nbsp;<wbr></div>
+<div>segControl.selectedSegmentIndex = 0;&nbsp;<wbr></div>
+<div>segControl.segmentedControlStyle =
+UISegmentedControlStyleB<wbr>ar;&nbsp;<wbr></div>
+<div>[segControl addTarget:self action:@selector(changeType:)
+forControlEvents:UIControlEventValueChang<wbr>ed];&nbsp;<wbr></div>
+<div>UIBarButtonItem *segment = [[UIBarButtonItem
+alloc]&nbsp;<wbr></div>
+<div>initWithCustomView:segControl]; [segControl
+release];&nbsp;<wbr></div>
+<div>UIBarButtonItem *rightFlexible = [[UIBarButtonItem alloc]
+initWithBarButtonSystemI<wbr>tem:UIBarButtonSystemItemFix<wbr>edSpace
+target:self action:nil]; rightFlexible.width =
+10;&nbsp;<wbr></div>
+<div>UISwitch *findSwitch = [[UISwitch alloc]
+init];&nbsp;<wbr></div>
+<div>findSwitch.on = YES;&nbsp;<wbr></div>
+<div>[findSwitch addTarget:self action:@selector(findMe:)
+forControlEvents:UIControlEventValueChang<wbr>ed]; UIBarButtonItem
+*findme = [[UIBarButtonItem alloc]&nbsp;<wbr></div>
+<div>initWithCustomView:findSwitch]; [findSwitch
+release];&nbsp;<wbr></div>
+<div>CGRect toolRect = CGRectMake([UIScreen
+mainScreen].bounds.origin.x,&nbsp;<wbr></div>
+<div>[UIScreen mainScreen].bounds.origin.y,&nbsp;<wbr></div>
+<div>[UIScreen mainScreen].bounds.size.width,
+44);&nbsp;<wbr></div>
+<div>UIToolbar *toolbar = [[UIToolbar alloc]
+initWithFrame:toolRect];</div>
+<div>toolbar.items = [NSArray arrayWithObjects:addBtn,
+leftFlexible, segment,rightFlexible, findme,nil];</div>
+</div></body></html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-11-19T12:29:29Z"/><meta name="updated" content="2015-11-19T12:29:30Z"/><title>[ios]NSUserDefault保存自定义object问题  博客分类： ios        NSUserDefault   的setObject 只能对少数 NSString等少数非自定义对</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="blog_title" style="margin-bottom:15px;font-family:Helvetica, Tahoma, Arial, sans-serif;font-size:12px;line-height:18px;widows:1;"><h3 style="font-size:16px;line-height:1.5em;margin:0px 0px 0.5em;padding:10px 0px 0px;"><a href="http://poolo.iteye.com/blog/1853802" style="color:#108ac6;">[ios]NSUserDefault保存自定义object问题</a></h3>
+<ul class="blog_categories" style="margin:0px;padding:0px;list-style-type:none;"><strong>博客分类：</strong>&nbsp;<li style="margin:0px 5px 0px 0px;padding:0px;list-style-type:none;display:inline;"><a href="http://poolo.iteye.com/category/250441" style="color:#108ac6;">ios</a></li>
+</ul>
+<div class="news_tag" style="clear:both;margin:10px 0px 5px;line-height:20px;"></div>
+</div>
+<div id="blog_content" class="blog_content" style="line-height:1.8em;font-family:Helvetica, Tahoma, Arial, sans-serif;widows:1;"><div class="iteye-blog-content-contain"><p style="margin-top:0px;margin-bottom:0px;padding:0px;">NSUserDefault&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">的setObject 只能对少数 NSString等少数非自定义对象保存。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">那么如果要保存自定义对象则需要。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">使用[<span style="line-height:1.5;">NSKeyedArchiver&nbsp;</span><span style="line-height:1.5;">archivedDataWithRootObject:]归档以下</span><span style="line-height:1.5;">将对象封装成NSData</span><span style="line-height:1.5;">，再使用</span><span style="line-height:1.5;">NSUserDefault保存。</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">使用时需要解压缩<span style="line-height:1.5;">unarchiveObjectWithData</span></p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;">demo:</p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">+(<span class="s1">id</span>)highImage{</p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><span class="s2">&nbsp; &nbsp;&nbsp;</span><span class="s3">NSData</span><span class="s2">* data = [[</span><span class="s3">NSUserDefaults</span>standardUserDefaults<span class="s2">]&nbsp;</span>objectForKey<span class="s2">:</span><span class="s4">@"higt_image"</span><span class="s2">];</span></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><span class="s2">&nbsp; &nbsp;&nbsp;</span><span class="s1">id</span><span class="s2">&nbsp;image= [</span><span class="s3">NSKeyedUnarchiver</span>unarchiveObjectWithData<span class="s2">:data];</span></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp; &nbsp;&nbsp;<span class="s5">NSLog</span>(<span class="s4">@"image!:%@"</span>,image);</p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp; &nbsp;&nbsp;<span class="s1">if</span>(image){</p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span class="s1">return</span>&nbsp;image;</p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp; &nbsp; }</p>
+<p class="p3" style="margin-top:0px;margin-bottom:0px;padding:0px;"><span class="s2">&nbsp; &nbsp;&nbsp;</span><span class="s1">return</span><span class="s2">&nbsp;[</span><span class="s3">UIImage</span><span class="s5">imageNamed</span><span class="s2">:</span>@"Default.png"<span class="s2">];</span></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">}</p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">+(<span class="s1">void</span>)setHighImage:(<span class="s3">UIImage</span>*)image{</p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp; &nbsp;&nbsp;<span class="s5">NSLog</span>(<span class="s4">@"image!:%@"</span>,image);</p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><span class="s2">&nbsp; &nbsp;&nbsp;</span><span class="s3">NSData</span><span class="s2">* data=[</span><span class="s3">NSKeyedArchiver</span>archivedDataWithRootObject<span class="s2">:image];</span></p>
+<p class="p2" style="margin-top:0px;margin-bottom:0px;padding:0px;"><span class="s2">&nbsp; &nbsp; [[</span><span class="s3">NSUserDefaults</span>standardUserDefaults<span class="s2">]&nbsp;</span>setObject<span class="s2">:data&nbsp;</span>forKey<span class="s2">:</span><span class="s4">@"higt_image"</span><span class="s2">];</span></p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">}</p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">&nbsp;</p>
+<p class="p1" style="margin-top:0px;margin-bottom:0px;padding:0px;">参考：http://blog.csdn.net/chyroger/article/details/5785297</p>
+</div>
+</div></body></html>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-12-30T01:50:45Z"/><meta name="updated" content="2014-12-30T01:50:47Z"/><title>iOS第三方库-CocoaLumberjack-DDLog (2014-04-18 11:53:34)转载▼  标签： ddlog ddttylogger cocoalumberjack xcode</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div>iOS第三方库-CocoaLumberjack-DDLog (2014-04-18 11:53:34)转载▼</div>
+<div>标签： ddlog ddttylogger cocoalumberjack xcodecolors ddfilelogger<span class="Apple-tab-span" style="white-space:pre;">	</span>分类： iOS第三方库</div>
+<div><br />
+</div>
+<div>发现一个，很厉害的小工具，让xCode控制台输出文本有颜色！</div>
+<div><br />
+</div>
+<div>闲话不说，上代码。</div>
+<div><br />
+</div>
+<div>大概需要三个步骤：</div>
+<div>一、安装xCode扩展插件XcodeColors。</div>
+<div>二、引入第三方库CocoaLumberjack。</div>
+<div>三、修改NSLog为DDLog方式。</div>
+<div><br />
+</div>
+<div>一、安装xCode扩展插件XcodeColors</div>
+<div>1.下载地址：https://github.com/robbiehanson/XcodeColors</div>
+<div>2.下载完成后，打开XcodeColors项目，编译即可。它会在你的电脑中安装插XcodeColors.xcplugin。具体路径在：~/Library/Application Support/Developer/Shared/Xcode/Plug-ins/XcodeColors.xcplugin（可以去瞅一眼）。</div>
+<div>3.退出xCode，重新打开。</div>
+<div>4.运行TestXcodeColors项目，尝试，是否安装成功。</div>
+<div><br />
+</div>
+<div>二、引入第三方库CocoaLumberjack。</div>
+<div>1.下载DDLog。下载地址：https://github.com/CocoaLumberjack/CocoaLumberjack</div>
+<div>2.将DDLog添加到你的项目中。</div>
+<div><br />
+</div>
+<div>三、修改NSLog为DDLog方式。</div>
+<div>这一步，其实很简单，主要是弄懂DDLog是如何使用的。</div>
+<div>下载地址里，有详细说明，在这里，就简单的说一下吧。</div>
+<div><br />
+</div>
+<div>1.初始化DDLog。</div>
+<div><br />
+</div>
+<div>DDLog：基础类，必须引入的。</div>
+<div>DDASLLogger：支持将调试语句写入到苹果的日志中。一般正对Mac开发。可选。</div>
+<div>DDTTYLogger：支持将调试语句写入xCode控制台。我们即使要用它。可选。</div>
+<div>DDFileLogger：支持将调试语句写入到文件系统。可选。</div>
+<div><br />
+</div>
+<div>2.DDLog日志种类。</div>
+<div><br />
+</div>
+<div>DDLog的输出级别默认提供以下若干种：</div>
+<div>DDLogError：定义输出错误文本</div>
+<div>DDLogWarn：定义输出警告文本</div>
+<div>DDLogInfo：定义输出信息文本</div>
+<div>DDLogDebug：定义输出调试文本</div>
+<div>DDLogVerbose：定义输出详细文本</div>
+<div><br />
+</div>
+<div>提供的日志级别为：</div>
+<div>LOG_LEVEL_ERROR：只显示错误日志。</div>
+<div>LOG_LEVEL_WARN：包括：LOG_LEVEL_ERROR</div>
+<div>LOG_LEVEL_INFO：包括：LOG_LEVEL_WARN</div>
+<div>LOG_LEVEL_DEBUG：包括：LOG_LEVEL_INFO</div>
+<div>LOG_LEVEL_VERBOSE：包括：LOG_LEVEL_DEBUG</div>
+<div>LOG_LEVEL_OFF：关闭日志</div>
+<div><br />
+</div>
+<div>3.使用DDLog.</div>
+<div><br />
+</div>
+<div>直接贴代码：</div>
+<div><br />
+</div>
+<div>static const int ddLogLevel = LOG_LEVEL_VERBOSE;// 定义日志级别</div>
+<div>[DDLog addLogger:[DDTTYLogger sharedInstance]];// 初始化DDLog日志输出，在这里，我们仅仅希望在xCode控制台输出</div>
+<div>[[DDTTYLogger sharedInstance] setColorsEnabled:YES];// 启用颜色区分</div>
+<div>DDLogError(@"错误信息"); // 红色</div>
+<div>DDLogWarn(@"警告"); // 橙色</div>
+<div>DDLogInfo(@"提示信息"); // 默认是黑色</div>
+<div>DDLogVerbose(@"详细信息"); // 默认是黑色</div>
+<div><br />
+</div>
+<div>以上是最简单的应用，当然，可以自定义每种日志的颜色，看需求吧。</div>
+<div>[DDLog addLogger:[DDASLLogger sharedInstance]];// 如果需要，可以添加其他的日志输出支持</div>
+<div>&nbsp; &nbsp; [[DDTTYLogger sharedInstance] setForegroundColor:[UIColor blueColor] backgroundColor:nil forFlag:LOG_FLAG_INFO];// 可以修改你想要的颜色</div>
+<div><br />
+</div>
+<div>希望对你有所帮助！</div></body></html>

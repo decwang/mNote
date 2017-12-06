@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-04-25T10:48:59Z"/><meta name="updated" content="2014-04-25T10:49:00Z"/><title>         -all_load -force_load -ObjC        分类： IOS-深入  2013-11-29 16:05 624人阅读 评论(0) 收藏 举报   ios  </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title"><h1>
+        <span class="link_title"><a href="http://blog.csdn.net/iitvip/article/details/17026019">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;-all_load -force_load -ObjC
+        </a></span>     </h1>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/MyGameZone/article/category/1323016">IOS-深入</a> 
+        </span>     <span class="link_postdate">2013-11-29 16:05</span>     <span class="link_view" title="阅读次数">624人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/iitvip/article/details/17026019#comments">评论</a>(0)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/iitvip/article/details/17026019#report" title="举报">举报</a></span>     </div>
+<div class="tag2box"><a href="http://www.csdn.net/tag/ios" target="_blank">ios</a></div>
+    <div style="clear:both;"></div>
+<div style="border:solid 1px #ccc;background:#eee;float:left;min-width:200px;padding:4px 10px;"><p style="text-align:right;margin-top:0px;margin-bottom:0px;"><span style="float:left;">目录<a href="http://blog.csdn.net/iitvip/article/details/17026019#" title="系统根据文章中H1到H6标签自动生成文章目录">(?)</a></span><a href="http://blog.csdn.net/iitvip/article/details/17026019#" title="展开">[+]</a></p>
+</div>
+<div style="clear:both;"></div>
+<div id="article_content" class="article_content">
+
+<h2><a name="t0"></a><span style="font-size:14px;"><span style="color:#333333;font-family:Arial;line-height:26px;">-ObjC：</span></span></h2>
+<br />
+<span style="color:#333333;font-family:Arial;line-height:26px;">This flag causes the linker to load every object file in the library that defines an Objective-C class or category.</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<span style="color:#333333;font-family:Arial;line-height:26px;">While this option will typically result in a larger executable (due to additional object code loaded into the application),</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<span style="color:#333333;font-family:Arial;line-height:26px;">it will allow the successful creation of effective Objective-C static libraries that contain categories on existing classes.</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<br />
+<span style="color:#333333;font-family:Arial;line-height:26px;">这个flag告诉链接器把库中定义的Objective-C类和Category都加载进来。这样编译之后的app会变大（因为加载了其他的objc代码进来）。</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<span style="color:#333333;font-family:Arial;line-height:26px;">但是如果静态库中有类和category的话只有加入这个flag才行。</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<br style="color:#333333;font-family:Arial;line-height:26px;" />
+<h2><a name="t1"></a><span style="font-size:14px;"><span style="color:#333333;font-family:Arial;line-height:26px;">-all_load</span></span></h2>
+<br style="color:#333333;font-family:Arial;line-height:26px;" />
+<span style="color:#333333;font-family:Arial;line-height:26px;">IMPORTANT:
+ For 64-bit and iPhone OS applications, there is a linker bug that 
+prevents -ObjC from loading objects files from static libraries that 
+contain only categories and no classes.</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<span style="color:#333333;font-family:Arial;line-height:26px;">The
+ workaround is to use the -all_load or -force_load flags. -all_load 
+forces the linker to load all object files from every archive it sees, 
+even those without Objective-C code.</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<span style="color:#333333;font-family:Arial;line-height:26px;">-force_load
+ is available in Xcode 3.2 and later. It allows finer grain control of 
+archive loading. Each -force_load option must be followed by a path to 
+an archive,</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<span style="color:#333333;font-family:Arial;line-height:26px;">and every object file in that archive will be loaded.</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<br style="color:#333333;font-family:Arial;line-height:26px;" />
+<span style="color:#333333;font-family:Arial;line-height:26px;">这个flag是专门处理-ObjC的一个bug的。用了-ObjC以后，如果类库中只有category没有类的时候这些category还是加载不进来。变通方法就是加入-all_load或者-force-load。-all_laod会强制</span><br style="color:#333333;font-family:Arial;line-height:26px;" />
+<p><span style="color:#333333;font-family:Arial;line-height:26px;">链接器把目标文件都加载进来，即使没有objc代码。-force_load在xcode3.2后可用。但是-force_load后面必须跟一个只想静态库的路径。</span></p>
+<h2><a name="t2"></a><span style="color:#333333;font-family:Arial;line-height:26px;"><span style="font-size:14px;"><span style="font-family:Helvetica, arial, freesans, clean, sans-serif;line-height:22px;background-color:#fbfbfb;"><br />
+</span></span></span></h2>
+<h2><a name="t3"></a><span style="color:#333333;font-family:Arial;line-height:26px;"><span style="font-size:14px;"><span style="font-family:Helvetica, arial, freesans, clean, sans-serif;line-height:22px;background-color:#fbfbfb;">-force_load</span></span></span></h2>
+<p></p>
+<p style="margin-bottom:15px;color:#333333;font-family:Helvetica,arial,freesans,clean,sans-serif;line-height:22px;background-color:#fbfbfb;margin-top:0px!important;">
+When someone uses "-all_load", every 
+imported library is forced into memory whether its needed or not. A much
+ better technique is "-force_load":</p>
+<p style="margin-top:15px;margin-bottom:15px;color:#333333;font-family:Helvetica,arial,freesans,clean,sans-serif;line-height:22px;background-color:#fbfbfb;">
+-force_load $(BUILT_PRODUCTS_DIR)/libarc.a</p>
+<p style="margin-top:15px;margin-bottom:15px;color:#333333;font-family:Helvetica,arial,freesans,clean,sans-serif;line-height:22px;background-color:#fbfbfb;">
+This insures that ONLY your library is loaded, not every library.</p>
+<p style="margin-top:15px;margin-bottom:15px;color:#333333;font-family:Helvetica,arial,freesans,clean,sans-serif;line-height:22px;background-color:#fbfbfb;">
+<a target="_blank" href="http://developer.apple.com/mac/library/qa/qa2006/qa1490.html" style="color:#4183c4;text-decoration:none;">http://developer.apple.com/mac/library/qa/qa2006/qa1490.html</a></p>
+</div></body></html>

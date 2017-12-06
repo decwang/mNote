@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2015-01-30T07:14:10Z"/><meta name="updated" content="2016-10-08T09:09:10Z"/><title>今天发现有些应用能够实现不管系统音量大小是多少，都能使音量保持最大，比如一些闹钟的应用。  所以我在想ios里面如何实现呢，经查看相关的资料总结出有两种方法：  一种是调用控件MPVolumeVie</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Arial;line-height:26px;">今天发现有些应用能够实现不管系统音量大小是多少，都能使音量保持最大，比如一些闹钟的应用。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Arial;line-height:26px;">所以我在想ios里面如何实现呢，经查看相关的资料总结出有两种方法：</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Arial;line-height:26px;">一种是调用控件MPVolumeView在屏幕中创建一个音量条，拖动可以改变系统的音量大小。</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Arial;line-height:26px;">如果你不想出现设置音量的界面而修改系统的音量大小又该如何做呢？</p>
+<p style="margin-top:0px;margin-bottom:0px;padding:0px;font-family:Arial;line-height:26px;">一些人用设置system volume的方法实现，但那是ios SDK中的私有类 有被拒的风险。幸运的是我们还能用另一种方法来取代它<br />
+<span style="color:#0000ff;">MPMusicPlayerController *mpc = [MPMusicPlayerController applicationMusicPlayer];<br />
+mpc.volume = 0;&nbsp;&nbsp;//0.0~1.0</span><br />
+用这个方法可以绕过那些麻烦的底层控制</p></body></html>

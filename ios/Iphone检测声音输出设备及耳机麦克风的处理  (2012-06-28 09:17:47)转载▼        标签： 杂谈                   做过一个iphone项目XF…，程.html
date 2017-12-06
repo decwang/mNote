@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-02-20T17:59:09Z"/><meta name="updated" content="2014-02-20T17:59:11Z"/><title>Iphone检测声音输出设备及耳机麦克风的处理  (2012-06-28 09:17:47)转载▼        标签： 杂谈                   做过一个iphone项目XF…，程</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="articalTitle"> 
+			
+								<h2 id="t_8a6c97b501010uwy" class="titName SG_txta">Iphone检测声音输出设备及耳机麦克风的处理</h2>
+			
+					<span class="time SG_txtc">(2012-06-28 09:17:47)</span><div class="turnBoxzz"><a href="" class="SG_aBtn SG_aBtn_ico SG_turn" action-type="reblog" action-data="{srcBlog:1, blogId:'8a6c97b501010uwy'}"><cite><img class="SG_icon SG_icon111" src="http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif" align="absmiddle" height="15" width="15" />转载<em class="arrow">▼</em></cite></a></div>
+		</div>
+		<div class="articalTag" id="sina_keyword_ad_area">
+			<table>
+				<tbody><tr>
+					<td class="blog_tag">
+					
+											<span class="SG_txtb">标签：</span> 																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=%D4%D3%CC%B8&amp;by=tag" target="_blank">杂谈</a></h3>
+																</td>
+					<td class="blog_class">
+										</td>
+				</tr>
+			</tbody>
+</table>
+		</div>
+						
+		<div id="sina_keyword_ad_area2" class="articalContent ">
+			<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="color:#373737;font-family:'Helvetica neue', Helvetica, Arial, sans-serif;line-height:24px;"> <span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 做过一个iphone项目XF…，程序的主要功能类似于能录音的卡拉OK。程序会播放选定的歌曲的伴奏音，使用者可以对着麦克风歌唱，程序则会录下使用者的声音，录制完成后上传到服务器，其他用户可以对该用户的演唱进行评分。</span></span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 开发过程中录音和播放这块碰到了一些问题，麻烦的主要有三个：</span></p>
+<ol style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin:0px 0px 1.625em 2.5em;outline:0px;padding:0px;vertical-align:baseline;list-style-position:initial;list-style-image:initial;">
+<li style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 检测是否有声音输入设备</span></li>
+<li style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 当有多个声音输出设备时，指定声音输出设备</span></li>
+<li style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 检测耳机的插入和拔出</span></li>
+</ol>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 第一个问题，对于iTouch和iPad等本身不带麦克风的设备，需要检查是否插入了带录音功能的耳机；对于iphone，由于其本身已近自带麦克风，所
+以相对容易。第二个问题，当在本身带有外放的设备上插入耳机等输出设备时，就出现了多个输出设备，需要实现在程序中指定将声音输出到哪里。第三个问题，插
+入/拔出耳机必然引起声音输出设备的变化，而如果是在</span><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">iTouch和iPad上插入/拔出了带麦克风的耳机，则必然引起声音输入设备的变化。</span></p>
+<h2 style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin:0px 0px 0.8125em;outline:0px;padding:0px;vertical-align:baseline;clear:both;">
+<span style="border-width:0px;font-family:inherit;font-style:inherit;font-weight:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;text-decoration:underline;"> <span style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-style:initial;border-color:initial;font-family:inherit;font-size:medium;font-style:inherit;font-weight:inherit;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;outline-width:0px;outline-style:initial;outline-color:initial;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;vertical-align:baseline;"> <strong style="border-width:0px;font-family:inherit;font-size:16px;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 1. 检测声音输入设备<br />
+</strong></span></span></h2>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> - (BOOL)hasMicphone {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return
+[[AVAudioSession sharedInstance] inputIsAvailable];<br />
+}</span></p>
+</blockquote>
+<h2 style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin:0px 0px 0.8125em;outline:0px;padding:0px;vertical-align:baseline;clear:both;">
+<strong style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> <span style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-style:initial;border-color:initial;font-family:inherit;font-size:medium;font-style:inherit;font-weight:inherit;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;outline-width:0px;outline-style:initial;outline-color:initial;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;vertical-align:baseline;"> 2. 检测声音输出设备<br />
+</span></strong></h2>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 对于输出设备的检测，我们只考虑了2个情况，一种是设备自身的外放（iTouch/iPad/iPhone都有），一种是当前是否插入了带外放的耳机。</span><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">iOS已经提供了相关方法用于获取当前的所有声音设备，我们只需要检查在这些设备中是否存在我们所关注的那几个就可以了。</span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 获取当前所有声音设备：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> CFStringRef route;<br />
+UInt32 propertySize = sizeof(CFStringRef);<br />
+AudioSessionGetProperty(kAudioSessionProperty_AudioRoute,
+&amp;propertySize, &amp;route);</span></p>
+</blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 在iOS上所有可能的声音设备包括：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+&nbsp;<wbr></p>
+</blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 每一项的具体代表的设备请查考iOS文档，此处我们关注的是是否有耳机，所以只需要检查在route中是否有Headphone或Headset存在，具体方法如下：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> - (BOOL)hasHeadset {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> #if
+TARGET_IPHONE_SIMULATOR<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> #warning *** Simulator mode: audio session code works only on a
+device<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return NO;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> #else&nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> CFStringRef
+route;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> UInt32
+propertySize = sizeof(CFStringRef);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> AudioSessionGetProperty(kAudioSessionProperty_AudioRoute,
+&amp;propertySize, &amp;route);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if((route ==
+NULL) || (CFStringGetLength(route) == 0)){<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> // Silent Mode<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSLog(@”AudioRoute: SILENT, do nothing!”);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> } else
+{<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSString* routeStr = (NSString*)route;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSLog(@”AudioRoute: %@”, routeStr);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSRange headphoneRange = [routeStr rangeOfString :
+@"Headphone"];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSRange headsetRange = [routeStr rangeOfString : @"Headset"];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if (headphoneRange.location != NSNotFound) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return YES;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> } else if(headsetRange.location != NSNotFound) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return YES;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return
+NO;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> #endif</span></p>
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> }</span></p>
+</blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 请注意，由于获取AudioRoute的相关方法不能再simulator上运行（会直接crush），所以必须先行处理。</span></p>
+<h2 style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin:0px 0px 0.8125em;outline:0px;padding:0px;vertical-align:baseline;clear:both;">
+<span style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-style:initial;border-color:initial;font-family:inherit;font-size:medium;font-style:inherit;font-weight:inherit;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;outline-width:0px;outline-style:initial;outline-color:initial;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;vertical-align:baseline;"> <strong style="border-width:0px;font-family:inherit;font-size:16px;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 3. 设置声音输出设备<br />
+</strong></span></h2>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 在我们的项目中，存在当正在播放时用户会插入或拔出耳机的情况。如果是播放时用户插入了耳机，苹果会自动将声音输出指向到耳机并自动将音量调整为合适大小；如果是在用耳机的播放过程中用户拔出了耳机，声音会自动从设备自身的外放里面播出，但是其音量并不会自动调大。<br />
+经过我们的测试，我们发现当播放时拔出耳机会有两个问题（也许对你来说不是问题，但是会影响我们的app）：</span></p>
+<ul style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin:0px 0px 1.625em 2.5em;outline:0px;padding:0px;vertical-align:baseline;list-style:square;">
+<li style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 音乐播放自动停止</span></li>
+<li style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 声音音量大小不会自动变大，系统仍然以较小的声音（在耳机上合适的声音）来进行外放</span></li>
+</ul>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 对于第一个问题，实际上就是需要能够检测到耳机拔出的事件；而第二个问题则是需要当耳机拔出时强制设置系统输出设备修改为系统外放。</span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 强制修改系统声音输出设备：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> - (void)resetOutputTarget {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> BOOL
+hasHeadset = [self hasHeadset];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSLog
+(@”Will Set output target is_headset = %@ .”, hasHeadset ? @”YES” :
+@”NO”);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> UInt32
+audioRouteOverride = hasHeadset ?<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> kAudioSessionOverrideAud<wbr>ioRoute_None:kAudioSessionOverrideAud<wbr>ioRoute_Speaker;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> AudioSessionSetProperty(kAudioSessionProperty_OverrideAudioRoute,
+sizeof(audioRouteOverride),
+&amp;audioRouteOverride);<br />
+}</span></p>
+</blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 可以看到我们修改了AudioSession的属性“kAudioSessionProperty_OverrideAudioRoute”，该属性在iOS文档上的解释如下：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<dl> <dt style="border-width:0px;font-family:inherit;font-style:inherit;font-weight:bold;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> <code style="border-width:0px;font-family:Monaco, Consolas, 'Andale Mono', 'DejaVu sans Mono', monospace;font-size:13px;font-style:normal;font-weight:normal;margin:0px;outline:0px;padding:0px;vertical-align:baseline;line-height:normal;"> <span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> <strong style="border-width:0px;font-family:inherit;font-size:10px;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> kAudioSessionProperty_OverrideAudioRoute</strong></span></code></dt> <dt style="border-width:0px;font-family:inherit;font-style:inherit;font-weight:bold;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> <code style="border-width:0px;font-family:Monaco, Consolas, 'Andale Mono', 'DejaVu sans Mono', monospace;font-size:13px;font-style:normal;font-weight:normal;margin:0px;outline:0px;padding:0px;vertical-align:baseline;line-height:normal;"> <span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> &nbsp;<wbr></span></code><span style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-style:initial;border-color:initial;font-family:inherit;font-size:x-small;font-style:inherit;font-weight:inherit;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;outline-width:0px;outline-style:initial;outline-color:initial;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;vertical-align:baseline;">Specifies
+whether or not to override the audio session category’s normal
+audio route. Can be set with one of two
+values:&nbsp;<wbr><code style="border-width:0px;font-family:Monaco, Consolas, 'Andale Mono', 'DejaVu sans Mono', monospace;font-size:13px;font-style:normal;font-weight:normal;margin:0px;outline:0px;padding:0px;vertical-align:baseline;line-height:normal;"><a href="http://developer.apple.com/#//apple_ref/c/econst/kAudioSessionOverrideAudioRoute_None">kAudioSessionOverrideAud<wbr>ioRoute_None</a></code>,
+which specifies that you want to use the normal audio route;
+and<code style="border-width:0px;font-family:Monaco, Consolas, 'Andale Mono', 'DejaVu sans Mono', monospace;font-size:13px;font-style:normal;font-weight:normal;margin:0px;outline:0px;padding:0px;vertical-align:baseline;line-height:normal;"><a href="http://developer.apple.com/#//apple_ref/c/econst/kAudioSessionOverrideAudioRoute_Speaker">kAudioSessionOverrideAud<wbr>ioRoute_Speaker</a></code>,
+when sends output audio to the speaker. A
+write-only&nbsp;<wbr><code style="border-width:0px;font-family:Monaco, Consolas, 'Andale Mono', 'DejaVu sans Mono', monospace;font-size:13px;font-style:normal;font-weight:normal;margin:0px;outline:0px;padding:0px;vertical-align:baseline;line-height:normal;">UInt32</code>&nbsp;<wbr>value.</span>&nbsp;<wbr><br style="border-width:0px;font-family:inherit;font-style:inherit;font-weight:inherit;margin:0px 0px 1.625em;outline:0px;padding:0px;vertical-align:baseline;" />
+<br />
+<br />
+<br style="border-width:0px;font-family:inherit;font-style:inherit;font-weight:inherit;margin:0px 0px 1.625em;outline:0px;padding:0px;vertical-align:baseline;" />
+&nbsp;<wbr><br />
+<br />
+<br style="border-width:0px;font-family:inherit;font-style:inherit;font-weight:inherit;margin:0px 0px 1.625em;outline:0px;padding:0px;vertical-align:baseline;" />
+<span style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-style:initial;border-color:initial;font-family:inherit;font-size:x-small;font-style:inherit;font-weight:inherit;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;outline-width:0px;outline-style:initial;outline-color:initial;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;vertical-align:baseline;"> Upon an audio route change (such as by plugging in or unplugging a
+headset), or upon interruption, this property reverts to its
+default value. This property can be used only with
+the&nbsp;<wbr><code style="border-width:0px;font-family:Monaco, Consolas, 'Andale Mono', 'DejaVu sans Mono', monospace;font-size:13px;font-style:normal;font-weight:normal;margin:0px;outline:0px;padding:0px;vertical-align:baseline;line-height:normal;"><a href="http://developer.apple.com/#//apple_ref/c/econst/kAudioSessionCategory_PlayAndRecord">kAudioSessionCategory_PlayAndRecord</a></code>&nbsp;<wbr>(or
+the equivalent<code style="border-width:0px;font-family:Monaco, Consolas, 'Andale Mono', 'DejaVu sans Mono', monospace;font-size:13px;font-style:normal;font-weight:normal;margin:0px;outline:0px;padding:0px;vertical-align:baseline;line-height:normal;"><a href="http://developer.apple.com/AVFoundation/Reference/AVAudioSession_ClassReference/Reference/Reference.html#//apple_ref/c/data/AVAudioSessionCategoryRecord">AVAudioSessionCategoryRe<wbr>cord</a></code>)
+category.</span><br />
+<br />
+</dt> </dl> </blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 可以看到，该属性只有当category为<a href="http://developer.apple.com/#//apple_ref/c/econst/kAudioSessionCategory_PlayAndRecord">kAudioSessionCategory_PlayAndRecord</a>或者<a href="http://developer.apple.com/AVFoundation/Reference/AVAudioSession_ClassReference/Reference/Reference.html#//apple_ref/c/data/AVAudioSessionCategoryRecord">AVAudioSessionCategoryRe<wbr>cord</a>时才能使用。所以我们还需要能够设置AudioSession的category。</span></p>
+<h2 style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin:0px 0px 0.8125em;outline:0px;padding:0px;vertical-align:baseline;clear:both;">
+<strong style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> <span style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-style:initial;border-color:initial;font-family:inherit;font-size:medium;font-style:inherit;font-weight:inherit;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;outline-width:0px;outline-style:initial;outline-color:initial;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;vertical-align:baseline;"> 4. 设置Audio工作模式（category，我当做工作模式理解的）<br />
+</span></strong></h2>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> iOS系统中Audio支持多种工作模式（category），要实现某个功能，必须首先将AudioSession设置到支持该功能的工作模式下。所有支持的工作模式如下：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<h5 style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-style:initial;border-color:initial;font-family:inherit;font-size:15px;font-style:inherit;font-weight:inherit;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;outline-width:0px;outline-style:initial;outline-color:initial;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;vertical-align:baseline;clear:both;">
+Audio Session Categories</h5>
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> Category identifiers for audio sessions, used as values for
+the&nbsp;<wbr><code style="border-width:0px;font-family:Monaco, Consolas, 'Andale Mono', 'DejaVu sans Mono', monospace;font-size:13px;font-style:normal;margin:0px;outline:0px;padding:0px;vertical-align:baseline;line-height:normal;"><a href="http://developer.apple.com/#//apple_ref/occ/instm/AVAudioSession/setCategory:error:">setCategory:error:</a></code>&nbsp;<wbr>method.</span></p>
+<pre style="border-width:0px;font-family:'Courier 10 pitch', Courier, monospace;font-size:13px;font-style:normal;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0.75em 1.625em;vertical-align:baseline;background-color:#f4f4f4;line-height:1.5;overflow:auto;"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">NSString *const </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/AVAudioSessionCategoryAmbient"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">AVAudioSessionCategoryAm<wbr>bient</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">;
+NSString *const </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/AVAudioSessionCategorySoloAmbient"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">AVAudioSessionCategorySo<wbr>loAmbient</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">;
+NSString *const </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/AVAudioSessionCategoryPlayback"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">AVAudioSessionCategoryPl<wbr>ayback</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">;
+NSString *const </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/AVAudioSessionCategoryRecord"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">AVAudioSessionCategoryRe<wbr>cord</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">;
+NSString *const </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/AVAudioSessionCategoryPlayAndRecord"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">AVAudioSessionCategoryPl<wbr>ayAndRecord</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">;
+NSString *const </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/AVAudioSessionCategoryAudioProcessing"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">AVAudioSessionCategoryAu<wbr>dioProcessing</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">;</span> </pre></blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> &nbsp;<wbr></span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 具体每一个category的功能请参考iOS文档，其中<a href="http://developer.apple.com/#//apple_ref/doc/c_ref/AVAudioSessionCategoryRecord"><span style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">AVAudioSessionCategoryRe<wbr>cord</span></a>为独立录音模式，而<a href="http://developer.apple.com/#//apple_ref/doc/c_ref/AVAudioSessionCategoryPlayAndRecord"><span style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">AVAudioSessionCategoryPl<wbr>ayAndRecord</span></a>为支持录音盒播放的模式，而<a href="http://developer.apple.com/#//apple_ref/doc/c_ref/AVAudioSessionCategoryPlayback"><span style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">AVAudioSessionCategoryPl<wbr>ayback</span></a>为普通播放模式。</span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 设置category：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> - (BOOL)checkAndPrepareCategoryF<wbr>orRecording {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> recording =
+YES;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> BOOL
+hasMicphone = [self hasMicphone];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSLog(@”Will
+Set category for recording! hasMicophone = %@”,
+hasMicphone?@”YES”:@”NO”);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if
+(hasMicphone) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [[AVAudioSession sharedInstance]
+setCategory:AVAudioSessionCategoryPl<wbr>ayAndRecord<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> error:nil];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [self
+resetOutputTarget];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> return
+hasMicphone;<br />
+}</span></p>
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> - (void)resetCategory {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if
+(!recording) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSLog(@”Will Set category to static value =
+AVAudioSessionCategoryPl<wbr>ayback!”);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [[AVAudioSession sharedInstance]
+setCategory:AVAudioSessionCategoryPl<wbr>ayback<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> error:nil];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }<br />
+}</span></p>
+</blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:medium;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> <strong style="border-width:0px;font-family:inherit;font-size:16px;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 5. 检测耳机插入/拔出事件</strong></span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 耳机插入拔出事件是通过监听AudioSession的RouteChange事件然后判断耳机状态实现的。实现步骤分为两步，首先注册监听函数，然后再监听函数中判断耳机状态。</span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 注册监听函数：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> AudioSessionAddPropertyL<wbr>istener
+(kAudioSessionProperty_AudioRouteChange,<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> audioRouteChangeListener<wbr>Callback,<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> self);</span></p>
+</blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 我们的需求是当耳机被插入或拔出时做出响应，而产生AouteChange事件的原因有多种，所以需要对各种类型进行处理并结合当前耳机状态进行判断。在iOS文档中，产生AouteChange事件的原因有如下几种：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<h5 style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;border-style:initial;border-color:initial;font-family:inherit;font-size:15px;font-style:inherit;font-weight:inherit;margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;outline-width:0px;outline-style:initial;outline-color:initial;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;vertical-align:baseline;clear:both;">
+Audio Session Route Change Reasons</h5>
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> Identifiers for the various reasons that an audio route can change
+while your iOS application is running.</span></p>
+<pre style="border-width:0px;font-family:'Courier 10 pitch', Courier, monospace;font-size:13px;font-style:normal;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0.75em 1.625em;vertical-align:baseline;background-color:#f4f4f4;line-height:1.5;overflow:auto;"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">enum {
+   </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_Unknown"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">kAudioSessionRouteChange<wbr>Reason_Unknown</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">                    = 0,
+   </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_NewDeviceAvailable"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">kAudioSessionRouteChange<wbr>Reason_NewDeviceAvailable</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">         = 1,
+   </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_OldDeviceUnavailable"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">kAudioSessionRouteChange<wbr>Reason_OldDeviceUnavailable</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">       = 2,
+   </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_CategoryChange"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">kAudioSessionRouteChange<wbr>Reason_CategoryChange</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">             = 3,
+   </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_Override"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">kAudioSessionRouteChange<wbr>Reason_Override</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">                   = 4,
+   // this enum has no constant with a value of 5
+   </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_WakeFromSleep"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">kAudioSessionRouteChange<wbr>Reason_WakeFromSleep</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">              = 6,
+   </span><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_NoSuitableRouteForCategory"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">kAudioSessionRouteChange<wbr>Reason_NoSuitableRouteForCatego<wbr>ry</span></a><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> = 7
+};</span> </pre></blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 具体每个类型的含义请查阅iOS文档，其中我们关注的是<a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_NewDeviceAvailable"><span style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">kAudioSessionRouteChange<wbr>Reason_NewDeviceAvailable</span></a>有新设备插入、<a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_OldDeviceUnavailable"><span style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">kAudioSessionRouteChange<wbr>Reason_OldDeviceUnavailable</span></a>原有设备被拔出以及</span><span style="border-width:0px;font-family:'Courier new', monospace;font-size:12px;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;white-space:pre;"><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"><a href="http://developer.apple.com/#//apple_ref/doc/c_ref/kAudioSessionRouteChangeReason_NoSuitableRouteForCategory">kAudioSessionRouteChange<wbr>Reason_NoSuitableRouteForCatego<wbr>r</a>y当前工作模式缺少合适设备</span></span><span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">。</span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 当有新设备接入时，如果检测到耳机，则判定为耳机插入事件；当原有设备移除时，如果无法检测到耳机，则判定为耳机拔出事件；当出现“当前工作模式缺少合适设备时”，直接判定为录音时拔出了麦克风。</span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 很明显，这个判定逻辑实际上不准确，比如原来就有耳机但是插入了一个新的audio设备或者是原来就没有耳机但是拔出了一个原有的audio设备，我们的
+判定都会出错。但是对于我们的项目来说，其实关注的不是耳机是拔出还是插入，真正关注的是有audio设备插入/拔出时能够根据当前耳机/麦克风状态去调
+整设置，所以这个判定实现对我们来说是正确的。</span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 监听函数的实现：</span></p>
+<blockquote style="border-width:0px;font-family:Georgia, 'Bitstream Charter', serif;font-size:15px;font-style:italic;margin:0px 3em;outline:0px;padding:0px;vertical-align:baseline;quotes:'';">
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> void audioRouteChangeListener<wbr>Callback (<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> void&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> *inUserData,<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> AudioSessionPropertyID&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> inPropertyID,<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> UInt32&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> inPropertyValueSize,<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> const
+void&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> *inPropertyValue<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> ) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if
+(inPropertyID != kAudioSessionProperty_AudioRouteChange)
+return;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> //
+Determines the reason for the route change, to ensure that it is
+not<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> //&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> because of a category change.</span></p>
+<p style="border-width:0px;font-family:inherit;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> <br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> CFDictionaryRef&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> routeChangeDictionary = inPropertyValue;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> CFNumberRef
+routeChangeReasonRef =<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> CFDictionaryGetValue (routeChangeDictionary,<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> CFSTR (kAudioSession_AudioRouteChangeKey_Reason));<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> SInt32
+routeChangeReason;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> CFNumberGetValue (routeChangeReasonRef, kCFNumberSInt32Type,
+&amp;routeChangeReason);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> NSLog(@”
+======================= RouteChangeReason : %d”,
+routeChangeReason);<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> AudioHelper
+*_self = (AudioHelper *) inUserData;<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if
+(routeChangeReason ==
+kAudioSessionRouteChange<wbr>Reason_OldDeviceUnavailable) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [_self resetSettings];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if (![_self hasHeadset]) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [[NSNotificationCenter defaultCenter]
+postNotificationName:@”ununpluggingHeadse<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> object:nil];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> } else if
+(routeChangeReason ==
+kAudioSessionRouteChange<wbr>Reason_NewDeviceAvailable) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [_self resetSettings];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> if (![_self hasMicphone]) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [[NSNotificationCenter defaultCenter]
+postNotificationName:@”pluggInMicrophone”<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> object:nil];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> } else if
+(routeChangeReason ==
+kAudioSessionRouteChange<wbr>Reason_NoSuitableRouteForCatego<wbr>ry) {<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [_self resetSettings];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [[NSNotificationCenter defaultCenter]
+postNotificationName:@”lostMicroPhone”<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> object:nil];<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> }<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> //else if
+(routeChangeReason ==
+kAudioSessionRouteChange<wbr>Reason_CategoryChange&nbsp;<wbr> )
+{<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> //&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [[AVAudioSession sharedInstance]
+setCategory:AVAudioSessionCategoryPl<wbr>ayAndRecord
+error:nil];&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr><br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> //}<br />
+&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr> [_self
+printCurrentCategory];<br />
+}</span></p>
+</blockquote>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 当检测到相关事件后，通过NSNotificationCenter通知observers耳机（有无麦克风）拔出/插入事件拔出事件，从而触发相关操作。</span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:medium;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> <strong style="border-width:0px;font-family:inherit;font-size:16px;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 6. 事件处理</strong></span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 对于耳机（有无麦克风）拔出/插入事件，一般需要做如下处理：</span></p>
+<ul style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin:0px 0px 1.625em 2.5em;outline:0px;padding:0px;vertical-align:baseline;list-style:square;">
+<li style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 强制重设系统声音输出设备（防止系统以较小声音在外放中播放）</span></li>
+<li style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 如果拔出前正在播放，则启动已经暂停的播放（当耳机拔出时，系统会自动暂停播放）</span></li>
+<li style="border-width:0px;font-family:inherit;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 当拔出前正在录音，则需要检查麦克风情况并决定是否停止录音（如果录音时从iTouch/iPad等设备上拔出了带麦克风的耳机）</span></li>
+</ul>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> &nbsp;<wbr></span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+<span style="border-width:0px;font-family:inherit;font-size:x-small;font-style:inherit;margin:0px;outline:0px;padding:0px;vertical-align:baseline;"> 附完整代码：</span></p>
+<p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+AudioHelper.h</p>
+<pre style="border-width:0px;font-family:'Courier 10 pitch', Courier, monospace;font-size:13px;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0.75em 1.625em;vertical-align:baseline;background-color:#f4f4f4;line-height:1.5;overflow:auto;">#import &lt;Foundation/Foundation.h&gt;
+
+@interface AudioHelper : NSObject {
+    BOOL recording;
+}
+
+- (void)initSession;
+- (BOOL)hasHeadset;
+- (BOOL)hasMicphone;
+- (void)cleanUpForEndRecording;
+- (BOOL)checkAndPrepareCategoryF<wbr>orRecording;
+
+@end</pre> <p style="border-width:0px;font-family:inherit;font-size:15px;font-style:inherit;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0px;vertical-align:baseline;">
+&nbsp;<wbr><br />
+AudioHelper.m</p>
+<pre style="border-width:0px;font-family:'Courier 10 pitch', Courier, monospace;font-size:13px;margin-top:0px;margin-bottom:1.625em;outline:0px;padding:0.75em 1.625em;vertical-align:baseline;background-color:#f4f4f4;line-height:1.5;overflow:auto;">#import "AudioHelper.h"
+#import &lt;AVFoundation/AVFoundation.h&gt;
+#import &lt;AudioToolbox/AudioToolbox.h&gt;
+
+@implementation AudioHelper
+
+- (BOOL)hasMicphone {
+    return [[AVAudioSession sharedInstance] inputIsAvailable];
+}
+
+- (BOOL)hasHeadset {
+    #if TARGET_IPHONE_SIMULATOR
+        #warning *** Simulator mode: audio session code works only on a device
+        return NO;
+    #else
+    CFStringRef route;
+    UInt32 propertySize = sizeof(CFStringRef);
+    AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &amp;propertySize, &amp;route);
+
+    if((route == NULL) || (CFStringGetLength(route) == 0)){
+        // Silent Mode
+        NSLog(@"AudioRoute: SILENT, do nothing!");
+    } else {
+        NSString* routeStr = (NSString*)route;
+        NSLog(@"AudioRoute: %@", routeStr);
+
+        
+
+        NSRange headphoneRange = [routeStr rangeOfString : @"Headphone"];
+        NSRange headsetRange = [routeStr rangeOfString : @"Headset"];
+        if (headphoneRange.location != NSNotFound) {
+            return YES;
+        } else if(headsetRange.location != NSNotFound) {
+            return YES;
+        }
+    }
+    return NO;
+    #endif
+
+}
+
+- (void)resetOutputTarget {
+    BOOL hasHeadset = [self hasHeadset];
+    NSLog (@"Will Set output target is_headset = %@ .", hasHeadset ? @"YES" : @"NO");
+    UInt32 audioRouteOverride = hasHeadset ?
+        kAudioSessionOverrideAud<wbr>ioRoute_None:kAudioSessionOverrideAud<wbr>ioRoute_Speaker;
+    AudioSessionSetProperty(kAudioSessionProperty_OverrideAudioRoute, sizeof(audioRouteOverride), &amp;audioRouteOverride);
+    [self hasHeadset];
+}
+
+- (BOOL)checkAndPrepareCategoryF<wbr>orRecording {
+    recording = YES;
+    BOOL hasMicphone = [self hasMicphone];
+    NSLog(@"Will Set category for recording! hasMicophone = %@", hasMicphone?@"YES":@"NO");
+    if (hasMicphone) {
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPl<wbr>ayAndRecord
+                                               error:nil];
+    }
+    [self resetOutputTarget];
+    return hasMicphone;
+}
+
+- (void)resetCategory {
+    if (!recording) {
+        NSLog(@"Will Set category to static value = AVAudioSessionCategoryPl<wbr>ayback!");
+        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPl<wbr>ayback
+                                               error:nil];
+    }
+}
+
+- (void)resetSettings {
+    [self resetOutputTarget];
+    [self resetCategory];
+    BOOL isSucced = [[AVAudioSession sharedInstance] setActive: YES error:NULL];
+    if (!isSucced) {
+        NSLog(@"Reset audio session settings failed!");
+    }
+}
+
+- (void)cleanUpForEndRecording {
+    recording = NO;
+    [self resetSettings];
+}
+
+- (void)printCurrentCategory {
+
+    return;
+
+    UInt32 audioCategory;
+    UInt32 size = sizeof(audioCategory);
+    AudioSessionGetProperty(kAudioSessionProperty_AudioCategory, &amp;size, &amp;audioCategory);
+
+    if ( audioCategory == kAudioSessionCategory_UserInterfaceSoundEffect<wbr>s ){
+        NSLog(@"current category is : kAudioSessionCategory_UserInterfaceSoundEffect<wbr>s");
+    } else if ( audioCategory == kAudioSessionCategory_AmbientSound ){
+        NSLog(@"current category is : kAudioSessionCategory_AmbientSound");
+    } else if ( audioCategory == kAudioSessionCategory_AmbientSound ){
+        NSLog(@"current category is : kAudioSessionCategory_AmbientSound");
+    } else if ( audioCategory == kAudioSessionCategory_SoloAmbientSound ){
+        NSLog(@"current category is : kAudioSessionCategory_SoloAmbientSound");
+    } else if ( audioCategory == kAudioSessionCategory_MediaPlayback ){
+        NSLog(@"current category is : kAudioSessionCategory_MediaPlayback");
+    } else if ( audioCategory == kAudioSessionCategory_LiveAudio ){
+        NSLog(@"current category is : kAudioSessionCategory_LiveAudio");
+    } else if ( audioCategory == kAudioSessionCategory_RecordAudio ){
+        NSLog(@"current category is : kAudioSessionCategory_RecordAudio");
+    } else if ( audioCategory == kAudioSessionCategory_PlayAndRecord ){
+        NSLog(@"current category is : kAudioSessionCategory_PlayAndRecord");
+    } else if ( audioCategory == kAudioSessionCategory_AudioProcessing ){
+        NSLog(@"current category is : kAudioSessionCategory_AudioProcessing");
+    } else {
+        NSLog(@"current category is : unknow");
+    }
+}
+
+void audioRouteChangeListener<wbr>Callback (
+                                       void                      *inUserData,
+                                       AudioSessionPropertyID    inPropertyID,
+                                       UInt32                    inPropertyValueSize,
+                                       const void                *inPropertyValue
+                                       ) {
+
+    if (inPropertyID != kAudioSessionProperty_AudioRouteChange) return;
+    // Determines the reason for the route change, to ensure that it is not
+    //          because of a category change.
+    CFDictionaryRef     routeChangeDictionary = inPropertyValue;
+
+    CFNumberRef routeChangeReasonRef =
+    CFDictionaryGetValue (routeChangeDictionary,
+                          CFSTR (kAudioSession_AudioRouteChangeKey_Reason));
+
+    SInt32 routeChangeReason;
+
+    CFNumberGetValue (routeChangeReasonRef, kCFNumberSInt32Type, &amp;routeChangeReason);
+    NSLog(@" ===================================== RouteChangeReason : %d", routeChangeReason);
+    AudioHelper *_self = (AudioHelper *) inUserData;
+    if (routeChangeReason == kAudioSessionRouteChange<wbr>Reason_OldDeviceUnavailable) {
+        [_self resetSettings];
+        if (![_self hasHeadset]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ununpluggingHeadse"
+                                                                object:nil];
+        }
+    } else if (routeChangeReason == kAudioSessionRouteChange<wbr>Reason_NewDeviceAvailable) {
+        [_self resetSettings];
+        if (![_self hasMicphone]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"pluggInMicrophone"
+                                                                object:nil];
+        }
+    } else if (routeChangeReason == kAudioSessionRouteChange<wbr>Reason_NoSuitableRouteForCatego<wbr>ry) {
+        [_self resetSettings];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"lostMicroPhone"
+                                                            object:nil];
+    }
+    //else if (routeChangeReason == kAudioSessionRouteChange<wbr>Reason_CategoryChange  ) {
+    //    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPl<wbr>ayAndRecord error:nil];
+    //}
+
+    [_self printCurrentCategory];
+}
+
+- (void)initSession {
+    recording = NO;
+    AudioSessionInitialize(NULL, NULL, NULL, NULL);
+    [self resetSettings];
+    AudioSessionAddPropertyL<wbr>istener (kAudioSessionProperty_AudioRouteChange,
+                                     audioRouteChangeListener<wbr>Callback,
+                                     self);
+    [self printCurrentCategory];
+    [[AVAudioSession sharedInstance] setActive: YES error:NULL];
+}
+
+- (void)dealloc {
+    [super dealloc];
+}
+
+@end</pre></div></body></html>

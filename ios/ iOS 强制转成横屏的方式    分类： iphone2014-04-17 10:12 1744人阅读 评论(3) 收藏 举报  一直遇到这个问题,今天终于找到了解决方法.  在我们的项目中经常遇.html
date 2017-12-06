@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-12-21T06:37:40Z"/><meta name="updated" content="2016-10-08T09:09:11Z"/><title> iOS 强制转成横屏的方式    分类： iphone2014-04-17 10:12 1744人阅读 评论(3) 收藏 举报  一直遇到这个问题,今天终于找到了解决方法.  在我们的项目中经常遇</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title" style="margin:5px 0px;font-size:20px;line-height:30px;font-family:'Microsoft YaHei';">&nbsp;<h1 style="margin:0px;padding:0px;display:inline;font-weight:normal;font-size:20px;vertical-align:middle;"><span class="link_title"><a href="http://blog.csdn.net/nogodoss/article/details/23913499" style="color:#000000;text-decoration:none;">iOS 强制转成横屏的方式</a></span></h1>
+</div>
+<div class="article_manage" style="padding:5px 0px;color:#999999;font-size:12px;line-height:24px;font-family:Arial;text-align:right;"><span class="link_categories" style="margin:0px 5px;float:left;">分类：&nbsp;<a href="http://blog.csdn.net/nogodoss/article/category/941604" style="color:#336699;text-decoration:none;">iphone</a></span><span class="link_postdate" style="margin:0px 5px 0px 0px;">2014-04-17 10:12</span>&nbsp;<span class="link_view" title="阅读次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_view.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;">1744人阅读</span>&nbsp;<span class="link_comments" title="评论次数" style="margin:0px 5px;padding:0px 0px 0px 14px;background-image:url(http://static.blog.csdn.net/images/ico_comm.png);background-position:0% 50%;background-repeat:no-repeat no-repeat;"><a href="http://blog.csdn.net/nogodoss/article/details/23913499#comments" style="color:#336699;text-decoration:none;">评论</a>(3)</span>&nbsp;<span class="link_collect" style="margin:0px 5px;"><a title="收藏" style="color:#336699;">收藏</a></span>&nbsp;<span class="link_report" style="margin:0px 5px;"><a href="http://blog.csdn.net/nogodoss/article/details/23913499#report" title="举报" style="color:#336699;text-decoration:none;">举报</a></span></div>
+<div id="article_content" class="article_content" style="margin:20px 0px 0px;line-height:26px;font-family:Arial;color:#333333;"><p>一直遇到这个问题,今天终于找到了解决方法.</p>
+<p>在我们的项目中经常遇到横竖屏切换,而又有某个特定的界面必须是特定的显示方式(横屏或竖屏).这就需要如下的处理了.</p>
+<p><span style="font-size:24px;">强制转成横屏:</span></p>
+<p></p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:15px;font-family:Menlo;">if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {</p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:15px;font-family:Menlo;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SEL selector = NSSelectorFromString(@"setOrientation:");</p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:15px;font-family:Menlo;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];</p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:15px;font-family:Menlo;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [invocation setSelector:selector];</p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:15px;font-family:Menlo;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [invocation setTarget:[UIDevice currentDevice]];</p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:15px;font-family:Menlo;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; int val = UIInterfaceOrientationLandscapeRight;</p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:15px;font-family:Menlo;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [invocation setArgument:&amp;val atIndex:2];</p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:15px;font-family:Menlo;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; [invocation invoke];</p>
+<p style="margin-top:0px;margin-bottom:0px;font-size:15px;font-family:Menlo;">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<br />
+<p>以上代码支持ARC哟.</p>
+<p>方法二： 通过判断状态栏来设置视图的transform属性。</p>
+<p></p>
+<p class="p1"></p>
+<p class="p1">- (<span class="s1">void</span>)deviceOrientationDidChange: (<span class="s2">NSNotification</span>&nbsp;*)notification</p>
+<p class="p1">{</p>
+<p class="p4"><span class="s3">&nbsp; &nbsp;&nbsp;</span>UIInterfaceOrientation<span class="s3">&nbsp;interfaceOrientation = [[</span>UIApplication<span class="s3">&nbsp;</span>sharedApplication<span class="s3">]&nbsp;</span>statusBarOrientation<span class="s3">];</span></p>
+<p class="p4"><span class="s3">&nbsp; &nbsp;&nbsp;</span>CGFloat<span class="s3">&nbsp;startRotation = [[</span><span class="s1">self</span><span class="s3">&nbsp;</span>valueForKeyPath<span class="s3">:</span><span class="s5">@"layer.transform.rotation.z"</span><span class="s3">]&nbsp;</span>floatValue<span class="s3">];</span></p>
+<p class="p4"><span class="s3">&nbsp; &nbsp;&nbsp;</span>CGAffineTransform<span class="s3">&nbsp;rotation;</span></p>
+<p class="p1">&nbsp; &nbsp;&nbsp;<span class="s1">switch</span>&nbsp;(interfaceOrientation) {</p>
+<p class="p4"><span class="s3">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span class="s1">case</span><span class="s3">&nbsp;</span>UIInterfaceOrientationLandscapeLeft<span class="s3">:</span></p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; rotation =&nbsp;<span class="s2">CGAffineTransformMakeRotation</span>(-startRotation +&nbsp;<span class="s6">M_PI</span>&nbsp;*&nbsp;<span class="s7">270.0</span>&nbsp;/&nbsp;<span class="s7">180.0</span>);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span class="s1">break</span>;</p>
+<p class="p4"><span class="s3">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span class="s1">case</span><span class="s3">&nbsp;</span>UIInterfaceOrientationLandscapeRight<span class="s3">:</span></p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; rotation =&nbsp;<span class="s2">CGAffineTransformMakeRotation</span>(-startRotation +&nbsp;<span class="s6">M_PI</span>&nbsp;*&nbsp;<span class="s7">90.0</span>&nbsp;/&nbsp;<span class="s7">180.0</span>);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span class="s1">break</span>;</p>
+<p class="p4"><span class="s3">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span class="s1">case</span><span class="s3">&nbsp;</span>UIInterfaceOrientationPortraitUpsideDown<span class="s3">:</span></p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; rotation =&nbsp;<span class="s2">CGAffineTransformMakeRotation</span>(-startRotation +&nbsp;<span class="s6">M_PI</span>&nbsp;*&nbsp;<span class="s7">180.0</span>&nbsp;/&nbsp;<span class="s7">180.0</span>);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span class="s1">break</span>;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span class="s1">default</span>:</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; rotation =&nbsp;<span class="s2">CGAffineTransformMakeRotation</span>(-startRotation +&nbsp;<span class="s7">0.0</span>);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span class="s1">break</span>;</p>
+<p class="p1">&nbsp; &nbsp; }</p>
+<p class="p3">&nbsp; &nbsp;&nbsp;<span class="s4">view</span>.<span class="s2">transform</span>&nbsp;= rotation;</p>
+<p class="p1">}</p>
+</div></body></html>

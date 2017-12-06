@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-04-25T09:03:06Z"/><meta name="updated" content="2014-04-25T09:03:08Z"/><title>ios程序编译链接参数 all_load 的 ld duplicate symbol _main 的 bug及修复    问题  -all_load 是在Objective-C 编译时常用到的一个参</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h2>
+			<a id="cb_post_title_url" href="http://www.cnblogs.com/dabaopku/archive/2012/12/12/2813940.html">ios程序编译链接参数 all_load 的 ld duplicate symbol _main 的 bug及修复</a> 		</h2>
+		<div class="postbody">
+		<div id="cnblogs_post_body"><h1>问题</h1>
+<p>-all_load 是在Objective-C 编译时常用到的一个参数，比如这篇文章所介绍的，<a href="http://blog.csdn.net/leonpengweicn/article/details/6799994">生成静态库的一些问题-all_load</a>。但是我们在加入这个参数后，有时会出现“<span data-mce-mark="1"><span style="color:#ff0000;" data-mce-mark="1">ld: duplicate symbol _main</span>“的错误，比如&nbsp;<a href="http://www.cocos2d-x.org/boards/6/topics/5390">libCurl duplicate symbol</a>，但是把 -all_load 参数从 Other Like Flags 里去掉后,编译虽然可以通过,但在运行时会崩溃。问题出在什么地方呢？</span></p>
+<h1><span data-mce-mark="1">分析</span></h1>
+<p><span data-mce-mark="1">参考&nbsp;<a href="http://www.microsofttranslator.com/bv.aspx?from=&amp;to=en&amp;a=http://binaryfinery.wordpress.com/2010/06/11/universal-static-library-problem-in-iphone-sdk">Universal static library problem in iPhone SDK</a>（需翻墙，通过<a href="http://cncc.bingj.com/cache.aspx?q=universal-static-library-problem-in-iphone-sdk&amp;d=4992732734623252&amp;mkt=zh-CN&amp;setlang=zh-CN&amp;w=FmgEDIwk_87ebvR_nn0w1VgRkmjVK6b0">bing的cache</a>查看），<a href="http://perspx.com/archives/cocos2d-for-mac/">cocos2d for Mac</a>，<a href="https://developer.apple.com/library/mac/#qa/qa2006/qa1490.html">Building Objective-C static libraries with categories</a>&nbsp;等文章，我们可以大概知道 -all_load 的作用：</span></p>
+<blockquote>
+<p>Objective C 中特有的语法特性 Category 
+大家肯定很熟悉，类似于C#中的扩展方法，可以在一个类的外面扩展这个类的功能，使得我们可以方便的为系统类添加自己的功能，比如为 NSString 
+添加 md5 
+编码。在编译到静态库时，这些代码模块实际上是存在不同的obj文件里的。程序在连接Category方法时，实际上只加载了Category模块，扩展
+的基类代码并没有被加载。这样，程序虽然可以编译通过，但是在运行时，因为找不到基类模块，就会出现 <span style="color:#ff0000;" data-mce-mark="1">unrecognized selector</span> 这样的错误。</p>
+</blockquote>
+<p>但是使用了 -all_load 之后，随之而来的问题就是，有的库里自作主张的定义了main函数，比如 libcurl.a。谁知道他们定义main函数是干什么的，但问题就是这个样子。因此，-all_load，加还是不加，这是个问题。</p>
+<h1>解决方案</h1>
+<p>有两个解决方案，其实都是寻找 -all_load 的替代参数。</p>
+<p>苹果的官方文档里给了我们一个解决方案，使用 <span style="color:#ff0000;" data-mce-mark="1">-ObjC</span> 参数。它的文档说，-ObjC 参数会把所有的 Objective-C 代码模块加载，所以程序会有点臃肿；也许libcurl不是 Objective-C 实现的，所以不会加载。但相对于巨大的图片声音资源来说，程序稍微变大一点应该不算什么。<code><br />
+</code></p>
+<p>另外一个解决方案是 使用 <span style="color:#ff0000;">-force_load</span> 参数，可以参考&nbsp;<a href="http://stackoverflow.com/questions/2567498/objective-c-categories-in-static-library">Objective-C categories in static library</a>，<a href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries/2300873#2300873">How can I avoid “duplicate symbol” errors in xcode with shared static libraries?</a>。我们可以只加载感兴趣的 静态库。</p>
+</div>
+</div></body></html>

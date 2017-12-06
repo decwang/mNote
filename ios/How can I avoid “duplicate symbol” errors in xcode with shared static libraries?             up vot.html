@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-04-25T10:48:34Z"/><meta name="updated" content="2014-04-25T10:48:36Z"/><title>How can I avoid “duplicate symbol” errors in xcode with shared static libraries?             up vot</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div id="question-header">
+			<h1 itemprop="name"><a href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries" class="question-hyperlink">How can I avoid “duplicate symbol” errors in xcode with shared static libraries?</a></h1>
+		</div>
+			<div id="mainbar">
+
+			<div class="question" data-questionid="2300867" id="question">
+    
+    
+            <div class="everyonelovesstackoverflow" id="adzerk182025958">
+            </div>
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                <div class="vote">
+    
+    <a class="vote-up-off" title="This question shows research effort; it is useful and clear">up vote</a>     <span class="vote-count-post ">20</span>     <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful">down vote</a>     
+    <a class="star-off" href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries/2300873#" title="This is a favorite question (click again to undo)">favorite</a>     <div class="favoritecount"><b>12</b></div>
+   </div>
+            </td>
+            <td class="postcell">
+<div>
+    <div class="post-text" itemprop="description">
+
+        <p>I have static libraries A, B and C organized into Xcode 
+projects.  A and B depend on C.  When I build an iPhone project that 
+depends on A and B, I get a linker error that a duplicate symbol (from 
+C) was detected in A and B.  How can I organize these three static 
+libraries so I can include them in other Xcode projects without 
+experiencing this error?</p>
+    </div>
+    <div class="post-taglist">
+        <a href="http://stackoverflow.com/questions/tagged/c" class="post-tag js-gps-track" title="show questions tagged 'c'" rel="tag">c</a> <a href="http://stackoverflow.com/questions/tagged/objective-c" class="post-tag js-gps-track" title="show questions tagged 'objective-c'" rel="tag">objective-c</a> <a href="http://stackoverflow.com/questions/tagged/xcode" class="post-tag js-gps-track" title="" rel="tag">xcode</a> <a href="http://stackoverflow.com/questions/tagged/duplicate-symbol" class="post-tag js-gps-track" title="show questions tagged 'duplicate-symbol'" rel="tag">duplicate-symbol</a> 
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/q/2300867" title="short permalink to this question" class="short-link" id="link-post-2300867">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/2300867/edit" class="suggest-edit-post" title="">improve this question</a></div>
+        
+    </td>
+    <td class="post-signature" align="right">
+<div class="user-info user-hover">
+    <div class="user-action-time">
+        <a href="http://stackoverflow.com/posts/2300867/revisions" title="show all edits to this post">edited <span title="2010-02-20 03:41:57Z" class="relativetime">Feb 20 '10 at 3:41</span></a>     </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/116908/carl-norum"><img src="https://www.gravatar.com/avatar/54d38793d7a407446999b33b81d607fd?s=32&amp;d=identicon&amp;r=PG" alt="" height="32" width="32" /></a>     </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/116908/carl-norum">Carl Norum</a><br />
+        <span class="reputation-score" title="reputation score 109198" dir="ltr">109k</span><span title="12 gold badges"><span class="badgecount">12</span></span><span title="169 silver badges"><span class="badgecount">169</span></span><span title="259 bronze badges"><span class="badgecount">259</span></span>     </div>
+</div>
+    </td>
+    <td class="post-signature owner">
+        <div class="user-info ">
+    <div class="user-action-time">
+        asked <span title="2010-02-20 03:08:53Z" class="relativetime">Feb 20 '10 at 3:08</span>     </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/144776/richcollins"><img src="https://www.gravatar.com/avatar/f7612335d0011de02dac1436652bf44c?s=32&amp;d=identicon&amp;r=PG" alt="" height="32" width="32" /></a>     </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/144776/richcollins">richcollins</a><br />
+        <span class="reputation-score" title="reputation score " dir="ltr">494</span><span title="2 gold badges"><span class="badgecount">2</span></span><span title="8 silver badges"><span class="badgecount">8</span></span><span title="22 bronze badges"><span class="badgecount">22</span></span>     </div>
+</div>
+    </td>
+    </tr>
+    </tbody>
+</table>
+</div>
+</td>
+        </tr>
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-2300867" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="0" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-20849427" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+   
+        </td>
+        <td class="comment-text">
+            <div class="comment-body">
+                <span class="comment-copy">surely when building the 
+library targets for A and B, you should only include the headers of C. 
+You would only link to C when building the iPhone project?</span>                 –&nbsp;
+                    <a href="http://stackoverflow.com/users/2044766/max-macleod" title="7405 reputation" class="comment-user">Max MacLeod</a>                 <span class="comment-date" dir="ltr"><a class="comment-link" href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries/2300873#comment20849427_2300867"><span title="2013-02-14 09:43:17Z" class="relativetime-clean">Feb 14 '13 at 9:43</span></a></span>                                                                             </div>
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-2300867" data-rep="50" data-anon="true" class="comments-link disabled-link" title="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments.">add comment</a>     </td>
+</tr>
+            </tbody>
+</table>
+    </div>
+			<div id="answers">
+
+				<a name="tab-top"></a> 				<div id="answers-header">
+					<div class="subheader answers-subheader">
+						<h2>
+								4 Answers
+						</h2>
+						<div>
+							<div id="tabs">
+        <a href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries?answertab=active#tab-top" title="Answers with the latest activity first">active</a>         <a href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries?answertab=oldest#tab-top" title="Answers in the order they were provided">oldest</a>         <a class="youarehere" href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries?answertab=votes#tab-top" title="Answers with the highest score first">votes</a> </div>
+						</div>
+					</div>
+    
+				</div>
+    
+
+
+
+
+  <a name="3153354"></a> <div id="answer-3153354" class="answer" data-answerid="3153354">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                <div class="vote">
+    
+    <a class="vote-up-off" title="This answer is useful">up vote</a>     <span class="vote-count-post ">21</span>     <a class="vote-down-off" title="This answer is not useful">down vote</a>     </div>
+            </td>
+            <td class="answercell">
+    <div class="post-text">
+            <p>Carl's answer is right, but for the wrong reasons: 
+there's actually nothing wrong with linking static libraries together, 
+as we can see using Carl's own sample. Set-up Carl's sample code and 
+then do this: (I use libtool because that is what XCode uses)</p>
+<pre class="lang-c prettyprint prettyprinted"><code><span class="pln">neutron</span><span class="pun">:</span><span class="pln">libtest jamie$ libtool </span><span class="pun">-</span><span class="pln">o a2</span><span class="pun">.</span><span class="pln">a a</span><span class="pun">.</span><span class="pln">a c</span><span class="pun">.</span><span class="pln">a
+neutron</span><span class="pun">:</span><span class="pln">libtest jamie$ libtool </span><span class="pun">-</span><span class="pln">o b2</span><span class="pun">.</span><span class="pln">a b</span><span class="pun">.</span><span class="pln">a c</span><span class="pun">.</span><span class="pln">a
+neutron</span><span class="pun">:</span><span class="pln">libtest jamie$ gcc main</span><span class="pun">.</span><span class="pln">o a2</span><span class="pun">.</span><span class="pln">a b2</span><span class="pun">.</span><span class="pln">a </span><span class="pun">-</span><span class="pln">o app2
+neutron</span><span class="pun">:</span><span class="pln">libtest jamie$ </span><span class="pun">./</span><span class="pln">app2
+a
+c
+b
+c
+neutron</span><span class="pun">:</span><span class="pln">libtest jamie$ </span></code></pre> <p>This links a2.a and b2.a with main.o. According to Carl, this is the 
+source of OPs problem, and app2 shouldn't link. But of course it does. 
+The linker is smart enough to ignore two instances of the same file. We 
+can see that both a2.a and b2.a contain c.o:</p>
+<pre class="lang-c prettyprint prettyprinted"><code><span class="pln">neutron</span><span class="pun">:</span><span class="pln">libtest jamie$ ar </span><span class="pun">-</span><span class="pln">t a2</span><span class="pun">.</span><span class="pln">a
+__</span><span class="pun">.</span><span class="pln">SYMDEF SORTED
+a</span><span class="pun">.</span><span class="pln">o
+c</span><span class="pun">.</span><span class="pln">o
+neutron</span><span class="pun">:</span><span class="pln">libtest jamie$ ar </span><span class="pun">-</span><span class="pln">t b2</span><span class="pun">.</span><span class="pln">a
+__</span><span class="pun">.</span><span class="pln">SYMDEF SORTED
+b</span><span class="pun">.</span><span class="pln">o
+c</span><span class="pun">.</span><span class="pln">o</span></code></pre> <p>Yet it links fine.</p>
+<p>The problem is, I believe, linked to Universal Binaries, either 
+PPC/x86 universal binaries, or armv6/armv7 iPhone universal binaries. 
+The problem here is that there is a bug with <a href="http://developer.apple.com/mac/library/qa/qa2006/qa1490.html">categories</a>  and the fix (add -all_load to the linker flags) is a fix that only 
+works for single architectures. Using -all_load breaks the linkers 
+ability to ignore symbols that are defined for multiple architectures, 
+and you have your duplicate symbol error.</p>
+<p>I wrote about it <a href="http://blog.binaryfinery.com/universal-static-library-problem-in-iphone-sd">here</a> including a better solution than using -all_load.</p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/a/3153354" title="short permalink to this answer" class="short-link" id="link-post-3153354">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/3153354/edit" class="suggest-edit-post" title="">improve this answer</a></div>
+                    </td>
+    <td class="post-signature" align="right">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="http://stackoverflow.com/posts/3153354/revisions" title="show all edits to this post">edited <span title="2011-04-18 18:11:22Z" class="relativetime">Apr 18 '11 at 18:11</span></a>     </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        <br />
+        
+    </div>
+</div>
+    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info ">
+    <div class="user-action-time">
+        answered <span title="2010-06-30 20:57:36Z" class="relativetime">Jun 30 '10 at 20:57</span>     </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/337881/jamie"><img src="https://www.gravatar.com/avatar/c1592423320464150ee277b043d1188a?s=32&amp;d=identicon&amp;r=PG" alt="" height="32" width="32" /></a>     </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/337881/jamie">jamie</a><br />
+        <span class="reputation-score" title="reputation score " dir="ltr">1,400</span><span title="10 silver badges"><span class="badgecount">10</span></span><span title="17 bronze badges"><span class="badgecount">17</span></span>     </div>
+</div>
+    </td>
+    </tr>
+    </tbody>
+</table>
+</td>
+        </tr>
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-3153354" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="0" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-6244301" class="comment">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of 'useful comment' votes received" class="cool">2</span>                         </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+   
+        </td>
+        <td class="comment-text">
+            <div class="comment-body">
+                <span class="comment-copy">Here's a working link to your blog entry: <a href="http://blog.binaryfinery.com/universal-static-library-problem-in-iphone-sd" rel="nofollow">blog.binaryfinery.com/…</a></span>                 –&nbsp;
+                    <a href="http://stackoverflow.com/users/211292/thomasw" title="7548 reputation" class="comment-user">ThomasW</a>                 <span class="comment-date" dir="ltr"><a class="comment-link" href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries/2300873#comment6244301_3153354"><span title="2011-03-31 15:10:30Z" class="relativetime-clean">Mar 31 '11 at 15:10</span></a></span>                                                                             </div>
+        </td>
+    </tr>
+    <tr id="comment-30294516" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+   
+        </td>
+        <td class="comment-text">
+            <div class="comment-body">
+                <span class="comment-copy">Nope, that link is broken too. It's the final "k" that keeps being deleted. Bug with SO? Trying again: <a href="http://binaryfinery.wordpress.com/2010/06/11/universal-static-library-problem-in-iphone-sdk/" rel="nofollow">binaryfinery.wordpress.com/2010/06/11/…</a></span>                 –&nbsp;
+                    <a href="http://stackoverflow.com/users/153422/adam" title="16210 reputation" class="comment-user">Adam</a>                 <span class="comment-date" dir="ltr"><a class="comment-link" href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries/2300873#comment30294516_3153354"><span title="2013-11-30 16:58:10Z" class="relativetime-clean">Nov 30 '13 at 16:58</span></a></span>                                                                             </div>
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-3153354" data-rep="50" data-anon="true" class="comments-link disabled-link" title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add comment</a>     </td>
+</tr>
+    </tbody>
+</table>
+</div>
+            <div class="everyonelovesstackoverflow" id="adzerk480701302">
+            </div>
+  <a name="2300873"></a> <div id="answer-2300873" class="answer" data-answerid="2300873">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                <div class="vote">
+    
+    <a class="vote-up-off" title="This answer is useful">up vote</a>     <span class="vote-count-post ">5</span>     <a class="vote-down-off" title="This answer is not useful">down vote</a>     </div>
+            </td>
+            <td class="answercell">
+    <div class="post-text">
+            <p>This problem isn't necessarily Xcode or Objective-C 
+related.  Don't link/archive libraries into other libraries.  A &amp; B 
+only depend on C at final link time, not when they're built.  You want:</p>
+<ol>
+<li>build A</li>
+<li>build B</li>
+<li>build C</li>
+<li>build app &amp; link</li>
+</ol>
+<p>Here's an example project I made to demonstrate:</p>
+<p>Makefile:</p>
+<pre class="lang-c prettyprint prettyprinted"><code><span class="pln">app</span><span class="pun">:</span><span class="pln"> main</span><span class="pun">.</span><span class="pln">o a</span><span class="pun">.</span><span class="pln">a b</span><span class="pun">.</span><span class="pln">a c</span><span class="pun">.</span><span class="pln">a
+        gcc $</span><span class="pun">^</span><span class="pln"> </span><span class="pun">-</span><span class="pln">o $@</span><span class="pun">%.</span><span class="pln">o</span><span class="pun">:</span><span class="pln"> </span><span class="pun">%.</span><span class="pln">c
+        gcc </span><span class="pun">-</span><span class="typ">Wall</span><span class="pln"> </span><span class="pun">-</span><span class="pln">c $</span><span class="pun">^</span><span class="pln"> </span><span class="pun">%.</span><span class="pln">a</span><span class="pun">:</span><span class="pln"> </span><span class="pun">%.</span><span class="pln">o
+        ar </span><span class="pun">-</span><span class="pln">r $@ $</span><span class="pun">^</span><span class="pln"> clean</span><span class="pun">:</span><span class="pln">         rm </span><span class="pun">-</span><span class="pln">rf </span><span class="pun">*.</span><span class="pln">o </span><span class="pun">*.</span><span class="pln">a app</span></code></pre> <p>a.c:</p>
+<pre class="lang-c prettyprint prettyprinted"><code><span class="com">#include</span><span class="pln"> </span><span class="str">&lt;stdio.h&gt;</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> c</span><span class="pun">(</span><span class="kwd">void</span><span class="pun">);</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> a</span><span class="pun">(</span><span class="kwd">void</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">   printf</span><span class="pun">(</span><span class="str">"a\n"</span><span class="pun">);</span><span class="pln">   c</span><span class="pun">();</span><span class="pln"> </span><span class="pun">}</span></code></pre> <p>b.c:</p>
+<pre class="lang-c prettyprint prettyprinted"><code><span class="com">#include</span><span class="pln"> </span><span class="str">&lt;stdio.h&gt;</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> c</span><span class="pun">(</span><span class="kwd">void</span><span class="pun">);</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> b</span><span class="pun">(</span><span class="kwd">void</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">   printf</span><span class="pun">(</span><span class="str">"b\n"</span><span class="pun">);</span><span class="pln">   c</span><span class="pun">();</span><span class="pln"> </span><span class="pun">}</span></code></pre> <p>c.c:</p>
+<pre class="lang-c prettyprint prettyprinted"><code><span class="com">#include</span><span class="pln"> </span><span class="str">&lt;stdio.h&gt;</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> c</span><span class="pun">(</span><span class="kwd">void</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">   printf</span><span class="pun">(</span><span class="str">"c\n"</span><span class="pun">);</span><span class="pln"> </span><span class="pun">}</span></code></pre> <p>main.c:</p>
+<pre class="lang-c prettyprint prettyprinted"><code><span class="com">#include</span><span class="pln"> </span><span class="str">&lt;stdio.h&gt;</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> a</span><span class="pun">(</span><span class="kwd">void</span><span class="pun">);</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> b</span><span class="pun">(</span><span class="kwd">void</span><span class="pun">);</span><span class="pln"> </span><span class="typ">int</span><span class="pln"> main</span><span class="pun">(</span><span class="typ">int</span><span class="pln"> argc</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">char</span><span class="pln"> </span><span class="pun">*</span><span class="pln">argv</span><span class="pun">[])</span><span class="pln"> </span><span class="pun">{</span><span class="pln">   a</span><span class="pun">();</span><span class="pln">   b</span><span class="pun">();</span><span class="pln">   </span><span class="kwd">return</span><span class="pln"> </span><span class="lit">0</span><span class="pun">;</span><span class="pln"> </span><span class="pun">}</span></code></pre> <p>Build and run log:</p>
+<pre class="lang-c prettyprint prettyprinted"><code><span class="pln">$ make
+gcc </span><span class="pun">-</span><span class="typ">Wall</span><span class="pln"> </span><span class="pun">-</span><span class="pln">c main</span><span class="pun">.</span><span class="pln">c
+gcc </span><span class="pun">-</span><span class="typ">Wall</span><span class="pln"> </span><span class="pun">-</span><span class="pln">c a</span><span class="pun">.</span><span class="pln">c
+ar </span><span class="pun">-</span><span class="pln">r a</span><span class="pun">.</span><span class="pln">a a</span><span class="pun">.</span><span class="pln">o
+ar</span><span class="pun">:</span><span class="pln"> creating archive a</span><span class="pun">.</span><span class="pln">a
+gcc </span><span class="pun">-</span><span class="typ">Wall</span><span class="pln"> </span><span class="pun">-</span><span class="pln">c b</span><span class="pun">.</span><span class="pln">c
+ar </span><span class="pun">-</span><span class="pln">r b</span><span class="pun">.</span><span class="pln">a b</span><span class="pun">.</span><span class="pln">o
+ar</span><span class="pun">:</span><span class="pln"> creating archive b</span><span class="pun">.</span><span class="pln">a
+gcc </span><span class="pun">-</span><span class="typ">Wall</span><span class="pln"> </span><span class="pun">-</span><span class="pln">c c</span><span class="pun">.</span><span class="pln">c
+ar </span><span class="pun">-</span><span class="pln">r c</span><span class="pun">.</span><span class="pln">a c</span><span class="pun">.</span><span class="pln">o
+ar</span><span class="pun">:</span><span class="pln"> creating archive c</span><span class="pun">.</span><span class="pln">a
+gcc main</span><span class="pun">.</span><span class="pln">o a</span><span class="pun">.</span><span class="pln">a b</span><span class="pun">.</span><span class="pln">a c</span><span class="pun">.</span><span class="pln">a </span><span class="pun">-</span><span class="pln">o app
+rm a</span><span class="pun">.</span><span class="pln">o b</span><span class="pun">.</span><span class="pln">o c</span><span class="pun">.</span><span class="pln">o
+$ </span><span class="pun">./</span><span class="pln">app 
+a
+c
+b
+c</span></code></pre>     </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/a/2300873" title="short permalink to this answer" class="short-link" id="link-post-2300873">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/2300873/edit" class="suggest-edit-post" title="">improve this answer</a></div>
+                    </td>
+    <td class="post-signature" align="right">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="http://stackoverflow.com/posts/2300873/revisions" title="show all edits to this post">edited <span title="2010-02-20 03:41:09Z" class="relativetime">Feb 20 '10 at 3:41</span></a>     </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        <br />
+        
+    </div>
+</div>
+    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2010-02-20 03:10:00Z" class="relativetime">Feb 20 '10 at 3:10</span>     </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/116908/carl-norum"><img src="https://www.gravatar.com/avatar/54d38793d7a407446999b33b81d607fd?s=32&amp;d=identicon&amp;r=PG" alt="" height="32" width="32" /></a>     </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/116908/carl-norum">Carl Norum</a><br />
+        <span class="reputation-score" title="reputation score 109198" dir="ltr">109k</span><span title="12 gold badges"><span class="badgecount">12</span></span><span title="169 silver badges"><span class="badgecount">169</span></span><span title="259 bronze badges"><span class="badgecount">259</span></span>     </div>
+</div>
+    </td>
+    </tr>
+    </tbody>
+</table>
+</td>
+        </tr>
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-2300873" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="0" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-30294483" class="comment">
+        <td>
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                &nbsp;&nbsp;
+                        </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+   
+        </td>
+        <td class="comment-text">
+            <div class="comment-body">
+                <span class="comment-copy">So far as I can tell, Xcode 
+doesn't allow/support this? If it does, I think you should correct your 
+answer to explain how to achieve it (seeing as the original question is 
+tagged "xcode") -- I came here from Google because I cannot get Xcode to
+ handle this simple setup! If not, this answer is useless, as it does 
+nothing to solve the question.</span>                 –&nbsp;
+                    <a href="http://stackoverflow.com/users/153422/adam" title="16210 reputation" class="comment-user">Adam</a>                 <span class="comment-date" dir="ltr"><a class="comment-link" href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries/2300873#comment30294483_2300873"><span title="2013-11-30 16:56:52Z" class="relativetime-clean">Nov 30 '13 at 16:56</span></a></span>                                                                             </div>
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-2300873" data-rep="50" data-anon="true" class="comments-link disabled-link" title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add comment</a>     </td>
+</tr>
+    </tbody>
+</table>
+</div>
+  <a name="4873942"></a> <div id="answer-4873942" class="answer" data-answerid="4873942">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                <div class="vote">
+    
+    <a class="vote-up-off" title="This answer is useful">up vote</a>     <span class="vote-count-post ">4</span>     <a class="vote-down-off" title="This answer is not useful">down vote</a>     </div>
+            </td>
+            <td class="answercell">
+    <div class="post-text">
+            <p>A alternative to using <code>-all_load</code> is to use <code>-force_load</code> "path_to_lib" just for the libraries where it is needed. For example, you can use something like: <code>-force_load "$(PROJECT_DIR)/libname"</code>.</p>
+<p>This avoids what you need to do for Jamie's solution which requires you to modify implementation files.</p>
+<p>This is the solution adopted by the three20 project: <a href="http://groups.google.com/group/three20/browse_thread/thread/ec208be4ff8b4dcb/0dccf992a26850df" rel="nofollow">http://groups.google.com/group/three20/browse_thread/thread/ec208be4ff8b4dcb/0dccf992a26850df</a></p>
+<p><strong>edit:</strong> with Xcode 4.3 the need for <code>-all_load</code> and <code>-force_load</code> appear to have diminished. I'll post more details when I have them.</p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/a/4873942" title="short permalink to this answer" class="short-link" id="link-post-4873942">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/4873942/edit" class="suggest-edit-post" title="">improve this answer</a></div>
+                    </td>
+    <td class="post-signature" align="right">
+<div class="user-info ">
+    <div class="user-action-time">
+        <a href="http://stackoverflow.com/posts/4873942/revisions" title="show all edits to this post">edited <span title="2012-05-01 23:54:53Z" class="relativetime">May 1 '12 at 23:54</span></a>     </div>
+    <div class="user-gravatar32">
+        
+    </div>
+    <div class="user-details">
+        <br />
+        
+    </div>
+</div>
+    </td>
+            
+
+
+    <td class="post-signature" align="right">   
+       
+
+    <div class="user-info user-hover">
+    <div class="user-action-time">
+        answered <span title="2011-02-02 11:33:27Z" class="relativetime">Feb 2 '11 at 11:33</span>     </div>
+    <div class="user-gravatar32">
+        <a href="http://stackoverflow.com/users/211292/thomasw"><img src="https://www.gravatar.com/avatar/506d58a313a564c1f46b19e67eb476c8?s=32&amp;d=identicon&amp;r=PG" alt="" height="32" width="32" /></a>     </div>
+    <div class="user-details">
+        <a href="http://stackoverflow.com/users/211292/thomasw">ThomasW</a><br />
+        <span class="reputation-score" title="reputation score " dir="ltr">7,548</span><span title="2 gold badges"><span class="badgecount">2</span></span><span title="26 silver badges"><span class="badgecount">26</span></span><span title="47 bronze badges"><span class="badgecount">47</span></span>     </div>
+</div>
+    </td>
+    </tr>
+    </tbody>
+</table>
+</td>
+        </tr>
+<tr>
+    <td class="votecell"></td>
+    <td>
+	    <div id="comments-4873942" class="comments" data-localized="true">
+		    <table>
+			    <tbody data-remaining-comments-count="0" data-addlink-html="add comment" data-addlink-disabled="true">
+
+    <tr id="comment-14054261" class="comment">
+        <td class="comment-actions">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class=" comment-score">
+                                <span title="number of 'useful comment' votes received" class="cool">1</span>                         </td>
+                        <td>
+                                &nbsp;
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+   
+        </td>
+        <td class="comment-text">
+            <div class="comment-body">
+                <span class="comment-copy">Any updates for Xcode 4.3?</span>                 –&nbsp;
+                    <a href="http://stackoverflow.com/users/292145/klaas" title="2383 reputation" class="comment-user">Klaas</a>                 <span class="comment-date" dir="ltr"><a class="comment-link" href="http://stackoverflow.com/questions/2300867/how-can-i-avoid-duplicate-symbol-errors-in-xcode-with-shared-static-libraries/2300873#comment14054261_4873942"><span title="2012-05-29 15:23:46Z" class="relativetime-clean">May 29 '12 at 15:23</span></a></span>                                                                             </div>
+        </td>
+    </tr>
+			    </tbody>
+		    </table>
+	    </div>
+			<a id="comments-link-4873942" data-rep="50" data-anon="true" class="comments-link disabled-link" title="Use comments to ask for more information or suggest improvements. Avoid comments like “+1” or “thanks”.">add comment</a>     </td>
+</tr>
+    </tbody>
+</table>
+</div>
+  <a name="20695978"></a> <div id="answer-20695978" class="answer" data-answerid="20695978">
+    <table>
+        <tbody><tr>
+            <td class="votecell">
+                <div class="vote">
+    
+    <a class="vote-up-off" title="This answer is useful">up vote</a>     <span class="vote-count-post ">0</span>     <a class="vote-down-off" title="This answer is not useful">down vote</a>     </div>
+            </td>
+            <td class="answercell">
+    <div class="post-text">
+            <p>As a complement, I came across this blog by Nathan de Vries, <a href="http://atnan.com/blog/2012/01/12/avoiding-duplicate-symbol-errors-during-linking-by-removing-classes-from-static-libraries" rel="nofollow">"Avoiding duplicate symbol errors during linking by removing classes from static libraries"</a></p>
+    </div>
+    <table class="fw">
+    <tbody><tr>
+    <td class="vt">
+<div class="post-menu"><a href="http://stackoverflow.com/a/20695978" title="short permalink to this answer" class="short-link" id="link-post-20695978">share</a><span class="lsep">|</span><a href="http://stackoverflow.com/posts/20695978/edit" class="suggest-edit-post" title="">improve this answer</a></div>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div></body></html>

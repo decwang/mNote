@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-03-18T05:38:54Z"/><meta name="updated" content="2014-03-18T05:38:56Z"/><title>ios开发之使用bundle来管理资源文件  (2013-12-24 09:39:02)转载▼        标签： ios  it  开发技术     分类： IOS            转自h</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="articalTitle"><h2 id="t_47517dc70101hma0" class="titName SG_txta">ios开发之使用bundle来管理资源文件</h2>
+			
+					<span class="time SG_txtc">(2013-12-24 09:39:02)</span><div class="turnBoxzz"><a class="SG_aBtn SG_aBtn_ico SG_turn" action-type="reblog" action-data="{srcBlog:1, blogId:'47517dc70101hma0'}"><cite><img class="SG_icon SG_icon111" src="http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif" align="absmiddle" height="15" width="15" />转载<em class="arrow">▼</em></cite></a></div>
+		</div>
+		<div class="articalTag" id="sina_keyword_ad_area">
+			<table>
+				<tbody><tr>
+					<td class="blog_tag">
+					
+											<span class="SG_txtb">标签：</span> 																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=ios&amp;by=tag" target="_blank">ios</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=it&amp;by=tag" target="_blank">it</a></h3>
+																				<h3><a href="http://search.sina.com.cn/?c=blog&amp;q=%BF%AA%B7%A2%BC%BC%CA%F5&amp;by=tag" target="_blank">开发技术</a></h3>
+																</td>
+					<td class="blog_class">
+											<span class="SG_txtb">分类：</span> 						<a target="_blank" href="http://blog.sina.com.cn/s/articlelist_1196522951_1_1.html">IOS</a> 										</td>
+				</tr>
+			</tbody>
+</table>
+		</div>
+						
+		<div id="sina_keyword_ad_area2" class="articalContent ">
+			<div>转自http://blog.csdn.net/kylinbl/article/details/9047209<br />
+在ios开发中为了方便管理资源文件，可以使用bundle的方式来进行管理，比如kkgridview里就是把所需的图片文件全部放在一个bundle来管理的
+.<br />
+<br />
+切记目前iOS中只允许使用bundle管理资源文件和国际化信息，不支持代码的打包。<br />
+<br />
+在xcode中只能够创建setting
+bundle，会默认创建一些配置文件，在xcode中无法直接删除，这也许不是我们需要的。<br />
+<br />
+那么如何使用最简单的方法创建一个bundle呢?<br />
+<br />
+1 创建一个文件夹<br />
+<br />
+2 将该文件夹重命名为a.bundle<br />
+<br />
+3 将a.bundle拖入到xcode中即可<br />
+<p>&nbsp;</p>
+<p>当然这样处理之后，取图片之类的文件，使用的方法就不一样了，以取iphone_52x52.png图片为例：</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;color:#3d1d81;">
+<span style="color:#000000;">&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr>&nbsp;<wbr></span><span style="color:#703daa;">NSString</span> <span style="color:#000000;">*bundlePath = [[</span><span style="color:#703daa;">NSBundle</span>mainBundle<span style="color:#000000;">].</span>resourcePathstringByAppe<wbr>ndingPathComponent<span style="color:#000000;">:</span><span style="color:#d12f1b;">@"My.bundle"</span><span style="color:#000000;">];</span></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> <span style="color:#703daa;">NSBundle</span> *bundle = [<span style="color:#703daa;">NSBundle</span> <span style="color:#3d1d81;">bundleWithPath</span>:bundlePath];</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> <span style="color:#703daa;">UIImage</span> *(^getBundleImage)(<span style="color:#703daa;">NSString</span> *) =
+^(<span style="color:#703daa;">NSString</span> *n) {</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;color:#3d1d81;">
+<span style="color:#000000;">&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr></span> <span style="color:#bb2ca2;">return</span> <span style="color:#000000;">[</span><span style="color:#703daa;">UIImage</span>imageWithContentsOfFile<span style="color:#000000;">:[bundle</span> pathForResource<span style="color:#000000;">:n</span> ofType<span style="color:#000000;">:</span><span style="color:#d12f1b;">@"png"</span><span style="color:#000000;">]];</span></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> };</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+&nbsp;<wbr></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+&nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr> &nbsp;<wbr>&nbsp;<wbr><span style="color:#703daa;">UIImage</span> *myImg = getBundleImage(<span style="color:#d12f1b;">@"iphone_52x52"</span>);</p>
+&nbsp;<wbr> <p>代码是蛮长一块，为了方便使用，我们可以写一个UIImage的类别，在类别中加入此方法，这样用起来就简单多了：</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+- (<span style="color:#703daa;">UIImage</span> *)imagesNamedFromCustomBun<wbr>dle:(<span style="color:#703daa;">NSString</span> *)imgName</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+{</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;color:#3d1d81;">
+<span style="color:#000000;">&nbsp;<wbr> &nbsp;<wbr></span> <span style="color:#703daa;">NSString</span> <span style="color:#000000;">*bundlePath = [[</span><span style="color:#703daa;">NSBundle</span>mainBundle<span style="color:#000000;">].</span>resourcePathstringByAppe<wbr>ndingPathComponent<span style="color:#000000;">:</span><span style="color:#d12f1b;">@"My.bundle"</span><span style="color:#000000;">];</span></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+&nbsp;<wbr> &nbsp;<wbr> <span style="color:#703daa;">NSBundle</span> *bundle = [<span style="color:#703daa;">NSBundle</span> <span style="color:#3d1d81;">bundleWithPath</span>:bundlePath];</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+&nbsp;<wbr> &nbsp;<wbr> <span style="color:#703daa;">NSString</span> *img_path = [bundle <span style="color:#3d1d81;">pathForResource</span>:imgName <span style="color:#3d1d81;">ofType</span>:<span style="color:#d12f1b;">@"png"</span>];</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;color:#3d1d81;">
+<span style="color:#000000;">&nbsp;<wbr> &nbsp;<wbr></span> <span style="color:#bb2ca2;">return</span> <span style="color:#000000;">[</span><span style="color:#703daa;">UIImage</span>imageWithContentsOfFile<span style="color:#000000;">:img_path];</span></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+}</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+</p>
+调用方式：<br />
+<p><span style="font-family:Menlo;color:#703daa;">UIImage</span> <span style="font-family:Menlo;">*
+img&nbsp;<wbr> = [</span><span style="font-family:Menlo;color:#bb2ca2;">self</span><span style="color:#31595d;font-family:Menlo;">imagesNamedFromCustomBun<wbr>dle</span><span style="font-family:Menlo;">:</span><span style="font-family:Menlo;color:#d12f1b;">@"iphone_52x52"</span><span style="font-family:Menlo;">];</span></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;color:#31595d;">
+<span style="color:#000000;"><br />
+</span></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+测试了下，发现一点小问题，为了兼容retina屏，有iphone_52x52.png和iphone_52x52@2x.png，两张图片，</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+当我们用<span style="color:#703daa;">UIImage</span> * img = [UIImage imageNamed:<span style="color:#d12f1b;">@"iphone_52x52"</span>];这种方式取图片时，会根据你是不是retina屏</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+来返回不同的图片，如果这两张图你只提供了一张，那么也可以正常运行，只是图片会按比例进行拉伸。</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+在测试上面的<span style="color:#31595d;">imagesNamedFromCustomBun<wbr>dle</span>方法时，提供两张图片和只提供iphone_52x52.png时，两种屏下面都正常，但如果只提供了iphone_52x52@2x.png这张图片，那么无论是普通屏还是retina屏，都会找不到图片。</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+调试分析了下，是在[bundle&nbsp;<wbr><span style="color:#3d1d81;">pathForResource</span>:imgName&nbsp;<wbr><span style="color:#3d1d81;">ofType</span>:<span style="color:#d12f1b;">@"png"</span>];这里出了问题，返回的path都是nil,把上面的方法改成下面这样：</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+&nbsp;<wbr></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+- (<span style="color:#703daa;">UIImage</span> *)imagesNamedFromCustomBun<wbr>dle:(<span style="color:#703daa;">NSString</span> *)imgName</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+{</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;color:#3d1d81;">
+<span style="color:#000000;">&nbsp;<wbr> &nbsp;<wbr></span> <span style="color:#703daa;">NSString</span> <span style="color:#000000;">*bundlePath = [[</span><span style="color:#703daa;">NSBundle</span>mainBundle<span style="color:#000000;">].</span>resourcePathstringByAppe<wbr>ndingPathComponent<span style="color:#000000;">:</span><span style="color:#d12f1b;">@"testLocalVirable.bundle"</span><span style="color:#000000;">];</span></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+&nbsp;<wbr> &nbsp;<wbr> <span style="color:#703daa;">NSString</span> *img_path = [bundlePath<span style="color:#3d1d81;">stringByAppendingPathCom<wbr>ponent</span>:imgName];</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;color:#3d1d81;">
+<span style="color:#000000;">&nbsp;<wbr> &nbsp;<wbr></span> <span style="color:#bb2ca2;">return</span> <span style="color:#000000;">[</span><span style="color:#703daa;">UIImage</span>imageWithContentsOfFile<span style="color:#000000;">:img_path];</span></p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+}</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+</p>
+调用方式改成：<span style="font-family:Menlo;color:#703daa;">UIImage</span><span style="font-family:Menlo;">&nbsp;<wbr>*
+img&nbsp;<wbr> = [</span><span style="font-family:Menlo;color:#bb2ca2;">self</span><span style="font-family:Menlo;">&nbsp;<wbr></span><span style="color:#31595d;font-family:Menlo;">imagesNamedFromCustomBun<wbr>dle</span><span style="font-family:Menlo;">:</span><span style="font-family:Menlo;color:#d12f1b;">@"iphone_52x52.png"</span><span style="font-family:Menlo;">];//把扩展名加上了</span><br />
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+这样在来测试，retina屏正常了，普通屏还是找不到图片。</p>
+<p style="margin-top:0px;margin-bottom:0px;font-family:Menlo;">
+分析了半天也没找到解决方法，知识还</p>
+</div>
+</div></body></html>

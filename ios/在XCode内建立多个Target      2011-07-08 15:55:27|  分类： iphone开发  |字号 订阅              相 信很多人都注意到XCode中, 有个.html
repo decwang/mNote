@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-08-27T23:51:08Z"/><meta name="updated" content="2013-09-05T03:26:14Z"/><title>在XCode内建立多个Target      2011-07-08 15:55:27|  分类： iphone开发  |字号 订阅              相 信很多人都注意到XCode中, 有个</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="multicntwrap">
+	      <div class="multicnt">
+	      	<div>
+		      <h3 class="title pre fs1"><span class="tcnt">在XCode内建立多个Target</span>&nbsp;&nbsp;</h3>
+		      <p class="tdep clearfix nbw-act fc06" style="line-height:20px;">
+		        <span class="pleft"> 		          
+		          <span class="blogsep">2011-07-08 15:55:27</span><span class="blogsep">|&nbsp;&nbsp;分类：</span> 		          <a class="fc03 m2a" href="http://gaohaijun.blog.163.com/blog/#m=0&amp;t=1&amp;c=fks_084066083080081066084084083095085081087069093094084068085" title="iphone开发">iphone开发</a> 		          
+		        </span> 		        <span class="pright fc07 ztag"><span class="blogsep">|</span><span class="zihao fc03" id="$_fontswitch">字号</span></span><span class="pright pnt fc03" id="$_blog_subscribe"><span class="iblock icn0 icn0-919">&nbsp;</span><a class="m2a">订阅</a></span> 		      </p>
+		    </div>
+	      </div>
+        </div>
+        <div>
+        
+        </div>
+        <div class="nbw-blog-start"></div>
+        <div class="bct fc05 fc11 nbw-blog ztag js-fs2"><span style="font-family:Arial;line-height:normal;font-size:12px;color:#625b49;-webkit-border-horizontal-spacing:2px;-webkit-border-vertical-spacing:2px;"><p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">相
+信很多人都注意到XCode中, 有个Target的概念. 这在很多地方都有所体现, 比如打开一个工程后, 左侧的列表中有Targets一项, 
+而在工程界面的顶部菜单中, project里面也有多个涉及到Target的项目, 那么这个Target到底是什么呢?</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">Apple的人是这样说的:</p>
+<blockquote><p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">Targets
+ that define the products to build. A target organizes the files and 
+instructions needed to build a product into a sequence of build actions 
+that can be taken.</p>
+</blockquote>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">简单的理解的话, 可以认为一个target对应一个新的product(基于同一份代码的情况下). 但都一份代码了, 弄个新product做啥呢? 折腾这个有意思么?</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">其实这不是单纯的瞎折腾, 虽然代码是同一份, 但编译设置(比如编译条件), 以及包含的资源文件却可以有很大的差别. 于是即使同一份代码, 产出的product也可能大不相同.</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">我们来举几个典型的应用多Targets的情况吧, 比如完整版和lite版; 比如同一个游戏的20关, 30关, 50关版; 再或者比如同一个游戏换些资源和名字就当新游戏卖的(喂喂, 你在教些什么...)</p>
+<h3 style="margin:0px;padding:0px;border-width:0px;list-style:none;">Targets之间, 什么相同, 什么不同!</h3>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">既然是利用同一份代码产出不同的product, 那么到底不同Target之间存在着什么样的差异呢?</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">要解释这个问题, 我们就要来看看一个Target指定了哪些内容.</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">从XCode左侧的列表中, 我们可以看到一个Target包含了Copy Bundle Resources, Compile Sources, Link Binary With Libraries. 其中</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">Copy Bundle Resources 是指生成的product的.app内将包含哪些资源文件</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">Compile Sources 是指将有哪些源代码被编译</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">Link Binary With Libraries 是指编译过程中会引用哪些库文件</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">通过Copy Bundle Resources中内容的不同设置, 我们可以让不同的product包含不同的资源, 包括程序的主图标等, 而不是把XCode的工程中列出的资源一股脑的包含进去.</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">而这还不是一个target所指定的全部内容. 每个target可以使用一个独立, 不同的Info.plist文件.</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">我们都知道, 这个Info.plist文件内定义了一个iPhone项目的很多关键性内容, 比如程序名称, 最终生成product的全局唯一id等等.</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">而且不同的target还可以定义完整的差异化的编译设置, 从简单的调整优化选项, 到增加条件编译所使用的编译条件, 以至于所使用的base SDK都可以差异化指定.</p>
+<h3 style="margin:0px;padding:0px;border-width:0px;list-style:none;">创建第二个Target!</h3>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">为什么是第二个? 因为第一个就是创建好工程后的默认Target呀! (废话这么多, 拖走...)</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">创建target有多种方法, 我们可以从现有的target上复制出一份, 然后略加改动, 也可以完全新建一个target出来. 但其实说穿了, 两个方法大同小异</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">首先我们来看看利用复制的方法创建target</p>
+<h3 style="margin:0px;padding:0px;border-width:0px;list-style:none;">利用复制创建target</h3>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">我们在XCode左侧的列表中, 展开 Targets 项, 在现有的target上, 右键选择 "Duplicate", 或者选中现有target后, 在顶部菜单的Edit内选择"Duplicate"也可以.</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">此时我们就得到了一个新的target, 而在Resource里面也会得到一个 xxxx copy.plist. 这个新的target与原有的target是完全一致的, 余下的就是一些差异化的修改, 这个我们后面再说</p>
+<h3 style="margin:0px;padding:0px;border-width:0px;list-style:none;">创建全新的target</h3>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">类似复制的方法, 我们可以在左侧的列表中很多地方按下右键菜单, 都可以看到Add中会有"New Target..."一项, 而在工程顶部菜单的Project内, 也可以看到这个"New Target..."的身影.</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">点击后, 首先会让你选择target的类型, 既然我一直所指的都是程序本身, 那么自然选择Application了(至于其他的嘛, 有兴趣的自己研究吧, 比如我们可以把程序中的部分提取成一个Static Library).</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">Next后, 会让你输入一个新的Target的名字, 而不像复制的方法中, 默认生成 xxxxx copy这样的target名.</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;">但是这样生成出的Target几乎是空的. Copy Bundle Resources, Compile Sources, Link Binary With Libraries里面都没有任何内容. 编译设置也是完全原始的状态.</p>
+<p style="margin-top:0px;padding:0px;border-width:0px;list-style:none;word-wrap:normal;word-break:normal;"></p>
+</span></div></body></html>

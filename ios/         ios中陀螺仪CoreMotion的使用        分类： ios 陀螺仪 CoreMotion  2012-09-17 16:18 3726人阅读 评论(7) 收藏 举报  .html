@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2013-11-28T04:19:06Z"/><meta name="updated" content="2013-11-28T04:19:09Z"/><title>         ios中陀螺仪CoreMotion的使用        分类： ios 陀螺仪 CoreMotion  2012-09-17 16:18 3726人阅读 评论(7) 收藏 举报  </title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><div class="article_title">    <h3>
+        <span class="link_title"><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ios中陀螺仪CoreMotion的使用
+        </a></span>     </h3>
+</div>
+    <div class="article_manage">
+        <span class="link_categories">         分类：
+            <a href="http://blog.csdn.net/aiyongyyy/article/category/1239782">ios 陀螺仪 CoreMotion</a> 
+        </span>     <span class="link_postdate">2012-09-17 16:18</span>     <span class="link_view" title="阅读次数">3726人阅读</span>     <span class="link_comments" title="评论次数"><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#comments">评论</a>(7)</span>     <span class="link_collect">收藏</span>     <span class="link_report"><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#report" title="举报">举报</a></span>     </div>
+    <div id="article_content" class="article_content">
+
+<p>以前在iphone中要得到加速度时，只能使用Accelerometer模块得到重力加速度分量，然后通过滤波得到加速度值。其实在ios中有一个陀螺仪模块，CoreMotion，使用更方便。</p>
+<p>CoreMotion中主要有以下几个模块 </p>
+<p>&nbsp;</p>
+<p>初始化CoreMotion</p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:646px;top:564px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_1" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_1" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=1&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt">#import&nbsp;<span class="tag">&lt;</span><span class="tag-name">CoreMotion</span>/CoreMotion.h<span class="tag">&gt;</span>&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;</li>
+<li class="alt">CMMotionManager&nbsp;*<span class="attribute">motionManager</span>&nbsp;=&nbsp;[[CMMotionManager&nbsp;alloc]init];&nbsp;&nbsp;</li>
+</ol>
+</div>
+<p></p>
+<p>1. Accelerometer 获取手机加速度数据</p>
+<p></p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:646px;top:713px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_2" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_2" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=2&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt">CMAccelerometerData&nbsp;*<span class="attribute">newestAccel</span>&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.accelerometerData;&nbsp;&nbsp;</li>
+<li class="">double&nbsp;<span class="attribute">accelerationX</span>&nbsp;=&nbsp;<span class="attribute-value">newestAccel</span>.acceleration.x;&nbsp;&nbsp;</li>
+<li class="alt">double&nbsp;<span class="attribute">accelerationY</span>&nbsp;=&nbsp;<span class="attribute-value">newestAccel</span>.acceleration.y;&nbsp;&nbsp;</li>
+<li class="">double&nbsp;<span class="attribute">accelerationZ</span>&nbsp;=&nbsp;<span class="attribute-value">newestAccel</span>.acceleration.z;&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+2. Gravity 获取手机的重力值在各个方向上的分量，根据这个就可以获得手机的空间位置，倾斜角度等<p></p>
+<p></p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:646px;top:906px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_3" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_3" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=3&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt">double&nbsp;<span class="attribute">gravityX</span>&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.gravity.x;&nbsp;&nbsp;</li>
+<li class="">double&nbsp;<span class="attribute">gravityY</span>&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.gravity.y;&nbsp;&nbsp;</li>
+<li class="alt">double&nbsp;<span class="attribute">gravityZ</span>&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.gravity.z;&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+获取手机的倾斜角度：<p></p>
+<p></p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:646px;top:1081px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_4" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_4" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=4&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt">double&nbsp;<span class="attribute">zTheta</span>&nbsp;=&nbsp;<span class="attribute-value">atan2</span>(gravityZ,sqrtf(gravityX*gravityX+gravityY*gravityY))/M_PI*180.0;&nbsp;&nbsp;</li>
+<li class="">&nbsp;&nbsp;</li>
+<li class="alt">double&nbsp;<span class="attribute">xyTheta</span>&nbsp;=&nbsp;<span class="attribute-value">atan2</span>(gravityX,gravityY)/M_PI*180.0;&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+zTheta是手机与水平面的夹角， xyTheta是手机绕自身旋转的角度<p></p>
+<p>&nbsp;</p>
+<p>3. DeviceMotion 获取陀螺仪的数据 包括角速度，空间位置等</p>
+<p>旋转角速度：</p>
+<p></p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:646px;top:1376px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_5" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_5" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=5&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt">CMRotationRate&nbsp;<span class="attribute">rotationRate</span>&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.rotationRate;&nbsp;&nbsp;</li>
+<li class="">double&nbsp;<span class="attribute">rotationX</span>&nbsp;=&nbsp;<span class="attribute-value">rotationRate</span>.x;&nbsp;&nbsp;</li>
+<li class="alt">double&nbsp;<span class="attribute">rotationY</span>&nbsp;=&nbsp;<span class="attribute-value">rotationRate</span>.y;&nbsp;&nbsp;</li>
+<li class="">double&nbsp;<span class="attribute">rotationZ</span>&nbsp;=&nbsp;<span class="attribute-value">rotationRate</span>.z;&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+空间位置的欧拉角（通过欧拉角可以算得手机两个时刻之间的夹角，比用角速度计算精确地多）<p></p>
+<p></p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:646px;top:1569px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_6" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_6" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=6&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt">double&nbsp;<span class="attribute">roll</span>&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.attitude.roll;&nbsp;&nbsp;</li>
+<li class="">double&nbsp;<span class="attribute">pitch</span>&nbsp;&nbsp;&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.attitude.pitch;&nbsp;&nbsp;</li>
+<li class="alt">double&nbsp;<span class="attribute">yaw</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.attitude.yaw;&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+空间位置的四元数（与欧拉角类似，但解决了万向结死锁问题）<p></p>
+<p></p>
+<div class="dp-highlighter bg_html"><div class="bar"><div class="tools"><b>[html]</b> <a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="ViewSource" title="view plain">view plain</a><a href="http://blog.csdn.net/aiyongyyy/article/details/7986810#" class="CopyToClipboard" title="copy">copy</a><div style="position:absolute;left:646px;top:1744px;width:18px;height:18px;z-index:99;"><embed id="ZeroClipboardMovie_7" src="http://static.blog.csdn.net/scripts/ZeroClipboard/ZeroClipboard.swf" loop="false" menu="false" quality="best" bgcolor="#ffffff" name="ZeroClipboardMovie_7" allowscriptaccess="always" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" flashvars="id=7&amp;width=18&amp;height=18" wmode="transparent" align="middle" height="18" width="18" /></div>
+</div>
+</div>
+<ol class="dp-xml" start="1"><li class="alt">double&nbsp;<span class="attribute">w</span>&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.attitude.quaternion.w;&nbsp;&nbsp;</li>
+<li class="">double&nbsp;<span class="attribute">wx</span>&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.attitude.quaternion.x;&nbsp;&nbsp;</li>
+<li class="alt">double&nbsp;<span class="attribute">wy</span>&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.attitude.quaternion.y;&nbsp;&nbsp;</li>
+<li class="">double&nbsp;<span class="attribute">wz</span>&nbsp;=&nbsp;<span class="attribute-value">motionManager</span>.deviceMotion.attitude.quaternion.z;&nbsp;&nbsp;</li>
+</ol>
+</div>
+<br />
+<br />
+<p></p>
+<p>通过陀螺仪模块可以实现模拟赛车，模拟射击等。</p>
+</div></body></html>

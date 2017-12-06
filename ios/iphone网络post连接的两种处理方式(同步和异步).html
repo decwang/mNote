@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content=mNote Mac 2.5.11"/><meta name="created" content="2014-08-21T09:36:37Z"/><meta name="updated" content="2014-08-21T09:36:54Z"/><title>iphone网络post连接的两种处理方式(同步和异步)</title></head><body style="word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;"><h2 id="t_458f3b300100puig" class="titName SG_txta">第一种： 直接返回方式。<br style="line-height:normal;" />
+-(void)UpadaPost:(NSString *)strcontext URL:(NSString *)urlstr{<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSLog(urlstr);<br style="line-height:normal;" />
+NSLog(strcontext);<br style="line-height:normal;" />
+assert(strcontext != NULL);<br style="line-height:normal;" />
+assert(urlstr != NULL);<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSData *postData = [strcontext dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSString *postLength = [NSString stringWithFormat:@"%d", [postData length]];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setURL:[NSURL URLWithString:urlstr]];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setHTTPMethod:@"POST"];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setValue:postLength forHTTPHeaderField:@"Content-Length"];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setHTTPBody:postData];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSURLResponse *respone;<br style="line-height:normal;" />
+NSError *error;<br style="line-height:normal;" />
+NSData *myReturn =[NSURLConnection sendSynchronousRequest:request returningResponse:&amp;respone<br style="line-height:normal;" />
+error:error];<br style="line-height:normal;" />
+NSLog(@"%@", [[NSString alloc] initWithData:myReturn encoding:NSUTF8StringEncoding]);<br style="line-height:normal;" />
+}<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+第二种，采用事件代理方式<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+-(void)UpadaPost:(NSString *)strcontext URL:(NSString *)urlstr{<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSLog(urlstr);<br style="line-height:normal;" />
+NSLog(strcontext);<br style="line-height:normal;" />
+assert(strcontext != NULL);<br style="line-height:normal;" />
+assert(urlstr != NULL);<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSData *postData = [strcontext dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSString *postLength = [NSString stringWithFormat:@"%d", [postData length]];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setURL:[NSURL URLWithString:urlstr]];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setHTTPMethod:@"POST"];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setValue:postLength forHTTPHeaderField:@"Content-Length"];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+[request setHTTPBody:postData];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSURLConnection *conn=[[NSURLConnection alloc] initWithRequest:request delegate:self];&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+if (conn)&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+{&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+NSLog(@"Connection success");<br style="line-height:normal;" />
+[UIApplication sharedApplication].networkActivityIndicator<wbr>Visible = YES;<br style="line-height:normal;" />
+[conn retain];<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+}&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+else&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+{&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+// inform the user that the download could not be made&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+}&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+<br style="line-height:normal;" />
+}<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+// 收到响应时, 会触发<br style="line-height:normal;" />
+- (void)connection:(NSURLConnection *)connection&nbsp;<wbr>&nbsp;didReceiveResponse:(NSURLResponse *)response&nbsp;<wbr>&nbsp;{<br style="line-height:normal;" />
+// 注意这里将NSURLResponse对象转换成NSHTTPURLResponse对象才能去<br style="line-height:normal;" />
+NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;<br style="line-height:normal;" />
+if ([response respondsToSelector:@selector(allHeaderFields)]) {<br style="line-height:normal;" />
+NSDictionary *dictionary = [httpResponse allHeaderFields];<br style="line-height:normal;" />
+NSLog([dictionary description]);<br style="line-height:normal;" />
+NSLog(@"%d",[response statusCode]);<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+}<br style="line-height:normal;" />
+}<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+// Forward errors to the delegate.<br style="line-height:normal;" />
+//链接错误&nbsp;<wbr>&nbsp;<wbr>&nbsp;<wbr><br style="line-height:normal;" />
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {<br style="line-height:normal;" />
+//[self performSelectorOnMainThr<wbr>ead:@selector(httpConnectEnd) withObject:nil waitUntilDone:NO];<br style="line-height:normal;" />
+NSLog(@"%@",[error localizedDescription]);<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+}<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+// Called when a chunk of data has been downloaded.<br style="line-height:normal;" />
+//接收数据 每收到一次数据, 会调用一次<br style="line-height:normal;" />
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {<br style="line-height:normal;" />
+// Process the downloaded chunk of data.<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSLog(@"%d", [data length]);<br style="line-height:normal;" />
+//NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+//[self performSelectorOnMainThr<wbr>ead:@selector(updateProgress) withObject:nil waitUntilDone:NO];<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+}<br style="line-height:normal;" />
+//接收结束<br style="line-height:normal;" />
+- (void)connectionDidFinishLoadi<wbr>ng:(NSURLConnection *)connection {<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+NSLog(@"%@",connection);<br style="line-height:normal;" />
+//NSLog(@"%lld", received_);<br style="line-height:normal;" />
+<br style="line-height:normal;" />
+//[self performSelectorOnMainThr<wbr>ead:@selector(httpConnectEnd) withObject:nil waitUntilDone:NO];<br style="line-height:normal;" />
+// Set the condition which ends the run loop.<br style="line-height:normal;" />
+}</h2></body></html>
